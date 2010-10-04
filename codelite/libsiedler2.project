@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="libsiedler2">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="../src/ArchivInfo.cpp"/>
+    <File Name="../src/ArchivInfo.h"/>
+    <File Name="../src/ArchivItem.cpp"/>
+    <File Name="../src/ArchivItem.h"/>
+    <File Name="../src/ArchivItem_Bitmap.cpp"/>
+    <File Name="../src/ArchivItem_Bitmap.h"/>
+    <File Name="../src/ArchivItem_Bitmap_Player.cpp"/>
+    <File Name="../src/ArchivItem_Bitmap_Player.h"/>
+    <File Name="../src/ArchivItem_Bitmap_RLE.cpp"/>
+    <File Name="../src/ArchivItem_Bitmap_RLE.h"/>
+    <File Name="../src/ArchivItem_Bitmap_Raw.cpp"/>
+    <File Name="../src/ArchivItem_Bitmap_Raw.h"/>
+    <File Name="../src/ArchivItem_Bitmap_Shadow.cpp"/>
+    <File Name="../src/ArchivItem_Bitmap_Shadow.h"/>
+    <File Name="../src/ArchivItem_Bob.cpp"/>
+    <File Name="../src/ArchivItem_Bob.h"/>
+    <File Name="../src/ArchivItem_Font.cpp"/>
+    <File Name="../src/ArchivItem_Font.h"/>
+    <File Name="../src/ArchivItem_Map.cpp"/>
+    <File Name="../src/ArchivItem_Map.h"/>
+    <File Name="../src/ArchivItem_Map_Header.cpp"/>
+    <File Name="../src/ArchivItem_Map_Header.h"/>
+    <File Name="../src/ArchivItem_Palette.cpp"/>
+    <File Name="../src/ArchivItem_Palette.h"/>
+    <File Name="../src/ArchivItem_Raw.cpp"/>
+    <File Name="../src/ArchivItem_Raw.h"/>
+    <File Name="../src/ArchivItem_Sound.cpp"/>
+    <File Name="../src/ArchivItem_Sound.h"/>
+    <File Name="../src/ArchivItem_Sound_Midi.cpp"/>
+    <File Name="../src/ArchivItem_Sound_Midi.h"/>
+    <File Name="../src/ArchivItem_Sound_Other.cpp"/>
+    <File Name="../src/ArchivItem_Sound_Other.h"/>
+    <File Name="../src/ArchivItem_Sound_Wave.cpp"/>
+    <File Name="../src/ArchivItem_Sound_Wave.h"/>
+    <File Name="../src/ArchivItem_Sound_XMidi.cpp"/>
+    <File Name="../src/ArchivItem_Sound_XMidi.h"/>
+    <File Name="../src/ArchivItem_Text.cpp"/>
+    <File Name="../src/ArchivItem_Text.h"/>
+    <File Name="../src/ConvertOemToAnsi.cpp"/>
+    <File Name="../src/ConvertOemToAnsi.h"/>
+    <File Name="../src/GammaTable.h"/>
+    <File Name="../src/LoadACT.cpp"/>
+    <File Name="../src/LoadBBM.cpp"/>
+    <File Name="../src/LoadBMP.cpp"/>
+    <File Name="../src/LoadBOB.cpp"/>
+    <File Name="../src/LoadDATIDX.cpp"/>
+    <File Name="../src/LoadLBM.cpp"/>
+    <File Name="../src/LoadLST.cpp"/>
+    <File Name="../src/LoadMAP.cpp"/>
+    <File Name="../src/LoadSND.cpp"/>
+    <File Name="../src/LoadTXT.cpp"/>
+    <File Name="../src/LoadType.cpp"/>
+    <File Name="../src/MIDI_Track.cpp"/>
+    <File Name="../src/MIDI_Track.h"/>
+    <File Name="../src/WriteACT.cpp"/>
+    <File Name="../src/WriteBBM.cpp"/>
+    <File Name="../src/WriteBMP.cpp"/>
+    <File Name="../src/WriteBOB.cpp"/>
+    <File Name="../src/WriteDATIDX.cpp"/>
+    <File Name="../src/WriteLBM.cpp"/>
+    <File Name="../src/WriteLST.cpp"/>
+    <File Name="../src/WriteMAP.cpp"/>
+    <File Name="../src/WriteTXT.cpp"/>
+    <File Name="../src/WriteType.cpp"/>
+    <File Name="../src/XMIDI_Track.cpp"/>
+    <File Name="../src/XMIDI_Track.h"/>
+    <File Name="../src/libsiedler2.cpp"/>
+    <File Name="../src/libsiedler2.h"/>
+    <File Name="../src/main.h"/>
+    <File Name="../src/prototypen.h"/>
+    <File Name="../src/strlwr.h"/>
+    <File Name="../src/typen.h"/>
+    <File Name="../src/ArchivItem_Ini.cpp"/>
+    <File Name="../src/ArchivItem_Ini.h"/>
+    <File Name="../src/LoadINI.cpp"/>
+    <File Name="../src/LoadTLST.cpp"/>
+    <File Name="../src/WriteINI.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include"/>
+  <Settings Type="Dynamic Library">
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-fPIC" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <LibraryPath Value="../libendian/codelite/"/>
+        <Library Value="endian"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../$(ProjectName).so" IntermediateDirectory="./Debug" Command="" CommandArguments="" WorkingDirectory="../" PauseExecWhenProcTerminates="yes"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2" Required="yes">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-O2" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../$(ProjectName).so" IntermediateDirectory="./Release" Command="" CommandArguments="" WorkingDirectory="../" PauseExecWhenProcTerminates="yes"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <GlobalSettings>
+      <Compiler Options="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../libendian/src/"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+  </Settings>
+  <Dependencies Name="Release"/>
+  <Dependencies Name="Debug">
+    <Project Name="libendian"/>
+  </Dependencies>
+</CodeLite_Project>

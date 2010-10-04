@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{290E94F7-C0BE-4950-87AA-D269467A82BF}</ProjectGuid>
+    <RootNamespace>libsiedler2</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.21006.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBSIEDLER2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)$(ProjectName)_vc90.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\libendian\src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>..\libsiedler2.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBSIEDLER2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\libendian\src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>..\libsiedler2.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\ArchivInfo.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Bitmap.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Bitmap_Player.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Bitmap_Raw.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Bitmap_RLE.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Bitmap_Shadow.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Bob.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Font.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Ini.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Map.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Map_Header.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Palette.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Raw.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Sound.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Sound_Midi.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Sound_Other.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Sound_Wave.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Sound_XMidi.cpp" />
+    <ClCompile Include="..\..\src\ArchivItem_Text.cpp" />
+    <ClCompile Include="..\..\src\ConvertOemToAnsi.cpp" />
+    <ClCompile Include="..\..\src\libsiedler2.cpp" />
+    <ClCompile Include="..\..\src\LoadACT.cpp" />
+    <ClCompile Include="..\..\src\LoadBBM.cpp" />
+    <ClCompile Include="..\..\src\LoadBMP.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(FileName)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(FileName)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(FileName)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(FileName)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\src\LoadBOB.cpp" />
+    <ClCompile Include="..\..\src\LoadDATIDX.cpp" />
+    <ClCompile Include="..\..\src\LoadINI.cpp" />
+    <ClCompile Include="..\..\src\LoadLBM.cpp" />
+    <ClCompile Include="..\..\src\LoadLST.cpp" />
+    <ClCompile Include="..\..\src\LoadMAP.cpp" />
+    <ClCompile Include="..\..\src\LoadSND.cpp" />
+    <ClCompile Include="..\..\src\LoadTLST.cpp" />
+    <ClCompile Include="..\..\src\LoadTXT.cpp" />
+    <ClCompile Include="..\..\src\LoadType.cpp" />
+    <ClCompile Include="..\..\src\MIDI_Track.cpp" />
+    <ClCompile Include="..\..\src\WriteACT.cpp" />
+    <ClCompile Include="..\..\src\WriteBBM.cpp" />
+    <ClCompile Include="..\..\src\WriteBMP.cpp" />
+    <ClCompile Include="..\..\src\WriteBOB.cpp" />
+    <ClCompile Include="..\..\src\WriteDATIDX.cpp" />
+    <ClCompile Include="..\..\src\WriteINI.cpp" />
+    <ClCompile Include="..\..\src\WriteLBM.cpp" />
+    <ClCompile Include="..\..\src\WriteLST.cpp" />
+    <ClCompile Include="..\..\src\WriteMAP.cpp" />
+    <ClCompile Include="..\..\src\WriteTXT.cpp" />
+    <ClCompile Include="..\..\src\WriteType.cpp" />
+    <ClCompile Include="..\..\src\XMIDI_Track.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\ArchivItem_Sound_Other.h" />
+    <ClInclude Include="..\..\src\ArchivInfo.h" />
+    <ClInclude Include="..\..\src\ArchivItem.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Bitmap.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Bitmap_Player.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Bitmap_Raw.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Bitmap_RLE.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Bitmap_Shadow.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Bob.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Font.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Ini.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Map.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Map_Header.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Palette.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Raw.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Sound.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Sound_Midi.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Sound_Wave.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Sound_XMidi.h" />
+    <ClInclude Include="..\..\src\ArchivItem_Text.h" />
+    <ClInclude Include="..\..\src\ConvertOemToAnsi.h" />
+    <ClInclude Include="..\..\src\GammaTable.h" />
+    <ClInclude Include="..\..\src\libsiedler2.h" />
+    <ClInclude Include="..\..\src\main.h" />
+    <ClInclude Include="..\..\src\MIDI_Track.h" />
+    <ClInclude Include="..\..\src\prototypen.h" />
+    <ClInclude Include="..\..\src\strlwr.h" />
+    <ClInclude Include="..\..\src\typen.h" />
+    <ClInclude Include="..\..\src\XMIDI_Track.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libsiedler2.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libendian\win32\vs2010\libendian.vcxproj">
+      <Project>{1c4d182c-4502-4a05-b1f3-9dd5214c3dee}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

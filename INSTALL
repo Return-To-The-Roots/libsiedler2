@@ -1,0 +1,21 @@
+-------------------------------------------------------------------------------
+$Id: INSTALL 1618 2007-03-17 09:44:24Z FloSoft $
+-------------------------------------------------------------------------------
+
+Installation:
+
+./autogen.sh
+./configure
+make
+make install
+
+-------------------------------------------------------------------------------
+
+Andere make-Ziele:
+
+make mrproper (räumt alles weg was kein Source und 
+               zur Erstellung notwendig ist)
+
+make doc      (erstellt die Doxygen Dokumentation)
+
+-------------------------------------------------------------------------------

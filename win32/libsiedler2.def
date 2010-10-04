@@ -1,0 +1,42 @@
+EXPORTS
+	setTextureFormat
+	getTextureFormat
+	
+	setAllocator
+	StandardAllocator
+	
+	Load
+	Write
+
+	LoadACT
+	WriteACT
+	
+	LoadBBM
+	WriteBBM
+	
+	LoadBMP
+	WriteBMP
+	
+	LoadBOB
+	WriteBOB
+	
+	LoadDATIDX
+	WriteDATIDX
+	
+	LoadLBM
+	WriteLBM
+
+	LoadLST
+	WriteLST
+
+	LoadMAP
+	WriteMAP	
+
+	LoadTXT
+	WriteTXT
+
+	LoadSND
+	;WriteSND
+
+	LoadINI
+	WriteINI
