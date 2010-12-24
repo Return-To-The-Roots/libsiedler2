@@ -1,9 +1,8 @@
 #################################################################################
-### $Id: CMakeLists.txt 6460 2010-05-31 11:42:38Z FloSoft $
+### $Id: CMakeLists.txt 6942 2010-12-24 07:50:41Z FloSoft $
 #################################################################################
 
-INCLUDE_DIRECTORIES(../libendian/src)
-LINK_DIRECTORIES(../libendian/src)
+INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libendian/src")
 
 ADD_LIBRARY(siedler2 libsiedler2.cpp ArchivInfo.cpp ArchivItem.cpp
             ArchivItem_Bitmap.cpp ArchivItem_Bitmap_Player.cpp
@@ -18,7 +17,7 @@ ADD_LIBRARY(siedler2 libsiedler2.cpp ArchivInfo.cpp ArchivItem.cpp
             WriteBMP.cpp LoadBOB.cpp WriteBOB.cpp LoadDATIDX.cpp WriteDATIDX.cpp
             LoadLBM.cpp WriteLBM.cpp LoadLST.cpp WriteLST.cpp LoadMAP.cpp
             WriteMAP.cpp LoadTLST.cpp LoadTXT.cpp WriteTXT.cpp LoadSND.cpp MIDI_Track.cpp
-			WriteINI.cpp LoadINI.cpp 
+            WriteINI.cpp LoadINI.cpp 
             XMIDI_Track.cpp)
 
 TARGET_LINK_LIBRARIES(siedler2 endian)
