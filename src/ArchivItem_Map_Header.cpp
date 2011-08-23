@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map_Header.cpp 6581 2010-07-16 11:16:34Z FloSoft $
+// $Id: ArchivItem_Map_Header.cpp 7402 2011-08-23 20:09:40Z marcus $
 //
 // Copyright (c) 2005 - 2010 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -111,17 +111,9 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE *file)
 		return 3;
 
 	// Name einlesen
-	if(libendian::le_read_c(name, 20, file) != 20)
+	if(libendian::le_read_c(name, 24, file) != 24)
 		return 4;
 	ConvertOemToAnsi(name);
-
-	// Breite einlesen
-	if(libendian::le_read_us(&width, file) != 0)
-		return 5;
-
-	// Höhe einlesen
-	if(libendian::le_read_us(&height, file) != 0)
-		return 6;
 
 	// GFX-Set einlesen
 	if(libendian::le_read_uc(&gfxset, 1, file) != 1)
@@ -135,6 +127,19 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE *file)
 	if(libendian::le_read_c(author, 20, file) != 20)
 		return 9;
 	ConvertOemToAnsi(author);
+
+	long old = ftell(file);
+	fseek(file, 2348, SEEK_SET);
+
+	// Breite einlesen
+	if(libendian::le_read_us(&width, file) != 0)
+		return 5;
+
+	// Höhe einlesen
+	if(libendian::le_read_us(&height, file) != 0)
+		return 6;
+
+	fseek(file, old, SEEK_SET);
 
 	return 0;
 }
