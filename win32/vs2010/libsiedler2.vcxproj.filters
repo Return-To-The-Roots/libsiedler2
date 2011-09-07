@@ -71,9 +71,6 @@
     <ClCompile Include="..\..\src\ArchivItem_Text.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ConvertOemToAnsi.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\libsiedler2.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -155,6 +152,9 @@
     <ClCompile Include="..\..\src\XMIDI_Track.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\oem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ArchivInfo.h">
@@ -217,9 +217,6 @@
     <ClInclude Include="..\..\src\ArchivItem_Text.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ConvertOemToAnsi.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\GammaTable.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -242,6 +239,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\XMIDI_Track.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\oem.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

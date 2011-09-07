@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map_Header.cpp 7402 2011-08-23 20:09:40Z marcus $
+// $Id: ArchivItem_Map_Header.cpp 7503 2011-09-07 12:52:34Z FloSoft $
 //
 // Copyright (c) 2005 - 2010 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -21,7 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Map_Header.h"
-#include "ConvertOemToAnsi.h"
+#include "oem.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -113,7 +113,7 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE *file)
 	// Name einlesen
 	if(libendian::le_read_c(name, 24, file) != 24)
 		return 4;
-	ConvertOemToAnsi(name);
+	OemToAnsi(name, name);
 
 	// GFX-Set einlesen
 	if(libendian::le_read_uc(&gfxset, 1, file) != 1)
@@ -126,7 +126,7 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE *file)
 	// Autor einlesen
 	if(libendian::le_read_c(author, 20, file) != 20)
 		return 9;
-	ConvertOemToAnsi(author);
+	OemToAnsi(author, author);
 
 	long old = ftell(file);
 	fseek(file, 2348, SEEK_SET);

@@ -1,4 +1,4 @@
-// $Id: ConvertOemToAnsi.h 6581 2010-07-16 11:16:34Z FloSoft $
+// $Id: oem.h 7503 2011-09-07 12:52:34Z FloSoft $
 //
 // Copyright (c) 2005 - 2010 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -16,15 +16,27 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef CONVERTOEMTOANSI_H_INCLUDED
-#define CONVERTOEMTOANSI_H_INCLUDED
+#ifndef OEM_H_INCLUDED
+#define OEM_H_INCLUDED
 
 #pragma once
 
-namespace libsiedler2
-{
-	/// Konvertiert einen OEM- in einen ANSI-String
-	void ConvertOemToAnsi(char * oem_str);
-}
+#ifndef _WIN32
 
-#endif // !CONVERTOEMTOANSI_H_INCLUDED
+/// Wandelt einen String vom ANSI ins OEM Format um.
+char *AnsiToOem(const char *from, char *to, unsigned int length = 0);
+
+/// Wandelt einen String vom OEM ins ANSI Format um.
+char *OemToAnsi(const char *from, char *to, unsigned int length = 0);
+
+#else
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <windows.h>
+
+#endif // !_WIN32
+
+#endif // !OEM_H_INCLUDED

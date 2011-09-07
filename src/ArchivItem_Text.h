@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Text.h 6581 2010-07-16 11:16:34Z FloSoft $
+// $Id: ArchivItem_Text.h 7503 2011-09-07 12:52:34Z FloSoft $
 //
 // Copyright (c) 2005 - 2010 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -55,15 +55,6 @@ namespace libsiedler2
 
 		// setzt den Text.
 		void setText(const char *text, bool conversion = true, unsigned int length = 0);
-
-		/// Konvertiert einen String von ANSI-Charset nach OEM-Charset.
-		static char *Ansi2Oem(char *string, unsigned int length);
-
-		/// Konvertiert einen String von UTF-8-Charset nach OEM-Charset.
-		static char *Utf82Oem(char *string, unsigned int length);
-
-		/// Konvertiert einen String von OEM-Charset nach ANSI-Charset.
-		static char *Oem2Ansi(char *string, unsigned int length);
 
 	private:
 		char *text;          ///< Der Textspeicher.

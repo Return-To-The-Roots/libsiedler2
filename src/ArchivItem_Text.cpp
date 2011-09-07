@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Text.cpp 6581 2010-07-16 11:16:34Z FloSoft $
+// $Id: ArchivItem_Text.cpp 7503 2011-09-07 12:52:34Z FloSoft $
 //
 // Copyright (c) 2005 - 2010 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Text.h"
+#include "oem.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -53,23 +54,6 @@
  *
  *  @author FloSoft
  */
-
-
-
-/// Tabelle zum Konvertieren von ANSI nach OEM.
-static const unsigned char gs_ansi2oemTab[] =
-{
-	/*0080:*/ 0x00,0x00,0x00,0x9F, 0x00,0x00,0x00,0xD8, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
-	/*0090:*/ 0x00,0x60,0x27,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
-	/*00A0:*/ 0xFF,0xAD,0x9B,0x9C, 0x0F,0x9D,0x7C,0x15, 0x22,0x63,0xA6,0xAE, 0xAA,0x2D,0x52,0x00,
-	/*00B0:*/ 0xF8,0xF1,0xFD,0x33, 0x27,0xE6,0x14,0xFA, 0x2C,0x31,0xA7,0xAF, 0xAC,0xAB,0x00,0xA8,
-	/*00C0:*/ 0x41,0x41,0x41,0x41, 0x8E,0x8F,0x92,0x80, 0x45,0x90,0x45,0x45, 0x49,0x49,0x49,0x49,
-	/*00D0:*/ 0x44,0xA5,0x4F,0x4F, 0x4F,0x4F,0x99,0x78, 0x4F,0x55,0x55,0x55, 0x9A,0x59,0x00,0xE1,
-	/*00E0:*/ 0x85,0xA0,0x83,0x61, 0x84,0x86,0x91,0x87, 0x8A,0x82,0x88,0x89, 0x8D,0xA1,0x8C,0x8B,
-	/*00F0:*/ 0x64,0xA4,0x95,0xA2, 0x93,0x6F,0x94,0xF6, 0x6F,0x97,0xA3,0x96, 0x81,0x79,0x00,0x98,
-};
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -176,7 +160,7 @@ int libsiedler2::ArchivItem_Text::load(FILE *file, bool conversion, unsigned int
 		text[this->length-1] = 0;
 
 	if(conversion)
-		Oem2Ansi(text, this->length);
+		OemToAnsi(text, text);
 
 	for(unsigned int i = 0; i < this->length; ++i)
 	{
@@ -235,7 +219,7 @@ int libsiedler2::ArchivItem_Text::write(FILE *file, bool conversion) const
 
 	// ggf umwandeln
 	if(conversion)
-		Ansi2Oem(text, length);
+		AnsiToOem(text, text);
 
 	// Schreiben
 	if(libendian::le_write_c(text, length+1, file) != (int)length+1)
@@ -307,123 +291,9 @@ void libsiedler2::ArchivItem_Text::setText(const char *text, bool conversion, un
 	this->length = length;
 
 	if(conversion)
-		Ansi2Oem(this->text, this->length);
+		AnsiToOem(this->text, this->text);
 
 	// Name setzen
 	if(strlen(getName()) == 0)
 		setName(this->text);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konvertiert einen String von ANSI-Charset nach OEM-Charset.
- *
- *  @param[in] string Der Text, der konvertiert werden soll
- *  @param[in] length Länge des Textes, bei @p 0 wird @p strlen verwendet
- *
- *  @return liefert @p string zurück
- *
- *  @author FloSoft
- */
-char *libsiedler2::ArchivItem_Text::Ansi2Oem(char *string, unsigned int length)
-{
-	if (string == NULL) return NULL;
-
-	for (unsigned int i = 0; (string[i] != 0) && (i < length); ++i) {
-
-		unsigned char c = (unsigned char) string[i];
-
-		// Ab char 128 noetig
-		if (c > 128) string[i] = (signed char) gs_ansi2oemTab[c & 0x7F];
-	}
-
-	return string;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konvertiert einen String von UTF-8-Charset nach OEM-Charset.
- *
- *  @param[in] string Der Text, der konvertiert werden soll
- *  @param[in] length Länge des Textes, bei @p 0 wird @p strlen verwendet
- *
- *  @return liefert @p string zurück
- *
- *  @author sicherha
- */
-char *libsiedler2::ArchivItem_Text::Utf82Oem(char *string, unsigned int length)
-{
-	unsigned int getPos = 0;
-	unsigned int putPos = 0;
-
-	if (!string) return NULL;
-
-	while ((string[getPos] != 0) && (getPos < length)) {
-
-		unsigned char c = string[getPos++];
-
-		// Escape-Zeichen interpretieren
-		if (c == 0xc3) c = string[getPos++] + 0x40;
-
-		// In OEM umwandeln
-		if (c > 0x80) c = gs_ansi2oemTab[c & 0x7f];
-		string[putPos++] = c;
-	}
-
-	// String neu terminieren, da er kuerzer geworden sein koennte
-	string[putPos] = '\0';
-
-	return string;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konvertiert einen String von OEM-Charset nach ANSI-Charset.
- *
- *  @param[in] string Der Text der konvertiert werden soll
- *  @param[in] length Länge des Textes, bei @p 0 wird @p strlen verwendet
- *
- *  @return liefert @p string zurück
- *
- *  @author FloSoft
- */
-char *libsiedler2::ArchivItem_Text::Oem2Ansi(char *string, unsigned int length)
-{
-  static unsigned char oem2ansi_tab[256] = {
-    /*0000:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0010:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0020:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0030:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0040:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0050:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0060:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0070:*/ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-    /*0080:*/ 0x00,0x00,0x00,0x9F, 0x00,0x00,0x00,0xD8, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
-    /*0090:*/ 0x00,0x60,0x27,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
-    /*00A0:*/ 0xFF,0xAD,0x9B,0x9C, 0x0F,0x9D,0x7C,0x15, 0x22,0x63,0xA6,0xAE, 0xAA,0x2D,0x52,0x00,
-    /*00B0:*/ 0xF8,0xF1,0xFD,0x33, 0x27,0xE6,0x14,0xFA, 0x2C,0x31,0xA7,0xAF, 0xAC,0xAB,0x00,0xA8,
-    /*00C0:*/ 0x41,0x41,0x41,0x41, 0x8E,0x8F,0x92,0x80, 0x45,0x90,0x45,0x45, 0x49,0x49,0x49,0x49,
-    /*00D0:*/ 0x44,0xA5,0x4F,0x4F, 0x4F,0x4F,0x99,0x78, 0x4F,0x55,0x55,0x55, 0x9A,0x59,0x00,0xE1,
-    /*00E0:*/ 0x85,0xA0,0x83,0x61, 0x84,0x86,0x91,0x87, 0x8A,0x82,0x88,0x89, 0x8D,0xA1,0x8C,0x8B,
-    /*00F0:*/ 0x64,0xA4,0x95,0xA2, 0x93,0x6F,0x94,0xF6, 0x6F,0x97,0xA3,0x96, 0x81,0x79,0x00,0x98,
-  };
-
-  if(string == NULL)
-	  return NULL;
-
-  for(unsigned int x = 0; x < length; ++x)
-  {
-    if((unsigned char)string[x] > 128)
-    {
-      for(int i = 0; i < 256; ++i)
-      {
-        if((unsigned char)string[x] == oem2ansi_tab[i])
-        {
-          string[x] = (char)i;
-          break;
-        }
-      }
-    }
-  }
-  return string;
 }

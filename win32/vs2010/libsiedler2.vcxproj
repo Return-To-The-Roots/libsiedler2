@@ -31,7 +31,6 @@
     <ClCompile Include="..\..\src\ArchivItem_Sound_Wave.cpp" />
     <ClCompile Include="..\..\src\ArchivItem_Sound_XMidi.cpp" />
     <ClCompile Include="..\..\src\ArchivItem_Text.cpp" />
-    <ClCompile Include="..\..\src\ConvertOemToAnsi.cpp" />
     <ClCompile Include="..\..\src\libsiedler2.cpp" />
     <ClCompile Include="..\..\src\LoadACT.cpp" />
     <ClCompile Include="..\..\src\LoadBBM.cpp" />
@@ -47,6 +46,7 @@
     <ClCompile Include="..\..\src\LoadTXT.cpp" />
     <ClCompile Include="..\..\src\LoadType.cpp" />
     <ClCompile Include="..\..\src\MIDI_Track.cpp" />
+    <ClCompile Include="..\..\src\oem.cpp" />
     <ClCompile Include="..\..\src\WriteACT.cpp" />
     <ClCompile Include="..\..\src\WriteBBM.cpp" />
     <ClCompile Include="..\..\src\WriteBMP.cpp" />
@@ -81,11 +81,11 @@
     <ClInclude Include="..\..\src\ArchivItem_Sound_Wave.h" />
     <ClInclude Include="..\..\src\ArchivItem_Sound_XMidi.h" />
     <ClInclude Include="..\..\src\ArchivItem_Text.h" />
-    <ClInclude Include="..\..\src\ConvertOemToAnsi.h" />
     <ClInclude Include="..\..\src\GammaTable.h" />
     <ClInclude Include="..\..\src\libsiedler2.h" />
     <ClInclude Include="..\..\src\main.h" />
     <ClInclude Include="..\..\src\MIDI_Track.h" />
+    <ClInclude Include="..\..\src\oem.h" />
     <ClInclude Include="..\..\src\prototypen.h" />
     <ClInclude Include="..\..\src\strlwr.h" />
     <ClInclude Include="..\..\src\typen.h" />
