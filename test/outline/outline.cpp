@@ -1,4 +1,4 @@
-// $Id: outline.cpp 6460 2010-05-31 11:42:38Z FloSoft $
+// $Id: outline.cpp 7499 2011-09-07 11:33:07Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,7 +24,7 @@
 
 #define snprintf _snprintf
 
-#include "../src/libsiedler2.h"
+#include "../../src/libsiedler2.h"
 
 using namespace libsiedler2;
 using namespace loader;
@@ -44,12 +44,19 @@ int main(int argc, char* argv[])
 	LoadDATIDX("DATA/RESOURCE.DAT", palette, &lst);
 
 	ArchivInfo to;
-	unsigned int v = 0;
-	for(unsigned int i = 0; i < lst.getCount(); ++i)
+	for(unsigned int i = 0; i < 4; ++i)
 	{
 		if(lst.get(i)->getBobType() == BOBTYPE_FONT)
 		{
 			ArchivItem_Font *font = (ArchivItem_Font *)lst.get(i);
+
+			// copy small font only
+			if(i == 2)
+			{
+				to.pushC(font);
+				continue;
+			}
+
 			ArchivItem_Font out;
 
 			out.alloc(font->getCount());
@@ -58,7 +65,7 @@ int main(int argc, char* argv[])
 
 			for(unsigned int j = 0; j < font->getCount(); ++j)
 			{
-				ArchivItem_Bitmap_Player *c = (ArchivItem_Bitmap_Player *)font->get(j);
+				ArchivItem_Bitmap_Player *c = dynamic_cast<ArchivItem_Bitmap_Player *>(font->get(j));
 				ArchivItem_Bitmap_Player o;
 
 				if(c == NULL)
@@ -89,8 +96,7 @@ int main(int argc, char* argv[])
 				delete[] buffer;
 			}
 
-			to.alloc_inc(1);
-			to.setC(v++, &out);
+			to.pushC(&out);
 		}
 	}
 	char file[512];
