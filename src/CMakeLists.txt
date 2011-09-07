@@ -1,5 +1,5 @@
 #################################################################################
-### $Id: CMakeLists.txt 6942 2010-12-24 07:50:41Z FloSoft $
+### $Id: CMakeLists.txt 7505 2011-09-07 13:14:38Z FloSoft $
 #################################################################################
 
 INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libendian/src")
@@ -11,7 +11,7 @@ ADD_LIBRARY(siedler2 libsiedler2.cpp ArchivInfo.cpp ArchivItem.cpp
             ArchivItem_Map.cpp ArchivItem_Map_Header.cpp ArchivItem_Palette.cpp
             ArchivItem_Sound.cpp ArchivItem_Sound_XMidi.cpp ArchivItem_Sound_Midi.cpp 
             ArchivItem_Sound_Wave.cpp ArchivItem_Sound_Other.cpp
-            ArchivItem_Text.cpp ArchivItem_Raw.cpp ConvertOemToAnsi.cpp LoadType.cpp WriteType.cpp
+            ArchivItem_Text.cpp ArchivItem_Raw.cpp oem.cpp LoadType.cpp WriteType.cpp
             ArchivItem_Ini.cpp
             LoadACT.cpp WriteACT.cpp LoadBBM.cpp WriteBBM.cpp LoadBMP.cpp
             WriteBMP.cpp LoadBOB.cpp WriteBOB.cpp LoadDATIDX.cpp WriteDATIDX.cpp
