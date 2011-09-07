@@ -1,4 +1,4 @@
-// $Id: unpack.cpp 6584 2010-07-16 16:47:23Z FloSoft $
+// $Id: unpack.cpp 7498 2011-09-07 09:00:31Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -35,7 +35,7 @@ using namespace loader;
 
 void unpack(const string &directory, const ArchivInfo &lst, const ArchivItem_Palette* palette)
 {
-	CreateDirectory(directory.c_str(), NULL);
+	CreateDirectoryA(directory.c_str(), NULL);
 
 	for(unsigned int i = 0; i < lst.getCount(); ++i)
 	{
@@ -47,11 +47,11 @@ void unpack(const string &directory, const ArchivInfo &lst, const ArchivItem_Pal
 
 		if(!item)
 		{
-			newfile << "empty";
+			/*newfile << "empty";
 
 			FILE *n = fopen(newfile.str().c_str(), "wb");
 			if(n)
-				fclose(n);
+				fclose(n);*/
 			continue;
 		}
 		switch(item->getBobType())

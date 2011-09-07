@@ -1,4 +1,4 @@
-// $Id: lstpacker.cpp 6703 2010-09-02 11:23:47Z FloSoft $
+// $Id: lstpacker.cpp 7498 2011-09-07 09:00:31Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 
 		cerr << msg.str();
 
-		MessageBox(NULL, msg.str().c_str(), "Usage", MB_OK|MB_ICONSTOP);
+		MessageBoxA(NULL, msg.str().c_str(), "Usage", MB_OK|MB_ICONSTOP);
 
 		return 1;
 	}
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 	
 			cerr << msg.str();
 	
-			MessageBox(NULL, msg.str().c_str(), "Fatal Error", MB_OK|MB_ICONSTOP);
+			MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK|MB_ICONSTOP);
 	
 			return 2;
 		}
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
 
 			cerr << msg.str();
 
-			MessageBox(NULL, msg.str().c_str(), "Fatal Error", MB_OK|MB_ICONSTOP);
+			MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK|MB_ICONSTOP);
 
 			return 3;
 		}
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
 		string directory(argv[1]);
 		string file(argv[1]);
 
-		file += "-NEW.LST";
+		file += ".NEW.LST";
 
 		cerr << "Packing directory " << argv[1] << " to " << file << endl;
 
