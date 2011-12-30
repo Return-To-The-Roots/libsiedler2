@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Player.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap_Player.h 7706 2011-12-30 22:20:36Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -69,7 +69,8 @@ namespace libsiedler2
 				  unsigned short from_x = 0,
 				  unsigned short from_y = 0,
 				  unsigned short from_w = 0,
-				  unsigned short from_h = 0) const;
+				  unsigned short from_h = 0,
+				  bool only_player = false) const;
 
 		/// erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
 		int create(unsigned short width,
@@ -80,22 +81,6 @@ namespace libsiedler2
 				   int buffer_format,
 				   const ArchivItem_Palette *palette,
 				   unsigned char color);
-
-	protected:
-		/// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
-		int printHelper(unsigned char *buffer,
-				  unsigned short buffer_width,
-				  unsigned short buffer_height,
-				  int buffer_format,
-				  const ArchivItem_Palette *palette,
-				  unsigned char color,
-				  unsigned short to_x = 0,
-				  unsigned short to_y = 0,
-				  unsigned short from_x = 0,
-				  unsigned short from_y = 0,
-				  unsigned short from_w = 0,
-				  unsigned short from_h = 0,
-				  bool only_player = false) const;
 
 	protected:
 		unsigned char *tex_pdata; ///< Die Spielerfarbedaten.

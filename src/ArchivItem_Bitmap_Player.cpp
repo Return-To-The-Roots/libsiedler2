@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Player.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap_Player.cpp 7706 2011-12-30 22:20:36Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -456,49 +456,6 @@ void libsiedler2::baseArchivItem_Bitmap_Player::tex_clear(void)
 
 	tex_plength = 0;
 }
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
- *
- *  Wichtig: @p color muss der hellste Ton von vier aufeinanderfolgenden Farbindezes sein,
- *  welche von @p color bis @p color+3 dunkler werden.
- *
- *  z.B. pal05.bbm: 128-131 (blau), 132-135 (gelb), 136-139 (rot), usw
- *  jeweils der erste Wert (128, 132, 136, usw) ist dann der Grundfarbindex.
- *
- *  @param[in,out] buffer        Zielpuffer
- *  @param[in]     buffer_width  Breite des Puffers
- *  @param[in]     buffer_height Höhe des Puffers
- *  @param[in]     buffer_format Texturformat des Puffers
- *  @param[in]     palette       Grundpalette
- *  @param[in]     color         Grundfarbindex der benutzt werden soll
- *  @param[in]     to_x          Ziel-X-Koordinate
- *  @param[in]     to_y          Ziel-Y-Koordinate
- *  @param[in]     from_x        Quell-X-Koordinate
- *  @param[in]     from_y        Quell-Y-Koordinate
- *  @param[in]     from_w        zu kopierende Breite
- *  @param[in]     from_h        zu kopierende Höhe
- *  @param[in]     only_player   bei @p true wird nur die Playerschicht kopiert
- *
- *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
- *
- *  @author FloSoft
- */
-int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char *buffer,
-									unsigned short buffer_width,
-									unsigned short buffer_height,
-									int buffer_format,
-									const ArchivItem_Palette *palette,
-									unsigned char color,
-									unsigned short to_x,
-									unsigned short to_y,
-									unsigned short from_x,
-									unsigned short from_y,
-									unsigned short from_w,
-									unsigned short from_h) const
-{
-	return printHelper(buffer, buffer_width, buffer_height, buffer_format, palette, color, to_x, to_y, from_x, from_y, from_w, from_h);
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -630,7 +587,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::create(unsigned short width,
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::printHelper(unsigned char *buffer,
+int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char *buffer,
 									unsigned short buffer_width,
 									unsigned short buffer_height,
 									int buffer_format,
