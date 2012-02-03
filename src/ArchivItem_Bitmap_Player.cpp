@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Player.cpp 7706 2011-12-30 22:20:36Z marcus $
+// $Id: ArchivItem_Bitmap_Player.cpp 7808 2012-02-03 07:10:28Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -141,6 +141,7 @@
  */
 int libsiedler2::baseArchivItem_Bitmap_Player::load(FILE *file, const ArchivItem_Palette *palette)
 {
+	unsigned short *starts = NULL;
 	unsigned char *data = NULL;
 
 	if(file == NULL)
@@ -182,12 +183,21 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(FILE *file, const ArchivItem
 	if(length != 0)
 	{
 		data = new unsigned char[length];
-		if(libendian::le_read_uc(data, length, file) != (int)length)
-			return 7;
+
+		starts = (unsigned short *)data;
+
+		for(unsigned int i = 0; i < height; ++i)
+		{
+			if(libendian::le_read_us(&starts[i], file) != 0)
+				return 7;
+		}
+
+		if(libendian::le_read_uc(&data[height*2], length-(height*2), file) != (int)(length-(height*2)))
+			return 8;
 	}
 
-	if(load(width, height, &data[height*2], (unsigned short*)data, false, length, palette) != 0)
-		return 8;
+	if(load(width, height, &data[height*2], starts, false, length, palette) != 0)
+		return 9;
 
 	delete[] data;
 
@@ -229,6 +239,9 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(unsigned short width, unsign
 			unsigned short x = 0;
 
 			position = (unsigned int)starts[y] - (absolute ? 0 : (height*2) );
+
+			if (position > (length-(absolute ? 0 : (height*2))))
+				return 1;
 
 			// Solange Zeile einlesen, bis x voll ist
 			while(x < width)
@@ -411,8 +424,13 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE *file, const ArchivIte
 		return 9;
 
 	// Daten schreiben
-	if(libendian::le_write_uc(data, length, file) != (int)length)
-		return 10;
+	for(unsigned int i = 0; i < height; ++i)
+	{
+		if(libendian::le_write_us(((unsigned short *)data)[i], file) != 0)
+			return 10;
+	}
+	if(libendian::le_write_uc(&data[height*2], length-(height*2), file) != (int)(length-(height*2)))
+		return 11;
 
 	delete[] data;
 

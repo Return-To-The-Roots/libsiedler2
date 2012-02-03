@@ -1,4 +1,4 @@
-// $Id: WriteTXT.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: WriteTXT.cpp 7808 2012-02-03 07:10:28Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -117,8 +117,11 @@ int libsiedler2::loader::WriteTXT(const char *file, const ArchivInfo *items, boo
 			return 8;
 
 		// Starts schreiben
-		if(libendian::le_write_c((char*)starts, 4*count, txt) != 4*count)
-			return 9;
+		for(unsigned long i = 0; i < count; ++i)
+		{
+			if(libendian::le_write_i(starts[i], txt) != 0)
+				return 9;
+		}
 
 		// Texte schreiben
 		for(unsigned long i = 0; i < count; ++i)

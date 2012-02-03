@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Wave.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Sound_Wave.cpp 7808 2012-02-03 07:10:28Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -154,6 +154,11 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE *file, unsigned int length
 		};
 
 		unsigned int size = length + 16;
+
+#if BYTE_ORDER == BIG_ENDIAN
+                size = libendian::swap_ui(size);
+                length = libendian::swap_ui(length);
+#endif
 
 		memcpy(&header[4],  &size, 4);
 		memcpy(&header[40], &length,   4);

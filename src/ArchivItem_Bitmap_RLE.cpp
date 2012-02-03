@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_RLE.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap_RLE.cpp 7808 2012-02-03 07:10:28Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -315,8 +315,13 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(FILE *file, const ArchivItem_P
 		return 9;
 
 	// Daten schreiben
-	if(libendian::le_write_uc(data, length, file) != (int)length)
-		return 10;
+	for(unsigned int i = 0; i < height; ++i)
+	{
+		if(libendian::le_write_us(((unsigned short *)data)[i], file) != 0)
+			return 10;
+	}
+	if(libendian::le_write_uc(&data[height*2], length-(height*2), file) != (int)(length-(height*2)))
+		return 11;
 
 	delete[] data;
 

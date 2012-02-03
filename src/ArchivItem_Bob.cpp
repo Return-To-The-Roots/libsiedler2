@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bob.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bob.cpp 7808 2012-02-03 07:10:28Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -142,8 +142,11 @@ int libsiedler2::ArchivItem_Bob::load(FILE *file, const ArchivItem_Palette *pale
 			return 6;
 
 		unsigned short *starts = new unsigned short[height];
-		if(libendian::le_read_uc((unsigned char*)starts, height*2, file) != height*2)
-			return 7;
+		for(unsigned int i = 0; i < height; ++i)
+		{
+			if(libendian::le_read_us(&starts[i], file) != 0)
+				return 7;
+		}
 
 		unsigned char ny;
 		if(libendian::le_read_uc(&ny, 1, file) != 1)
@@ -218,8 +221,11 @@ int libsiedler2::ArchivItem_Bob::load(FILE *file, const ArchivItem_Palette *pale
 			return 16;
 
 		starts[i] = new unsigned short[heights[i]];
-		if(libendian::le_read_uc((unsigned char*)starts[i], heights[i]*2, file) != heights[i]*2)
-			return 17;
+		for(unsigned int i2 = 0; i2 < heights[i]; ++i2)
+		{
+			if(libendian::le_read_us(&starts[i][i2], file) != 0)
+				return 17;
+		}
 
 		if(libendian::le_read_uc(&ny[i], 1, file) != 1)
 			return 18;
