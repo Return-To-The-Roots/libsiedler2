@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Midi.cpp 7808 2012-02-03 07:10:28Z FloSoft $
+// $Id: ArchivItem_Sound_Midi.cpp 7814 2012-02-03 18:40:58Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -130,7 +130,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE *file, unsigned int length
 		case 0x4D54726B: // "MTrk"
 			{
 				// Länge einlesen
-				if(libendian::le_read_ui(&length, file) != 0)
+				if(libendian::be_read_ui(&length, file) != 0)
 					return 10;
 
 				fseek(file, -8, SEEK_CUR);
