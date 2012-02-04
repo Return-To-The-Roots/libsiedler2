@@ -1,4 +1,4 @@
-// $Id: XMIDI_Track.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: XMIDI_Track.cpp 7817 2012-02-04 08:18:00Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -483,7 +483,10 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
 	memcpy(&track->mid_data[i], "MTrk", 4);
 	i += 4;
 
-	unsigned int length = libendian::swap_ui(mid_length-8);
+	unsigned int length = mid_length-8;
+#if BYTE_ORDER == LITTLE_ENDIAN
+	length = libendian::swap_ui(length);
+#endif
 	memcpy(&track->mid_data[i], (unsigned char *)&length, 4);
 	i += 4;
 
