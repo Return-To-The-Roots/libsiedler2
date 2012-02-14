@@ -1,4 +1,4 @@
-// $Id: XMIDI_Track.cpp 7817 2012-02-04 08:18:00Z FloSoft $
+// $Id: XMIDI_Track.cpp 7837 2012-02-14 13:14:02Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,6 +24,8 @@
 
 #include "MIDI_Track.h"
 #include "GammaTable.h"
+
+#include "../../libendian/src/endianess.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

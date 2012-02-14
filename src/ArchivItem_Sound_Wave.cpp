@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Wave.cpp 7808 2012-02-03 07:10:28Z FloSoft $
+// $Id: ArchivItem_Sound_Wave.cpp 7837 2012-02-14 13:14:02Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -21,6 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_Wave.h"
+
+#include "../../libendian/src/endianess.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -154,14 +156,15 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE *file, unsigned int length
 		};
 
 		unsigned int size = length + 16;
+		unsigned int flength = length;
 
 #if BYTE_ORDER == BIG_ENDIAN
-                size = libendian::swap_ui(size);
-                length = libendian::swap_ui(length);
+		size = libendian::swap_ui(size);
+		flength = libendian::swap_ui(flength);
 #endif
 
 		memcpy(&header[4],  &size, 4);
-		memcpy(&header[40], &length,   4);
+		memcpy(&header[40], &flength,   4);
 
 		memcpy(&data[0], header, 44);
 	}
