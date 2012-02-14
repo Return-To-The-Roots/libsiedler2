@@ -1,4 +1,4 @@
-// $Id: unpack.cpp 7498 2011-09-07 09:00:31Z FloSoft $
+// $Id: unpack.cpp 7838 2012-02-14 13:14:24Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -74,6 +74,19 @@ void unpack(const string &directory, const ArchivInfo &lst, const ArchivItem_Pal
 					} break;
 				case SOUNDTYPE_WAVE: // WAV
 					{
+						newfile << "wav";
+
+						cout << "extracting " << newfile.str() << ": ";
+
+						const ArchivItem_Sound_Wave *wave = dynamic_cast<const ArchivItem_Sound_Wave*>(item);
+						FILE* fwave = fopen(newfile.str().c_str(), "wb");
+						if(fwave && wave && wave->write(fwave, false) == 0)
+						{
+							fclose(fwave);
+							cout << "done" << endl;
+						}
+						else
+							cout << "failed" << endl;
 					} break;
 				case SOUNDTYPE_XMIDI: // XMIDI
 					{
