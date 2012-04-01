@@ -2,7 +2,7 @@
 <CodeLite_Project Name="libsiedler2">
   <Plugins>
     <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
   <Description/>
@@ -46,8 +46,6 @@
     <File Name="../src/ArchivItem_Sound_XMidi.h"/>
     <File Name="../src/ArchivItem_Text.cpp"/>
     <File Name="../src/ArchivItem_Text.h"/>
-    <File Name="../src/ConvertOemToAnsi.cpp"/>
-    <File Name="../src/ConvertOemToAnsi.h"/>
     <File Name="../src/GammaTable.h"/>
     <File Name="../src/LoadACT.cpp"/>
     <File Name="../src/LoadBBM.cpp"/>
@@ -85,17 +83,39 @@
     <File Name="../src/LoadINI.cpp"/>
     <File Name="../src/LoadTLST.cpp"/>
     <File Name="../src/WriteINI.cpp"/>
+    <File Name="../src/oem.cpp"/>
+    <File Name="../src/oem.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include"/>
+  <Dependencies Name="Release"/>
+  <Dependencies Name="Debug">
+    <Project Name="libendian"/>
+  </Dependencies>
   <Settings Type="Dynamic Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../libendian/src/"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-fPIC" Required="yes"/>
+      <Compiler Options="-g;-fPIC" C_Options="-g;-fPIC" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../../libendian/src/"/>
+      </Compiler>
       <Linker Options="" Required="yes">
-        <LibraryPath Value="../libendian/codelite/"/>
+        <LibraryPath Value="../../libendian/codelite/"/>
         <Library Value="endian"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../$(ProjectName).so" IntermediateDirectory="./Debug" Command="" CommandArguments="" WorkingDirectory="../" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../$(ProjectName).so" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>
@@ -103,6 +123,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -117,12 +138,19 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" C_Options="-O2" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="."/>
+        <IncludePath Value="../../libendian/src/"/>
       </Compiler>
-      <Linker Options="-O2" Required="yes"/>
+      <Linker Options="-O2" Required="yes">
+        <LibraryPath Value="../../libendian/codelite/"/>
+        <Library Value="endian"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../$(ProjectName).so" IntermediateDirectory="./Release" Command="" CommandArguments="" WorkingDirectory="../" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../$(ProjectName).so" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>
@@ -130,6 +158,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -143,19 +172,5 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <GlobalSettings>
-      <Compiler Options="">
-        <IncludePath Value="."/>
-        <IncludePath Value="../libendian/src/"/>
-      </Compiler>
-      <Linker Options="">
-        <LibraryPath Value="."/>
-      </Linker>
-      <ResourceCompiler Options=""/>
-    </GlobalSettings>
   </Settings>
-  <Dependencies Name="Release"/>
-  <Dependencies Name="Debug">
-    <Project Name="libendian"/>
-  </Dependencies>
 </CodeLite_Project>
