@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bob.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bob.h 8159 2012-09-06 11:35:01Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -47,6 +47,8 @@ namespace libsiedler2
 
 		/// schreibt die Bobdaten in eine Datei.
 		int write(FILE *file, const ArchivItem_Palette *palette) const;
+
+		inline unsigned short getLink(unsigned idx) {return(links[idx]);};
 
 	protected:
 		unsigned short good_count; /// Warenanzahl
