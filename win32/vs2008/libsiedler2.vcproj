@@ -126,7 +126,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\..&quot;;&quot;$(ProjectDir)\..\..\libendian\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\..&quot;;&quot;$(ProjectDir)\..\..\..\libendian\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBSIEDLER2_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
