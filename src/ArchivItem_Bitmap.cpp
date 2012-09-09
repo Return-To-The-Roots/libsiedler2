@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap.cpp 8198 2012-09-09 18:47:35Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -607,6 +607,110 @@ void libsiedler2::baseArchivItem_Bitmap::setWidth(unsigned short width)
 void libsiedler2::baseArchivItem_Bitmap::setHeight(unsigned short height)
 {
 	this->height = height;
+}
+
+void libsiedler2::baseArchivItem_Bitmap::getVisibleArea(int &vx, int &vy, int &vw, int &vh)
+{
+	int x, y, lx, ly;
+
+	vx = vy = 0;
+	lx = ly = -1;
+
+	if ((tex_width == 0) || (tex_height == 0))
+	{
+		return;
+	}
+
+	// find empty rows at left
+	for (x = 0; x < tex_width; ++x)
+	{
+		for (y = 0; y < tex_height; ++y)
+		{
+			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+			{
+				vx = x;
+				break;
+			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+			{
+				vx = x;
+				break;
+			}
+		}
+
+		if (y != tex_height)
+		{
+			break;
+		}
+	}
+
+	// find empty rows at bottom
+	for (x = tex_width - 1; x >= 0; --x)
+	{
+		for (y = 0; y < tex_height; ++y)
+		{
+			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+			{
+				lx = x;
+				break;
+			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+			{
+				lx = x;
+				break;
+			}
+		}
+
+		if (y != tex_height)
+		{
+			break;
+		}
+	}
+
+	// find empty rows at top
+	for (y = 0; y < tex_height; ++y)
+	{
+		for (x = 0; x < tex_width; ++x)
+		{
+			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+			{
+				vy = y;
+				break;
+			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+			{
+				vy = y;
+				break;
+			}
+		}
+
+		if (x != tex_width)
+		{
+			break;
+		}
+	}
+
+	// find empty rows at bottom
+	for (y = tex_height - 1; y >= 0; --y)
+	{
+		for (x = 0; x < tex_width; ++x)
+		{
+			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+			{
+				ly = y;
+				break;
+			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+			{
+				ly = y;
+				break;
+			}
+		}
+
+		if (x != tex_width)
+		{
+			break;
+		}
+	}
+
+	vw = lx + 1 - vx;
+	vh = ly + 1 - vy;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

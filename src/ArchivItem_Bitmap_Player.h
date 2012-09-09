@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Player.h 7706 2011-12-30 22:20:36Z marcus $
+// $Id: ArchivItem_Bitmap_Player.h 8198 2012-09-09 18:47:35Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -56,6 +56,8 @@ namespace libsiedler2
 
 		/// räumt den Bildspeicher auf.
 		void tex_clear(void);
+
+		void getVisibleArea(int &vx, int &vy, int &vw, int &vh);
 
 		/// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
 		int print(unsigned char *buffer,

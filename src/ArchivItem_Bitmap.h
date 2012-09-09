@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap.h 8198 2012-09-09 18:47:35Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -99,6 +99,8 @@ namespace libsiedler2
 
 		/// setzt das Format des Bildes.
 		void setFormat(int format) { this->format = format; }
+
+		virtual void getVisibleArea(int &vx, int &vy, int &vw, int &vh);
 
 		/// schreibt das Bitmap in einen Puffer.
 		virtual int print(unsigned char *buffer,
