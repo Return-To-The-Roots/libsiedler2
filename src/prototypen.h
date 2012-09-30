@@ -1,4 +1,4 @@
-// $Id: prototypen.h 8347 2012-09-30 13:45:39Z FloSoft $
+// $Id: prototypen.h 8348 2012-09-30 13:46:34Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -106,10 +106,6 @@ namespace libsiedler2
 #		define LoadMID LoadSND
 #		define LoadXMID LoadSND
 #		define LoadWAV LoadSND
-
-		int WriteSND(const char *file, ArchivInfo *items);
-
-#		define WriteWAV WriteSND
 
 		/// lädt eine INI-File in ein ArchivInfo.
 		int LoadINI(const char *file, ArchivInfo *items);
