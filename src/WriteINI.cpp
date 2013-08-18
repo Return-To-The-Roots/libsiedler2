@@ -1,4 +1,4 @@
-// $Id: WriteINI.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: WriteINI.cpp 8853 2013-08-18 19:23:49Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -47,6 +47,8 @@ int libsiedler2::loader::WriteINI(const char *file, const ArchivInfo *items)
 
 	// Datei zum schreiben öffnen
 	FILE *ini = fopen(file, "wb");
+	if (ini == 0)
+		return 2;
 
 	for(unsigned long i = 0; i < items->getCount(); ++i)
 	{
