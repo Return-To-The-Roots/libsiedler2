@@ -1,4 +1,4 @@
-// $Id: LoadBMP.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadBMP.cpp 8907 2013-08-27 18:28:06Z jh $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -165,6 +165,7 @@ int libsiedler2::loader::LoadBMP(const char *file, ArchivItem **image, ArchivIte
 		return 6;
 
 	baseArchivItem_Bitmap *bitmap = dynamic_cast<baseArchivItem_Bitmap*>((*allocator)(BOBTYPE_BITMAP_RAW, 0, NULL));
+	bitmap->setName(file);
 
 	switch(bmih.bbp)
 	{
@@ -220,8 +221,7 @@ int libsiedler2::loader::LoadBMP(const char *file, ArchivItem **image, ArchivIte
 	}
 
 	// Bitmap zuweisen
-	if(image)
-		*image = bitmap;
+	*image = bitmap;
 
 	// Bitmapdaten setzen
 	bitmap->setWidth(bmih.width);
