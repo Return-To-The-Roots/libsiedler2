@@ -1,4 +1,4 @@
-// $Id: WriteLST.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: WriteLST.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,13 +24,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  schreibt ein ArchivInfo in eine LST-File.
  *
  *  @param[in] file    Dateiname der LST-File
@@ -41,62 +41,62 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteLST(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items)
+int libsiedler2::loader::WriteLST(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items)
 {
-	FILE *lst;
-	short header = 0x204E;
-	unsigned int count = items->getCount();
+    FILE* lst;
+    short header = 0x204E;
+    unsigned int count = items->getCount();
 
-	if(file == NULL || items == NULL)
-		return 1;
-	
-	// Datei zum schreiben öffnen
-	lst = fopen(file, "wb");
-	
-	// hat das geklappt?
-	if(lst == NULL)
-		return 2;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Header schreiben
-	if(libendian::be_write_s(header, lst) != 0)
-		return 3;
+    // Datei zum schreiben öffnen
+    lst = fopen(file, "wb");
 
-	// Anzahl schreiben
-	if(libendian::le_write_ui(count, lst) != 0)
-		return 5;
+    // hat das geklappt?
+    if(lst == NULL)
+        return 2;
 
-	// items schreiben
-	for(unsigned int i = 0; i < count; ++i)
-	{
-		unsigned short used = 0x0100;
-		unsigned short bobtype;
+    // Header schreiben
+    if(libendian::be_write_s(header, lst) != 0)
+        return 3;
 
-		const ArchivItem *item = items->get(i);
+    // Anzahl schreiben
+    if(libendian::le_write_ui(count, lst) != 0)
+        return 5;
 
-		if(item == NULL)
-			used = 0x0000;
+    // items schreiben
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        unsigned short used = 0x0100;
+        unsigned short bobtype;
 
-		// use-Flag schreiben
-		if(libendian::be_write_us(used, lst) != 0)
-			return 6;
+        const ArchivItem* item = items->get(i);
 
-		if(!item)
-			continue;
+        if(item == NULL)
+            used = 0x0000;
 
-		bobtype = item->getBobType();
+        // use-Flag schreiben
+        if(libendian::be_write_us(used, lst) != 0)
+            return 6;
 
-		// bobtype des Items schreiben
-		if(libendian::le_write_us(bobtype, lst) != 0)
-			return 7;
+        if(!item)
+            continue;
 
-		// Daten von Item schreiben
-		if(WriteType(bobtype, lst, palette, item) != 0)
-			return 8;
-	}
+        bobtype = item->getBobType();
 
-	// Datei schliessen
-	fclose(lst);
+        // bobtype des Items schreiben
+        if(libendian::le_write_us(bobtype, lst) != 0)
+            return 7;
 
-	// alles ok
-	return 0;
+        // Daten von Item schreiben
+        if(WriteType(bobtype, lst, palette, item) != 0)
+            return 8;
+    }
+
+    // Datei schliessen
+    fclose(lst);
+
+    // alles ok
+    return 0;
 }

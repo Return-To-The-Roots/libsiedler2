@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Wave.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Sound_Wave.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,56 +25,56 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse für WAVE-Sounds.
-	class baseArchivItem_Sound_Wave : public virtual baseArchivItem_Sound
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Sound_Wave.
-		baseArchivItem_Sound_Wave(void);
+    /// Basisklasse für WAVE-Sounds.
+    class baseArchivItem_Sound_Wave : public virtual baseArchivItem_Sound
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Sound_Wave.
+            baseArchivItem_Sound_Wave(void);
 
-		/// Kopierkonstruktor von @p baseArchivItem_Sound_Wave.
-		baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave *item);
+            /// Kopierkonstruktor von @p baseArchivItem_Sound_Wave.
+            baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave* item);
 
-		/// Destruktor von @p baseArchivItem_Sound_Wave.
-		~baseArchivItem_Sound_Wave(void);
+            /// Destruktor von @p baseArchivItem_Sound_Wave.
+            ~baseArchivItem_Sound_Wave(void);
 
-		/// lädt die Wave-Daten aus einer Datei.
-		int load(FILE *file, unsigned int length);
+            /// lädt die Wave-Daten aus einer Datei.
+            int load(FILE* file, unsigned int length);
 
-		/// schreibt die Wave-Daten in eine Datei.
-		int write(FILE *file) const { return write(file, false); }
-		int write(FILE *file, bool stripheader = false) const;
+            /// schreibt die Wave-Daten in eine Datei.
+            int write(FILE* file) const { return write(file, false); }
+            int write(FILE* file, bool stripheader = false) const;
 
-		/// alloziert Soundspeicher für die gewünschte Größe.
-		void alloc(unsigned int length);
+            /// alloziert Soundspeicher für die gewünschte Größe.
+            void alloc(unsigned int length);
 
-		/// räumt den Soundspeicher auf.
-		void clear(void);
+            /// räumt den Soundspeicher auf.
+            void clear(void);
 
-		void setData(const unsigned char *data, unsigned int length)
-		{
-			alloc(length);
-			memcpy(this->data, data, sizeof(unsigned char)*length);
-		}
+            void setData(const unsigned char* data, unsigned int length)
+            {
+                alloc(length);
+                memcpy(this->data, data, sizeof(unsigned char)*length);
+            }
 
-		const unsigned char *getData() { return data; }
-		unsigned int getLength() { return length; }
+            const unsigned char* getData() { return data; }
+            unsigned int getLength() { return length; }
 
-	protected:
-		unsigned char *data;
-		unsigned int length;
-	};
+        protected:
+            unsigned char* data;
+            unsigned int length;
+    };
 
-	/// Klasse für WAVE-Sounds.
-	class ArchivItem_Sound_Wave : public virtual baseArchivItem_Sound_Wave, public ArchivItem_Sound
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Sound_Wave.
-		ArchivItem_Sound_Wave(void) : baseArchivItem_Sound_Wave() {}
+    /// Klasse für WAVE-Sounds.
+    class ArchivItem_Sound_Wave : public virtual baseArchivItem_Sound_Wave, public ArchivItem_Sound
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Sound_Wave.
+            ArchivItem_Sound_Wave(void) : baseArchivItem_Sound_Wave() {}
 
-		/// Kopierkonstruktor von @p ArchivItem_Sound_Wave.
-		ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave *item) : baseArchivItem_Sound_Wave(item) {}
-	};
+            /// Kopierkonstruktor von @p ArchivItem_Sound_Wave.
+            ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave* item) : baseArchivItem_Sound_Wave(item) {}
+    };
 }
 
 #endif // !ARCHIVITEM_SOUND_WAVE_H_INCLUDED

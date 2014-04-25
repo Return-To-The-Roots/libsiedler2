@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Player.h 8198 2012-09-09 18:47:35Z marcus $
+// $Id: ArchivItem_Bitmap_Player.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,79 +26,79 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse für Player-Bitmaps.
-	class baseArchivItem_Bitmap_Player : public virtual baseArchivItem_Bitmap
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Bitmap_Player.
-		baseArchivItem_Bitmap_Player(void);
+    /// Basisklasse für Player-Bitmaps.
+    class baseArchivItem_Bitmap_Player : public virtual baseArchivItem_Bitmap
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Bitmap_Player.
+            baseArchivItem_Bitmap_Player(void);
 
-		/// Kopierkonstruktor von @p baseArchivItem_Bitmap_Player.
-		baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player *item);
+            /// Kopierkonstruktor von @p baseArchivItem_Bitmap_Player.
+            baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player* item);
 
-		/// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
-		baseArchivItem_Bitmap_Player(FILE *file, const ArchivItem_Palette *palette);
+            /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
+            baseArchivItem_Bitmap_Player(FILE* file, const ArchivItem_Palette* palette);
 
-		/// Destruktor von @p baseArchivItem_Bitmap_Player.
-		~baseArchivItem_Bitmap_Player(void);
+            /// Destruktor von @p baseArchivItem_Bitmap_Player.
+            ~baseArchivItem_Bitmap_Player(void);
 
-		/// lädt die Bilddaten aus einer Datei.
-		int load(FILE *file, const ArchivItem_Palette *palette);
+            /// lädt die Bilddaten aus einer Datei.
+            int load(FILE* file, const ArchivItem_Palette* palette);
 
-		/// lädt die Bilddaten aus einem Puffer.
-		int load(unsigned short width, unsigned short height, const unsigned char *image, const unsigned short *starts, bool absolute, unsigned int length, const ArchivItem_Palette *palette);
+            /// lädt die Bilddaten aus einem Puffer.
+            int load(unsigned short width, unsigned short height, const unsigned char* image, const unsigned short* starts, bool absolute, unsigned int length, const ArchivItem_Palette* palette);
 
-		/// schreibt die Bilddaten in eine Datei.
-		int write(FILE *file, const ArchivItem_Palette *palette) const;
+            /// schreibt die Bilddaten in eine Datei.
+            int write(FILE* file, const ArchivItem_Palette* palette) const;
 
-		/// alloziert Bildspeicher für die gewünschte Größe.
-		void tex_alloc(void);
+            /// alloziert Bildspeicher für die gewünschte Größe.
+            void tex_alloc(void);
 
-		/// räumt den Bildspeicher auf.
-		void tex_clear(void);
+            /// räumt den Bildspeicher auf.
+            void tex_clear(void);
 
-		void getVisibleArea(int &vx, int &vy, int &vw, int &vh);
+            void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
-		/// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
-		int print(unsigned char *buffer,
-				  unsigned short buffer_width,
-				  unsigned short buffer_height,
-				  int buffer_format,
-				  const ArchivItem_Palette *palette,
-				  unsigned char color,
-				  unsigned short to_x = 0,
-				  unsigned short to_y = 0,
-				  unsigned short from_x = 0,
-				  unsigned short from_y = 0,
-				  unsigned short from_w = 0,
-				  unsigned short from_h = 0,
-				  bool only_player = false) const;
+            /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
+            int print(unsigned char* buffer,
+                      unsigned short buffer_width,
+                      unsigned short buffer_height,
+                      int buffer_format,
+                      const ArchivItem_Palette* palette,
+                      unsigned char color,
+                      unsigned short to_x = 0,
+                      unsigned short to_y = 0,
+                      unsigned short from_x = 0,
+                      unsigned short from_y = 0,
+                      unsigned short from_w = 0,
+                      unsigned short from_h = 0,
+                      bool only_player = false) const;
 
-		/// erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
-		int create(unsigned short width,
-				   unsigned short height,
-				   const unsigned char *buffer,
-				   unsigned short buffer_width,
-				   unsigned short buffer_height,
-				   int buffer_format,
-				   const ArchivItem_Palette *palette,
-				   unsigned char color);
+            /// erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
+            int create(unsigned short width,
+                       unsigned short height,
+                       const unsigned char* buffer,
+                       unsigned short buffer_width,
+                       unsigned short buffer_height,
+                       int buffer_format,
+                       const ArchivItem_Palette* palette,
+                       unsigned char color);
 
-	protected:
-		unsigned char *tex_pdata; ///< Die Spielerfarbedaten.
-		unsigned int tex_plength; ///< Länge der Spielerfarbendaten.
-	};
+        protected:
+            unsigned char* tex_pdata; ///< Die Spielerfarbedaten.
+            unsigned int tex_plength; ///< Länge der Spielerfarbendaten.
+    };
 
-	/// Klasse für Player-Bitmaps.
-	class ArchivItem_Bitmap_Player : public baseArchivItem_Bitmap_Player, public ArchivItem_Bitmap
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Bitmap_Player.
-		ArchivItem_Bitmap_Player(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Player() {}
+    /// Klasse für Player-Bitmaps.
+    class ArchivItem_Bitmap_Player : public baseArchivItem_Bitmap_Player, public ArchivItem_Bitmap
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Bitmap_Player.
+            ArchivItem_Bitmap_Player(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Player() {}
 
-		/// Kopierkonstruktor von @p ArchivItem_Bitmap_Player.
-		ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player *item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Player(item) {}
-	};
+            /// Kopierkonstruktor von @p ArchivItem_Bitmap_Player.
+            ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player* item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Player(item) {}
+    };
 }
 
 #endif // !ARCHIVITEM_BITMAP_PLAYER_H_INCLUDED

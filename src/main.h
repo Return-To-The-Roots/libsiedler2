@@ -1,4 +1,4 @@
-// $Id: main.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: main.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -22,19 +22,19 @@
 #pragma once
 
 #ifdef HAVE_CONFIG_H
-#	include "../config.h"
+#   include "../config.h"
 #endif // HAVE_CONFIG_H
 
 #ifdef _WIN32
-#	define _CRTDBG_MAP_ALLOC
-#	include <windows.h>
+#   define _CRTDBG_MAP_ALLOC
+#   include <windows.h>
 
-#	if defined _DEBUG && defined _MSC_VER
-#	include <crtdbg.h>
-#	endif // _DEBUG
+#   if defined _DEBUG && defined _MSC_VER
+#   include <crtdbg.h>
+#   endif // _DEBUG
 #else
-#	include <unistd.h>
-#	include "strlwr.h"
+#   include <unistd.h>
+#   include "strlwr.h"
 #endif // !_WIN32
 
 #include <cstdio>
@@ -47,9 +47,9 @@
 #include <algorithm>
 
 #ifdef _WIN32
-#	define class class __declspec(dllexport)
+#   define class class __declspec(dllexport)
 #ifndef __CYGWIN__
-#	define snprintf _snprintf
+#   define snprintf _snprintf
 #endif
 #endif
 

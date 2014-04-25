@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Other.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Sound_Other.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,49 +25,49 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse für Other-Sounds.
-	class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Sound_Other.
-		baseArchivItem_Sound_Other(void);
+    /// Basisklasse für Other-Sounds.
+    class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Sound_Other.
+            baseArchivItem_Sound_Other(void);
 
-		/// Kopierkonstruktor von @p baseArchivItem_Sound_Other.
-		baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other *item);
+            /// Kopierkonstruktor von @p baseArchivItem_Sound_Other.
+            baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other* item);
 
-		/// Destruktor von @p baseArchivItem_Sound_Other.
-		virtual ~baseArchivItem_Sound_Other(void);
+            /// Destruktor von @p baseArchivItem_Sound_Other.
+            virtual ~baseArchivItem_Sound_Other(void);
 
-		/// lädt die Daten aus einer Datei.
-		int load(FILE *file, unsigned int length);
+            /// lädt die Daten aus einer Datei.
+            int load(FILE* file, unsigned int length);
 
-		/// schreibt die Daten in eine Datei.
-		int write(FILE *file) const;
+            /// schreibt die Daten in eine Datei.
+            int write(FILE* file) const;
 
-		/// alloziert Soundspeicher für die gewünschte Größe.
-		void alloc(unsigned int length);
+            /// alloziert Soundspeicher für die gewünschte Größe.
+            void alloc(unsigned int length);
 
-		/// räumt den Soundspeicher auf.
-		void clear(void);
+            /// räumt den Soundspeicher auf.
+            void clear(void);
 
-		const unsigned char *getData() { return data; }
-		unsigned int getLength() { return length; }
+            const unsigned char* getData() { return data; }
+            unsigned int getLength() { return length; }
 
-	protected:
-		unsigned char *data;
-		unsigned int length;
-	};
+        protected:
+            unsigned char* data;
+            unsigned int length;
+    };
 
-	/// Klasse für Other-Sounds.
-	class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Sound_Other.
-		ArchivItem_Sound_Other(void) : baseArchivItem_Sound_Other() {}
+    /// Klasse für Other-Sounds.
+    class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Sound_Other.
+            ArchivItem_Sound_Other(void) : baseArchivItem_Sound_Other() {}
 
-		/// Kopierkonstruktor von @p ArchivItem_Sound_Other.
-		ArchivItem_Sound_Other(const ArchivItem_Sound_Other *item) : baseArchivItem_Sound_Other(item) {}
-	};
+            /// Kopierkonstruktor von @p ArchivItem_Sound_Other.
+            ArchivItem_Sound_Other(const ArchivItem_Sound_Other* item) : baseArchivItem_Sound_Other(item) {}
+    };
 }
 
 #endif // !ARCHIVITEM_SOUND_OTHER_H_INCLUDED

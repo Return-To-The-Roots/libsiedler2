@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_RLE.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap_RLE.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,39 +26,39 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse für RLE-Bitmaps.
-	class baseArchivItem_Bitmap_RLE : public virtual baseArchivItem_Bitmap
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Bitmap_RLE.
-		baseArchivItem_Bitmap_RLE(void);
+    /// Basisklasse für RLE-Bitmaps.
+    class baseArchivItem_Bitmap_RLE : public virtual baseArchivItem_Bitmap
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Bitmap_RLE.
+            baseArchivItem_Bitmap_RLE(void);
 
-		/// Kopierkonstruktor von @p baseArchivItem_Bitmap_RLE.
-		baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE *item);
+            /// Kopierkonstruktor von @p baseArchivItem_Bitmap_RLE.
+            baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE* item);
 
-		/// Konstruktor von @p baseArchivItem_Bitmap_RLE mit Laden der Bilddaten aus einer Datei.
-		baseArchivItem_Bitmap_RLE(FILE *file, const ArchivItem_Palette *palette);
+            /// Konstruktor von @p baseArchivItem_Bitmap_RLE mit Laden der Bilddaten aus einer Datei.
+            baseArchivItem_Bitmap_RLE(FILE* file, const ArchivItem_Palette* palette);
 
-		/// Destruktor von @p baseArchivItem_Bitmap_RLE.
-		~baseArchivItem_Bitmap_RLE(void);
+            /// Destruktor von @p baseArchivItem_Bitmap_RLE.
+            ~baseArchivItem_Bitmap_RLE(void);
 
-		/// lädt die Bilddaten aus einer Datei.
-		int load(FILE *file, const ArchivItem_Palette *palette);
+            /// lädt die Bilddaten aus einer Datei.
+            int load(FILE* file, const ArchivItem_Palette* palette);
 
-		/// schreibt die Bilddaten in eine Datei.
-		int write(FILE *file, const ArchivItem_Palette *palette) const;
-	};
+            /// schreibt die Bilddaten in eine Datei.
+            int write(FILE* file, const ArchivItem_Palette* palette) const;
+    };
 
-	/// Klasse für RLE-Bitmaps.
-	class ArchivItem_Bitmap_RLE : public baseArchivItem_Bitmap_RLE, public ArchivItem_Bitmap
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Bitmap_RLE.
-		ArchivItem_Bitmap_RLE(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_RLE() {}
+    /// Klasse für RLE-Bitmaps.
+    class ArchivItem_Bitmap_RLE : public baseArchivItem_Bitmap_RLE, public ArchivItem_Bitmap
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Bitmap_RLE.
+            ArchivItem_Bitmap_RLE(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_RLE() {}
 
-		/// Kopierkonstruktor von @p ArchivItem_Bitmap_RLE.
-		ArchivItem_Bitmap_RLE(const ArchivItem_Bitmap_RLE *item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item) {}
-	};
+            /// Kopierkonstruktor von @p ArchivItem_Bitmap_RLE.
+            ArchivItem_Bitmap_RLE(const ArchivItem_Bitmap_RLE* item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item) {}
+    };
 }
 
 #endif // !ARCHIVITEM_BITMAP_RLE_H_INCLUDED

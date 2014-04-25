@@ -1,4 +1,4 @@
-// $Id: LoadACT.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadACT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,40 +41,40 @@
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadACT(const char *file, ArchivInfo *items)
+int libsiedler2::loader::LoadACT(const char* file, ArchivInfo* items)
 {
-	FILE *act;
-	long size;
+    FILE* act;
+    long size;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	act = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    act = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(act == NULL)
-		return 2;
+    // hat das geklappt?
+    if(act == NULL)
+        return 2;
 
-	fseek(act, 0, SEEK_END);
-	size = ftell(act);
-	fseek(act, 0, SEEK_SET);
+    fseek(act, 0, SEEK_END);
+    size = ftell(act);
+    fseek(act, 0, SEEK_SET);
 
-	// sind es 256*3 Bytes, also somit 8bit-RGB?
-	if(size != 768)
-		return 3;
+    // sind es 256*3 Bytes, also somit 8bit-RGB?
+    if(size != 768)
+        return 3;
 
-	ArchivItem_Palette *palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
-	if(palette->load(act, false) != 0)
-		return 4;
+    ArchivItem_Palette* palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
+    if(palette->load(act, false) != 0)
+        return 4;
 
-	// einlesen
-	items->alloc(1);
-	items->set(0, palette);
+    // einlesen
+    items->alloc(1);
+    items->set(0, palette);
 
-	// Datei schliessen
-	fclose(act);
+    // Datei schliessen
+    fclose(act);
 
-	// Alles OK
-	return 0;
+    // Alles OK
+    return 0;
 }

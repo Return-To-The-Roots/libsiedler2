@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map_Header.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Map_Header.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,9 +26,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,13 +46,13 @@
  *  @author FloSoft
  */
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(void)
-	: ArchivItem(),
-	width(0), height(0), gfxset(0), player(0)
+    : ArchivItem(),
+      width(0), height(0), gfxset(0), player(0)
 {
-	setBobType(BOBTYPE_MAP_HEADER);
+    setBobType(BOBTYPE_MAP_HEADER);
 
-	memset(name, 0, 21);
-	memset(author, 0, 21);
+    memset(name, 0, 21);
+    memset(author, 0, 21);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,15 +63,15 @@ libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(void)
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(const ArchivItem_Map_Header *item)
-	: ArchivItem(item),
-	width(item->width), height(item->height), gfxset(item->gfxset), player(item->player)
+libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(const ArchivItem_Map_Header* item)
+    : ArchivItem(item),
+      width(item->width), height(item->height), gfxset(item->gfxset), player(item->player)
 {
-	memset(name, 0, 21);
-	memset(author, 0, 21);
+    memset(name, 0, 21);
+    memset(author, 0, 21);
 
-	setName(item->name);
-	setAuthor(item->author);
+    setName(item->name);
+    setAuthor(item->author);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -90,58 +90,58 @@ libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header(void)
  *
  *  @param[in] file Dateihandle der Datei
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Map_Header::load(FILE *file)
+int libsiedler2::ArchivItem_Map_Header::load(FILE* file)
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	const char VALID_ID[10] = {'W','O','R','L','D','_','V','1','.','0'};
-	char id[10];
+    const char VALID_ID[10] = {'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0'};
+    char id[10];
 
-	// Signatur einlesen
-	if(libendian::le_read_c(id, 10, file) != 10)
-		return 2;
+    // Signatur einlesen
+    if(libendian::le_read_c(id, 10, file) != 10)
+        return 2;
 
-	// und prüfen
-	if(memcmp(id, VALID_ID, 10))
-		return 3;
+    // und prüfen
+    if(memcmp(id, VALID_ID, 10))
+        return 3;
 
-	// Name einlesen
-	if(libendian::le_read_c(name, 24, file) != 24)
-		return 4;
-	OemToAnsi(name, name);
+    // Name einlesen
+    if(libendian::le_read_c(name, 24, file) != 24)
+        return 4;
+    OemToAnsi(name, name);
 
-	// GFX-Set einlesen
-	if(libendian::le_read_uc(&gfxset, 1, file) != 1)
-		return 7;
+    // GFX-Set einlesen
+    if(libendian::le_read_uc(&gfxset, 1, file) != 1)
+        return 7;
 
-	// Spielerzahl einlesen
-	if(libendian::le_read_uc(&player, 1, file) != 1)
-		return 8;
+    // Spielerzahl einlesen
+    if(libendian::le_read_uc(&player, 1, file) != 1)
+        return 8;
 
-	// Autor einlesen
-	if(libendian::le_read_c(author, 20, file) != 20)
-		return 9;
-	OemToAnsi(author, author);
+    // Autor einlesen
+    if(libendian::le_read_c(author, 20, file) != 20)
+        return 9;
+    OemToAnsi(author, author);
 
-	long old = ftell(file);
-	fseek(file, 2348, SEEK_SET);
+    long old = ftell(file);
+    fseek(file, 2348, SEEK_SET);
 
-	// Breite einlesen
-	if(libendian::le_read_us(&width, file) != 0)
-		return 5;
+    // Breite einlesen
+    if(libendian::le_read_us(&width, file) != 0)
+        return 5;
 
-	// Höhe einlesen
-	if(libendian::le_read_us(&height, file) != 0)
-		return 6;
+    // Höhe einlesen
+    if(libendian::le_read_us(&height, file) != 0)
+        return 6;
 
-	fseek(file, old, SEEK_SET);
+    fseek(file, old, SEEK_SET);
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -150,16 +150,16 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE *file)
  *
  *  @param[in] file Dateihandle der Datei
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Map_Header::write(FILE *file) const
+int libsiedler2::ArchivItem_Map_Header::write(FILE* file) const
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	return 256;
+    return 256;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,9 +168,9 @@ int libsiedler2::ArchivItem_Map_Header::write(FILE *file) const
  *
  *  @author FloSoft
  */
-const char *libsiedler2::ArchivItem_Map_Header::getName(void) const
+const char* libsiedler2::ArchivItem_Map_Header::getName(void) const
 {
-	return name;
+    return name;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -181,9 +181,9 @@ const char *libsiedler2::ArchivItem_Map_Header::getName(void) const
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Map_Header::setName(const char *name)
+void libsiedler2::ArchivItem_Map_Header::setName(const char* name)
 {
-	strncpy(this->name, name, 20);
+    strncpy(this->name, name, 20);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -194,7 +194,7 @@ void libsiedler2::ArchivItem_Map_Header::setName(const char *name)
  */
 unsigned short libsiedler2::ArchivItem_Map_Header::getWidth(void) const
 {
-	return width;
+    return width;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getWidth(void) const
  */
 void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
 {
-	this->width = width;
+    this->width = width;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -218,7 +218,7 @@ void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
  */
 unsigned short libsiedler2::ArchivItem_Map_Header::getHeight(void) const
 {
-	return height;
+    return height;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -231,7 +231,7 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getHeight(void) const
  */
 void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
 {
-	this->height = height;
+    this->height = height;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
  */
 unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet(void) const
 {
-	return gfxset;
+    return gfxset;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -255,7 +255,7 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet(void) const
  */
 void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
 {
-	this->gfxset = gfxset;
+    this->gfxset = gfxset;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -266,7 +266,7 @@ void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
  */
 unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer(void) const
 {
-	return player;
+    return player;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -279,7 +279,7 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer(void) const
  */
 void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
 {
-	this->player = player;
+    this->player = player;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -288,9 +288,9 @@ void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
  *
  *  @author FloSoft
  */
-const char *libsiedler2::ArchivItem_Map_Header::getAuthor(void) const
+const char* libsiedler2::ArchivItem_Map_Header::getAuthor(void) const
 {
-	return author;
+    return author;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,7 @@ const char *libsiedler2::ArchivItem_Map_Header::getAuthor(void) const
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Map_Header::setAuthor(const char *author)
+void libsiedler2::ArchivItem_Map_Header::setAuthor(const char* author)
 {
-	strncpy(this->author, author, 20);
+    strncpy(this->author, author, 20);
 }

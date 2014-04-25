@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Raw.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap_Raw.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@
  */
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(void) : baseArchivItem_Bitmap()
 {
-	setBobType(BOBTYPE_BITMAP_RAW);
+    setBobType(BOBTYPE_BITMAP_RAW);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,9 +65,9 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(void) : baseAr
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw *item) : baseArchivItem_Bitmap((baseArchivItem_Bitmap*)item)
+libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw* item) : baseArchivItem_Bitmap((baseArchivItem_Bitmap*)item)
 {
-	setBobType(BOBTYPE_BITMAP_RAW);
+    setBobType(BOBTYPE_BITMAP_RAW);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -80,10 +80,10 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArch
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(FILE *file, const ArchivItem_Palette *palette) : baseArchivItem_Bitmap()
+libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(FILE* file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
-	setBobType(BOBTYPE_BITMAP_RAW);
-	load(file, palette);
+    setBobType(BOBTYPE_BITMAP_RAW);
+    load(file, palette);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,75 +103,75 @@ libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw(void)
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE *file, const ArchivItem_Palette *palette)
+int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Palette* palette)
 {
-	unsigned char *data = NULL;
+    unsigned char* data = NULL;
 
-	if(file == NULL)
-		return 1;
-	if(palette == NULL)
-		palette = this->palette;
-	if(palette == NULL)
-		return 2;
+    if(file == NULL)
+        return 1;
+    if(palette == NULL)
+        palette = this->palette;
+    if(palette == NULL)
+        return 2;
 
-	tex_clear();
+    tex_clear();
 
-	// Unbekannte Daten überspringen
-	fseek(file, 2, SEEK_CUR);
+    // Unbekannte Daten überspringen
+    fseek(file, 2, SEEK_CUR);
 
-	// Länge einlesen
-	if(libendian::le_read_ui(&length, file) != 0)
-		return 2;
+    // Länge einlesen
+    if(libendian::le_read_ui(&length, file) != 0)
+        return 2;
 
-	// Daten einlesen
-	if(length != 0)
-	{
-		data = new unsigned char[length];
-		if(libendian::le_read_uc(data, length, file) != (int)length)
-			return 3;
-	}
+    // Daten einlesen
+    if(length != 0)
+    {
+        data = new unsigned char[length];
+        if(libendian::le_read_uc(data, length, file) != (int)length)
+            return 3;
+    }
 
-	// Nullpunkt X einlesen
-	if(libendian::le_read_s(&nx, file) != 0)
-		return 4;
+    // Nullpunkt X einlesen
+    if(libendian::le_read_s(&nx, file) != 0)
+        return 4;
 
-	// Nullpunkt Y einlesen
-	if(libendian::le_read_s(&ny, file) != 0)
-		return 5;
+    // Nullpunkt Y einlesen
+    if(libendian::le_read_s(&ny, file) != 0)
+        return 5;
 
-	// Breite einlesen
-	if(libendian::le_read_us(&width, file) != 0)
-		return 6;
+    // Breite einlesen
+    if(libendian::le_read_us(&width, file) != 0)
+        return 6;
 
-	// Höhe einlesen
-	if(libendian::le_read_us(&height, file) != 0)
-		return 7;
+    // Höhe einlesen
+    if(libendian::le_read_us(&height, file) != 0)
+        return 7;
 
-	// Speicher anlegen
-	tex_alloc();
+    // Speicher anlegen
+    tex_alloc();
 
-	if(length != 0 && data)
-	{
-		for(unsigned short y = 0; y < height; ++y)
-		{
-			for(unsigned short x = 0; x < width; ++x)
-			{
-				// Pixel setzen
-				tex_setPixel(x, y, data[y * width + x], palette);
-			}
-		}
+    if(length != 0 && data)
+    {
+        for(unsigned short y = 0; y < height; ++y)
+        {
+            for(unsigned short x = 0; x < width; ++x)
+            {
+                // Pixel setzen
+                tex_setPixel(x, y, data[y * width + x], palette);
+            }
+        }
 
-		delete[] data;
-	}
+        delete[] data;
+    }
 
-	// Unbekannte Daten überspringen
-	fseek(file, 8, SEEK_CUR);
+    // Unbekannte Daten überspringen
+    fseek(file, 8, SEEK_CUR);
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -181,64 +181,64 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE *file, const ArchivItem_Pa
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Raw::write(FILE *file, const ArchivItem_Palette *palette) const
+int libsiedler2::baseArchivItem_Bitmap_Raw::write(FILE* file, const ArchivItem_Palette* palette) const
 {
-	if(file == NULL)
-		return 1;
-	if(palette == NULL)
-		palette = this->palette;
-	if(palette == NULL)
-		return 2;
+    if(file == NULL)
+        return 1;
+    if(palette == NULL)
+        palette = this->palette;
+    if(palette == NULL)
+        return 2;
 
-	if(width == 0 || height == 0)
-		return 2;
+    if(width == 0 || height == 0)
+        return 2;
 
-	// Unbekannte Daten schreiben
-	char unknown[2] = {0x01, 0x00};
-	if(libendian::le_write_c(unknown, 2, file) != 2)
-		return 3;
+    // Unbekannte Daten schreiben
+    char unknown[2] = {0x01, 0x00};
+    if(libendian::le_write_c(unknown, 2, file) != 2)
+        return 3;
 
-	// Länge schreiben
-	unsigned int length = width * height;
-	if(libendian::le_write_ui(length, file) != 0)
-		return 4;
+    // Länge schreiben
+    unsigned int length = width * height;
+    if(libendian::le_write_ui(length, file) != 0)
+        return 4;
 
-	for(unsigned short y = 0; y < height; ++y)
-	{
-		for(unsigned short x = 0; x < width; ++x)
-		{
-			// Pixel holen und schreiben
-			unsigned char color = tex_getPixel(x, y, palette);
+    for(unsigned short y = 0; y < height; ++y)
+    {
+        for(unsigned short x = 0; x < width; ++x)
+        {
+            // Pixel holen und schreiben
+            unsigned char color = tex_getPixel(x, y, palette);
 
-			if(libendian::le_write_uc(&color, 1, file) != 1)
-				return 5;
-		}
-	}
+            if(libendian::le_write_uc(&color, 1, file) != 1)
+                return 5;
+        }
+    }
 
-	// Nullpunkt X schreiben
-	if(libendian::le_write_s(nx, file) != 0)
-		return 6;
+    // Nullpunkt X schreiben
+    if(libendian::le_write_s(nx, file) != 0)
+        return 6;
 
-	// Nullpunkt Y schreiben
-	if(libendian::le_write_s(ny, file) != 0)
-		return 7;
+    // Nullpunkt Y schreiben
+    if(libendian::le_write_s(ny, file) != 0)
+        return 7;
 
-	// Breite schreiben
-	if(libendian::le_write_us(width, file) != 0)
-		return 8;
+    // Breite schreiben
+    if(libendian::le_write_us(width, file) != 0)
+        return 8;
 
-	// Höhe schreiben
-	if(libendian::le_write_us(height, file) != 0)
-		return 9;
+    // Höhe schreiben
+    if(libendian::le_write_us(height, file) != 0)
+        return 9;
 
-	// Unbekannte Daten schreiben
-	unsigned char unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
-	if(libendian::le_write_uc(unknown2, 8, file) != 8)
-		return 10;
+    // Unbekannte Daten schreiben
+    unsigned char unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
+    if(libendian::le_write_uc(unknown2, 8, file) != 8)
+        return 10;
 
-	return 0;
+    return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: WriteBBM.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: WriteBBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,13 +24,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  schreibt ein ArchivInfo in eine BBM-File.
  *
  *  @param[in] file    Dateiname der BBM-File
@@ -40,73 +40,73 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteBBM(const char *file, const ArchivInfo *items)
+int libsiedler2::loader::WriteBBM(const char* file, const ArchivInfo* items)
 {
-	FILE *bbm;
-	char header[5] = "FORM", pbm[5] = "PBM ", cmap[5] = "CMAP";
-	unsigned long count = 0;
-	unsigned int length = 0;
+    FILE* bbm;
+    char header[5] = "FORM", pbm[5] = "PBM ", cmap[5] = "CMAP";
+    unsigned long count = 0;
+    unsigned int length = 0;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Anzahl Paletten in ArchivInfo suchen
-	for(unsigned long i = 0; i < items->getCount(); ++i)
-	{
-		if(!items->get(i))
-			continue;
-		if(items->get(i)->getBobType() == BOBTYPE_PALETTE)
-			++count;
-	}
+    // Anzahl Paletten in ArchivInfo suchen
+    for(unsigned long i = 0; i < items->getCount(); ++i)
+    {
+        if(!items->get(i))
+            continue;
+        if(items->get(i)->getBobType() == BOBTYPE_PALETTE)
+            ++count;
+    }
 
-	// Datei zum schreiben öffnen
-	bbm = fopen(file, "wb");
-	
-	// hat das geklappt?
-	if(bbm == NULL)
-		return 2;
+    // Datei zum schreiben öffnen
+    bbm = fopen(file, "wb");
 
-	// Header schreiben
-	if(libendian::le_write_c(header, 4, bbm) != 4)
-		return 3;
+    // hat das geklappt?
+    if(bbm == NULL)
+        return 2;
 
-	// Länge schreiben
-	length = 4 + count * (256*3 + 8);
-	if(libendian::le_write_ui(length, bbm) != 0)
-		return 4;
+    // Header schreiben
+    if(libendian::le_write_c(header, 4, bbm) != 4)
+        return 3;
 
-	// Typ schreiben
-	if(libendian::le_write_c(pbm, 4, bbm) != 4)
-		return 5;
+    // Länge schreiben
+    length = 4 + count * (256 * 3 + 8);
+    if(libendian::le_write_ui(length, bbm) != 0)
+        return 4;
 
-	for(unsigned long i = 0; i < items->getCount(); ++i)
-	{
-		ArchivItem_Palette *palette = (ArchivItem_Palette *)items->get(i);
-		if(palette->getBobType() == BOBTYPE_PALETTE)
-		{
-			// Chunk schreiben
-			if(libendian::be_write_c(cmap, 4, bbm) != 4)
-				return 6;
+    // Typ schreiben
+    if(libendian::le_write_c(pbm, 4, bbm) != 4)
+        return 5;
 
-			// Länge schreiben
-			length = 256*3;
-			if(libendian::be_write_ui(length, bbm) != 0)
-				return 7;
+    for(unsigned long i = 0; i < items->getCount(); ++i)
+    {
+        ArchivItem_Palette* palette = (ArchivItem_Palette*)items->get(i);
+        if(palette->getBobType() == BOBTYPE_PALETTE)
+        {
+            // Chunk schreiben
+            if(libendian::be_write_c(cmap, 4, bbm) != 4)
+                return 6;
 
-			// Farbpalette zuweisen
-			unsigned char colors[256][3];
-			for(unsigned int k = 0; k < 256; ++k)
-				palette->get(k, &colors[k][0], &colors[k][1], &colors[k][2]);
+            // Länge schreiben
+            length = 256 * 3;
+            if(libendian::be_write_ui(length, bbm) != 0)
+                return 7;
 
-			// Farbpalette schreiben
-			if(libendian::le_write_uc(colors[0], 256*3, bbm) != 256*3)
-				return 8;
-		}
-	}
+            // Farbpalette zuweisen
+            unsigned char colors[256][3];
+            for(unsigned int k = 0; k < 256; ++k)
+                palette->get(k, &colors[k][0], &colors[k][1], &colors[k][2]);
 
-	// Datei schliessen
-	fclose(bbm);
+            // Farbpalette schreiben
+            if(libendian::le_write_uc(colors[0], 256 * 3, bbm) != 256 * 3)
+                return 8;
+        }
+    }
 
-	// alles ok
-	return 0;
+    // Datei schliessen
+    fclose(bbm);
+
+    // alles ok
+    return 0;
 }

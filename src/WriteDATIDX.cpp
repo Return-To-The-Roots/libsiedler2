@@ -1,4 +1,4 @@
-// $Id: WriteDATIDX.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: WriteDATIDX.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,13 +24,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  schreibt ein ArchivInfo in eine DAT/IDX-File.
  *
  *  @param[in] file    Dateiname der DAT/IDX-File
@@ -41,12 +41,12 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteDATIDX(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items)
+int libsiedler2::loader::WriteDATIDX(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items)
 {
-	if(file == NULL || palette == NULL || items == NULL)
-		return 1;
+    if(file == NULL || palette == NULL || items == NULL)
+        return 1;
 
-	/// @todo DAT und IDX schreiben.
+    /// @todo DAT und IDX schreiben.
 
-	return 254;
+    return 254;
 }

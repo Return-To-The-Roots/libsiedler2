@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Sound.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,50 +25,50 @@
 
 namespace libsiedler2
 {
-	enum SOUNDTYPES
-	{
-		SOUNDTYPE_NONE = 0,
-		SOUNDTYPE_WAVE = 1,
-		SOUNDTYPE_MIDI = 2,
-		SOUNDTYPE_XMIDI = 3,
-		SOUNDTYPE_OTHER = 4
-	};
+    enum SOUNDTYPES
+    {
+        SOUNDTYPE_NONE = 0,
+        SOUNDTYPE_WAVE = 1,
+        SOUNDTYPE_MIDI = 2,
+        SOUNDTYPE_XMIDI = 3,
+        SOUNDTYPE_OTHER = 4
+    };
 
-	/// Basis-Basisklasse für Sounditems.
-	class baseArchivItem_Sound : public ArchivItem
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Sound.
-		baseArchivItem_Sound(void);
+    /// Basis-Basisklasse für Sounditems.
+    class baseArchivItem_Sound : public ArchivItem
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Sound.
+            baseArchivItem_Sound(void);
 
-		/// Kopierkonstruktor von @p ArchivItem_Sound.
-		baseArchivItem_Sound(const baseArchivItem_Sound *item);
+            /// Kopierkonstruktor von @p ArchivItem_Sound.
+            baseArchivItem_Sound(const baseArchivItem_Sound* item);
 
-		/// virtueller Destruktor von @p ArchivItem_Sound.
-		virtual ~baseArchivItem_Sound(void);
+            /// virtueller Destruktor von @p ArchivItem_Sound.
+            virtual ~baseArchivItem_Sound(void);
 
-		/// setzt den Typ des Sounds.
-		void setType(unsigned short type);
+            /// setzt den Typ des Sounds.
+            void setType(unsigned short type);
 
-		/// liefert den Typ des Sounds.
-		unsigned short getType(void) const;
+            /// liefert den Typ des Sounds.
+            unsigned short getType(void) const;
 
-		/// lädt die Sound-Daten aus einer Datei.
-		virtual int load(FILE *file, unsigned int length);
+            /// lädt die Sound-Daten aus einer Datei.
+            virtual int load(FILE* file, unsigned int length);
 
-		/// schreibt die Sound-Daten in eine Datei.
-		virtual int write(FILE *file) const;
+            /// schreibt die Sound-Daten in eine Datei.
+            virtual int write(FILE* file) const;
 
-		static baseArchivItem_Sound *findSubType(FILE *file);
+            static baseArchivItem_Sound* findSubType(FILE* file);
 
-	protected:
-		unsigned short type;
-	};
+        protected:
+            unsigned short type;
+    };
 
-	/// Basisklasse für Sounditems.
-	class ArchivItem_Sound : public virtual baseArchivItem_Sound
-	{
-	};
+    /// Basisklasse für Sounditems.
+    class ArchivItem_Sound : public virtual baseArchivItem_Sound
+    {
+    };
 }
 
 #endif // !ARCHIVITEM_SOUND_H_INCLUDED

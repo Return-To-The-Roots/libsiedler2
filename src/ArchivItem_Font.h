@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Font.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Font.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -28,49 +28,49 @@ namespace libsiedler2
 {
 
 /// Klasse für Fonts.
-class ArchivItem_Font : public ArchivItem, public ArchivInfo
-{
-public:
-	/// Konstruktor von @p ArchivItem_Font.
-	ArchivItem_Font(void);
+    class ArchivItem_Font : public ArchivItem, public ArchivInfo
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Font.
+            ArchivItem_Font(void);
 
-	/// Kopierkonstruktor von @p ArchivItem_Font.
-	ArchivItem_Font(const ArchivItem_Font *item);
+            /// Kopierkonstruktor von @p ArchivItem_Font.
+            ArchivItem_Font(const ArchivItem_Font* item);
 
-	/// lädt die Fontdaten aus einer Datei.
-	int load(FILE *file, const ArchivItem_Palette *palette);
+            /// lädt die Fontdaten aus einer Datei.
+            int load(FILE* file, const ArchivItem_Palette* palette);
 
-	/// schreibt die Fontdaten in eine Datei.
-	int write(FILE *file, const ArchivItem_Palette *palette) const;
+            /// schreibt die Fontdaten in eine Datei.
+            int write(FILE* file, const ArchivItem_Palette* palette) const;
 
-	/// liefert den X-Buchstabenabstand.
-	inline unsigned char getDx(void) const
-	{
-		return dx;
-	}
+            /// liefert den X-Buchstabenabstand.
+            inline unsigned char getDx(void) const
+            {
+                return dx;
+            }
 
-	/// liefert den Y-Buchstabenabstand.
-	inline unsigned char getDy(void) const
-	{
-		return dy;
-	}
+            /// liefert den Y-Buchstabenabstand.
+            inline unsigned char getDy(void) const
+            {
+                return dy;
+            }
 
-	/// setzt den X-Buchstabenabstand.
-	inline void setDx(unsigned char dx)
-	{
-		this->dx = dx;
-	}
+            /// setzt den X-Buchstabenabstand.
+            inline void setDx(unsigned char dx)
+            {
+                this->dx = dx;
+            }
 
-	/// setzt den Y-Buchstabenabstand.
-	inline void setDy(unsigned char dy)
-	{
-		this->dy = dy;
-	}
+            /// setzt den Y-Buchstabenabstand.
+            inline void setDy(unsigned char dy)
+            {
+                this->dy = dy;
+            }
 
-protected:
-	unsigned char dx; ///< X-Buchstabenabstand.
-	unsigned char dy; ///< Y-Buchstabenabstand.
-};
+        protected:
+            unsigned char dx; ///< X-Buchstabenabstand.
+            unsigned char dy; ///< Y-Buchstabenabstand.
+    };
 
 }
 

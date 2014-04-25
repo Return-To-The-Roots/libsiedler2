@@ -1,4 +1,4 @@
-// $Id: pack.cpp 7498 2011-09-07 09:00:31Z FloSoft $
+// $Id: pack.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -35,236 +35,238 @@ using namespace std;
 using namespace libsiedler2;
 using namespace loader;
 
-struct fileentry {
-	fileentry() : bobtype(0), nx(0), ny(0) { }
-	string file;
-	string path;
-	unsigned short bobtype;
-	unsigned short nx;
-	unsigned short ny;
-	string type;
+struct fileentry
+{
+    fileentry() : bobtype(0), nx(0), ny(0) { }
+    string file;
+    string path;
+    unsigned short bobtype;
+    unsigned short nx;
+    unsigned short ny;
+    string type;
 };
 
-bool stringCompare( const fileentry &left, const fileentry &right )
+bool stringCompare( const fileentry& left, const fileentry& right )
 {
-	int a, b;
+    int a, b;
 
-	stringstream aa;
-	aa << left.file;
-	stringstream bb;
-	bb << right.file;
+    stringstream aa;
+    aa << left.file;
+    stringstream bb;
+    bb << right.file;
 
-	if( !(aa >> a) || !(bb >> b) )
-	{
-		for( string::const_iterator lit = left.file.begin(), rit = right.file.begin(); lit != left.file.end() && rit != right.file.end(); ++lit, ++rit )
-			if( tolower( *lit ) < tolower( *rit ) )
-				return true;
-			else if( tolower( *lit ) > tolower( *rit ) )
-				return false;
-		if( left.file.size() < right.file.size() )
-			return true;
-	}
-	else
-	{
-		if(a < b)
-			return true;
-	}
+    if( !(aa >> a) || !(bb >> b) )
+    {
+        for( string::const_iterator lit = left.file.begin(), rit = right.file.begin(); lit != left.file.end() && rit != right.file.end(); ++lit, ++rit )
+            if( tolower( *lit ) < tolower( *rit ) )
+                return true;
+            else if( tolower( *lit ) > tolower( *rit ) )
+                return false;
+        if( left.file.size() < right.file.size() )
+            return true;
+    }
+    else
+    {
+        if(a < b)
+            return true;
+    }
 
-	return false;
+    return false;
 }
 
-void pack(const string &directory, const string &file, const ArchivItem_Palette* palette, ArchivInfo *lst)
+void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, ArchivInfo* lst)
 {
-	HANDLE hFile;
-	WIN32_FIND_DATAA wfd;
+    HANDLE hFile;
+    WIN32_FIND_DATAA wfd;
 
-	ArchivInfo tlst;
+    ArchivInfo tlst;
 
-	if(lst == NULL)
-		lst = &tlst;
+    if(lst == NULL)
+        lst = &tlst;
 
-	string rpath = directory + "\\*.*";
+    string rpath = directory + "\\*.*";
 
-	vector<fileentry> files;
+    vector<fileentry> files;
 
-	cerr << "Reading directory: ";
-	hFile = FindFirstFileA(rpath.c_str(), &wfd);
-	if(hFile != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			fileentry file;
+    cerr << "Reading directory: ";
+    hFile = FindFirstFileA(rpath.c_str(), &wfd);
+    if(hFile != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            fileentry file;
 
-			string whole_file = wfd.cFileName;
-			string whole_path = directory + "\\" + whole_file;
+            string whole_file = wfd.cFileName;
+            string whole_path = directory + "\\" + whole_file;
 
-			transform ( whole_file.begin(), whole_file.end(), whole_file.begin(), tolower );
+            transform ( whole_file.begin(), whole_file.end(), whole_file.begin(), tolower );
 
-			if(whole_file != "." && whole_file != "..")
-			{
-				vector<string> wf = explode(whole_file, '.');
+            if(whole_file != "." && whole_file != "..")
+            {
+                vector<string> wf = explode(whole_file, '.');
 
-				for(vector<string>::iterator it = wf.begin(); it != wf.end(); ++it)
-				{
-					if(*it == "rle")
-						file.bobtype = BOBTYPE_BITMAP_RLE;
-					else if(*it == "player")
-						file.bobtype = BOBTYPE_BITMAP_PLAYER;
-					else if(*it == "shadow")
-						file.bobtype = BOBTYPE_BITMAP_SHADOW;
+                for(vector<string>::iterator it = wf.begin(); it != wf.end(); ++it)
+                {
+                    if(*it == "rle")
+                        file.bobtype = BOBTYPE_BITMAP_RLE;
+                    else if(*it == "player")
+                        file.bobtype = BOBTYPE_BITMAP_PLAYER;
+                    else if(*it == "shadow")
+                        file.bobtype = BOBTYPE_BITMAP_SHADOW;
 
-					else if(it->substr(0, 2) == "nx" || it->substr(0, 2) == "dx")
-						file.nx = atoi(it->substr(2).c_str());
-					else if(it->substr(0, 2) == "ny" || it->substr(0, 2) == "dy")
-						file.ny = atoi(it->substr(2).c_str());
+                    else if(it->substr(0, 2) == "nx" || it->substr(0, 2) == "dx")
+                        file.nx = atoi(it->substr(2).c_str());
+                    else if(it->substr(0, 2) == "ny" || it->substr(0, 2) == "dy")
+                        file.ny = atoi(it->substr(2).c_str());
 
-					else
-						file.file += (file.file.empty() ? "" : ".") + *it;
-				}
+                    else
+                        file.file += (file.file.empty() ? "" : ".") + *it;
+                }
 
-				if((wf.back()) == "fon")
-					file.type = "font";
-				else if((wf.back()) == "bmp")
-					file.type = "bitmap";
-				else if((wf.back()) == "bbm" || (wf.back()) == "act")
-				{
-					file.bobtype = BOBTYPE_PALETTE;
-					file.type = "palette";
-				}
-				else if((wf.back()) == "empty")
-					file.type = "empty";
-				
-				
-				if((wf.back()) != "db") // do not add "Thumbs.db"
-				{
-					file.path = whole_path;
-					files.push_back(file);
-				}
-			}
+                if((wf.back()) == "fon")
+                    file.type = "font";
+                else if((wf.back()) == "bmp")
+                    file.type = "bitmap";
+                else if((wf.back()) == "bbm" || (wf.back()) == "act")
+                {
+                    file.bobtype = BOBTYPE_PALETTE;
+                    file.type = "palette";
+                }
+                else if((wf.back()) == "empty")
+                    file.type = "empty";
 
-		} while(FindNextFileA(hFile, &wfd));
 
-		FindClose(hFile);
-	}
-	cerr << "done" << endl;
+                if((wf.back()) != "db") // do not add "Thumbs.db"
+                {
+                    file.path = whole_path;
+                    files.push_back(file);
+                }
+            }
 
-	cerr << "Sorting directory (this can take some time!): ";
-	sort(files.begin(), files.end(), stringCompare);
-	cerr << "done" << endl;
+        }
+        while(FindNextFileA(hFile, &wfd));
 
-	unsigned char *buffer = new unsigned char[1000*1000*4];
-	for(vector<fileentry>::const_iterator it = files.begin(); it != files.end(); ++it)
-	{
-		string whole_path = it->path;
+        FindClose(hFile);
+    }
+    cerr << "done" << endl;
 
-		// read file number, to set the index correctly
-		std::string filename = whole_path.substr(whole_path.find_last_of("/\\")+1);
-		std::stringstream nrs;
-		int nr = -1;
-		nrs << filename;
-		if(! (nrs >> nr) )
-			nr = -1;
+    cerr << "Sorting directory (this can take some time!): ";
+    sort(files.begin(), files.end(), stringCompare);
+    cerr << "done" << endl;
 
-		ArchivInfo items;
+    unsigned char* buffer = new unsigned char[1000 * 1000 * 4];
+    for(vector<fileentry>::const_iterator it = files.begin(); it != files.end(); ++it)
+    {
+        string whole_path = it->path;
 
-		cout << "Reading file " << whole_path;
-		if( nr >= 0 )
-			cout << " to " << nr;
-		std::cout << ": ";
+        // read file number, to set the index correctly
+        std::string filename = whole_path.substr(whole_path.find_last_of("/\\") + 1);
+        std::stringstream nrs;
+        int nr = -1;
+        nrs << filename;
+        if(! (nrs >> nr) )
+            nr = -1;
 
-		if(it->type == "font")
-		{
-			ArchivItem_Font font;
-			font.setDx(it->nx & 0xFF);
-			font.setDy(it->ny & 0xFF);
-			pack(whole_path, "", palette, &font);
+        ArchivInfo items;
 
-			// had the filename a number? then set it to the corresponding item.
-			if(nr >= 0)
-			{
-				if((unsigned int)nr >= lst->getCount())
-					lst->alloc_inc(nr - lst->getCount() + 1);
-				lst->setC(nr, &font);
-			}
-			else
-				lst->pushC(&font);
-		}
-		else if(it->type == "empty" || Load(whole_path.c_str(), &items, palette) != 0)
-		{
-			lst->alloc_inc(1); // add empty item
-			if(it->type == "empty")
-				cout << "ignored" << endl;
-			else
-				cout << "failed" << endl;
-		}
-		else
-		{
-			cout << "done" << endl;
-			// todo: andere typen als pal und bmp haben evtl mehr items!
+        cout << "Reading file " << whole_path;
+        if( nr >= 0 )
+            cout << " to " << nr;
+        std::cout << ": ";
 
-			ArchivItem *neu = items.get(0);
-			if(it->type == "bitmap")
-			{
-				ArchivItem_Bitmap *i = dynamic_cast<ArchivItem_Bitmap*>(neu);
-				ArchivItem_Bitmap *n = i;
-				
-				switch(it->bobtype)
-				{
-				case BOBTYPE_BITMAP_RLE:
-				case BOBTYPE_BITMAP_PLAYER:
-				case BOBTYPE_BITMAP_SHADOW:
-					{
-						n = dynamic_cast<ArchivItem_Bitmap*>(StandardAllocator(it->bobtype, 0, NULL));
-					} break;
-				}
+        if(it->type == "font")
+        {
+            ArchivItem_Font font;
+            font.setDx(it->nx & 0xFF);
+            font.setDy(it->ny & 0xFF);
+            pack(whole_path, "", palette, &font);
 
-				n->setName(whole_path.c_str());
-				n->setNx(it->nx);
-				n->setNy(it->ny);
+            // had the filename a number? then set it to the corresponding item.
+            if(nr >= 0)
+            {
+                if((unsigned int)nr >= lst->getCount())
+                    lst->alloc_inc(nr - lst->getCount() + 1);
+                lst->setC(nr, &font);
+            }
+            else
+                lst->pushC(&font);
+        }
+        else if(it->type == "empty" || Load(whole_path.c_str(), &items, palette) != 0)
+        {
+            lst->alloc_inc(1); // add empty item
+            if(it->type == "empty")
+                cout << "ignored" << endl;
+            else
+                cout << "failed" << endl;
+        }
+        else
+        {
+            cout << "done" << endl;
+            // todo: andere typen als pal und bmp haben evtl mehr items!
 
-				if(n != i)
-				{
-					memset(buffer, 0, 1000*1000*4);
-					i->print(buffer, 1000, 1000, FORMAT_RGBA, palette);
-				}
+            ArchivItem* neu = items.get(0);
+            if(it->type == "bitmap")
+            {
+                ArchivItem_Bitmap* i = dynamic_cast<ArchivItem_Bitmap*>(neu);
+                ArchivItem_Bitmap* n = i;
 
-				switch(it->bobtype)
-				{
-				case BOBTYPE_BITMAP_RLE:
-				case BOBTYPE_BITMAP_SHADOW:
-					{
-						n->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_RGBA, palette);
-					} break;
-				case BOBTYPE_BITMAP_PLAYER:
-					{
-						dynamic_cast<ArchivItem_Bitmap_Player*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_RGBA, palette, 128);
-					} break;
-				}
+                switch(it->bobtype)
+                {
+                    case BOBTYPE_BITMAP_RLE:
+                    case BOBTYPE_BITMAP_PLAYER:
+                    case BOBTYPE_BITMAP_SHADOW:
+                    {
+                        n = dynamic_cast<ArchivItem_Bitmap*>(StandardAllocator(it->bobtype, 0, NULL));
+                    } break;
+                }
 
-				neu = n;
-			}
+                n->setName(whole_path.c_str());
+                n->setNx(it->nx);
+                n->setNy(it->ny);
 
-			// had the filename a number? then set it to the corresponding item.
-			if(nr >= 0)
-			{
-				if((unsigned int)nr >= lst->getCount())
-					lst->alloc_inc(nr - lst->getCount() + 1);
-				lst->setC(nr, neu);
-			}
-			else
-				lst->pushC(neu);
-		}
-	}
-	delete[] buffer;
+                if(n != i)
+                {
+                    memset(buffer, 0, 1000 * 1000 * 4);
+                    i->print(buffer, 1000, 1000, FORMAT_RGBA, palette);
+                }
 
-	cout << "Writing data to " << file << ": ";
+                switch(it->bobtype)
+                {
+                    case BOBTYPE_BITMAP_RLE:
+                    case BOBTYPE_BITMAP_SHADOW:
+                    {
+                        n->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_RGBA, palette);
+                    } break;
+                    case BOBTYPE_BITMAP_PLAYER:
+                    {
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_RGBA, palette, 128);
+                    } break;
+                }
 
-	if(lst == &tlst) // only write to lstfile if the caller does not want the ArchivInfo back
-	{
-		if(WriteLST(file.c_str(), palette, lst) != 0)
-			cout << "failed" << endl;
-		else
-			cout << "done" << endl;
-	}
+                neu = n;
+            }
+
+            // had the filename a number? then set it to the corresponding item.
+            if(nr >= 0)
+            {
+                if((unsigned int)nr >= lst->getCount())
+                    lst->alloc_inc(nr - lst->getCount() + 1);
+                lst->setC(nr, neu);
+            }
+            else
+                lst->pushC(neu);
+        }
+    }
+    delete[] buffer;
+
+    cout << "Writing data to " << file << ": ";
+
+    if(lst == &tlst) // only write to lstfile if the caller does not want the ArchivInfo back
+    {
+        if(WriteLST(file.c_str(), palette, lst) != 0)
+            cout << "failed" << endl;
+        else
+            cout << "done" << endl;
+    }
 }
 

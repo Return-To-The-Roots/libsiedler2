@@ -1,4 +1,4 @@
-// $Id: XMIDI_Track.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: XMIDI_Track.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,69 +25,72 @@
 
 class XMIDI_Track
 {
-private:
-	struct MIDI_Event {
-		int            time;
-		unsigned char  status;
+    private:
+        struct MIDI_Event
+        {
+            int            time;
+            unsigned char  status;
 
-		unsigned char  data[2];
+            unsigned char  data[2];
 
-		unsigned int   len;
-		unsigned char  *buffer;
-		int            duration;
-		MIDI_Event     *next_note;
-		unsigned int   note_time; 
-		MIDI_Event     *next;
-	};
+            unsigned int   len;
+            unsigned char*  buffer;
+            int            duration;
+            MIDI_Event*     next_note;
+            unsigned int   note_time;
+            MIDI_Event*     next;
+        };
 
-	struct first_state {		// Status,   Data[0]
-		MIDI_Event *patch[16];  // 0xC
-		MIDI_Event *bank[16];   // 0xB,      0
-		MIDI_Event *pan[16];    // 0xB,      7
-		MIDI_Event *vol[16];    // 0xB,      10
-	};
+        struct first_state          // Status,   Data[0]
+        {
+            MIDI_Event* patch[16];  // 0xC
+            MIDI_Event* bank[16];   // 0xB,      0
+            MIDI_Event* pan[16];    // 0xB,      7
+            MIDI_Event* vol[16];    // 0xB,      10
+        };
 
-public:
-	XMIDI_Track(MIDI_Track *track);
-	~XMIDI_Track(void);
+    public:
+        XMIDI_Track(MIDI_Track* track);
+        ~XMIDI_Track(void);
 
-	int Convert();
+        int Convert();
 
-private:
-	int ConvertTrackToList();
-	unsigned int ConvertListToMTrk();
+    private:
+        int ConvertTrackToList();
+        unsigned int ConvertListToMTrk();
 
-	void ApplyFirstState(first_state &fs, int chan_mask);
+        void ApplyFirstState(first_state& fs, int chan_mask);
 
-	int ConvertNote(const int time, const unsigned char status, const int size);
-	int ConvertEvent(const int time, const unsigned char status, const int size, first_state &fs);
-	int ConvertSystemMessage(const int time, const unsigned char status);
+        int ConvertNote(const int time, const unsigned char status, const int size);
+        int ConvertEvent(const int time, const unsigned char status, const int size, first_state& fs);
+        int ConvertSystemMessage(const int time, const unsigned char status);
 
-	int GetVLQ(unsigned int &quant);
-	int GetVLQ2(unsigned int &quant);
-	int PutVLQ(unsigned int value, bool write, unsigned int pos = 0);
+        int GetVLQ(unsigned int& quant);
+        int GetVLQ2(unsigned int& quant);
+        int PutVLQ(unsigned int value, bool write, unsigned int pos = 0);
 
-	void CreateNewEvent(int time);
+        void CreateNewEvent(int time);
 
-private:
-	MIDI_Track *track;
-	MIDI_Event *events;
-	unsigned int event_count;
-	MIDI_Event *current;
-	unsigned int position;
+    private:
+        MIDI_Track* track;
+        MIDI_Event* events;
+        unsigned int event_count;
+        MIDI_Event* current;
+        unsigned int position;
 
-	enum {
-		MIDI_STATUS_NOTE_OFF    = 0x8,
-		MIDI_STATUS_NOTE_ON     = 0x9,
-		MIDI_STATUS_AFTERTOUCH  = 0xA,
-		MIDI_STATUS_CONTROLLER  = 0xB,
-		MIDI_STATUS_PROG_CHANGE = 0xC,
-		MIDI_STATUS_PRESSURE    = 0xD,
-		MIDI_STATUS_PITCH_WHEEL = 0xE,
-		MIDI_STATUS_SYSEX       = 0xF
-	};
+        enum
+        {
+            MIDI_STATUS_NOTE_OFF    = 0x8,
+            MIDI_STATUS_NOTE_ON     = 0x9,
+            MIDI_STATUS_AFTERTOUCH  = 0xA,
+            MIDI_STATUS_CONTROLLER  = 0xB,
+            MIDI_STATUS_PROG_CHANGE = 0xC,
+            MIDI_STATUS_PRESSURE    = 0xD,
+            MIDI_STATUS_PITCH_WHEEL = 0xE,
+            MIDI_STATUS_SYSEX       = 0xF
+        };
 
-	bool bank127[16];
+        bool bank127[16];
 };
 
 #endif // XMIDIFILE_H_

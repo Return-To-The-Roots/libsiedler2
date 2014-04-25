@@ -1,4 +1,4 @@
-// $Id: ArchivInfo.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivInfo.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivInfo::count
- * 
+ *
  *  Anzahl der Elemente.
  *
  *  @author FloSoft
@@ -48,14 +48,14 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivInfo::data
- * 
+ *
  *  die Elemente.
  *
  *  @author FloSoft
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Konstruktor von @p ArchivInfo.
  *
  *  @author FloSoft
@@ -65,44 +65,44 @@ libsiedler2::ArchivInfo::ArchivInfo(void) : data(NULL), count(0)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Kopierkonstruktor von @p ArchivInfo.
  *
  *  @param[in] info Quellitem
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo &info) : data(NULL), count(0)
+libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(NULL), count(0)
 {
-	set(&info);
+    set(&info);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Kopierkonstruktor von @p ArchivInfo.
  *
  *  @param[in] info Quellitem
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo *info) : data(NULL), count(0)
+libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo* info) : data(NULL), count(0)
 {
-	set(info);
+    set(info);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Destruktor von @p ArchivInfo, räumt automatisch auf.
  *
  *  @author FloSoft
  */
 libsiedler2::ArchivInfo::~ArchivInfo(void)
 {
-	clear();
+    clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  erstellt den Datensatz in einer bestimmten Größe.
  *
  *  @param[in] count Elementanzahl auf den der Datensatz angelegt werden soll
@@ -111,16 +111,16 @@ libsiedler2::ArchivInfo::~ArchivInfo(void)
  */
 void libsiedler2::ArchivInfo::alloc(unsigned long count)
 {
-	clear();
+    clear();
 
-	this->count = count;
-	data = new ArchivItem*[count];
+    this->count = count;
+    data = new ArchivItem*[count];
 
-	memset(data, 0, sizeof(ArchivItem*)*count);
+    memset(data, 0, sizeof(ArchivItem*)*count);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  vergrößert den Datensatz um eine bestimmten Größe.
  *
  *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
@@ -129,46 +129,46 @@ void libsiedler2::ArchivInfo::alloc(unsigned long count)
  */
 void libsiedler2::ArchivInfo::alloc_inc(unsigned long increment)
 {
-	ArchivItem **new_data = new ArchivItem*[count+increment];
+    ArchivItem** new_data = new ArchivItem*[count + increment];
 
-	memset(new_data, 0, sizeof(ArchivItem*)*(count+increment));
+    memset(new_data, 0, sizeof(ArchivItem*) * (count + increment));
 
-	if(count > 0 && data)
-	{
-		for(unsigned long i = 0; i < count; ++i)
-			new_data[i] = data[i];
+    if(count > 0 && data)
+    {
+        for(unsigned long i = 0; i < count; ++i)
+            new_data[i] = data[i];
 
-		delete[] data;
-	}
+        delete[] data;
+    }
 
-	data = new_data;
-	count += increment;
+    data = new_data;
+    count += increment;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  gibt die angelegten Daten wieder frei.
  *
  *  @author FloSoft
  */
 void libsiedler2::ArchivInfo::clear(void)
 {
-	if(data)
-	{
-		for(unsigned long c = 0; c < count; ++c)
-		{
-			delete data[c];
-			data[c] = NULL;
-		}
-		delete[] data;
-	}
+    if(data)
+    {
+        for(unsigned long c = 0; c < count; ++c)
+        {
+            delete data[c];
+            data[c] = NULL;
+        }
+        delete[] data;
+    }
 
-	data = NULL;
-	count = 0;
+    data = NULL;
+    count = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
  *
  *  @param[in] index Index des zu setzenden Eintrags
@@ -178,7 +178,7 @@ void libsiedler2::ArchivInfo::clear(void)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
  *
  *  @param[in] index Index des zu setzenden Eintrags
@@ -186,26 +186,26 @@ void libsiedler2::ArchivInfo::clear(void)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::setC(int index, const ArchivItem *item)
+void libsiedler2::ArchivInfo::setC(int index, const ArchivItem* item)
 {
-	if(!data)
-		return;
+    if(!data)
+        return;
 
-	if( (unsigned long)index < count && index >= 0)
-	{
-		// ist das Item gültig?
-		if(item == NULL)
-			data[(unsigned long)index] = NULL;
-		else
-		{
-			// ja, dann neues item erstellen
-			data[(unsigned long)index] = (ArchivItem*)(*allocator)(0, 0, item);
-		}
-	}
+    if( (unsigned long)index < count && index >= 0)
+    {
+        // ist das Item gültig?
+        if(item == NULL)
+            data[(unsigned long)index] = NULL;
+        else
+        {
+            // ja, dann neues item erstellen
+            data[(unsigned long)index] = (ArchivItem*)(*allocator)(0, 0, item);
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  fügt ein Element hinten an.
  *
  *  @param[in] item Item mit dem anzufügenden Inhalt
@@ -214,25 +214,25 @@ void libsiedler2::ArchivInfo::setC(int index, const ArchivItem *item)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  fügt ein Element hinten an und kopiert die Daten von @p item.
  *
  *  @param[in] item Item mit dem zu kopierenden Inhalt
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
+void libsiedler2::ArchivInfo::pushC(const ArchivItem* item)
 {
-	alloc_inc(1);
+    alloc_inc(1);
 
-	if(item)
-		data[count-1] = (ArchivItem*)(*allocator)(0, 0, item);
-	else
-		data[count-1] = NULL;
+    if(item)
+        data[count - 1] = (ArchivItem*)(*allocator)(0, 0, item);
+    else
+        data[count - 1] = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  liefert den Inhalt eines ArchivItems am entsprechenden Index.
  *
  *  @param[in] index Index des zu setzenden Eintrags
@@ -243,7 +243,7 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  liefert den Inhalt eines ArchivItems am entsprechenden Index.
  *
  *  @param[in] index Index des zu setzenden Eintrags
@@ -254,7 +254,7 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  liefert den Pointer eines ArchivItems am entsprechenden Index.
  *
  *  @param[in] index Index des zu setzenden Eintrags
@@ -265,7 +265,7 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  liefert die Größe des Archivs.
  *
  *  @return liefert die Größe des Archivs.
@@ -274,8 +274,8 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
- *  Index-Operator von @p ArchivInfo. 
+/**
+ *  Index-Operator von @p ArchivInfo.
  *
  *  @param[in] index Index des zu liefernden Eintrags
  *
@@ -285,7 +285,7 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Zuweisungsoperator von @p ArchivInfo.
  *
  *  @param[in] info Quellitem
@@ -296,7 +296,7 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Kopierfunktion von @p ArchivInfo.
  *
  *  @param[in] to     Zielposition
@@ -306,11 +306,11 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem *item)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo *source)
+void libsiedler2::ArchivInfo::copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo* source)
 {
-	if(to+count > this->count)
-		alloc_inc(to+count-this->count);
+    if(to + count > this->count)
+        alloc_inc(to + count - this->count);
 
-	for(unsigned int f = from; f < from+count; ++to, ++f)
-		setC(to, source->get(f));
+    for(unsigned int f = from; f < from + count; ++to, ++f)
+        setC(to, source->get(f));
 }

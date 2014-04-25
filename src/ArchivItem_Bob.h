@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bob.h 8159 2012-09-06 11:35:01Z marcus $
+// $Id: ArchivItem_Bob.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,35 +26,35 @@
 
 namespace libsiedler2
 {
-	/// Klasse für Bobfiles.
-	class ArchivItem_Bob : public ArchivItem, public ArchivInfo
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Bob.
-		ArchivItem_Bob(void);
+    /// Klasse für Bobfiles.
+    class ArchivItem_Bob : public ArchivItem, public ArchivInfo
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Bob.
+            ArchivItem_Bob(void);
 
-		/// Kopierkonstruktor von @p ArchivItem_Bob.
-		ArchivItem_Bob(const ArchivItem_Bob *item);
+            /// Kopierkonstruktor von @p ArchivItem_Bob.
+            ArchivItem_Bob(const ArchivItem_Bob* item);
 
-		/// Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten.
-		ArchivItem_Bob(FILE *file, const ArchivItem_Palette *palette);
+            /// Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten.
+            ArchivItem_Bob(FILE* file, const ArchivItem_Palette* palette);
 
-		/// Destruktor von @p ArchivItem_Bob.
-		~ArchivItem_Bob(void);
+            /// Destruktor von @p ArchivItem_Bob.
+            ~ArchivItem_Bob(void);
 
-		/// lädt die Bobdaten aus einer Datei.
-		int load(FILE *file, const ArchivItem_Palette *palette);
+            /// lädt die Bobdaten aus einer Datei.
+            int load(FILE* file, const ArchivItem_Palette* palette);
 
-		/// schreibt die Bobdaten in eine Datei.
-		int write(FILE *file, const ArchivItem_Palette *palette) const;
+            /// schreibt die Bobdaten in eine Datei.
+            int write(FILE* file, const ArchivItem_Palette* palette) const;
 
-		inline unsigned short getLink(unsigned idx) {return(links[idx]);};
+            inline unsigned short getLink(unsigned idx) {return(links[idx]);};
 
-	protected:
-		unsigned short good_count; /// Warenanzahl
-		unsigned short item_count; /// Bildanzahl
-		unsigned short *links;     /// "Links" (Zugehörigkeiten der Bilder)
-	};
+        protected:
+            unsigned short good_count; /// Warenanzahl
+            unsigned short item_count; /// Bildanzahl
+            unsigned short* links;     /// "Links" (Zugehörigkeiten der Bilder)
+    };
 }
 
 #endif // !ARCHIVITEM_BOB_H_INCLUDED

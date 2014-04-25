@@ -1,4 +1,4 @@
-// $Id: LoadBBM.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadBBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,125 +41,125 @@
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadBBM(const char *file, ArchivInfo *items)
+int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
 {
-	FILE *bbm;
-	char header[4], pbm[4];
-	unsigned int chunk;
-	unsigned int i = 0;
-	unsigned int length;
-	long size;
+    FILE* bbm;
+    char header[4], pbm[4];
+    unsigned int chunk;
+    unsigned int i = 0;
+    unsigned int length;
+    long size;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	bbm = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    bbm = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(bbm == NULL)
-		return 2;
+    // hat das geklappt?
+    if(bbm == NULL)
+        return 2;
 
-	fseek(bbm, 0, SEEK_END);
-	size = ftell(bbm);
-	fseek(bbm, 0, SEEK_SET);
+    fseek(bbm, 0, SEEK_END);
+    size = ftell(bbm);
+    fseek(bbm, 0, SEEK_SET);
 
-	// Header einlesen
-	if(libendian::le_read_c(header, 4, bbm) != 4)
-		return 3;
+    // Header einlesen
+    if(libendian::le_read_c(header, 4, bbm) != 4)
+        return 3;
 
-	// ist es eine BBM-File? (Header "FORM")
-	if(strncmp(header, "FORM", 4) != 0)
-		return 4;
+    // ist es eine BBM-File? (Header "FORM")
+    if(strncmp(header, "FORM", 4) != 0)
+        return 4;
 
-	// Länge einlesen
-	if(libendian::le_read_ui(&length, bbm) != 0)
-		return 5;
+    // Länge einlesen
+    if(libendian::le_read_ui(&length, bbm) != 0)
+        return 5;
 
-	// Typ einlesen
-	if(libendian::le_read_c(pbm, 4, bbm) != 4)
-		return 6;
+    // Typ einlesen
+    if(libendian::le_read_c(pbm, 4, bbm) != 4)
+        return 6;
 
-	// ist es eine BBM-File? (Typ "PBM ")
-	if(strncmp(pbm, "PBM ", 4) != 0)
-		return 7;
+    // ist es eine BBM-File? (Typ "PBM ")
+    if(strncmp(pbm, "PBM ", 4) != 0)
+        return 7;
 
-	// Chunks einlesen
-	while(!feof(bbm) && ftell(bbm) < size)
-	{
-		// Chunk-Typ einlesen
-		if(libendian::be_read_ui(&chunk, bbm) != 0)
-			return 8;
+    // Chunks einlesen
+    while(!feof(bbm) && ftell(bbm) < size)
+    {
+        // Chunk-Typ einlesen
+        if(libendian::be_read_ui(&chunk, bbm) != 0)
+            return 8;
 
-		switch(chunk)
-		{
-		case 0x434D4150: // "CMAP"
-			{
-				// Länge einlesen
-				if(libendian::be_read_ui(&length, bbm) != 0)
-					return 9;
+        switch(chunk)
+        {
+            case 0x434D4150: // "CMAP"
+            {
+                // Länge einlesen
+                if(libendian::be_read_ui(&length, bbm) != 0)
+                    return 9;
 
-				// Bei ungerader Zahl aufrunden
-				if(length & 1)
-					++length;
+                // Bei ungerader Zahl aufrunden
+                if(length & 1)
+                    ++length;
 
-				// Ist Länge wirklich so groß wie Farbtabelle?
-				if(length != 256 * 3)
-					return 10;
+                // Ist Länge wirklich so groß wie Farbtabelle?
+                if(length != 256 * 3)
+                    return 10;
 
-				// Daten von Item auswerten
-				ArchivItem_Palette *palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
-				items->push(palette);
+                // Daten von Item auswerten
+                ArchivItem_Palette* palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
+                items->push(palette);
 
-				const char *name = strrchr(file, '/');
-				if(name)
-				{
-					char rname[17];
-					snprintf(rname, 16, "%s(%d)", name+1, i);
-					palette->setName(rname);
-				}
+                const char* name = strrchr(file, '/');
+                if(name)
+                {
+                    char rname[17];
+                    snprintf(rname, 16, "%s(%d)", name + 1, i);
+                    palette->setName(rname);
+                }
 
-				// Farbpalette lesen
-				unsigned char colors[256][3];
-				if(libendian::le_read_uc(colors[0], 256*3, bbm) != 256*3)
-					return 10;
+                // Farbpalette lesen
+                unsigned char colors[256][3];
+                if(libendian::le_read_uc(colors[0], 256 * 3, bbm) != 256 * 3)
+                    return 10;
 
-				// Farbpalette zuweisen
-				for(unsigned int k = 0; k < 256; ++k)
-					palette->set(k, colors[k][0], colors[k][1], colors[k][2]);
+                // Farbpalette zuweisen
+                for(unsigned int k = 0; k < 256; ++k)
+                    palette->set(k, colors[k][0], colors[k][1], colors[k][2]);
 
-				++i;
-			} break;
-		default:
-			{
-				// Länge einlesen
-				if(libendian::be_read_ui(&length, bbm) != 0)
-					return 12;
+                ++i;
+            } break;
+            default:
+            {
+                // Länge einlesen
+                if(libendian::be_read_ui(&length, bbm) != 0)
+                    return 12;
 
-				// Bei ungerader Zahl aufrunden
-				if(length & 1)
-					++length;
+                // Bei ungerader Zahl aufrunden
+                if(length & 1)
+                    ++length;
 
-				if(length > 0)
-				{
-					unsigned char *buffer = new unsigned char[length];
+                if(length > 0)
+                {
+                    unsigned char* buffer = new unsigned char[length];
 
-					// überspringen
-					if(libendian::le_read_uc(buffer, length, bbm) != (int)length)
-						return 13;
+                    // überspringen
+                    if(libendian::le_read_uc(buffer, length, bbm) != (int)length)
+                        return 13;
 
-					delete[] buffer;
-				}
-			} break;
-		}
-	}
+                    delete[] buffer;
+                }
+            } break;
+        }
+    }
 
-	// Datei schliessen
-	fclose(bbm);
+    // Datei schliessen
+    fclose(bbm);
 
-	if(items->getCount() == 0)
-		return 14;
+    if(items->getCount() == 0)
+        return 14;
 
-	// alles ok
-	return 0;
+    // alles ok
+    return 0;
 }

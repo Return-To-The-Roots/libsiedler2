@@ -1,4 +1,4 @@
-// $Id: LoadTXT.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadTXT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,112 +43,112 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadTXT(const char *file, ArchivInfo *items, bool conversion)
+int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conversion)
 {
-	FILE *txt;
-	short header;
-	long length;
+    FILE* txt;
+    short header;
+    long length;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	txt = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    txt = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(txt == NULL)
-		return 2;
+    // hat das geklappt?
+    if(txt == NULL)
+        return 2;
 
-	// Länge bestimmen
-	fseek(txt, 0, SEEK_END);
-	length = ftell(txt);
-	fseek(txt, 0, SEEK_SET);
+    // Länge bestimmen
+    fseek(txt, 0, SEEK_END);
+    length = ftell(txt);
+    fseek(txt, 0, SEEK_SET);
 
-	// Header einlesen
-	if(libendian::be_read_s(&header, txt) != 0)
-		return 3;
+    // Header einlesen
+    if(libendian::be_read_s(&header, txt) != 0)
+        return 3;
 
-	// ist es eine TXT-File? (Header 0xE7FD)
-	if( header != (short)0xE7FD )
-	{
-		// den Header zurückspringen
-		fseek(txt, -2, SEEK_CUR);
+    // ist es eine TXT-File? (Header 0xE7FD)
+    if( header != (short)0xE7FD )
+    {
+        // den Header zurückspringen
+        fseek(txt, -2, SEEK_CUR);
 
-		// Plain-Text
-		items->alloc(1);
+        // Plain-Text
+        items->alloc(1);
 
-		ArchivItem_Text *item = (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL);
-		item->load(txt, conversion);
+        ArchivItem_Text* item = (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL);
+        item->load(txt, conversion);
 
-		// Item erzeugen
-		items->set(0, item);
-	}
-	else
-	{
-		// "archiviert"
-		unsigned short count, unknown;
-		unsigned int size;
+        // Item erzeugen
+        items->set(0, item);
+    }
+    else
+    {
+        // "archiviert"
+        unsigned short count, unknown;
+        unsigned int size;
 
-		if(libendian::le_read_us(&count, txt) != 0)
-			return 4;
+        if(libendian::le_read_us(&count, txt) != 0)
+            return 4;
 
-		if(libendian::le_read_us(&unknown, txt) != 0)
-			return 5;
+        if(libendian::le_read_us(&unknown, txt) != 0)
+            return 5;
 
-		if(libendian::le_read_ui(&size, txt) != 0)
-			return 6;
+        if(libendian::le_read_ui(&size, txt) != 0)
+            return 6;
 
-		if(size == 0)
-			size = length;
-		else
-			size += 10;
+        if(size == 0)
+            size = length;
+        else
+            size += 10;
 
-		// Anzahl alloziieren
-		items->alloc(count);
+        // Anzahl alloziieren
+        items->alloc(count);
 
-		int *starts = new int[count];
-		memset(starts, 0, sizeof(int)*count);
+        int* starts = new int[count];
+        memset(starts, 0, sizeof(int)*count);
 
-		// Starts einlesen
-		for(unsigned short x = 0; x < count; ++x)
-		{
-			int s;
-			if(libendian::le_read_i(&s, txt) != 0)
-				return 7;
+        // Starts einlesen
+        for(unsigned short x = 0; x < count; ++x)
+        {
+            int s;
+            if(libendian::le_read_i(&s, txt) != 0)
+                return 7;
 
-			if(s != 0)
-				starts[x] = s + 10;
-		}
+            if(s != 0)
+                starts[x] = s + 10;
+        }
 
-		// Daten einlesen, zwecks Längenbestimmung
-		unsigned int pos = ftell(txt);
-		unsigned int rest = size - pos;
-		char *buffer = new char[rest+1];
-		if(libendian::le_read_c(buffer, rest, txt) != (int)rest)
-			return 8;
+        // Daten einlesen, zwecks Längenbestimmung
+        unsigned int pos = ftell(txt);
+        unsigned int rest = size - pos;
+        char* buffer = new char[rest + 1];
+        if(libendian::le_read_c(buffer, rest, txt) != (int)rest)
+            return 8;
 
-		for(unsigned short x = 0; x < count; ++x)
-		{
-			int i = starts[x];
+        for(unsigned short x = 0; x < count; ++x)
+        {
+            int i = starts[x];
 
-			if(i != 0)
-			{
-				// An Start springen
-				fseek(txt, i, SEEK_SET);
+            if(i != 0)
+            {
+                // An Start springen
+                fseek(txt, i, SEEK_SET);
 
-				// einlesen
-				ArchivItem_Text *item = (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL);
-				item->load(txt, conversion, (unsigned int)strlen(&buffer[i - pos]));
+                // einlesen
+                ArchivItem_Text* item = (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL);
+                item->load(txt, conversion, (unsigned int)strlen(&buffer[i - pos]));
 
-				items->set(x, item);
-			}
-			else
-				items->set(x, (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL));
-		}
-		delete[] buffer;
-		delete[] starts;
-	}
+                items->set(x, item);
+            }
+            else
+                items->set(x, (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL));
+        }
+        delete[] buffer;
+        delete[] starts;
+    }
 
-	// alles ok
-	return 0;
+    // alles ok
+    return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: ArchivItem.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,9 +62,9 @@
  */
 libsiedler2::ArchivItem::ArchivItem(void)
 {
-	bobtype = 0;
-	memset(name, 0, 64);
-	setName("untitled");
+    bobtype = 0;
+    memset(name, 0, 64);
+    setName("untitled");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,10 +75,10 @@ libsiedler2::ArchivItem::ArchivItem(void)
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem::ArchivItem(const ArchivItem *item)
+libsiedler2::ArchivItem::ArchivItem(const ArchivItem* item)
 {
-	bobtype = item->bobtype;
-	memcpy(name, item->name, 64);
+    bobtype = item->bobtype;
+    memcpy(name, item->name, 64);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -133,13 +133,13 @@ libsiedler2::ArchivItem::~ArchivItem(void)
  *
  *  @param[in] file Dateihandle der Datei
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem::load(FILE *file)
+int libsiedler2::ArchivItem::load(FILE* file)
 {
-	return 256;
+    return 256;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -148,11 +148,11 @@ int libsiedler2::ArchivItem::load(FILE *file)
  *
  *  @param[in] file Dateihandle der Datei
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem::write(FILE *file) const
+int libsiedler2::ArchivItem::write(FILE* file) const
 {
-	return 256;
+    return 256;
 }

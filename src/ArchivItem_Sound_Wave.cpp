@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Wave.cpp 7837 2012-02-14 13:14:02Z FloSoft $
+// $Id: ArchivItem_Sound_Wave.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -27,9 +27,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,10 +48,10 @@
  */
 libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(void) : baseArchivItem_Sound()
 {
-	length = 0;
-	data = NULL;
+    length = 0;
+    data = NULL;
 
-	setType(SOUNDTYPE_WAVE);
+    setType(SOUNDTYPE_WAVE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,17 +62,17 @@ libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(void) : baseAr
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave *item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
+libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave* item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
 {
-	type = item->type;
-	length = item->length;
-	data = NULL;
+    type = item->type;
+    length = item->length;
+    data = NULL;
 
-	if(length != 0)
-	{
-		data = new unsigned char[length];
-		memcpy(data, item->data, length);
-	}
+    if(length != 0)
+    {
+        data = new unsigned char[length];
+        memcpy(data, item->data, length);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(const baseArch
  */
 libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave(void)
 {
-	clear();
+    clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,90 +93,91 @@ libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave(void)
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] length  Länge der Daten
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound_Wave::load(FILE *file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length)
 {
-	if(file == NULL || length == 0)
-		return 1;
+    if(file == NULL || length == 0)
+        return 1;
 
-	char header[4];
-	bool prependheader = true;
+    char header[4];
+    bool prependheader = true;
 
-	// Header einlesen
-	libendian::le_read_c(header, 4, file);
+    // Header einlesen
+    libendian::le_read_c(header, 4, file);
 
-	// ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
-	if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
-		prependheader = false;
+    // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
+    if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
+        prependheader = false;
 
-	fseek(file, -4, SEEK_CUR);
+    fseek(file, -4, SEEK_CUR);
 
-	if(prependheader == true)
-	{
-		alloc(length+44);
+    if(prependheader == true)
+    {
+        alloc(length + 44);
 
-		if(libendian::le_read_uc(&data[44], length, file) != (int)length)
-			return 2;
+        if(libendian::le_read_uc(&data[44], length, file) != (int)length)
+            return 2;
 
-		//unsigned char header[] = {
-		//	 0 | 'R', 'I', 'F', 'F',
-		//	 4 | 0, 0, 0, 0, // file-size
-		//	 8 | 'W', 'A', 'V', 'E',
-		//	12 | 'f', 'm', 't', ' ',
-		//	16 | 0x10, 0x00, // fmt-length
-		//  18 | 0x00, 0x00, // fmt-format, unkomprimiert
-		//	20 | 0x01, 0x00, // Audio-Format (PCM)
-		//	22 | 0x01, 0x00, // channels, mono
-		//	24 | 0x11, 0x2B, 0x00, 0x00, // 11,025 kHz
-		//	28 | 0x11, 0x2B, 0x00, 0x00, // average bytes, 11025
-		//	32 | 0x01, 0x00, // block align, 1
-		//	34 | 0x08, 0x00, // bits per sample, 8
-		//	36 | 'd', 'a', 't', 'a',
-		//	40 | 0, 0, 0, 0 // data-size
-		//};
+        //unsigned char header[] = {
+        //   0 | 'R', 'I', 'F', 'F',
+        //   4 | 0, 0, 0, 0, // file-size
+        //   8 | 'W', 'A', 'V', 'E',
+        //  12 | 'f', 'm', 't', ' ',
+        //  16 | 0x10, 0x00, // fmt-length
+        //  18 | 0x00, 0x00, // fmt-format, unkomprimiert
+        //  20 | 0x01, 0x00, // Audio-Format (PCM)
+        //  22 | 0x01, 0x00, // channels, mono
+        //  24 | 0x11, 0x2B, 0x00, 0x00, // 11,025 kHz
+        //  28 | 0x11, 0x2B, 0x00, 0x00, // average bytes, 11025
+        //  32 | 0x01, 0x00, // block align, 1
+        //  34 | 0x08, 0x00, // bits per sample, 8
+        //  36 | 'd', 'a', 't', 'a',
+        //  40 | 0, 0, 0, 0 // data-size
+        //};
 
-		unsigned char header[] = {
-			'R', 'I', 'F', 'F',
-			0, 0, 0, 0, // file-size
-			'W', 'A', 'V', 'E',
-			'f', 'm', 't', ' ',
-			0x10, 0x00, // fmt-length
-			0x00, 0x00, // fmt-format, unkomprimiert
-			0x01, 0x00, // Audio-Format (PCM)
-			0x01, 0x00, // channels, mono
-			0x44, 0xac, 0x00, 0x00, // 44100 kHz
-			0x44, 0xac, 0x00, 0x00, // average bytes, 44100
-			0x02, 0x00, // block align, 1
-			0x10, 0x00, // bits per sample, 16
-			'd', 'a', 't', 'a',
-			0, 0, 0, 0 // data-size
-		};
+        unsigned char header[] =
+        {
+            'R', 'I', 'F', 'F',
+            0, 0, 0, 0, // file-size
+            'W', 'A', 'V', 'E',
+            'f', 'm', 't', ' ',
+            0x10, 0x00, // fmt-length
+            0x00, 0x00, // fmt-format, unkomprimiert
+            0x01, 0x00, // Audio-Format (PCM)
+            0x01, 0x00, // channels, mono
+            0x44, 0xac, 0x00, 0x00, // 44100 kHz
+            0x44, 0xac, 0x00, 0x00, // average bytes, 44100
+            0x02, 0x00, // block align, 1
+            0x10, 0x00, // bits per sample, 16
+            'd', 'a', 't', 'a',
+            0, 0, 0, 0 // data-size
+        };
 
-		unsigned int size = length + 16;
-		unsigned int flength = length;
+        unsigned int size = length + 16;
+        unsigned int flength = length;
 
 #if BYTE_ORDER == BIG_ENDIAN
-		size = libendian::swap_ui(size);
-		flength = libendian::swap_ui(flength);
+        size = libendian::swap_ui(size);
+        flength = libendian::swap_ui(flength);
 #endif
 
-		memcpy(&header[4],  &size, 4);
-		memcpy(&header[40], &flength,   4);
+        memcpy(&header[4],  &size, 4);
+        memcpy(&header[40], &flength,   4);
 
-		memcpy(&data[0], header, 44);
-	}
-	else
-	{
-		alloc(length);
+        memcpy(&data[0], header, 44);
+    }
+    else
+    {
+        alloc(length);
 
-		if(libendian::le_read_uc(data, length, file) != (int)length)
-			return 3;
-	}
+        if(libendian::le_read_uc(data, length, file) != (int)length)
+            return 3;
+    }
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -186,30 +187,30 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE *file, unsigned int length
  *  @param[in] file        Dateihandle der Datei
  *  @param[in] stripheader Soll der Wave-Header entfernt werden?
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound_Wave::write(FILE *file, bool stripheader) const
+int libsiedler2::baseArchivItem_Sound_Wave::write(FILE* file, bool stripheader) const
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	unsigned char *start = data;
-	unsigned int length = this->length;
-	if(stripheader)
-	{
-		start = &data[44];
-		length = this->length - 44;
-	}
+    unsigned char* start = data;
+    unsigned int length = this->length;
+    if(stripheader)
+    {
+        start = &data[44];
+        length = this->length - 44;
+    }
 
-	if(libendian::le_write_ui(length, file) != 0)
-		return 2;
+    if(libendian::le_write_ui(length, file) != 0)
+        return 2;
 
-	if(libendian::le_write_uc(start, length, file) != (int)length)
-		return 3;
+    if(libendian::le_write_uc(start, length, file) != (int)length)
+        return 3;
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -222,15 +223,15 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(FILE *file, bool stripheader) 
  */
 void libsiedler2::baseArchivItem_Sound_Wave::alloc(unsigned int length)
 {
-	clear();
+    clear();
 
-	this->length = length;
+    this->length = length;
 
-	if(length != 0)
-	{
-		data = new unsigned char[length];
-		memset(data, 0, length);
-	}
+    if(length != 0)
+    {
+        data = new unsigned char[length];
+        memset(data, 0, length);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -241,8 +242,8 @@ void libsiedler2::baseArchivItem_Sound_Wave::alloc(unsigned int length)
  */
 void libsiedler2::baseArchivItem_Sound_Wave::clear(void)
 {
-	delete[] data;
+    delete[] data;
 
-	length = 0;
-	data = NULL;
+    length = 0;
+    data = NULL;
 }

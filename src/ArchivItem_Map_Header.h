@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map_Header.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Map_Header.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,48 +25,48 @@
 
 namespace libsiedler2
 {
-	/// Klasse für einen Mapheader.
-	class ArchivItem_Map_Header : public ArchivItem
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Map_Header.
-		ArchivItem_Map_Header(void);
-		/// Kopierkonstruktor von @p ArchivItem_Map_Header.
-		ArchivItem_Map_Header(const ArchivItem_Map_Header *item);
-		/// Destruktor von @p ArchivItem_Map_Header.
-		~ArchivItem_Map_Header(void);
+    /// Klasse für einen Mapheader.
+    class ArchivItem_Map_Header : public ArchivItem
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Map_Header.
+            ArchivItem_Map_Header(void);
+            /// Kopierkonstruktor von @p ArchivItem_Map_Header.
+            ArchivItem_Map_Header(const ArchivItem_Map_Header* item);
+            /// Destruktor von @p ArchivItem_Map_Header.
+            ~ArchivItem_Map_Header(void);
 
-		/// lädt den Mapheader aus einer Datei.
-		int load(FILE *file);
-		/// schreibt den Mapheader in eine Datei.
-		int write(FILE *file) const;
+            /// lädt den Mapheader aus einer Datei.
+            int load(FILE* file);
+            /// schreibt den Mapheader in eine Datei.
+            int write(FILE* file) const;
 
-		const char *getName(void) const;
-		void setName(const char *name);
+            const char* getName(void) const;
+            void setName(const char* name);
 
-		unsigned short getWidth(void) const;
-		void setWidth(unsigned short width);
+            unsigned short getWidth(void) const;
+            void setWidth(unsigned short width);
 
-		unsigned short getHeight(void) const;
-		void setHeight(unsigned short height);
+            unsigned short getHeight(void) const;
+            void setHeight(unsigned short height);
 
-		unsigned char getGfxSet(void) const;
-		void setGfxSet(unsigned char gfxset);
+            unsigned char getGfxSet(void) const;
+            void setGfxSet(unsigned char gfxset);
 
-		unsigned char getPlayer(void) const;
-		void setPlayer(unsigned char player);
+            unsigned char getPlayer(void) const;
+            void setPlayer(unsigned char player);
 
-		const char *getAuthor(void) const;
-		void setAuthor(const char *author);
+            const char* getAuthor(void) const;
+            void setAuthor(const char* author);
 
-	private:
-		char name[21];
-		unsigned short width;
-		unsigned short height;
-		unsigned char gfxset;
-		unsigned char player;
-		char author[21];
-	};
+        private:
+            char name[21];
+            unsigned short width;
+            unsigned short height;
+            unsigned char gfxset;
+            unsigned char player;
+            char author[21];
+    };
 }
 
 #endif // !ARCHIVITEM_MAP_HEADER_H_INCLUDED

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Text.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Text.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,9 +26,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,9 +63,9 @@
  */
 libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem()
 {
-	text = NULL;
-	length = 0;
-	setBobType(BOBTYPE_TEXT);
+    text = NULL;
+    length = 0;
+    setBobType(BOBTYPE_TEXT);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem()
  */
 libsiedler2::ArchivItem_Text::~ArchivItem_Text()
 {
-	delete[] text;
+    delete[] text;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -87,12 +87,12 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Text::ArchivItem_Text(const ArchivItem_Text *item) : ArchivItem( (ArchivItem*)item )
+libsiedler2::ArchivItem_Text::ArchivItem_Text(const ArchivItem_Text* item) : ArchivItem( (ArchivItem*)item )
 {
-	text = NULL;
-	setBobType(BOBTYPE_TEXT);
+    text = NULL;
+    setBobType(BOBTYPE_TEXT);
 
-	setText(item->text, false, item->length);
+    setText(item->text, false, item->length);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,12 +106,12 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(const ArchivItem_Text *item) : Arc
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Text::ArchivItem_Text(FILE *file, bool conversion, unsigned int length) : ArchivItem()
+libsiedler2::ArchivItem_Text::ArchivItem_Text(FILE* file, bool conversion, unsigned int length) : ArchivItem()
 {
-	text = NULL;
-	setBobType(BOBTYPE_TEXT);
+    text = NULL;
+    setBobType(BOBTYPE_TEXT);
 
-	load(file, conversion, length);
+    load(file, conversion, length);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -122,60 +122,60 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(FILE *file, bool conversion, unsig
  *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
  *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @todo Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Text::load(FILE *file, bool conversion, unsigned int length)
+int libsiedler2::ArchivItem_Text::load(FILE* file, bool conversion, unsigned int length)
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	// Aktuelle Position bestimmen
-	long pos = ftell(file);
+    // Aktuelle Position bestimmen
+    long pos = ftell(file);
 
-	this->length = length;
-	if(this->length == 0)
-	{
-		// Länge der Datei bestimmen
-		fseek(file, 0, SEEK_END);
-		this->length = ftell(file) - pos;
-		fseek(file, pos, SEEK_SET);
-	}
+    this->length = length;
+    if(this->length == 0)
+    {
+        // Länge der Datei bestimmen
+        fseek(file, 0, SEEK_END);
+        this->length = ftell(file) - pos;
+        fseek(file, pos, SEEK_SET);
+    }
 
-	// Alten Text ggf. löschen
-	delete[] text;
+    // Alten Text ggf. löschen
+    delete[] text;
 
-	text = new char[this->length+1];
-	memset(text, 0, this->length+1);
+    text = new char[this->length + 1];
+    memset(text, 0, this->length + 1);
 
-	// Einlesen
-	if(libendian::le_read_c(text, this->length, file) != (int)this->length)
-		return 2;
+    // Einlesen
+    if(libendian::le_read_c(text, this->length, file) != (int)this->length)
+        return 2;
 
-	/// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
-	if(text[this->length-1] == 26)
-		text[this->length-1] = 0;
+    /// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
+    if(text[this->length - 1] == 26)
+        text[this->length - 1] = 0;
 
-	if(conversion)
-		OemToAnsi(text, text);
+    if(conversion)
+        OemToAnsi(text, text);
 
-	for(unsigned int i = 0; i < this->length; ++i)
-	{
-		if(text[i] == '@' && text[i+1] == '@')
-		{
-			text[i] = '\r';
-			text[i+1] = '\n';
-		}
-	}
+    for(unsigned int i = 0; i < this->length; ++i)
+    {
+        if(text[i] == '@' && text[i + 1] == '@')
+        {
+            text[i] = '\r';
+            text[i + 1] = '\n';
+        }
+    }
 
-	// Text setzen
-	setName(text);
+    // Text setzen
+    setName(text);
 
-	// Alles OK
-	return 0;
+    // Alles OK
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -185,75 +185,75 @@ int libsiedler2::ArchivItem_Text::load(FILE *file, bool conversion, unsigned int
  *  @param[in] file       Dateihandle in die der Text geschrieben werden soll
  *  @param[in] conversion Soll ggf. ANSI-Charset in OEM umgewandelt werden?
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Text::write(FILE *file, bool conversion) const
+int libsiedler2::ArchivItem_Text::write(FILE* file, bool conversion) const
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	// Wenn Länge 0, nix schreiben, ist ja kein Fehler!
-	if(length == 0)
-		return 0;
+    // Wenn Länge 0, nix schreiben, ist ja kein Fehler!
+    if(length == 0)
+        return 0;
 
-	unsigned int length = this->length;
-	char *text = new char[length*2+1];
-	memset(text, 0, length*2+1);
+    unsigned int length = this->length;
+    char* text = new char[length * 2 + 1];
+    memset(text, 0, length * 2 + 1);
 
-	for(unsigned int i = 0, j = 0; i < length; ++i)
-	{
-		if(this->text[i] == '\n')
-		{
-			text[j++] = '@';
-			text[j++] = '@';
-		}
-		else if(this->text[i] == '\r')
-			continue;
-		else
-			text[j++] = this->text[i];
-	}
+    for(unsigned int i = 0, j = 0; i < length; ++i)
+    {
+        if(this->text[i] == '\n')
+        {
+            text[j++] = '@';
+            text[j++] = '@';
+        }
+        else if(this->text[i] == '\r')
+            continue;
+        else
+            text[j++] = this->text[i];
+    }
 
-	//memcpy(text, this->text, length);
+    //memcpy(text, this->text, length);
 
-	// ggf umwandeln
-	if(conversion)
-		AnsiToOem(text, text);
+    // ggf umwandeln
+    if(conversion)
+        AnsiToOem(text, text);
 
-	// Schreiben
-	if(libendian::le_write_c(text, length+1, file) != (int)length+1)
-		return 2;
+    // Schreiben
+    if(libendian::le_write_c(text, length + 1, file) != (int)length + 1)
+        return 2;
 
-	delete[] text;
+    delete[] text;
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Text.
  *
- *	@return liefert einen konstanten Zeiger auf das Textelement, NULL bei leerem Text
+ *  @return liefert einen konstanten Zeiger auf das Textelement, NULL bei leerem Text
  *
  *  @author FloSoft
  */
-const char *libsiedler2::ArchivItem_Text::getText(void) const
+const char* libsiedler2::ArchivItem_Text::getText(void) const
 {
-	return text;
+    return text;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Länge.
  *
- *	@return liefert die Länge des Textes
+ *  @return liefert die Länge des Textes
  *
  *  @author FloSoft
  */
 unsigned int libsiedler2::ArchivItem_Text::getLength(void) const
 {
-	return length;
+    return length;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -267,33 +267,33 @@ unsigned int libsiedler2::ArchivItem_Text::getLength(void) const
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Text::setText(const char *text, bool conversion, unsigned int length)
+void libsiedler2::ArchivItem_Text::setText(const char* text, bool conversion, unsigned int length)
 {
-	// alten Text löschen
-	delete[] this->text;
-	this->length = 0;
+    // alten Text löschen
+    delete[] this->text;
+    this->length = 0;
 
-	// ist der neue Text leer?
-	if(text == NULL)
-		return;
+    // ist der neue Text leer?
+    if(text == NULL)
+        return;
 
-	// ggf. Länge bestimmen
-	if(length == 0)
-		length = (unsigned int)strlen(text);
+    // ggf. Länge bestimmen
+    if(length == 0)
+        length = (unsigned int)strlen(text);
 
-	// neuen Textspeicher erzeugen
-	this->text = new char[length+1];
-	memset(this->text, 0, length+1);
+    // neuen Textspeicher erzeugen
+    this->text = new char[length + 1];
+    memset(this->text, 0, length + 1);
 
-	// text kopieren
-	memcpy(this->text, text, length);
+    // text kopieren
+    memcpy(this->text, text, length);
 
-	this->length = length;
+    this->length = length;
 
-	if(conversion)
-		AnsiToOem(this->text, this->text);
+    if(conversion)
+        AnsiToOem(this->text, this->text);
 
-	// Name setzen
-	if(strlen(getName()) == 0)
-		setName(this->text);
+    // Name setzen
+    if(strlen(getName()) == 0)
+        setName(this->text);
 }

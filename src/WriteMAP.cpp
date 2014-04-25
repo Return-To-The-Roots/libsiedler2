@@ -1,4 +1,4 @@
-// $Id: WriteMAP.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: WriteMAP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,13 +24,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  schreibt ein ArchivInfo in eine SWD/WSD-File.
  *
  *  @param[in] file    Dateiname der SWD/WSD-File
@@ -40,46 +40,46 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteMAP(const char *file, const ArchivInfo *items, long nr)
+int libsiedler2::loader::WriteMAP(const char* file, const ArchivInfo* items, long nr)
 {
-	FILE *map;
+    FILE* map;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	if(nr == -1)
-	{
-		// Palette in ArchivInfo suchen, erste Palette wird geschrieben
-		for(unsigned long i = 0; i < items->getCount(); ++i)
-		{
-			if(!items->get(i))
-				continue;
-			if(items->get(i)->getBobType() == BOBTYPE_MAP)
-			{
-				nr = i;
-				break;
-			}
-		
-		}
-	}
+    if(nr == -1)
+    {
+        // Palette in ArchivInfo suchen, erste Palette wird geschrieben
+        for(unsigned long i = 0; i < items->getCount(); ++i)
+        {
+            if(!items->get(i))
+                continue;
+            if(items->get(i)->getBobType() == BOBTYPE_MAP)
+            {
+                nr = i;
+                break;
+            }
 
-	// Haben wir eine gefunden?
-	if(nr == -1)
-		return 2;
+        }
+    }
 
-	// Datei zum lesen öffnen
-	map = fopen(file, "wb");
-	
-	// hat das geklappt?
-	if(map == NULL)
-		return 2;
+    // Haben wir eine gefunden?
+    if(nr == -1)
+        return 2;
 
-	const ArchivItem_Map *item = dynamic_cast<const ArchivItem_Map*>(items->get(nr));
-	if(item->write(map) != 0)
-		return 3;
+    // Datei zum lesen öffnen
+    map = fopen(file, "wb");
 
-	// Datei schliessen
-	fclose(map);
+    // hat das geklappt?
+    if(map == NULL)
+        return 2;
 
-	return 0;
+    const ArchivItem_Map* item = dynamic_cast<const ArchivItem_Map*>(items->get(nr));
+    if(item->write(map) != 0)
+        return 3;
+
+    // Datei schliessen
+    fclose(map);
+
+    return 0;
 }

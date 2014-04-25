@@ -1,4 +1,4 @@
-// $Id: LoadBOB.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadBOB.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,43 +40,43 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadBOB(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items)
+int libsiedler2::loader::LoadBOB(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items)
 {
-	FILE *bob;
-	unsigned int header;
+    FILE* bob;
+    unsigned int header;
 
-	if(file == NULL || palette == NULL || items == NULL)
-		return 1;
+    if(file == NULL || palette == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	bob = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    bob = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(bob == NULL)
-		return 2;
+    // hat das geklappt?
+    if(bob == NULL)
+        return 2;
 
-	// Header einlesen
-	if(libendian::be_read_ui(&header, bob) != 0)
-		return 3;
+    // Header einlesen
+    if(libendian::be_read_ui(&header, bob) != 0)
+        return 3;
 
-	// ist es eine BOB-File? (Header 0xF601F501)
-	if(header != 0xF601F501)
-		return 4;
+    // ist es eine BOB-File? (Header 0xF601F501)
+    if(header != 0xF601F501)
+        return 4;
 
-	ArchivItem_Bob *item = dynamic_cast<ArchivItem_Bob*>((*allocator)(BOBTYPE_BOB, 0, NULL));
+    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>((*allocator)(BOBTYPE_BOB, 0, NULL));
 
-	const char *name = strrchr(file, '/');
-	if(name)
-		item->setName(name+1);
+    const char* name = strrchr(file, '/');
+    if(name)
+        item->setName(name + 1);
 
-	if(item->load(bob, palette) != 0)
-		return 5;
+    if(item->load(bob, palette) != 0)
+        return 5;
 
-	// Item alloziieren und zuweisen
-	items->alloc(1);
-	items->set(0, item);
+    // Item alloziieren und zuweisen
+    items->alloc(1);
+    items->set(0, item);
 
-	fclose(bob);
+    fclose(bob);
 
-	return 0;
+    return 0;
 }

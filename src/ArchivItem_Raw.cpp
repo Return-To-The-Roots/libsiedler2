@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Raw.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Raw.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,12 +45,12 @@
  *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(void)
-	: ArchivItem(),
-	data(NULL)
+    : ArchivItem(),
+      data(NULL)
 {
-	setBobType(BOBTYPE_RAW);
+    setBobType(BOBTYPE_RAW);
 
-	clear();
+    clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,16 +61,16 @@ libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(void)
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const baseArchivItem_Raw *item)
-	: ArchivItem(item),
-	data(NULL)
+libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const baseArchivItem_Raw* item)
+    : ArchivItem(item),
+      data(NULL)
 {
-	setBobType(BOBTYPE_RAW);
+    setBobType(BOBTYPE_RAW);
 
-	alloc(item->length);
+    alloc(item->length);
 
-	if(item->length > 0)
-		memcpy(data, item->data, item->length);
+    if(item->length > 0)
+        memcpy(data, item->data, item->length);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const baseArchivItem_Raw *it
  */
 libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw(void)
 {
-	clear();
+    clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,32 +91,32 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw(void)
  *  @param[in] file   Dateihandle der Datei
  *  @param[in] length Länge des Blocks (aus Datei lesen = 0xFFFFFFFF)
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Raw::load(FILE *file, unsigned int length)
+int libsiedler2::baseArchivItem_Raw::load(FILE* file, unsigned int length)
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	clear();
+    clear();
 
-	if(length == 0xFFFFFFFF)
-	{
-		if(libendian::le_read_ui(&length, file) != 0)
-			return 2;
-	}
+    if(length == 0xFFFFFFFF)
+    {
+        if(libendian::le_read_ui(&length, file) != 0)
+            return 2;
+    }
 
-	alloc(length);
+    alloc(length);
 
-	if(length > 0)
-	{
-		if(libendian::le_read_uc(data, length, file) != (int)length)
-			return 3;
-	}
+    if(length > 0)
+    {
+        if(libendian::le_read_uc(data, length, file) != (int)length)
+            return 3;
+    }
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -126,28 +126,28 @@ int libsiedler2::baseArchivItem_Raw::load(FILE *file, unsigned int length)
  *  @param[in] file        Dateihandle der Datei
  *  @param[in] with_length Soll die Blocklänge mitgeschrieben werden?
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Raw::write(FILE *file, bool with_length) const
+int libsiedler2::baseArchivItem_Raw::write(FILE* file, bool with_length) const
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	if(with_length)
-	{
-		if(libendian::le_write_ui(length, file) != 0)
-			return 2;
-	}
+    if(with_length)
+    {
+        if(libendian::le_write_ui(length, file) != 0)
+            return 2;
+    }
 
-	if(length > 0)
-	{
-		if(libendian::le_write_uc(data, length, file) != (int)length)
-			return 3;
-	}
+    if(length > 0)
+    {
+        if(libendian::le_write_uc(data, length, file) != (int)length)
+            return 3;
+    }
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ int libsiedler2::baseArchivItem_Raw::write(FILE *file, bool with_length) const
  */
 unsigned int libsiedler2::baseArchivItem_Raw::getLength(void) const
 {
-	return length;
+    return length;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -167,9 +167,9 @@ unsigned int libsiedler2::baseArchivItem_Raw::getLength(void) const
  *
  *  @author FloSoft
  */
-const unsigned char *libsiedler2::baseArchivItem_Raw::getData(void) const
+const unsigned char* libsiedler2::baseArchivItem_Raw::getData(void) const
 {
-	return data;
+    return data;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -178,9 +178,9 @@ const unsigned char *libsiedler2::baseArchivItem_Raw::getData(void) const
  *
  *  @author FloSoft
  */
-unsigned char *libsiedler2::baseArchivItem_Raw::getData(void)
+unsigned char* libsiedler2::baseArchivItem_Raw::getData(void)
 {
-	return data;
+    return data;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -191,19 +191,19 @@ unsigned char *libsiedler2::baseArchivItem_Raw::getData(void)
  *
  *  @author FloSoft
  */
-unsigned char *libsiedler2::baseArchivItem_Raw::alloc(unsigned int length)
+unsigned char* libsiedler2::baseArchivItem_Raw::alloc(unsigned int length)
 {
-	clear();
+    clear();
 
-	this->length = length;
+    this->length = length;
 
-	if(length > 0)
-	{
-		data = new unsigned char[length];
-		memset(data, 0, length);
-	}
+    if(length > 0)
+    {
+        data = new unsigned char[length];
+        memset(data, 0, length);
+    }
 
-	return data;
+    return data;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -214,6 +214,6 @@ unsigned char *libsiedler2::baseArchivItem_Raw::alloc(unsigned int length)
  */
 void libsiedler2::baseArchivItem_Raw::clear(void)
 {
-	delete[] data;
-	length = 0;
+    delete[] data;
+    length = 0;
 }

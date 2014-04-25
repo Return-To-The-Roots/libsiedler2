@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_XMidi.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Sound_XMidi.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,36 +39,36 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Konstruktor von @p baseArchivItem_Sound_XMidi.
  *
  *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(void) : baseArchivItem_Sound()
 {
-	setType(SOUNDTYPE_XMIDI);
+    setType(SOUNDTYPE_XMIDI);
 
-	tracks = 0;
+    tracks = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Kopierkonstruktor von @p ArchivItem_Sound_XMidi.
  *
  *  @param[in] item Quellitem
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi *item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
+libsiedler2::baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi* item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
 {
-	tracks = item->tracks;
+    tracks = item->tracks;
 
-	for(unsigned int i = 0; i < 256; ++i)
-		tracklist[i].copy(&item->tracklist[i]);
+    for(unsigned int i = 0; i < 256; ++i)
+        tracklist[i].copy(&item->tracklist[i]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Destruktor von @p ArchivItem_Sound_XMidi.
  *
  *  @author FloSoft
@@ -77,184 +77,184 @@ libsiedler2::baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi(void)
 {
 }
 
-int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE *file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int length)
 {
-	if(file == NULL || length == 0)
-		return 1;
+    if(file == NULL || length == 0)
+        return 1;
 
-	unsigned int item_length = length;
-	long position = ftell(file);
+    unsigned int item_length = length;
+    long position = ftell(file);
 
-	char header[4], subheader[4];
-	unsigned int chunk;
+    char header[4], subheader[4];
+    unsigned int chunk;
 
-	// Header einlesen
-	if(libendian::le_read_c(header, 4, file) != 4)
-		return 2;
+    // Header einlesen
+    if(libendian::le_read_c(header, 4, file) != 4)
+        return 2;
 
-	// ist es eine XMIDI-File? (Header "FORM")
-	if(strncmp(header, "FORM", 4) != 0)
-		return 3;
+    // ist es eine XMIDI-File? (Header "FORM")
+    if(strncmp(header, "FORM", 4) != 0)
+        return 3;
 
-	// Länge einlesen
-	if(libendian::be_read_ui(&length, file) != 0)
-		return 4;
+    // Länge einlesen
+    if(libendian::be_read_ui(&length, file) != 0)
+        return 4;
 
-	// Typ einlesen
-	if(libendian::le_read_c(subheader, 4, file) != 4)
-		return 5;
+    // Typ einlesen
+    if(libendian::le_read_c(subheader, 4, file) != 4)
+        return 5;
 
-	// ist es eine singleTrack-XMIDI-File? (Typ "XMID")
-	if(strncmp(subheader, "XMID", 4) == 0)
-	{
-		tracks = 1;
-	}
-	else if(strncmp(subheader, "XDIR", 4) == 0)
-	{
-		long xdir_length = length;
-		while(!feof(file) && ftell(file)-position < xdir_length)
-		{
-			// Chunk-Typ einlesen
-			if(libendian::be_read_ui(&chunk, file) != 0)
-				return 6;
+    // ist es eine singleTrack-XMIDI-File? (Typ "XMID")
+    if(strncmp(subheader, "XMID", 4) == 0)
+    {
+        tracks = 1;
+    }
+    else if(strncmp(subheader, "XDIR", 4) == 0)
+    {
+        long xdir_length = length;
+        while(!feof(file) && ftell(file) - position < xdir_length)
+        {
+            // Chunk-Typ einlesen
+            if(libendian::be_read_ui(&chunk, file) != 0)
+                return 6;
 
-			switch(chunk)
-			{
-			case 0x494E464F: // "INFO"
-				{
-					// Länge einlesen
-					if(libendian::be_read_ui(&length, file) != 0)
-						return 7;
-		
-					// Bei ungerader Zahl aufrunden
-					if(length & 1)
-						++length;
+            switch(chunk)
+            {
+                case 0x494E464F: // "INFO"
+                {
+                    // Länge einlesen
+                    if(libendian::be_read_ui(&length, file) != 0)
+                        return 7;
 
-					if(length != 2)
-						return 8;
+                    // Bei ungerader Zahl aufrunden
+                    if(length & 1)
+                        ++length;
 
-					if(libendian::le_read_us(&tracks, file) != 0)
-						return 9;
-				} break;
-			case 0x43415420: // "CAT "
-				{
-					// Länge einlesen
-					if(libendian::be_read_ui(&length, file) != 0)
-						return 10;
-		
-					// Bei ungerader Zahl aufrunden
-					if(length & 1)
-						++length;
+                    if(length != 2)
+                        return 8;
 
-					// Typ einlesen
-					if(libendian::le_read_c(subheader, 4, file) != 4)
-						return 11;
+                    if(libendian::le_read_us(&tracks, file) != 0)
+                        return 9;
+                } break;
+                case 0x43415420: // "CAT "
+                {
+                    // Länge einlesen
+                    if(libendian::be_read_ui(&length, file) != 0)
+                        return 10;
 
-					if(strncmp(subheader, "XMID", 4) != 0)
-						return 12;
-				} break;
-			}
-		}
-	}
-	else
-		return 13;
+                    // Bei ungerader Zahl aufrunden
+                    if(length & 1)
+                        ++length;
 
-	if(tracks == 0 || tracks > 256)
-		return 14;
+                    // Typ einlesen
+                    if(libendian::le_read_c(subheader, 4, file) != 4)
+                        return 11;
 
-	unsigned short track_nr = 0;
-	while(track_nr < tracks)
-	{
-		// Chunk-Typ einlesen
-		if(libendian::be_read_ui(&chunk, file) != 0)
-			return 15;
+                    if(strncmp(subheader, "XMID", 4) != 0)
+                        return 12;
+                } break;
+            }
+        }
+    }
+    else
+        return 13;
 
-		switch(chunk)
-		{
-		case 0x464F524D: // "FORM"
-			{
-				fseek(file, 4, SEEK_CUR);
-			} break;
-		case 0x584D4944: // "XMID"
-			{
-			} break;
-		case 0x54494D42: // "TIMB"
-			{
-				// Länge einlesen
-				if(libendian::be_read_ui(&length, file) != 0)
-					return 16;
-	
-				// Bei ungerader Zahl aufrunden
-				if(length & 1)
-					++length;
+    if(tracks == 0 || tracks > 256)
+        return 14;
 
-				fseek(file, length, SEEK_CUR);
-			} break;
-		case 0x45564E54: // "EVNT"
-			{
-				// Länge einlesen
-				if(libendian::be_read_ui(&length, file) != 0)
-					return 17;
-	
-				// Bei ungerader Zahl aufrunden
-				if(length & 1)
-					++length;
+    unsigned short track_nr = 0;
+    while(track_nr < tracks)
+    {
+        // Chunk-Typ einlesen
+        if(libendian::be_read_ui(&chunk, file) != 0)
+            return 15;
 
-				tracklist[track_nr].allocXMid(length);
-				if(tracklist[track_nr].readXMid(file) != 0)
-					return 18;
+        switch(chunk)
+        {
+            case 0x464F524D: // "FORM"
+            {
+                fseek(file, 4, SEEK_CUR);
+            } break;
+            case 0x584D4944: // "XMID"
+            {
+            } break;
+            case 0x54494D42: // "TIMB"
+            {
+                // Länge einlesen
+                if(libendian::be_read_ui(&length, file) != 0)
+                    return 16;
 
-				if(tracklist[track_nr].XMid2Mid() != 0)
-					return 19;
+                // Bei ungerader Zahl aufrunden
+                if(length & 1)
+                    ++length;
 
-				++track_nr;
-			} break;
-		}
-	}
+                fseek(file, length, SEEK_CUR);
+            } break;
+            case 0x45564E54: // "EVNT"
+            {
+                // Länge einlesen
+                if(libendian::be_read_ui(&length, file) != 0)
+                    return 17;
 
-	// auf jeden Fall kompletten Datensatz überspringen
-	fseek(file, position + item_length, SEEK_SET);
-	return 0;
+                // Bei ungerader Zahl aufrunden
+                if(length & 1)
+                    ++length;
+
+                tracklist[track_nr].allocXMid(length);
+                if(tracklist[track_nr].readXMid(file) != 0)
+                    return 18;
+
+                if(tracklist[track_nr].XMid2Mid() != 0)
+                    return 19;
+
+                ++track_nr;
+            } break;
+        }
+    }
+
+    // auf jeden Fall kompletten Datensatz überspringen
+    fseek(file, position + item_length, SEEK_SET);
+    return 0;
 }
 
-int libsiedler2::baseArchivItem_Sound_XMidi::write(FILE *file) const
+int libsiedler2::baseArchivItem_Sound_XMidi::write(FILE* file) const
 {
-	if(!file)
-		return 1;
+    if(!file)
+        return 1;
 
-	unsigned int length = 0;
-	for(unsigned short i = 0; i < tracks; ++i)
-		length += tracklist[i].getMidLength(false);
+    unsigned int length = 0;
+    for(unsigned short i = 0; i < tracks; ++i)
+        length += tracklist[i].getMidLength(false);
 
-	// LST-Länge schreiben
-	if(libendian::le_write_ui(length + 14, file) != 0)
-		return 2;
+    // LST-Länge schreiben
+    if(libendian::le_write_ui(length + 14, file) != 0)
+        return 2;
 
-	// Header schreiben
-	if(libendian::le_write_c("MThd", 4, file) != 4)
-		return 3;
+    // Header schreiben
+    if(libendian::le_write_c("MThd", 4, file) != 4)
+        return 3;
 
-	// Länge schreiben
-	if(libendian::be_write_ui(length, file) != 0)
-		return 4;
+    // Länge schreiben
+    if(libendian::be_write_ui(length, file) != 0)
+        return 4;
 
-	// Typ schreiben
-	if(libendian::be_write_us(0, file) != 0)
-		return 5;
+    // Typ schreiben
+    if(libendian::be_write_us(0, file) != 0)
+        return 5;
 
-	// Tracksanzahl schreiben
-	if(libendian::be_write_us(tracks, file) != 0)
-		return 6;
+    // Tracksanzahl schreiben
+    if(libendian::be_write_us(tracks, file) != 0)
+        return 6;
 
-	// PPQS schreiben
-	if(libendian::be_write_us(96, file) != 0)
-		return 7;
+    // PPQS schreiben
+    if(libendian::be_write_us(96, file) != 0)
+        return 7;
 
-	for(unsigned short i = 0; i < tracks; ++i)
-	{
-		if(libendian::le_write_uc(tracklist[i].getMid(false), tracklist[i].getMidLength(false), file) != (int)tracklist[i].getMidLength(false))
-			return 8;
-	}
+    for(unsigned short i = 0; i < tracks; ++i)
+    {
+        if(libendian::le_write_uc(tracklist[i].getMid(false), tracklist[i].getMidLength(false), file) != (int)tracklist[i].getMidLength(false))
+            return 8;
+    }
 
-	return 0;
+    return 0;
 }

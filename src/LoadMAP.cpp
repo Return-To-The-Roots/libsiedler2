@@ -1,4 +1,4 @@
-// $Id: LoadMAP.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadMAP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,29 +40,29 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadMAP(const char *file, ArchivInfo *items, bool only_header)
+int libsiedler2::loader::LoadMAP(const char* file, ArchivInfo* items, bool only_header)
 {
-	FILE *map;
+    FILE* map;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	map = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    map = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(map == NULL)
-		return 2;
+    // hat das geklappt?
+    if(map == NULL)
+        return 2;
 
-	ArchivItem_Map *item = dynamic_cast<ArchivItem_Map*>((*allocator)(BOBTYPE_MAP, 0, NULL));
-	if(item->load(map, only_header) != 0)
-		return 3;
+    ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>((*allocator)(BOBTYPE_MAP, 0, NULL));
+    if(item->load(map, only_header) != 0)
+        return 3;
 
-	// Datei schliessen
-	fclose(map);
+    // Datei schliessen
+    fclose(map);
 
-	items->alloc(1);
-	items->set(0, item);
+    items->alloc(1);
+    items->set(0, item);
 
-	return 0;
+    return 0;
 }

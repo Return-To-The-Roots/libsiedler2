@@ -1,4 +1,4 @@
-// $Id: lstpacker.cpp 7498 2011-09-07 09:00:31Z FloSoft $
+// $Id: lstpacker.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -36,99 +36,99 @@ using namespace std;
 using namespace libsiedler2;
 using namespace loader;
 
-void unpack(const string &directory, const ArchivInfo &lst, const ArchivItem_Palette* palette);
-void pack(const string &directory, const string &file, const ArchivItem_Palette* palette, ArchivInfo *lst = NULL);
+void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette);
+void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, ArchivInfo* lst = NULL);
 
 int main(int argc, char* argv[])
 {
-	if(argc < 2)
-	{
-		stringstream msg;
+    if(argc < 2)
+    {
+        stringstream msg;
 
-		msg << "Usage: " << endl;
-		msg << "pack:   " << argv[0] << " directory" << endl;
-		msg << "unpack: " << argv[0] << " file.lst"  << endl;
+        msg << "Usage: " << endl;
+        msg << "pack:   " << argv[0] << " directory" << endl;
+        msg << "unpack: " << argv[0] << " file.lst"  << endl;
 
-		cerr << msg.str();
+        cerr << msg.str();
 
-		MessageBoxA(NULL, msg.str().c_str(), "Usage", MB_OK|MB_ICONSTOP);
+        MessageBoxA(NULL, msg.str().c_str(), "Usage", MB_OK | MB_ICONSTOP);
 
-		return 1;
-	}
+        return 1;
+    }
 
-	ArchivInfo lst, bbm;
+    ArchivInfo lst, bbm;
 
-	if(LoadBBM("GFX/PALETTE/PAL5.BBM", &bbm) != 0)
-	{
-		if(LoadBBM("pal5.act", &bbm) != 0)
-		{
-			stringstream msg;
-	
-			msg << "Fatal Error: " << endl;
-			msg << "GFX/PALETTE/PAL5.BBM nor pal5.act was not found or cannot be opened" << endl;
-	
-			cerr << msg.str();
-	
-			MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK|MB_ICONSTOP);
-	
-			return 2;
-		}
-	}
+    if(LoadBBM("GFX/PALETTE/PAL5.BBM", &bbm) != 0)
+    {
+        if(LoadBBM("pal5.act", &bbm) != 0)
+        {
+            stringstream msg;
 
-	ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
+            msg << "Fatal Error: " << endl;
+            msg << "GFX/PALETTE/PAL5.BBM nor pal5.act was not found or cannot be opened" << endl;
 
-	int format = FORMAT_RGBA;
+            cerr << msg.str();
 
-	setTextureFormat((TEXTURFORMAT)format);
+            MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK | MB_ICONSTOP);
 
-	FILE *f = fopen(argv[1], "rb");
-	if(f)
-	{
-		fclose(f);
+            return 2;
+        }
+    }
 
-		string file(argv[1]);
-		reverse(file.begin(), file.end());
+    ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-		vector<string> filep =  explode(file, '.', 2);
+    int format = FORMAT_RGBA;
 
-		string directory = filep.at(1);
-		reverse(directory.begin(), directory.end());
+    setTextureFormat((TEXTURFORMAT)format);
 
-		cerr << "Unpacking file " << argv[1] << " to " << directory << endl;
+    FILE* f = fopen(argv[1], "rb");
+    if(f)
+    {
+        fclose(f);
 
-		if(Load(argv[1], &lst, palette) != 0)
-		{
-			stringstream msg;
+        string file(argv[1]);
+        reverse(file.begin(), file.end());
 
-			msg << "Fatal Error: " << endl;
-			msg << argv[1] << " was not found or cannot be opened" << endl;
+        vector<string> filep =  explode(file, '.', 2);
 
-			cerr << msg.str();
+        string directory = filep.at(1);
+        reverse(directory.begin(), directory.end());
 
-			MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK|MB_ICONSTOP);
+        cerr << "Unpacking file " << argv[1] << " to " << directory << endl;
 
-			return 3;
-		}
+        if(Load(argv[1], &lst, palette) != 0)
+        {
+            stringstream msg;
 
-		unpack(directory, lst, palette);
+            msg << "Fatal Error: " << endl;
+            msg << argv[1] << " was not found or cannot be opened" << endl;
 
-		//argv[1][directory.size()] = '\0';
-	}
-	else
-	{
-		string directory(argv[1]);
-		string file(argv[1]);
+            cerr << msg.str();
 
-		file += ".NEW.LST";
+            MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK | MB_ICONSTOP);
 
-		cerr << "Packing directory " << argv[1] << " to " << file << endl;
+            return 3;
+        }
 
-		pack(directory, file, palette);
-	}
+        unpack(directory, lst, palette);
 
-	cerr << "done" << endl;
+        //argv[1][directory.size()] = '\0';
+    }
+    else
+    {
+        string directory(argv[1]);
+        string file(argv[1]);
 
-	cerr << "press enter to exit" << endl;
-	cin.get();
-	return 0;
+        file += ".NEW.LST";
+
+        cerr << "Packing directory " << argv[1] << " to " << file << endl;
+
+        pack(directory, file, palette);
+    }
+
+    cerr << "done" << endl;
+
+    cerr << "press enter to exit" << endl;
+    cin.get();
+    return 0;
 }

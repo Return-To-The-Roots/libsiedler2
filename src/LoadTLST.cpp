@@ -1,4 +1,4 @@
-// $Id: LoadTLST.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadTLST.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadTLST(const char *file, ArchivInfo *items)
+int libsiedler2::loader::LoadTLST(const char* file, ArchivInfo* items)
 {
-	return 0;
+    return 0;
 }

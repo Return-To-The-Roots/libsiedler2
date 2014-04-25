@@ -1,4 +1,4 @@
-// $Id: LoadSND.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadSND.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,37 +41,37 @@
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadSND(const char *file, ArchivInfo *items)
+int libsiedler2::loader::LoadSND(const char* file, ArchivInfo* items)
 {
-	FILE *snd;
-	long size;
+    FILE* snd;
+    long size;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	snd = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    snd = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(snd == NULL)
-		return 2;
+    // hat das geklappt?
+    if(snd == NULL)
+        return 2;
 
-	fseek(snd, 0, SEEK_END);
-	size = ftell(snd);
-	fseek(snd, 0, SEEK_SET);
+    fseek(snd, 0, SEEK_END);
+    size = ftell(snd);
+    fseek(snd, 0, SEEK_SET);
 
-	baseArchivItem_Sound *sound = baseArchivItem_Sound::findSubType(snd);
+    baseArchivItem_Sound* sound = baseArchivItem_Sound::findSubType(snd);
 
-	if(!sound)
-		return 3;
+    if(!sound)
+        return 3;
 
-	if(sound->load(snd, size) != 0)
-		return 4;
+    if(sound->load(snd, size) != 0)
+        return 4;
 
-	items->alloc(1);
-	items->set(0, sound);
+    items->alloc(1);
+    items->set(0, sound);
 
-	fclose(snd);
+    fclose(snd);
 
-	return 0;
+    return 0;
 }

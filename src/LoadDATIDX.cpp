@@ -1,4 +1,4 @@
-// $Id: LoadDATIDX.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadDATIDX.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,97 +42,97 @@
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadDATIDX(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items)
+int libsiedler2::loader::LoadDATIDX(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items)
 {
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	size_t length = strlen(file) + 1;
-	FILE *idx, *dat;
-	char *datfile = new char[length];
-	char *idxfile = new char[length];
-	unsigned int count;
+    size_t length = strlen(file) + 1;
+    FILE* idx, *dat;
+    char* datfile = new char[length];
+    char* idxfile = new char[length];
+    unsigned int count;
 
-	memcpy(idxfile, file, length);
-	memcpy(datfile, file, length);
+    memcpy(idxfile, file, length);
+    memcpy(datfile, file, length);
 
-	idxfile[length - 2] = 'X';
-	idxfile[length - 3] = 'D';
-	idxfile[length - 4] = 'I';
+    idxfile[length - 2] = 'X';
+    idxfile[length - 3] = 'D';
+    idxfile[length - 4] = 'I';
 
-	datfile[length - 2] = 'T';
-	datfile[length - 3] = 'A';
-	datfile[length - 4] = 'D';
+    datfile[length - 2] = 'T';
+    datfile[length - 3] = 'A';
+    datfile[length - 4] = 'D';
 
-	// Datei zum lesen öffnen
-	dat = fopen(datfile, "rb");
+    // Datei zum lesen öffnen
+    dat = fopen(datfile, "rb");
 
-	// hat das geklappt?
-	if(dat == NULL)
-		return 2;
+    // hat das geklappt?
+    if(dat == NULL)
+        return 2;
 
-	// IDX-Datei zum lesen öffnen
-	idx = fopen(idxfile, "rb");
+    // IDX-Datei zum lesen öffnen
+    idx = fopen(idxfile, "rb");
 
-	// hat das geklappt?
-	if(idx == NULL)
-		return 3;
+    // hat das geklappt?
+    if(idx == NULL)
+        return 3;
 
-	delete[] datfile;
-	delete[] idxfile;
+    delete[] datfile;
+    delete[] idxfile;
 
-	// Anzahl einlesen
-	if(libendian::le_read_ui(&count, idx) != 0)
-		return 5;
+    // Anzahl einlesen
+    if(libendian::le_read_ui(&count, idx) != 0)
+        return 5;
 
-	// Platz für items anlegen
-	items->alloc(count);
+    // Platz für items anlegen
+    items->alloc(count);
 
-	// items einlesen
-	for(unsigned int i = 0; i < count; ++i)
-	{
-		char name[17];
-		unsigned int offset;
-		short idxbobtype;
-		short bobtype;
+    // items einlesen
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        char name[17];
+        unsigned int offset;
+        short idxbobtype;
+        short bobtype;
 
-		// Name einlesen
-		if(libendian::le_read_c(name, 16, idx) != 16)
-			return 6;
+        // Name einlesen
+        if(libendian::le_read_c(name, 16, idx) != 16)
+            return 6;
 
-		// Offset einlesen
-		if(libendian::le_read_ui(&offset, idx) != 0)
-			return 7;
+        // Offset einlesen
+        if(libendian::le_read_ui(&offset, idx) != 0)
+            return 7;
 
-		// Unbekannte Daten überspringen
-		fseek(idx, 6, SEEK_CUR);
+        // Unbekannte Daten überspringen
+        fseek(idx, 6, SEEK_CUR);
 
-		// BobType einlesen
-		if(libendian::le_read_s(&idxbobtype, idx) != 0)
-			return 8;
+        // BobType einlesen
+        if(libendian::le_read_s(&idxbobtype, idx) != 0)
+            return 8;
 
-		// Zum Offset springen
-		fseek(dat, offset, SEEK_SET);
+        // Zum Offset springen
+        fseek(dat, offset, SEEK_SET);
 
-		// BobType einlesen
-		if(libendian::le_read_s(&bobtype, dat) != 0)
-			return 9;
+        // BobType einlesen
+        if(libendian::le_read_s(&bobtype, dat) != 0)
+            return 9;
 
-		if(idxbobtype != bobtype)
-			continue;
+        if(idxbobtype != bobtype)
+            continue;
 
-		// Daten von Item auswerten
-		if(LoadType(bobtype, dat, palette, items->getP(i)) != 0)
-			return 10;
+        // Daten von Item auswerten
+        if(LoadType(bobtype, dat, palette, items->getP(i)) != 0)
+            return 10;
 
-		// Name setzen
-		ArchivItem *item = items->get(i);
-		if(item)
-			item->setName(name);
-	}
+        // Name setzen
+        ArchivItem* item = items->get(i);
+        if(item)
+            item->setName(name);
+    }
 
-	fclose(idx);
-	fclose(dat);
+    fclose(idx);
+    fclose(dat);
 
-	return 0;
+    return 0;
 }

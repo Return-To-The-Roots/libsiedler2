@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Palette.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Palette.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,36 +47,36 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Konstruktor von @p ArchivItem_Palette.
  *
  *  @author FloSoft
  */
 libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
 {
-	memset(colors, 0, 256*3);
+    memset(colors, 0, 256 * 3);
 
-	setBobType(5);
+    setBobType(5);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  Kopierkonstruktor von @p ArchivItem_Palette.
  *
  *  @param[in] item Quellitem
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette(const ArchivItem_Palette *item) : ArchivItem( (ArchivItem*)item )
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette(const ArchivItem_Palette* item) : ArchivItem( (ArchivItem*)item )
 {
-	setBobType(5);
+    setBobType(5);
 
-	memcpy(colors, item->colors, 3*256);
+    memcpy(colors, item->colors, 3 * 256);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
- *  Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus 
+/**
+ *  Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus
  *  einer Datei.
  *
  *  @param[in] file Dateihandle aus denen die Farbwerte geladen werden sollen
@@ -84,76 +84,76 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(const ArchivItem_Palette *it
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette(FILE *file, bool skip) : ArchivItem()
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette(FILE* file, bool skip) : ArchivItem()
 {
-	setBobType(5);
+    setBobType(5);
 
-	load(file, skip);
+    load(file, skip);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  liest die Farbwerte aus einer Datei.
  *
  *  @param[in] file Dateihandle aus denen die Farbwerte geladen werden sollen
  *  @param[in] skip Sollen 2 Unbekannte Bytes übersprungen werden (bei LST) oder direkt?
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Palette::load(FILE *file, bool skip)
+int libsiedler2::ArchivItem_Palette::load(FILE* file, bool skip)
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	if(skip == true)
-	{
-		// Unbekannte 2 Bytes überspringen
-		fseek(file, 2, SEEK_CUR);
-	}
+    if(skip == true)
+    {
+        // Unbekannte 2 Bytes überspringen
+        fseek(file, 2, SEEK_CUR);
+    }
 
-	// Farben einlesen
-	if(libendian::le_read_uc(colors[0], 256*3, file) != 256*3)
-		return 2;
+    // Farben einlesen
+    if(libendian::le_read_uc(colors[0], 256 * 3, file) != 256 * 3)
+        return 2;
 
-	// alles ok
-	return 0;
+    // alles ok
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  schreibt die Farbwerte in eine Datei
  *
  *  @param[in] file Dateihandle in die die Farbwerte geschrieben werden sollen
  *  @param[in] skip Sollen 2 Unbekannte Bytes geschrieben werden (bei LST) oder direkt?
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Palette::write(FILE *file, bool skip) const
+int libsiedler2::ArchivItem_Palette::write(FILE* file, bool skip) const
 {
-	if(file == NULL)
-		return 1;
+    if(file == NULL)
+        return 1;
 
-	if(skip == true)
-	{
-		short unknown = 0x0100;
-		if(libendian::le_write_s(unknown, file) != 0)
-			return 2;
-	}
+    if(skip == true)
+    {
+        short unknown = 0x0100;
+        if(libendian::le_write_s(unknown, file) != 0)
+            return 2;
+    }
 
-	// Farben schreiben
-	if(fwrite(colors, 3, 256, file) != 256)
-		return 3;
+    // Farben schreiben
+    if(fwrite(colors, 3, 256, file) != 256)
+        return 3;
 
-	// alles ok
-	return 0;
+    // alles ok
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  setzt einen Farbwert am entsprechenden Index.
  *
  *  @param[in] index Index des Farbwertes
@@ -165,13 +165,13 @@ int libsiedler2::ArchivItem_Palette::write(FILE *file, bool skip) const
  */
 void libsiedler2::ArchivItem_Palette::set(unsigned char index, unsigned char r, unsigned char g, unsigned char b)
 {
-	colors[index][0] = r;
-	colors[index][1] = g;
-	colors[index][2] = b;
+    colors[index][0] = r;
+    colors[index][1] = g;
+    colors[index][2] = b;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  liefert einen Farbwert am entsprechenden Index.
  *
  *  @param[in]  index Index des Farbwertes
@@ -181,20 +181,20 @@ void libsiedler2::ArchivItem_Palette::set(unsigned char index, unsigned char r, 
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Palette::get(unsigned char index, unsigned char *r, unsigned char *g, unsigned char *b) const
+void libsiedler2::ArchivItem_Palette::get(unsigned char index, unsigned char* r, unsigned char* g, unsigned char* b) const
 {
-	if(r)
-		*r = colors[index][0];
+    if(r)
+        *r = colors[index][0];
 
-	if(g)
-		*g = colors[index][1];
+    if(g)
+        *g = colors[index][1];
 
-	if(b)
-		*b = colors[index][2];
+    if(b)
+        *b = colors[index][2];
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  liefert einen Index zum entsprechenden RGB-Wert.
  *
  *  @param[in] r     Roter Farbwert
@@ -209,17 +209,17 @@ void libsiedler2::ArchivItem_Palette::get(unsigned char index, unsigned char *r,
  */
 unsigned char libsiedler2::ArchivItem_Palette::lookup(unsigned char r, unsigned char g, unsigned char b) const
 {
-	for(unsigned short i = 0; i < 256; ++i)
-	{
-		if(colors[i][0] == r && colors[i][1] == g && colors[i][2] == b)
-			return static_cast<unsigned char>(i);
-	}
-	return 0;
+    for(unsigned short i = 0; i < 256; ++i)
+    {
+        if(colors[i][0] == r && colors[i][1] == g && colors[i][2] == b)
+            return static_cast<unsigned char>(i);
+    }
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
- *  Index-Operator von @p ArchivItem_Palette. 
+/**
+ *  Index-Operator von @p ArchivItem_Palette.
  *
  *  @param[in] index Index des zu liefernden Eintrags
  *
@@ -227,35 +227,35 @@ unsigned char libsiedler2::ArchivItem_Palette::lookup(unsigned char r, unsigned 
  *
  *  @author FloSoft
  */
-const unsigned char *const libsiedler2::ArchivItem_Palette::operator[](int index)
+const unsigned char* const libsiedler2::ArchivItem_Palette::operator[](int index)
 {
-	if( index < 256 && index >= 0)
-		return colors[index];
+    if( index < 256 && index >= 0)
+        return colors[index];
 
-	return NULL;
+    return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  kopiert die Palette in einen Puffer (als RGBA)
  *
  *  @param[in,out] buffer Zielpuffer für die Palettendaten (muss 256*4-Byte groß sein)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Palette::copy(unsigned char *buffer) const
+void libsiedler2::ArchivItem_Palette::copy(unsigned char* buffer) const
 {
-	// Puffer vorbereiten
-	memset(buffer, 0xFF, 256*4);
+    // Puffer vorbereiten
+    memset(buffer, 0xFF, 256 * 4);
 
-	// Farben kopieren
-	for(unsigned short i = 0; i < 256; ++i)
-	{
-		buffer[i*4] = colors[i][0];
-		buffer[i*4+1] = colors[i][1];
-		buffer[i*4+2] = colors[i][2];
-	}
+    // Farben kopieren
+    for(unsigned short i = 0; i < 256; ++i)
+    {
+        buffer[i * 4] = colors[i][0];
+        buffer[i * 4 + 1] = colors[i][1];
+        buffer[i * 4 + 2] = colors[i][2];
+    }
 
-	// Transparentes Element transparent machen
-	buffer[TRANSPARENT_INDEX*4+3] = 0x00;
+    // Transparentes Element transparent machen
+    buffer[TRANSPARENT_INDEX * 4 + 3] = 0x00;
 }

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_XMidi.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Sound_XMidi.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,40 +26,40 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse für XMIDI-Sounds.
-	class baseArchivItem_Sound_XMidi : public virtual baseArchivItem_Sound
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Sound_XMidi.
-		baseArchivItem_Sound_XMidi(void);
+    /// Basisklasse für XMIDI-Sounds.
+    class baseArchivItem_Sound_XMidi : public virtual baseArchivItem_Sound
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Sound_XMidi.
+            baseArchivItem_Sound_XMidi(void);
 
-		/// Kopierkonstruktor von @p baseArchivItem_Sound_XMidi.
-		baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi *item);
+            /// Kopierkonstruktor von @p baseArchivItem_Sound_XMidi.
+            baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi* item);
 
-		/// Destruktor von @p baseArchivItem_Sound_XMidi.
-		~baseArchivItem_Sound_XMidi(void);
+            /// Destruktor von @p baseArchivItem_Sound_XMidi.
+            ~baseArchivItem_Sound_XMidi(void);
 
-		int load(FILE *file, unsigned int length);
-		int write(FILE *file) const;
+            int load(FILE* file, unsigned int length);
+            int write(FILE* file) const;
 
-		MIDI_Track *getTrack(unsigned short track) { if(track < tracks) return &tracklist[track]; return NULL; }
-		unsigned short getTrackCount() const { return tracks; }
+            MIDI_Track* getTrack(unsigned short track) { if(track < tracks) return &tracklist[track]; return NULL; }
+            unsigned short getTrackCount() const { return tracks; }
 
-	protected:
-		unsigned short tracks;
-		MIDI_Track tracklist[256];
-	};
+        protected:
+            unsigned short tracks;
+            MIDI_Track tracklist[256];
+    };
 
-	/// Klasse für XMIDI-Sounds.
-	class ArchivItem_Sound_XMidi : public virtual baseArchivItem_Sound_XMidi, public ArchivItem_Sound
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Sound_XMidi.
-		ArchivItem_Sound_XMidi(void) : baseArchivItem_Sound_XMidi() {}
+    /// Klasse für XMIDI-Sounds.
+    class ArchivItem_Sound_XMidi : public virtual baseArchivItem_Sound_XMidi, public ArchivItem_Sound
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Sound_XMidi.
+            ArchivItem_Sound_XMidi(void) : baseArchivItem_Sound_XMidi() {}
 
-		/// Kopierkonstruktor von @p ArchivItem_Sound_XMidi.
-		ArchivItem_Sound_XMidi(const ArchivItem_Sound_XMidi *item) : baseArchivItem_Sound_XMidi(item) {}
-	};
+            /// Kopierkonstruktor von @p ArchivItem_Sound_XMidi.
+            ArchivItem_Sound_XMidi(const ArchivItem_Sound_XMidi* item) : baseArchivItem_Sound_XMidi(item) {}
+    };
 }
 
 #endif // !ARCHIVITEM_SOUND_XMIDI_H_INCLUDED

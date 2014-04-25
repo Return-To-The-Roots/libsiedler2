@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Raw.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Raw.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,49 +25,49 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse für Rawdaten.
-	class baseArchivItem_Raw : public ArchivItem
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Raw.
-		baseArchivItem_Raw(void);
-		/// Kopierkonstruktor von @p baseArchivItem_Raw.
-		baseArchivItem_Raw(const baseArchivItem_Raw *item);
-		/// Destruktor von @p baseArchivItem_Raw.
-		~baseArchivItem_Raw(void);
+    /// Basisklasse für Rawdaten.
+    class baseArchivItem_Raw : public ArchivItem
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Raw.
+            baseArchivItem_Raw(void);
+            /// Kopierkonstruktor von @p baseArchivItem_Raw.
+            baseArchivItem_Raw(const baseArchivItem_Raw* item);
+            /// Destruktor von @p baseArchivItem_Raw.
+            ~baseArchivItem_Raw(void);
 
-		/// lädt die Rawdaten aus einer Datei.
-		int load(FILE *file, unsigned int length = 0xFFFFFFFF);
-		/// schreibt die Rawdaten in eine Datei.
-		int write(FILE *file, bool with_length) const;
+            /// lädt die Rawdaten aus einer Datei.
+            int load(FILE* file, unsigned int length = 0xFFFFFFFF);
+            /// schreibt die Rawdaten in eine Datei.
+            int write(FILE* file, bool with_length) const;
 
-		/// liefert die Länge des Datenblocks.
-		unsigned int getLength(void) const;
+            /// liefert die Länge des Datenblocks.
+            unsigned int getLength(void) const;
 
-		/// liefert die Daten zurück (ro).
-		const unsigned char *getData(void) const;
-		/// liefert die Daten zurück (rw).
-		unsigned char *getData(void);
+            /// liefert die Daten zurück (ro).
+            const unsigned char* getData(void) const;
+            /// liefert die Daten zurück (rw).
+            unsigned char* getData(void);
 
-		/// erzeugt den Datenblock.
-		unsigned char *alloc(unsigned int length);
-		/// löscht den Datenblock.
-		void clear(void);
+            /// erzeugt den Datenblock.
+            unsigned char* alloc(unsigned int length);
+            /// löscht den Datenblock.
+            void clear(void);
 
-	private:
-		unsigned char *data; ///< Die Daten.
-		unsigned int length; ///< Die Länge der Daten.
-	};
+        private:
+            unsigned char* data; ///< Die Daten.
+            unsigned int length; ///< Die Länge der Daten.
+    };
 
-	/// Klasse für Rawdaten.
-	class ArchivItem_Raw : public virtual baseArchivItem_Raw
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Raw.
-		ArchivItem_Raw(void) : baseArchivItem_Raw() {}
-		/// Kopierkonstruktor von @p baseArchivItem_Raw.
-		ArchivItem_Raw(const ArchivItem_Raw *item) : baseArchivItem_Raw(item) {}
-	};
+    /// Klasse für Rawdaten.
+    class ArchivItem_Raw : public virtual baseArchivItem_Raw
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Raw.
+            ArchivItem_Raw(void) : baseArchivItem_Raw() {}
+            /// Kopierkonstruktor von @p baseArchivItem_Raw.
+            ArchivItem_Raw(const ArchivItem_Raw* item) : baseArchivItem_Raw(item) {}
+    };
 }
 
 #endif // !ARCHIVITEM_RAW_H_INCLUDED

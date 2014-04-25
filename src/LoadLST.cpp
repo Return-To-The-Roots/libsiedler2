@@ -1,4 +1,4 @@
-// $Id: LoadLST.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadLST.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,75 +42,75 @@
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadLST(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items)
+int libsiedler2::loader::LoadLST(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items)
 {
-	FILE *lst;
-	unsigned short header;
-	unsigned int count;
+    FILE* lst;
+    unsigned short header;
+    unsigned int count;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	lst = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    lst = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(lst == NULL)
-		return 2;
+    // hat das geklappt?
+    if(lst == NULL)
+        return 2;
 
-	// Header einlesen
-	if(libendian::be_read_us(&header, lst) != 0)
-		return 3;
+    // Header einlesen
+    if(libendian::be_read_us(&header, lst) != 0)
+        return 3;
 
-	// ist es eine GER/ENG-File? (Header 0xE7FD)
-	if(header == 0xE7FD)
-	{
-		fclose(lst);
-		return LoadTXT(file, items);
-	}
+    // ist es eine GER/ENG-File? (Header 0xE7FD)
+    if(header == 0xE7FD)
+    {
+        fclose(lst);
+        return LoadTXT(file, items);
+    }
 
-	// ist es eine LST-File? (Header 0x204E)
-	if(header != 0x204E)
-		return 4;
+    // ist es eine LST-File? (Header 0x204E)
+    if(header != 0x204E)
+        return 4;
 
-	// Anzahl einlesen
-	if(libendian::le_read_ui(&count, lst) != 0)
-		return 5;
+    // Anzahl einlesen
+    if(libendian::le_read_ui(&count, lst) != 0)
+        return 5;
 
-	// Platz für items anlegen
-	items->alloc(count);
+    // Platz für items anlegen
+    items->alloc(count);
 
-	// items einlesen
-	for(unsigned int i = 0; i < count; ++i)
-	{
-		short used;
-		short bobtype;
+    // items einlesen
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        short used;
+        short bobtype;
 
-		// use-Flag einlesen
-		if(libendian::be_read_s(&used, lst) != 0)
-			return 6;
+        // use-Flag einlesen
+        if(libendian::be_read_s(&used, lst) != 0)
+            return 6;
 
-		// ist das Item benutzt?
-		if(used != 0x0100)
-		{
-			//fprintf(stderr, "unused %04X\n", used);
-			continue;
-		}
+        // ist das Item benutzt?
+        if(used != 0x0100)
+        {
+            //fprintf(stderr, "unused %04X\n", used);
+            continue;
+        }
 
-		// bobtype des Items einlesen
-		if(libendian::le_read_s(&bobtype, lst) != 0)
-			return 7;
+        // bobtype des Items einlesen
+        if(libendian::le_read_s(&bobtype, lst) != 0)
+            return 7;
 
-		//fprintf(stderr, "bobtype %d\n", bobtype);
+        //fprintf(stderr, "bobtype %d\n", bobtype);
 
-		// Daten von Item auswerten
-		if(LoadType(bobtype, lst, palette, items->getP(i)) != 0)
-			return 8;
-	}
+        // Daten von Item auswerten
+        if(LoadType(bobtype, lst, palette, items->getP(i)) != 0)
+            return 8;
+    }
 
-	// Datei schliessen
-	fclose(lst);
+    // Datei schliessen
+    fclose(lst);
 
-	// alles ok
-	return 0;
+    // alles ok
+    return 0;
 }

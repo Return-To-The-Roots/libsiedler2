@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap.cpp 8198 2012-09-09 18:47:35Z marcus $
+// $Id: ArchivItem_Bitmap.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -134,24 +134,24 @@
  */
 libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(void) : ArchivItem()
 {
-	width = 0;
-	height = 0;
+    width = 0;
+    height = 0;
 
-	nx = 0;
-	ny = 0;
+    nx = 0;
+    ny = 0;
 
-	length = 0;
+    length = 0;
 
-	tex_width = 0;
-	tex_height = 0;
+    tex_width = 0;
+    tex_height = 0;
 
-	tex_bpp = 0;
+    tex_bpp = 0;
 
-	tex_length = 0;
-	tex_data = NULL;
+    tex_length = 0;
+    tex_data = NULL;
 
-	palette = NULL;
-	format = FORMAT_UNKNOWN;
+    palette = NULL;
+    format = FORMAT_UNKNOWN;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -162,33 +162,33 @@ libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(void) : ArchivItem()
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(const baseArchivItem_Bitmap *item) : ArchivItem( (ArchivItem*)item )
+libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(const baseArchivItem_Bitmap* item) : ArchivItem( (ArchivItem*)item )
 {
-	width = item->width;
-	height = item->height;
+    width = item->width;
+    height = item->height;
 
-	nx = item->nx;
-	ny = item->ny;
+    nx = item->nx;
+    ny = item->ny;
 
-	length = item->length;
+    length = item->length;
 
-	tex_width = item->tex_width;
-	tex_height = item->tex_height;
+    tex_width = item->tex_width;
+    tex_height = item->tex_height;
 
-	tex_bpp = item->tex_bpp;
+    tex_bpp = item->tex_bpp;
 
-	tex_length = item->tex_length;
-	tex_data = NULL;
+    tex_length = item->tex_length;
+    tex_data = NULL;
 
-	if(tex_length != 0)
-	{
-		tex_data = new unsigned char[tex_length];
-		memcpy(tex_data, item->tex_data, tex_length);
-	}
+    if(tex_length != 0)
+    {
+        tex_data = new unsigned char[tex_length];
+        memcpy(tex_data, item->tex_data, tex_length);
+    }
 
-	palette = NULL;
-	setPalette(item->palette);
-	setFormat(item->format);
+    palette = NULL;
+    setPalette(item->palette);
+    setFormat(item->format);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -199,10 +199,10 @@ libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(const baseArchivItem_B
  */
 libsiedler2::baseArchivItem_Bitmap::~baseArchivItem_Bitmap(void)
 {
-	tex_clear();
+    tex_clear();
 
-	delete palette;
-	palette = NULL;
+    delete palette;
+    palette = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -217,40 +217,40 @@ libsiedler2::baseArchivItem_Bitmap::~baseArchivItem_Bitmap(void)
  *  @author FloSoft
  */
 void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
-									 unsigned short y,
-									 unsigned char color,
-									 const ArchivItem_Palette *palette)
+        unsigned short y,
+        unsigned char color,
+        const ArchivItem_Palette* palette)
 {
-	if(tex_data == NULL)
-		return;
-	if(palette == NULL)
-		palette = this->palette;
-	if(palette == NULL)
-		return;
+    if(tex_data == NULL)
+        return;
+    if(palette == NULL)
+        palette = this->palette;
+    if(palette == NULL)
+        return;
 
-	if(x < tex_width && y < tex_height)
-	{
-		unsigned int position = (y * tex_width + x) * tex_bpp;
-		switch(tex_bpp)
-		{
-		case 1:
-			{
-				// Palettenindex setzen
-				tex_data[position] = color;
-			} break;
-		case 4:
-			{
-				// RGB+A setzen
-				if(color == TRANSPARENT_INDEX) // Transparenz
-					tex_data[position + 3] = 0x00;
-				else
-				{
-					palette->get(color, &tex_data[position + 2], &tex_data[position + 1], &tex_data[position + 0]);
-					tex_data[position + 3] = 0xFF;
-				}
-			} break;
-		}
-	}
+    if(x < tex_width && y < tex_height)
+    {
+        unsigned int position = (y * tex_width + x) * tex_bpp;
+        switch(tex_bpp)
+        {
+            case 1:
+            {
+                // Palettenindex setzen
+                tex_data[position] = color;
+            } break;
+            case 4:
+            {
+                // RGB+A setzen
+                if(color == TRANSPARENT_INDEX) // Transparenz
+                    tex_data[position + 3] = 0x00;
+                else
+                {
+                    palette->get(color, &tex_data[position + 2], &tex_data[position + 1], &tex_data[position + 0]);
+                    tex_data[position + 3] = 0xFF;
+                }
+            } break;
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -267,38 +267,38 @@ void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
  *  @author FloSoft
  */
 void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
-									 unsigned short y,
-									 unsigned char r,
-									 unsigned char g,
-									 unsigned char b,
-									 unsigned char a)
+        unsigned short y,
+        unsigned char r,
+        unsigned char g,
+        unsigned char b,
+        unsigned char a)
 {
-	if(tex_bpp == 1 && palette == NULL)
-		return;
+    if(tex_bpp == 1 && palette == NULL)
+        return;
 
-	if(x < tex_width && y < tex_height)
-	{
-		unsigned int position = (y * tex_width + x) * tex_bpp;
-		switch(tex_bpp)
-		{
-		case 1:
-			{
-				// Palettenindex setzen
-				if(a == 0x00)
-					tex_data[position] = TRANSPARENT_INDEX;
-				else
-					tex_data[position] = palette->lookup(r, g, b);
-			} break;
-		case 4:
-			{
-				// RGBA setzen
-				tex_data[position + 0] = b;
-				tex_data[position + 1] = g;
-				tex_data[position + 2] = r;
-				tex_data[position + 3] = a;
-			} break;
-		}
-	}
+    if(x < tex_width && y < tex_height)
+    {
+        unsigned int position = (y * tex_width + x) * tex_bpp;
+        switch(tex_bpp)
+        {
+            case 1:
+            {
+                // Palettenindex setzen
+                if(a == 0x00)
+                    tex_data[position] = TRANSPARENT_INDEX;
+                else
+                    tex_data[position] = palette->lookup(r, g, b);
+            } break;
+            case 4:
+            {
+                // RGBA setzen
+                tex_data[position + 0] = b;
+                tex_data[position + 1] = g;
+                tex_data[position + 2] = r;
+                tex_data[position + 3] = a;
+            } break;
+        }
+    }
 
 }
 
@@ -318,37 +318,37 @@ void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
  *  @author FloSoft
  */
 unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
-											  unsigned short y,
-											  const ArchivItem_Palette *palette) const
+        unsigned short y,
+        const ArchivItem_Palette* palette) const
 {
-	if(tex_data == NULL)
-		return 0;
-	if(palette == NULL)
-		palette = this->palette;
-	if(palette == NULL)
-		return 0;
+    if(tex_data == NULL)
+        return 0;
+    if(palette == NULL)
+        palette = this->palette;
+    if(palette == NULL)
+        return 0;
 
-	if(x < tex_width && y < tex_height)
-	{
-		unsigned int position = (y * tex_width + x) * tex_bpp;
-		switch(tex_bpp)
-		{
-		case 1:
-			{
-				// Palettenindex liefern
-				return tex_data[position];
-			} break;
-		case 4:
-			{
-				// Index von RGB+A liefern
-				if(tex_data[position + 3] == 0x00) // Transparenz
-					return TRANSPARENT_INDEX;
-				else
-					return palette->lookup(tex_data[position + 2], tex_data[position + 1], tex_data[position + 0]);
-			} break;
-		}
-	}
-	return 0;
+    if(x < tex_width && y < tex_height)
+    {
+        unsigned int position = (y * tex_width + x) * tex_bpp;
+        switch(tex_bpp)
+        {
+            case 1:
+            {
+                // Palettenindex liefern
+                return tex_data[position];
+            } break;
+            case 4:
+            {
+                // Index von RGB+A liefern
+                if(tex_data[position + 3] == 0x00) // Transparenz
+                    return TRANSPARENT_INDEX;
+                else
+                    return palette->lookup(tex_data[position + 2], tex_data[position + 1], tex_data[position + 0]);
+            } break;
+        }
+    }
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -359,7 +359,7 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
@@ -371,7 +371,7 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
@@ -384,46 +384,46 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
  */
 void libsiedler2::baseArchivItem_Bitmap::tex_alloc(void)
 {
-	tex_clear();
+    tex_clear();
 
-	tex_width = tex_pow2(width);
-	tex_height = tex_pow2(height);
+    tex_width = tex_pow2(width);
+    tex_height = tex_pow2(height);
 
-	if(format == FORMAT_UNKNOWN)
-		format = texturformat;
+    if(format == FORMAT_UNKNOWN)
+        format = texturformat;
 
-	switch(format)
-	{
-	case FORMAT_RGBA:
-		{
-			tex_bpp = 4;
-		} break;
-	case FORMAT_PALETTED:
-		{
-			tex_bpp = 1;
-		} break;
-	}
+    switch(format)
+    {
+        case FORMAT_RGBA:
+        {
+            tex_bpp = 4;
+        } break;
+        case FORMAT_PALETTED:
+        {
+            tex_bpp = 1;
+        } break;
+    }
 
-	tex_length = tex_width * tex_height * tex_bpp;
+    tex_length = tex_width * tex_height * tex_bpp;
 
-	if(tex_length != 0)
-	{
-		tex_data = new unsigned char[tex_length];
+    if(tex_length != 0)
+    {
+        tex_data = new unsigned char[tex_length];
 
-		unsigned char clear = 0x7F;
-		switch(format)
-		{
-		case FORMAT_RGBA:
-			{
-				clear = 0x00;
-			} break;
-		case FORMAT_PALETTED:
-			{
-				clear = TRANSPARENT_INDEX;
-			} break;
-		}
-		memset(tex_data, clear, tex_length);
-	}
+        unsigned char clear = 0x7F;
+        switch(format)
+        {
+            case FORMAT_RGBA:
+            {
+                clear = 0x00;
+            } break;
+            case FORMAT_PALETTED:
+            {
+                clear = TRANSPARENT_INDEX;
+            } break;
+        }
+        memset(tex_data, clear, tex_length);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -434,15 +434,15 @@ void libsiedler2::baseArchivItem_Bitmap::tex_alloc(void)
  */
 void libsiedler2::baseArchivItem_Bitmap::tex_clear(void)
 {
-	delete[] tex_data;
+    delete[] tex_data;
 
-	tex_width = 0;
-	tex_height = 0;
+    tex_width = 0;
+    tex_height = 0;
 
-	tex_bpp = 0;
+    tex_bpp = 0;
 
-	tex_length = 0;
-	tex_data = NULL;
+    tex_length = 0;
+    tex_data = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -457,13 +457,13 @@ void libsiedler2::baseArchivItem_Bitmap::tex_clear(void)
  */
 unsigned short libsiedler2::baseArchivItem_Bitmap::tex_pow2(unsigned short n)
 {
-	unsigned short t = 2;
-	while(true)
-	{
-		if(t >= n)
-			return t;
-		t *= 2;
-	}
+    unsigned short t = 2;
+    while(true)
+    {
+        if(t >= n)
+            return t;
+        t *= 2;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -476,7 +476,7 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::tex_pow2(unsigned short n)
  */
 unsigned int libsiedler2::baseArchivItem_Bitmap::getLength(void) const
 {
-	return length;
+    return length;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -487,9 +487,9 @@ unsigned int libsiedler2::baseArchivItem_Bitmap::getLength(void) const
  *
  *  @author FloSoft
  */
-const unsigned char *libsiedler2::baseArchivItem_Bitmap::getTexData(void) const
+const unsigned char* libsiedler2::baseArchivItem_Bitmap::getTexData(void) const
 {
-	return tex_data;
+    return tex_data;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -502,7 +502,7 @@ const unsigned char *libsiedler2::baseArchivItem_Bitmap::getTexData(void) const
  */
 short libsiedler2::baseArchivItem_Bitmap::getNx(void) const
 {
-	return nx;
+    return nx;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -515,7 +515,7 @@ short libsiedler2::baseArchivItem_Bitmap::getNx(void) const
  */
 short libsiedler2::baseArchivItem_Bitmap::getNy(void) const
 {
-	return ny;
+    return ny;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -528,7 +528,7 @@ short libsiedler2::baseArchivItem_Bitmap::getNy(void) const
  */
 unsigned short libsiedler2::baseArchivItem_Bitmap::getWidth(void) const
 {
-	return width;
+    return width;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -541,7 +541,7 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::getWidth(void) const
  */
 unsigned short libsiedler2::baseArchivItem_Bitmap::getHeight(void) const
 {
-	return height;
+    return height;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -554,7 +554,7 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::getHeight(void) const
  */
 void libsiedler2::baseArchivItem_Bitmap::setLength(unsigned int length)
 {
-	this->length = length;
+    this->length = length;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -567,7 +567,7 @@ void libsiedler2::baseArchivItem_Bitmap::setLength(unsigned int length)
  */
 void libsiedler2::baseArchivItem_Bitmap::setNx(short nx)
 {
-	this->nx = nx;
+    this->nx = nx;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -580,7 +580,7 @@ void libsiedler2::baseArchivItem_Bitmap::setNx(short nx)
  */
 void libsiedler2::baseArchivItem_Bitmap::setNy(short ny)
 {
-	this->ny = ny;
+    this->ny = ny;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -593,7 +593,7 @@ void libsiedler2::baseArchivItem_Bitmap::setNy(short ny)
  */
 void libsiedler2::baseArchivItem_Bitmap::setWidth(unsigned short width)
 {
-	this->width = width;
+    this->width = width;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -606,111 +606,115 @@ void libsiedler2::baseArchivItem_Bitmap::setWidth(unsigned short width)
  */
 void libsiedler2::baseArchivItem_Bitmap::setHeight(unsigned short height)
 {
-	this->height = height;
+    this->height = height;
 }
 
-void libsiedler2::baseArchivItem_Bitmap::getVisibleArea(int &vx, int &vy, int &vw, int &vh)
+void libsiedler2::baseArchivItem_Bitmap::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
 {
-	int x, y, lx, ly;
+    int x, y, lx, ly;
 
-	vx = vy = 0;
-	lx = ly = -1;
+    vx = vy = 0;
+    lx = ly = -1;
 
-	if ((tex_width == 0) || (tex_height == 0))
-	{
-		return;
-	}
+    if ((tex_width == 0) || (tex_height == 0))
+    {
+        return;
+    }
 
-	// find empty rows at left
-	for (x = 0; x < tex_width; ++x)
-	{
-		for (y = 0; y < tex_height; ++y)
-		{
-			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
-			{
-				vx = x;
-				break;
-			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
-			{
-				vx = x;
-				break;
-			}
-		}
+    // find empty rows at left
+    for (x = 0; x < tex_width; ++x)
+    {
+        for (y = 0; y < tex_height; ++y)
+        {
+            if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+            {
+                vx = x;
+                break;
+            }
+            else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+            {
+                vx = x;
+                break;
+            }
+        }
 
-		if (y != tex_height)
-		{
-			break;
-		}
-	}
+        if (y != tex_height)
+        {
+            break;
+        }
+    }
 
-	// find empty rows at bottom
-	for (x = tex_width - 1; x >= 0; --x)
-	{
-		for (y = 0; y < tex_height; ++y)
-		{
-			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
-			{
-				lx = x;
-				break;
-			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
-			{
-				lx = x;
-				break;
-			}
-		}
+    // find empty rows at bottom
+    for (x = tex_width - 1; x >= 0; --x)
+    {
+        for (y = 0; y < tex_height; ++y)
+        {
+            if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+            {
+                lx = x;
+                break;
+            }
+            else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+            {
+                lx = x;
+                break;
+            }
+        }
 
-		if (y != tex_height)
-		{
-			break;
-		}
-	}
+        if (y != tex_height)
+        {
+            break;
+        }
+    }
 
-	// find empty rows at top
-	for (y = 0; y < tex_height; ++y)
-	{
-		for (x = 0; x < tex_width; ++x)
-		{
-			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
-			{
-				vy = y;
-				break;
-			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
-			{
-				vy = y;
-				break;
-			}
-		}
+    // find empty rows at top
+    for (y = 0; y < tex_height; ++y)
+    {
+        for (x = 0; x < tex_width; ++x)
+        {
+            if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+            {
+                vy = y;
+                break;
+            }
+            else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+            {
+                vy = y;
+                break;
+            }
+        }
 
-		if (x != tex_width)
-		{
-			break;
-		}
-	}
+        if (x != tex_width)
+        {
+            break;
+        }
+    }
 
-	// find empty rows at bottom
-	for (y = tex_height - 1; y >= 0; --y)
-	{
-		for (x = 0; x < tex_width; ++x)
-		{
-			if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
-			{
-				ly = y;
-				break;
-			} else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
-			{
-				ly = y;
-				break;
-			}
-		}
+    // find empty rows at bottom
+    for (y = tex_height - 1; y >= 0; --y)
+    {
+        for (x = 0; x < tex_width; ++x)
+        {
+            if ((tex_bpp == 1) && (tex_data[tex_width * y + x] != TRANSPARENT_INDEX))
+            {
+                ly = y;
+                break;
+            }
+            else if ((tex_bpp == 4) && (tex_data[((tex_width * y + x) << 2) + 3] != 0x00))
+            {
+                ly = y;
+                break;
+            }
+        }
 
-		if (x != tex_width)
-		{
-			break;
-		}
-	}
+        if (x != tex_width)
+        {
+            break;
+        }
+    }
 
-	vw = lx + 1 - vx;
-	vh = ly + 1 - vy;
+    vw = lx + 1 - vx;
+    vh = ly + 1 - vy;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -733,101 +737,101 @@ void libsiedler2::baseArchivItem_Bitmap::getVisibleArea(int &vx, int &vy, int &v
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap::print(unsigned char *buffer,
-							 unsigned short buffer_width,
-							 unsigned short buffer_height,
-							 int buffer_format,
-							 const ArchivItem_Palette *palette,
-							 unsigned short to_x,
-							 unsigned short to_y,
-							 unsigned short from_x,
-							 unsigned short from_y,
-							 unsigned short from_w,
-							 unsigned short from_h) const
+int libsiedler2::baseArchivItem_Bitmap::print(unsigned char* buffer,
+        unsigned short buffer_width,
+        unsigned short buffer_height,
+        int buffer_format,
+        const ArchivItem_Palette* palette,
+        unsigned short to_x,
+        unsigned short to_y,
+        unsigned short from_x,
+        unsigned short from_y,
+        unsigned short from_w,
+        unsigned short from_h) const
 {
-	if(buffer == NULL || buffer_width == 0 || buffer_height == 0)
-		return 1;
-	if(palette == NULL)
-		palette = this->palette;
-	if(palette == NULL)
-		return 2;
+    if(buffer == NULL || buffer_width == 0 || buffer_height == 0)
+        return 1;
+    if(palette == NULL)
+        palette = this->palette;
+    if(palette == NULL)
+        return 2;
 
-	if(from_w == 0 || from_x+from_w > tex_width)
-		from_w = tex_width-from_x;
-	if(from_h == 0 || from_y+from_h > tex_height)
-		from_h = tex_height-from_y;
+    if(from_w == 0 || from_x + from_w > tex_width)
+        from_w = tex_width - from_x;
+    if(from_h == 0 || from_y + from_h > tex_height)
+        from_h = tex_height - from_y;
 
-	unsigned short bpp = 0;
-	switch(buffer_format)
-	{
-	case FORMAT_RGBA:
-		{
-			bpp = 4;
-		} break;
-	case FORMAT_PALETTED:
-		{
-			bpp = 1;
-		} break;
-	}
+    unsigned short bpp = 0;
+    switch(buffer_format)
+    {
+        case FORMAT_RGBA:
+        {
+            bpp = 4;
+        } break;
+        case FORMAT_PALETTED:
+        {
+            bpp = 1;
+        } break;
+    }
 
-	for(unsigned short y = from_y, y2 = to_y; y2 < buffer_height && y < from_y+from_h; ++y, ++y2)
-	{
-		for(unsigned short x = from_x, x2 = to_x; x2 < buffer_width && x < from_x+from_w; ++x, ++x2)
-		{
-			unsigned int position = (y2 * buffer_width + x2) * bpp;
-			unsigned int position2 = (y * tex_width + x) * tex_bpp;
-			switch(tex_bpp)
-			{
-			case 1: // Textur ist Paletted
-				{
-					switch(bpp)
-					{
-					case 1:
-						{
-							// Ziel ist auch Paletted
-							if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
-								buffer[position] = tex_data[position2];
-						} break;
-					case 4:
-						{
-							// Ziel ist RGB+A
-							if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
-							{
-								palette->get(tex_data[position2], &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
-								buffer[position + 3] = 0xFF;
-							}
-						} break;
-					}
-				} break;
-			case 4: // Textur ist RGBA
-				{
-					switch(bpp)
-					{
-					case 1:
-						{
-							// Ziel ist Paletted
-							if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
-								buffer[position] = tex_getPixel(x, y, palette);
-						} break;
-					case 4:
-						{
-							// Ziel ist auch RGB+A
-							if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
-							{
-								buffer[position + 0] = tex_data[position2 + 0]; // b
-								buffer[position + 1] = tex_data[position2 + 1]; // g
-								buffer[position + 2] = tex_data[position2 + 2]; // r
-								buffer[position + 3] = tex_data[position2 + 3]; // a
-							}
-						} break;
-					}
-				} break;
-			}
-		}
-	}
+    for(unsigned short y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
+    {
+        for(unsigned short x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
+        {
+            unsigned int position = (y2 * buffer_width + x2) * bpp;
+            unsigned int position2 = (y * tex_width + x) * tex_bpp;
+            switch(tex_bpp)
+            {
+                case 1: // Textur ist Paletted
+                {
+                    switch(bpp)
+                    {
+                        case 1:
+                        {
+                            // Ziel ist auch Paletted
+                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                                buffer[position] = tex_data[position2];
+                        } break;
+                        case 4:
+                        {
+                            // Ziel ist RGB+A
+                            if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
+                            {
+                                palette->get(tex_data[position2], &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
+                                buffer[position + 3] = 0xFF;
+                            }
+                        } break;
+                    }
+                } break;
+                case 4: // Textur ist RGBA
+                {
+                    switch(bpp)
+                    {
+                        case 1:
+                        {
+                            // Ziel ist Paletted
+                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                                buffer[position] = tex_getPixel(x, y, palette);
+                        } break;
+                        case 4:
+                        {
+                            // Ziel ist auch RGB+A
+                            if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
+                            {
+                                buffer[position + 0] = tex_data[position2 + 0]; // b
+                                buffer[position + 1] = tex_data[position2 + 1]; // g
+                                buffer[position + 2] = tex_data[position2 + 2]; // r
+                                buffer[position + 3] = tex_data[position2 + 3]; // a
+                            }
+                        } break;
+                    }
+                } break;
+            }
+        }
+    }
 
-	// Alles ok
-	return 0;
+    // Alles ok
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -849,66 +853,66 @@ int libsiedler2::baseArchivItem_Bitmap::print(unsigned char *buffer,
  *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Bitmap::create(unsigned short width,
-							  unsigned short height,
-							  const unsigned char *buffer,
-							  unsigned short buffer_width,
-							  unsigned short buffer_height,
-							  int buffer_format,
-							  const ArchivItem_Palette *palette)
+        unsigned short height,
+        const unsigned char* buffer,
+        unsigned short buffer_width,
+        unsigned short buffer_height,
+        int buffer_format,
+        const ArchivItem_Palette* palette)
 {
-	if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0)
-		return 1;
-	if(palette == NULL)
-		palette = this->palette;
-	if(palette == NULL)
-		return 2;
+    if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0)
+        return 1;
+    if(palette == NULL)
+        palette = this->palette;
+    if(palette == NULL)
+        return 2;
 
-	this->width = width;
-	this->height = height;
-	this->length = width*height;
-	this->format = buffer_format;
+    this->width = width;
+    this->height = height;
+    this->length = width * height;
+    this->format = buffer_format;
 
-	// Texturspeicher anfordern
-	tex_alloc();
+    // Texturspeicher anfordern
+    tex_alloc();
 
-	unsigned short bpp = 0;
-	switch(buffer_format)
-	{
-	case FORMAT_RGBA:
-		{
-			bpp = 4;
-		} break;
-	case FORMAT_PALETTED:
-		{
-			bpp = 1;
-		} break;
-	}
+    unsigned short bpp = 0;
+    switch(buffer_format)
+    {
+        case FORMAT_RGBA:
+        {
+            bpp = 4;
+        } break;
+        case FORMAT_PALETTED:
+        {
+            bpp = 1;
+        } break;
+    }
 
-	for(unsigned int y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
-	{
-		for(unsigned int x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
-		{
-			unsigned int position = (y2 * buffer_width + x2) * bpp;
-			// und Pixel setzen
-			switch(buffer_format)
-			{
-			case FORMAT_RGBA:
-				{
-					if(buffer[position + 3] != 0x00)
-						tex_setPixel(x, y, buffer[position + 2], buffer[position + 1], buffer[position], buffer[position + 3]);
-					else
-						tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
-				} break;
-			case FORMAT_PALETTED:
-				{
-					tex_setPixel(x, y, buffer[position], palette);
-				} break;
-			}
-		}
-	}
+    for(unsigned int y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
+    {
+        for(unsigned int x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
+        {
+            unsigned int position = (y2 * buffer_width + x2) * bpp;
+            // und Pixel setzen
+            switch(buffer_format)
+            {
+                case FORMAT_RGBA:
+                {
+                    if(buffer[position + 3] != 0x00)
+                        tex_setPixel(x, y, buffer[position + 2], buffer[position + 1], buffer[position], buffer[position + 3]);
+                    else
+                        tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
+                } break;
+                case FORMAT_PALETTED:
+                {
+                    tex_setPixel(x, y, buffer[position], palette);
+                } break;
+            }
+        }
+    }
 
-	// Alles ok
-	return 0;
+    // Alles ok
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -919,13 +923,13 @@ int libsiedler2::baseArchivItem_Bitmap::create(unsigned short width,
  *
  *  @author FloSoft
  */
-void libsiedler2::baseArchivItem_Bitmap::setPalette(const ArchivItem_Palette *palette)
+void libsiedler2::baseArchivItem_Bitmap::setPalette(const ArchivItem_Palette* palette)
 {
-	// alte Palette freigeben
-	delete this->palette;
+    // alte Palette freigeben
+    delete this->palette;
 
-	if(palette)
-		this->palette = dynamic_cast<ArchivItem_Palette*>((*allocator)(BOBTYPE_PALETTE, 0, palette));
-	else
-		this->palette = NULL;
+    if(palette)
+        this->palette = dynamic_cast<ArchivItem_Palette*>((*allocator)(BOBTYPE_PALETTE, 0, palette));
+    else
+        this->palette = NULL;
 }

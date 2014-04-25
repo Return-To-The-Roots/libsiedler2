@@ -1,4 +1,4 @@
-// $Id: outline.cpp 7499 2011-09-07 11:33:07Z FloSoft $
+// $Id: outline.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,78 +31,78 @@ using namespace loader;
 
 int main(int argc, char* argv[])
 {
-	ArchivInfo lst, bbm;
+    ArchivInfo lst, bbm;
 
-	LoadBBM("GFX/PALETTE/PAL5.BBM", &bbm);
+    LoadBBM("GFX/PALETTE/PAL5.BBM", &bbm);
 
-	ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
+    ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-	int format = FORMAT_PALETTED;
+    int format = FORMAT_PALETTED;
 
-	setTextureFormat((TEXTURFORMAT)format);
+    setTextureFormat((TEXTURFORMAT)format);
 
-	LoadDATIDX("DATA/RESOURCE.DAT", palette, &lst);
+    LoadDATIDX("DATA/RESOURCE.DAT", palette, &lst);
 
-	ArchivInfo to;
-	for(unsigned int i = 0; i < 4; ++i)
-	{
-		if(lst.get(i)->getBobType() == BOBTYPE_FONT)
-		{
-			ArchivItem_Font *font = (ArchivItem_Font *)lst.get(i);
+    ArchivInfo to;
+    for(unsigned int i = 0; i < 4; ++i)
+    {
+        if(lst.get(i)->getBobType() == BOBTYPE_FONT)
+        {
+            ArchivItem_Font* font = (ArchivItem_Font*)lst.get(i);
 
-			// copy small font only
-			if(i == 2)
-			{
-				to.pushC(font);
-				continue;
-			}
+            // copy small font only
+            if(i == 2)
+            {
+                to.pushC(font);
+                continue;
+            }
 
-			ArchivItem_Font out;
+            ArchivItem_Font out;
 
-			out.alloc(font->getCount());
-			out.setDx(font->getDx()+2);
-			out.setDy(font->getDy()+2);
+            out.alloc(font->getCount());
+            out.setDx(font->getDx() + 2);
+            out.setDy(font->getDy() + 2);
 
-			for(unsigned int j = 0; j < font->getCount(); ++j)
-			{
-				ArchivItem_Bitmap_Player *c = dynamic_cast<ArchivItem_Bitmap_Player *>(font->get(j));
-				ArchivItem_Bitmap_Player o;
+            for(unsigned int j = 0; j < font->getCount(); ++j)
+            {
+                ArchivItem_Bitmap_Player* c = dynamic_cast<ArchivItem_Bitmap_Player*>(font->get(j));
+                ArchivItem_Bitmap_Player o;
 
-				if(c == NULL)
-					continue;
+                if(c == NULL)
+                    continue;
 
-				unsigned short w = c->getWidth()+1, h = c->getHeight()+1;
+                unsigned short w = c->getWidth() + 1, h = c->getHeight() + 1;
 
-				unsigned char *buffer = new unsigned char[w*h];
-				memset(buffer, TRANSPARENT_INDEX, w*h);
+                unsigned char* buffer = new unsigned char[w * h];
+                memset(buffer, TRANSPARENT_INDEX, w * h);
 
-				unsigned char color = 1;
-				c->print(buffer, w, h, format, palette, color);
-				c->print(buffer, w, h, format, palette, color, 2 );
-				c->print(buffer, w, h, format, palette, color, 0, 2);
-				c->print(buffer, w, h, format, palette, color, 2, 2 );
+                unsigned char color = 1;
+                c->print(buffer, w, h, format, palette, color);
+                c->print(buffer, w, h, format, palette, color, 2 );
+                c->print(buffer, w, h, format, palette, color, 0, 2);
+                c->print(buffer, w, h, format, palette, color, 2, 2 );
 
-				for(unsigned short z = 0; z < w*h; ++z)
-				{
-					if(buffer[z] >= color && buffer[z] <= color+3)
-						buffer[z] = 0;
-				}
-				c->print(buffer, w, h, format, palette, color, 1, 1);
+                for(unsigned short z = 0; z < w * h; ++z)
+                {
+                    if(buffer[z] >= color && buffer[z] <= color + 3)
+                        buffer[z] = 0;
+                }
+                c->print(buffer, w, h, format, palette, color, 1, 1);
 
-				o.create(w, h, buffer, w, h, format, palette, color);
+                o.create(w, h, buffer, w, h, format, palette, color);
 
-				out.setC(j, &o);
+                out.setC(j, &o);
 
-				delete[] buffer;
-			}
+                delete[] buffer;
+            }
 
-			to.pushC(&out);
-		}
-	}
-	char file[512];
-	snprintf(file, 512, "outline_fonts.lst");
-	WriteLST(file, palette, &to);
+            to.pushC(&out);
+        }
+    }
+    char file[512];
+    snprintf(file, 512, "outline_fonts.lst");
+    WriteLST(file, palette, &to);
 
-	getchar();
-	return 0;
+    getchar();
+    return 0;
 }

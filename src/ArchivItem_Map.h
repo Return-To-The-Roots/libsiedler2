@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Map.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,26 +25,26 @@
 
 namespace libsiedler2
 {
-	/// Klasse für eine Mapfile.
-	class ArchivItem_Map : public ArchivItem, public ArchivInfo
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Map.
-		ArchivItem_Map(void);
-		/// Kopierkonstruktor von @p ArchivItem_Map.
-		ArchivItem_Map(const ArchivItem_Map *item);
-		/// Destruktor von @p ArchivItem_Map.
-		~ArchivItem_Map(void);
+    /// Klasse für eine Mapfile.
+    class ArchivItem_Map : public ArchivItem, public ArchivInfo
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Map.
+            ArchivItem_Map(void);
+            /// Kopierkonstruktor von @p ArchivItem_Map.
+            ArchivItem_Map(const ArchivItem_Map* item);
+            /// Destruktor von @p ArchivItem_Map.
+            ~ArchivItem_Map(void);
 
-		/// lädt die Mapdaten aus einer Datei.
-		virtual int load(FILE *file, bool only_header);
-		/// schreibt die Mapdaten in eine Datei.
-		virtual int write(FILE *file) const;
+            /// lädt die Mapdaten aus einer Datei.
+            virtual int load(FILE* file, bool only_header);
+            /// schreibt die Mapdaten in eine Datei.
+            virtual int write(FILE* file) const;
 
-	protected:
-		/// lädt die Mapdaten aus einer Datei.
-		int loadHelper(FILE *file, bool only_header);
-	};
+        protected:
+            /// lädt die Mapdaten aus einer Datei.
+            int loadHelper(FILE* file, bool only_header);
+    };
 }
 
 #endif // !ARCHIVITEM_MAP_H_INCLUDED

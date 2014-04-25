@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Font.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Font.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,9 +25,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@
  */
 libsiedler2::ArchivItem_Font::ArchivItem_Font(void) : ArchivItem(), ArchivInfo(), dx(0), dy(0)
 {
-	setBobType(BOBTYPE_FONT);
+    setBobType(BOBTYPE_FONT);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font(void) : ArchivItem(), ArchivInfo()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font *item) : ArchivItem( item ), ArchivInfo( item ), dx(item->dx), dy(item->dy)
+libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font* item) : ArchivItem( item ), ArchivInfo( item ), dx(item->dx), dy(item->dy)
 {
 }
 
@@ -84,44 +84,44 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font *item) : Arc
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Font::load(FILE *file, const ArchivItem_Palette *palette)
+int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* palette)
 {
-	if(file == NULL || palette == NULL)
-		return 1;
+    if(file == NULL || palette == NULL)
+        return 1;
 
-	// X-Spacing einlesen
-	if(libendian::le_read_uc(&dx, 1, file) != 1)
-		return 2;
+    // X-Spacing einlesen
+    if(libendian::le_read_uc(&dx, 1, file) != 1)
+        return 2;
 
-	// Y-Spacing einlesen
-	if(libendian::le_read_uc(&dy, 1, file) != 1)
-		return 3;
+    // Y-Spacing einlesen
+    if(libendian::le_read_uc(&dy, 1, file) != 1)
+        return 3;
 
-	// Speicher für Buchstaben alloziieren
-	alloc(256);
+    // Speicher für Buchstaben alloziieren
+    alloc(256);
 
-	// Buchstaben einlesen
-	for(unsigned long i = 32; i < 256; ++i)
-	{
-		short bobtype;
+    // Buchstaben einlesen
+    for(unsigned long i = 32; i < 256; ++i)
+    {
+        short bobtype;
 
-		// bobtype des Items einlesen
-		if(libendian::le_read_s(&bobtype, file) != 0)
-			return 4;
+        // bobtype des Items einlesen
+        if(libendian::le_read_s(&bobtype, file) != 0)
+            return 4;
 
-		if(bobtype == 0x0000)
-			continue;
+        if(bobtype == 0x0000)
+            continue;
 
-		// Daten von Item auswerten
-		if(loader::LoadType(bobtype, file, palette, getP(i)) != 0)
-			return 5;
-	}
+        // Daten von Item auswerten
+        if(loader::LoadType(bobtype, file, palette, getP(i)) != 0)
+            return 5;
+    }
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -131,53 +131,53 @@ int libsiedler2::ArchivItem_Font::load(FILE *file, const ArchivItem_Palette *pal
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
  *
- *	@return liefert Null bei Erfolg, ungleich Null bei Fehler
+ *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Font::write(FILE *file, const ArchivItem_Palette *palette) const
+int libsiedler2::ArchivItem_Font::write(FILE* file, const ArchivItem_Palette* palette) const
 {
-	if(file == NULL || palette == NULL)
-		return 1;
+    if(file == NULL || palette == NULL)
+        return 1;
 
-	// X-Spacing schreiben
-	unsigned char ddx = dx, ddy = dy;
-	if(libendian::le_write_uc(&ddx, 1, file) != 1)
-		return 2;
+    // X-Spacing schreiben
+    unsigned char ddx = dx, ddy = dy;
+    if(libendian::le_write_uc(&ddx, 1, file) != 1)
+        return 2;
 
-	// Y-Spacing schreiben
-	if(libendian::le_write_uc(&ddy, 1, file) != 1)
-		return 3;
+    // Y-Spacing schreiben
+    if(libendian::le_write_uc(&ddy, 1, file) != 1)
+        return 3;
 
-	// Buchstaben schreiben
-	for(unsigned long i = 32; i < 256; ++i)
-	{
-		const ArchivItem *item = get(i);
-		short bobtype = 0;
+    // Buchstaben schreiben
+    for(unsigned long i = 32; i < 256; ++i)
+    {
+        const ArchivItem* item = get(i);
+        short bobtype = 0;
 
-		if(item)
-			bobtype = item->getBobType();
+        if(item)
+            bobtype = item->getBobType();
 
-		// bobtype des Items schreiben
-		if(libendian::le_write_s(bobtype, file) != 0)
-			return 4;
+        // bobtype des Items schreiben
+        if(libendian::le_write_s(bobtype, file) != 0)
+            return 4;
 
-		if(item == NULL)
-			continue;
+        if(item == NULL)
+            continue;
 
-		// Daten von Item auswerten
-		if(loader::WriteType(bobtype, file, palette, item) != 0)
-			return 5;
-	}
+        // Daten von Item auswerten
+        if(loader::WriteType(bobtype, file, palette, item) != 0)
+            return 5;
+    }
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den X-Buchstabenabstand.
  *
- *	@return liefert den X-Buchstabenabstand.
+ *  @return liefert den X-Buchstabenabstand.
  *
  *  @author FloSoft
  */
@@ -186,7 +186,7 @@ int libsiedler2::ArchivItem_Font::write(FILE *file, const ArchivItem_Palette *pa
 /**
  *  liefert den Y-Buchstabenabstand.
  *
- *	@return liefert den Y-Buchstabenabstand.
+ *  @return liefert den Y-Buchstabenabstand.
  *
  *  @author FloSoft
  */

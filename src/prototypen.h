@@ -1,4 +1,4 @@
-// $Id: prototypen.h 8348 2012-09-30 13:46:34Z FloSoft $
+// $Id: prototypen.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -23,94 +23,94 @@
 
 namespace libsiedler2
 {
-	/// Die verschiedenen Lade-/Schreibfunktionen der Dateien
-	namespace loader
-	{
-		/// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-		int LoadType(unsigned short bobtype, FILE *lst, const ArchivItem_Palette *palette, ArchivItem **item);
+    /// Die verschiedenen Lade-/Schreibfunktionen der Dateien
+    namespace loader
+    {
+        /// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
+        int LoadType(unsigned short bobtype, FILE* lst, const ArchivItem_Palette* palette, ArchivItem** item);
 
-		/// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-		int WriteType(unsigned short bobtype, FILE *lst, const ArchivItem_Palette *palette, const ArchivItem *item);
+        /// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
+        int WriteType(unsigned short bobtype, FILE* lst, const ArchivItem_Palette* palette, const ArchivItem* item);
 
-		/// lädt eine LST-File in ein ArchivInfo.
-		int LoadLST(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items);
+        /// lädt eine LST-File in ein ArchivInfo.
+        int LoadLST(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items);
 
-		/// schreibt ein ArchivInfo eine LST-File.
-		int WriteLST(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items);
+        /// schreibt ein ArchivInfo eine LST-File.
+        int WriteLST(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items);
 
-		/// lädt eine TLST-File (beschriebenes LST-File in Textform) in ein ArchivInfo.
-		int LoadTLST(const char *file, ArchivInfo *items);
+        /// lädt eine TLST-File (beschriebenes LST-File in Textform) in ein ArchivInfo.
+        int LoadTLST(const char* file, ArchivInfo* items);
 
-		/// lädt eine BBM-File in ein ArchivInfo.
-		int LoadBBM(const char *file, ArchivInfo *items);
+        /// lädt eine BBM-File in ein ArchivInfo.
+        int LoadBBM(const char* file, ArchivInfo* items);
 
-		/// schreibt ein ArchivInfo in eine BBM-File.
-		int WriteBBM(const char *file, const ArchivInfo *items);
+        /// schreibt ein ArchivInfo in eine BBM-File.
+        int WriteBBM(const char* file, const ArchivInfo* items);
 
-		/// lädt eine ACT-File in ein ArchivInfo.
-		int LoadACT(const char *file, ArchivInfo *items);
+        /// lädt eine ACT-File in ein ArchivInfo.
+        int LoadACT(const char* file, ArchivInfo* items);
 
-		/// schreibt ein ArchivInfo in eine ACT-File.
-		int WriteACT(const char *file, const ArchivInfo *items, long nr = -1);
+        /// schreibt ein ArchivInfo in eine ACT-File.
+        int WriteACT(const char* file, const ArchivInfo* items, long nr = -1);
 
-		/// lädt eine DAT/IDX-File in ein ArchivInfo.
-		int LoadDATIDX(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items);
+        /// lädt eine DAT/IDX-File in ein ArchivInfo.
+        int LoadDATIDX(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items);
 
-		/// schreibt ein ArchivInfo in eine DAT/IDX-File.
-		int WriteDATIDX(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items);
+        /// schreibt ein ArchivInfo in eine DAT/IDX-File.
+        int WriteDATIDX(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items);
 
-		/// lädt eine BMP-File in ein ArchivInfo.
-		int LoadBMP(const char *file, ArchivItem **image, ArchivItem **palette = NULL);
+        /// lädt eine BMP-File in ein ArchivInfo.
+        int LoadBMP(const char* file, ArchivItem** image, ArchivItem** palette = NULL);
 
-		/// schreibt ein ArchivInfo in eine BMP-File.
-		int WriteBMP(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items, long nr = -1);
+        /// schreibt ein ArchivInfo in eine BMP-File.
+        int WriteBMP(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items, long nr = -1);
 
-		/// lädt eine GER/ENG-File in ein ArchivInfo.
-		int LoadTXT(const char *file, ArchivInfo *items, bool conversion = true);
+        /// lädt eine GER/ENG-File in ein ArchivInfo.
+        int LoadTXT(const char* file, ArchivInfo* items, bool conversion = true);
 
-#		define LoadGER LoadTXT
-#		define LoadENG LoadTXT
+#       define LoadGER LoadTXT
+#       define LoadENG LoadTXT
 
-		/// schreibt eine GER/ENG-File aus einem ArchivInfo.
-		int WriteTXT(const char *file, const ArchivInfo *items, bool conversion = true);
+        /// schreibt eine GER/ENG-File aus einem ArchivInfo.
+        int WriteTXT(const char* file, const ArchivInfo* items, bool conversion = true);
 
-#		define WriteGER WriteTXT
-#		define WriteENG WriteTXT
+#       define WriteGER WriteTXT
+#       define WriteENG WriteTXT
 
-		/// lädt eine LBM-File in ein ArchivInfo.
-		int LoadLBM(const char *file, ArchivInfo *items);
+        /// lädt eine LBM-File in ein ArchivInfo.
+        int LoadLBM(const char* file, ArchivInfo* items);
 
-		/// schreibt ein ArchivInfo in eine LBM-File.
-		int WriteLBM(const char *file, const ArchivInfo *items);
+        /// schreibt ein ArchivInfo in eine LBM-File.
+        int WriteLBM(const char* file, const ArchivInfo* items);
 
-		/// lädt eine SWD/WSD-File in ein ArchivInfo.
-		int LoadMAP(const char *file, ArchivInfo *items, bool only_header = false);
+        /// lädt eine SWD/WSD-File in ein ArchivInfo.
+        int LoadMAP(const char* file, ArchivInfo* items, bool only_header = false);
 
-#		define LoadSWD LoadMAP
-#		define LoadWSD LoadMAP
+#       define LoadSWD LoadMAP
+#       define LoadWSD LoadMAP
 
-		/// schreibt ein ArchivInfo in eine SWD/WSD-File.
-		int WriteMAP(const char *file, const ArchivInfo *items, long nr = -1);
+        /// schreibt ein ArchivInfo in eine SWD/WSD-File.
+        int WriteMAP(const char* file, const ArchivInfo* items, long nr = -1);
 
-#		define WriteSWD WriteMAP
-#		define WriteWSD WriteMAP
+#       define WriteSWD WriteMAP
+#       define WriteWSD WriteMAP
 
-		/// lädt eine BOB-File in ein ArchivInfo.
-		int LoadBOB(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items);
+        /// lädt eine BOB-File in ein ArchivInfo.
+        int LoadBOB(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items);
 
-		/// schreibt ein ArchivInfo in eine BOB-File.
-		int WriteBOB(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items);
+        /// schreibt ein ArchivInfo in eine BOB-File.
+        int WriteBOB(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items);
 
-		int LoadSND(const char *file, ArchivInfo *items);
+        int LoadSND(const char* file, ArchivInfo* items);
 
-#		define LoadMID LoadSND
-#		define LoadXMID LoadSND
-#		define LoadWAV LoadSND
+#       define LoadMID LoadSND
+#       define LoadXMID LoadSND
+#       define LoadWAV LoadSND
 
-		/// lädt eine INI-File in ein ArchivInfo.
-		int LoadINI(const char *file, ArchivInfo *items);
-		int WriteINI(const char *file, const ArchivInfo *items);
-	}
+        /// lädt eine INI-File in ein ArchivInfo.
+        int LoadINI(const char* file, ArchivInfo* items);
+        int WriteINI(const char* file, const ArchivInfo* items);
+    }
 }
 
 #endif // !PROTOTYP_H_INCLUDED

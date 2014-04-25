@@ -1,4 +1,4 @@
-// $Id: WriteINI.cpp 8853 2013-08-18 19:23:49Z marcus $
+// $Id: WriteINI.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,13 +24,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  schreibt ein ArchivInfo in eine INI-File.
  *
  *  @param[in]  file    Dateiname der INI-File
@@ -40,27 +40,27 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteINI(const char *file, const ArchivInfo *items)
+int libsiedler2::loader::WriteINI(const char* file, const ArchivInfo* items)
 {
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum schreiben öffnen
-	FILE *ini = fopen(file, "wb");
-	if (ini == 0)
-		return 2;
+    // Datei zum schreiben öffnen
+    FILE* ini = fopen(file, "wb");
+    if (ini == 0)
+        return 2;
 
-	for(unsigned long i = 0; i < items->getCount(); ++i)
-	{
-		const ArchivItem_Ini *item = dynamic_cast<const ArchivItem_Ini *>(items->get(i));
+    for(unsigned long i = 0; i < items->getCount(); ++i)
+    {
+        const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items->get(i));
 
-		if(item)
-			item->write(ini);
-	}
+        if(item)
+            item->write(ini);
+    }
 
-	// Datei schliessen
-	fclose(ini);
+    // Datei schliessen
+    fclose(ini);
 
-	// alles ok
-	return 0;
+    // alles ok
+    return 0;
 }

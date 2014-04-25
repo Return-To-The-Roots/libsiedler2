@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Palette.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Palette.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,46 +25,46 @@
 
 namespace libsiedler2
 {
-	/// Index des Transparenzwertes
-	const unsigned char TRANSPARENT_INDEX = 254;
+    /// Index des Transparenzwertes
+    const unsigned char TRANSPARENT_INDEX = 254;
 
-	/// Klasse für Paletten.
-	class ArchivItem_Palette : public ArchivItem
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Palette.
-		ArchivItem_Palette(void);
+    /// Klasse für Paletten.
+    class ArchivItem_Palette : public ArchivItem
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Palette.
+            ArchivItem_Palette(void);
 
-		/// Kopierkonstruktor von @p ArchivItem_Palette.
-		ArchivItem_Palette(const ArchivItem_Palette *item);
+            /// Kopierkonstruktor von @p ArchivItem_Palette.
+            ArchivItem_Palette(const ArchivItem_Palette* item);
 
-		/// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.
-		ArchivItem_Palette(FILE *file, bool skip = true);
+            /// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.
+            ArchivItem_Palette(FILE* file, bool skip = true);
 
-		/// liest die Farbwerte aus einer Datei.
-		int load(FILE *file, bool skip = true);
+            /// liest die Farbwerte aus einer Datei.
+            int load(FILE* file, bool skip = true);
 
-		/// schreibt die Farbwerte in eine Datei.
-		int write(FILE *file, bool skip = true) const;
+            /// schreibt die Farbwerte in eine Datei.
+            int write(FILE* file, bool skip = true) const;
 
-		/// setzt einen Farbwert am entsprechenden Index.
-		void set(unsigned char index, unsigned char r, unsigned char g, unsigned char b);
+            /// setzt einen Farbwert am entsprechenden Index.
+            void set(unsigned char index, unsigned char r, unsigned char g, unsigned char b);
 
-		/// liefert einen Farbwert am entsprechenden Index.
-		void get(unsigned char index, unsigned char *r, unsigned char *g, unsigned char *b) const;
+            /// liefert einen Farbwert am entsprechenden Index.
+            void get(unsigned char index, unsigned char* r, unsigned char* g, unsigned char* b) const;
 
-		/// liefert einen Index zum entsprechenden RGB-Wert.
-		unsigned char lookup(unsigned char r, unsigned char g, unsigned char b) const;
+            /// liefert einen Index zum entsprechenden RGB-Wert.
+            unsigned char lookup(unsigned char r, unsigned char g, unsigned char b) const;
 
-		/// Index-Operator von @p ArchivItem_Palette. 
-		const unsigned char *const operator[](int index);
+            /// Index-Operator von @p ArchivItem_Palette.
+            const unsigned char* const operator[](int index);
 
-		/// kopiert die Palette in einen Puffer (als RGBA)
-		void copy(unsigned char *buffer) const;
+            /// kopiert die Palette in einen Puffer (als RGBA)
+            void copy(unsigned char* buffer) const;
 
-	protected:
-		unsigned char colors[256][3];
-	};
+        protected:
+            unsigned char colors[256][3];
+    };
 }
 
 #endif // !ARCHIVITEM_PALETTE_H_INCLUDED

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Text.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Text.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,41 +25,41 @@
 
 namespace libsiedler2
 {
-	/// Klasse für Texte.
-	class ArchivItem_Text : public ArchivItem
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Text.
-		ArchivItem_Text(void);
+    /// Klasse für Texte.
+    class ArchivItem_Text : public ArchivItem
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Text.
+            ArchivItem_Text(void);
 
-		/// Destruktor von @p ArchivItem_Text.
-		~ArchivItem_Text(void);
+            /// Destruktor von @p ArchivItem_Text.
+            ~ArchivItem_Text(void);
 
-		/// Kopierkonstruktor von @p ArchivItem_Text.
-		ArchivItem_Text(const ArchivItem_Text *item);
+            /// Kopierkonstruktor von @p ArchivItem_Text.
+            ArchivItem_Text(const ArchivItem_Text* item);
 
-		/// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
-		ArchivItem_Text(FILE *file, bool conversion = true, unsigned int length = 0);
+            /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
+            ArchivItem_Text(FILE* file, bool conversion = true, unsigned int length = 0);
 
-		/// liest den Text aus einer Datei.
-		int load(FILE *file, bool conversion = true, unsigned int length = 0);
+            /// liest den Text aus einer Datei.
+            int load(FILE* file, bool conversion = true, unsigned int length = 0);
 
-		/// schreibt den Text in eine Datei.
-		int write(FILE *file, bool conversion = true) const;
+            /// schreibt den Text in eine Datei.
+            int write(FILE* file, bool conversion = true) const;
 
-		// liefert den Text.
-		const char *getText(void) const;
+            // liefert den Text.
+            const char* getText(void) const;
 
-		// liefert die Länge.
-		unsigned int getLength(void) const;
+            // liefert die Länge.
+            unsigned int getLength(void) const;
 
-		// setzt den Text.
-		void setText(const char *text, bool conversion = true, unsigned int length = 0);
+            // setzt den Text.
+            void setText(const char* text, bool conversion = true, unsigned int length = 0);
 
-	private:
-		char *text;          ///< Der Textspeicher.
-		unsigned int length; ///< Die Länge des Textes.
-	};
+        private:
+            char* text;          ///< Der Textspeicher.
+            unsigned int length; ///< Die Länge des Textes.
+    };
 }
 
 #endif // !ARCHIVITEM_TEXT_H_INCLUDED

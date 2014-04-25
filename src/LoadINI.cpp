@@ -1,4 +1,4 @@
-// $Id: LoadINI.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: LoadINI.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,9 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,32 +40,32 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadINI(const char *file, ArchivInfo *items)
+int libsiedler2::loader::LoadINI(const char* file, ArchivInfo* items)
 {
-	FILE *ini;
+    FILE* ini;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	// Datei zum lesen öffnen
-	ini = fopen(file, "rb");
+    // Datei zum lesen öffnen
+    ini = fopen(file, "rb");
 
-	// hat das geklappt?
-	if(ini == NULL)
-		return 2;
+    // hat das geklappt?
+    if(ini == NULL)
+        return 2;
 
-	while(!feof(ini))
-	{
-		ArchivItem_Ini item;
+    while(!feof(ini))
+    {
+        ArchivItem_Ini item;
 
-		if(item.load(ini) != 0)
-			return 3;
+        if(item.load(ini) != 0)
+            return 3;
 
-		items->pushC(&item);
-	}
+        items->pushC(&item);
+    }
 
-	// Datei schliessen
-	fclose(ini);
+    // Datei schliessen
+    fclose(ini);
 
-	return 0;
+    return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Shadow.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem_Bitmap_Shadow.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,39 +26,39 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse für Shadow-Bitmaps.
-	class baseArchivItem_Bitmap_Shadow : public virtual baseArchivItem_Bitmap
-	{
-	public:
-		/// Konstruktor von @p baseArchivItem_Bitmap_Shadow.
-		baseArchivItem_Bitmap_Shadow(void);
+    /// Basisklasse für Shadow-Bitmaps.
+    class baseArchivItem_Bitmap_Shadow : public virtual baseArchivItem_Bitmap
+    {
+        public:
+            /// Konstruktor von @p baseArchivItem_Bitmap_Shadow.
+            baseArchivItem_Bitmap_Shadow(void);
 
-		/// Kopierkonstruktor von @p baseArchivItem_Bitmap_Shadow.
-		baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow *item);
+            /// Kopierkonstruktor von @p baseArchivItem_Bitmap_Shadow.
+            baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow* item);
 
-		/// Konstruktor von @p baseArchivItem_Bitmap_Shadow mit Laden der Bilddaten aus einer Datei.
-		baseArchivItem_Bitmap_Shadow(FILE *file, const ArchivItem_Palette *palette);
+            /// Konstruktor von @p baseArchivItem_Bitmap_Shadow mit Laden der Bilddaten aus einer Datei.
+            baseArchivItem_Bitmap_Shadow(FILE* file, const ArchivItem_Palette* palette);
 
-		/// Destruktor von @p baseArchivItem_Bitmap_Shadow.
-		~baseArchivItem_Bitmap_Shadow(void);
+            /// Destruktor von @p baseArchivItem_Bitmap_Shadow.
+            ~baseArchivItem_Bitmap_Shadow(void);
 
-		/// lädt die Bilddaten aus einer Datei.
-		int load(FILE *file, const ArchivItem_Palette *palette);
+            /// lädt die Bilddaten aus einer Datei.
+            int load(FILE* file, const ArchivItem_Palette* palette);
 
-		/// schreibt die Bilddaten in eine Datei.
-		int write(FILE *file, const ArchivItem_Palette *palette) const;
-	};
+            /// schreibt die Bilddaten in eine Datei.
+            int write(FILE* file, const ArchivItem_Palette* palette) const;
+    };
 
-	/// Klasse für Shadow-Bitmaps.
-	class ArchivItem_Bitmap_Shadow : public baseArchivItem_Bitmap_Shadow, public ArchivItem_Bitmap
-	{
-	public:
-		/// Konstruktor von @p ArchivItem_Bitmap_Shadow.
-		ArchivItem_Bitmap_Shadow(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Shadow() {}
+    /// Klasse für Shadow-Bitmaps.
+    class ArchivItem_Bitmap_Shadow : public baseArchivItem_Bitmap_Shadow, public ArchivItem_Bitmap
+    {
+        public:
+            /// Konstruktor von @p ArchivItem_Bitmap_Shadow.
+            ArchivItem_Bitmap_Shadow(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Shadow() {}
 
-		/// Kopierkonstruktor von @p ArchivItem_Bitmap_Shadow.
-		ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow *item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item) {}
-	};
+            /// Kopierkonstruktor von @p ArchivItem_Bitmap_Shadow.
+            ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow* item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item) {}
+    };
 }
 
 #endif // !ARCHIVITEM_BITMAP_SHADOW_H_INCLUDED

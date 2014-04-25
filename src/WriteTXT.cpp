@@ -1,4 +1,4 @@
-// $Id: WriteTXT.cpp 7808 2012-02-03 07:10:28Z FloSoft $
+// $Id: WriteTXT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -24,13 +24,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-	#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-/** 
+/**
  *  schreibt eine GER/ENG-File aus einem ArchivInfo.
  *
  *  @param[in] file       Dateiname der GER/ENG-File
@@ -41,105 +41,105 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteTXT(const char *file, const ArchivInfo *items, bool conversion)
+int libsiedler2::loader::WriteTXT(const char* file, const ArchivInfo* items, bool conversion)
 {
-	FILE *txt;
+    FILE* txt;
 
-	if(file == NULL || items == NULL)
-		return 1;
+    if(file == NULL || items == NULL)
+        return 1;
 
-	if(items->getCount() == 0)
-		return 2;
+    if(items->getCount() == 0)
+        return 2;
 
-	for(unsigned long i = 0; i < items->getCount(); ++i)
-	{
-		const ArchivItem *item = items->get(i);
-		if(item)
-		{
-			if(item->getBobType() != BOBTYPE_TEXT)
-				return 3;
-		}
-	}
+    for(unsigned long i = 0; i < items->getCount(); ++i)
+    {
+        const ArchivItem* item = items->get(i);
+        if(item)
+        {
+            if(item->getBobType() != BOBTYPE_TEXT)
+                return 3;
+        }
+    }
 
-	// Datei zum lesen öffnen
-	txt = fopen(file, "wb");
+    // Datei zum lesen öffnen
+    txt = fopen(file, "wb");
 
-	// hat das geklappt?
-	if(txt == NULL)
-		return 2;
+    // hat das geklappt?
+    if(txt == NULL)
+        return 2;
 
-	// Plain-Text ?
-	if(items->getCount() == 1)
-	{
-		const ArchivItem_Text *item = dynamic_cast<const ArchivItem_Text*>(items->get(0));
-		if(item->write(txt, conversion) != 0)
-			return 4;
-	}
-	else
-	{
-		// "archiviert"
-		unsigned short header = 0xE7FD;
-		unsigned short count = (unsigned short)items->getCount();
-		unsigned short unknown = 0x0001;
+    // Plain-Text ?
+    if(items->getCount() == 1)
+    {
+        const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items->get(0));
+        if(item->write(txt, conversion) != 0)
+            return 4;
+    }
+    else
+    {
+        // "archiviert"
+        unsigned short header = 0xE7FD;
+        unsigned short count = (unsigned short)items->getCount();
+        unsigned short unknown = 0x0001;
 
-		// Header schreiben
-		if(libendian::be_write_us(header, txt) != 0)
-			return 5;
+        // Header schreiben
+        if(libendian::be_write_us(header, txt) != 0)
+            return 5;
 
-		// Anzahl schreiben
-		if(libendian::le_write_us(count, txt) != 0)
-			return 6;
+        // Anzahl schreiben
+        if(libendian::le_write_us(count, txt) != 0)
+            return 6;
 
-		// Unbekannte Bytes schreiben
-		if(libendian::le_write_us(unknown, txt) != 0)
-			return 7;
+        // Unbekannte Bytes schreiben
+        if(libendian::le_write_us(unknown, txt) != 0)
+            return 7;
 
-		int *starts = new int[count];
-		memset(starts, 0, sizeof(int)*count);
+        int* starts = new int[count];
+        memset(starts, 0, sizeof(int)*count);
 
-		unsigned int size = count*4;
-		for(unsigned long i = 0; i < count; ++i)
-		{
-			const ArchivItem_Text *item = dynamic_cast<const ArchivItem_Text*>(items->get(i));
+        unsigned int size = count * 4;
+        for(unsigned long i = 0; i < count; ++i)
+        {
+            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items->get(i));
 
-			if(item)
-			{
-				if(item->getLength() != 0)
-				{
-					starts[i] = size;
-					size += item->getLength()+1;
-				}
-			}
-		}
+            if(item)
+            {
+                if(item->getLength() != 0)
+                {
+                    starts[i] = size;
+                    size += item->getLength() + 1;
+                }
+            }
+        }
 
-		// Größe schreiben
-		if(libendian::le_write_ui(size, txt) != 0)
-			return 8;
+        // Größe schreiben
+        if(libendian::le_write_ui(size, txt) != 0)
+            return 8;
 
-		// Starts schreiben
-		for(unsigned long i = 0; i < count; ++i)
-		{
-			if(libendian::le_write_i(starts[i], txt) != 0)
-				return 9;
-		}
+        // Starts schreiben
+        for(unsigned long i = 0; i < count; ++i)
+        {
+            if(libendian::le_write_i(starts[i], txt) != 0)
+                return 9;
+        }
 
-		// Texte schreiben
-		for(unsigned long i = 0; i < count; ++i)
-		{
-			const ArchivItem_Text *item = dynamic_cast<const ArchivItem_Text*>(items->get(i));
+        // Texte schreiben
+        for(unsigned long i = 0; i < count; ++i)
+        {
+            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items->get(i));
 
-			if(item)
-			{
-				if(item->write(txt, conversion) != 0)
-					return 10;
-			}
-		}
+            if(item)
+            {
+                if(item->write(txt, conversion) != 0)
+                    return 10;
+            }
+        }
 
-		delete[] starts;
-	}
+        delete[] starts;
+    }
 
-	// Datei schliessen
-	fclose(txt);
+    // Datei schliessen
+    fclose(txt);
 
-	return 0;
+    return 0;
 }

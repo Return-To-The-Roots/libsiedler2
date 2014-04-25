@@ -1,4 +1,4 @@
-// $Id: MIDI_Track.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: MIDI_Track.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,31 +25,31 @@ class XMIDI_Track;
 
 class MIDI_Track
 {
-public:
-	MIDI_Track();
-	MIDI_Track(const MIDI_Track *item);
-	~MIDI_Track();
-	void copy(const MIDI_Track *item);
+    public:
+        MIDI_Track();
+        MIDI_Track(const MIDI_Track* item);
+        ~MIDI_Track();
+        void copy(const MIDI_Track* item);
 
-	void allocXMid(unsigned int length);
-	int readXMid(FILE *file);
-	void clearXMid();
+        void allocXMid(unsigned int length);
+        int readXMid(FILE* file);
+        void clearXMid();
 
-	void allocMid(unsigned int length);
-	int readMid(FILE *file);
-	void clearMid();
+        void allocMid(unsigned int length);
+        int readMid(FILE* file);
+        void clearMid();
 
-	int XMid2Mid();
-	unsigned char *getMid(bool withheader = false) const;
-	unsigned int getMidLength(bool withheader = false) const;
+        int XMid2Mid();
+        unsigned char* getMid(bool withheader = false) const;
+        unsigned int getMidLength(bool withheader = false) const;
 
-	friend class XMIDI_Track;
+        friend class XMIDI_Track;
 
-protected:
-	unsigned int xmid_length;
-	unsigned char *xmid_data;
-	unsigned int mid_length;
-	unsigned char *mid_data;
+    protected:
+        unsigned int xmid_length;
+        unsigned char* xmid_data;
+        unsigned int mid_length;
+        unsigned char* mid_data;
 };
 
 #endif // !MIDI_TRACK_H_INCLUDED

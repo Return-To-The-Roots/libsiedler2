@@ -1,4 +1,4 @@
-// $Id: util.h 6460 2010-05-31 11:42:38Z FloSoft $
+// $Id: util.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -23,22 +23,23 @@
 
 #include <sstream>
 
-inline std::vector<std::string> explode(std::string const &line, const char delim, const unsigned int max = 0xFFFFFFFF) 
+inline std::vector<std::string> explode(std::string const& line, const char delim, const unsigned int max = 0xFFFFFFFF)
 {
-	std::istringstream in(line);
-	std::vector<std::string> result;
-	std::string token;
+    std::istringstream in(line);
+    std::vector<std::string> result;
+    std::string token;
 
-	unsigned int len = 0;
-	while(std::getline(in, token, delim) && result.size() < max-1) {
-		len += token.size() + 1;
-		result.push_back(token);
-	}
+    unsigned int len = 0;
+    while(std::getline(in, token, delim) && result.size() < max - 1)
+    {
+        len += token.size() + 1;
+        result.push_back(token);
+    }
 
-	if(len < in.str().length())
-		result.push_back(in.str().substr(len));
+    if(len < in.str().length())
+        result.push_back(in.str().substr(len));
 
-	return result;
+    return result;
 }
 
 #endif // !UTIL_H_INCLUDED

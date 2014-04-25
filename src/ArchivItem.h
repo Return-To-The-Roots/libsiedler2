@@ -1,4 +1,4 @@
-// $Id: ArchivItem.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: ArchivItem.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -23,53 +23,53 @@
 
 namespace libsiedler2
 {
-	/// Basisklasse der Archivelemente.
-	class ArchivItem
-	{
-	public:
-		/// Konstruktor von @p ArchivItem.
-		ArchivItem();
+    /// Basisklasse der Archivelemente.
+    class ArchivItem
+    {
+        public:
+            /// Konstruktor von @p ArchivItem.
+            ArchivItem();
 
-		/// Kopierkonstruktor von @p ArchivItem.
-		ArchivItem(const ArchivItem *item);
+            /// Kopierkonstruktor von @p ArchivItem.
+            ArchivItem(const ArchivItem* item);
 
-		/// virtueller Destruktor von @p ArchivItem.
-		virtual ~ArchivItem();
+            /// virtueller Destruktor von @p ArchivItem.
+            virtual ~ArchivItem();
 
-		/// setzt den Bobtype des Items.
-		inline void setBobType(unsigned short bobtype)
-		{
-			this->bobtype = bobtype;
-		}
+            /// setzt den Bobtype des Items.
+            inline void setBobType(unsigned short bobtype)
+            {
+                this->bobtype = bobtype;
+            }
 
-		/// liefert den Bobtype des Items.
-		inline unsigned short getBobType(void) const
-		{
-			return bobtype;
-		}
+            /// liefert den Bobtype des Items.
+            inline unsigned short getBobType(void) const
+            {
+                return bobtype;
+            }
 
-		/// setzt den Namen des Items.
-		inline void setName(const char *name)
-		{
-			strncpy(this->name, name, 63);
-		}
+            /// setzt den Namen des Items.
+            inline void setName(const char* name)
+            {
+                strncpy(this->name, name, 63);
+            }
 
-		/// liefert den Namen des Items.
-		inline const char *getName(void) const
-		{
-			return name;
-		}
+            /// liefert den Namen des Items.
+            inline const char* getName(void) const
+            {
+                return name;
+            }
 
-		/// lädt die Daten aus einer Datei.
-		virtual int load(FILE *file);
+            /// lädt die Daten aus einer Datei.
+            virtual int load(FILE* file);
 
-		/// schreibt die Daten in eine Datei.
-		virtual int write(FILE *file) const;
+            /// schreibt die Daten in eine Datei.
+            virtual int write(FILE* file) const;
 
-	protected:
-		unsigned short bobtype; ///< Bobtype des Elements.
-		char name[64];          ///< Name des Elements.
-	};
+        protected:
+            unsigned short bobtype; ///< Bobtype des Elements.
+            char name[64];          ///< Name des Elements.
+    };
 }
 
 #endif // !ARCHIVITEM_H_INCLUDED
