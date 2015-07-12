@@ -32,6 +32,7 @@
 #   if defined _DEBUG && defined _MSC_VER
 #   include <crtdbg.h>
 #   endif // _DEBUG
+#define strlwr _strlwr
 #else
 #   include <unistd.h>
 #   include "strlwr.h"

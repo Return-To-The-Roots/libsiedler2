@@ -4,6 +4,11 @@
 
 INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libendian/src")
 
+IF (MSVC)
+	ADD_DEFINITIONS(/WX) # warning = error
+	ADD_DEFINITIONS(/MP) # parallel compilation
+ENDIF()
+
 ADD_LIBRARY(siedler2 libsiedler2.cpp ArchivInfo.cpp ArchivItem.cpp
             ArchivItem_Bitmap.cpp ArchivItem_Bitmap_Player.cpp
             ArchivItem_Bitmap_Raw.cpp ArchivItem_Bitmap_RLE.cpp
