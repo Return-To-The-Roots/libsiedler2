@@ -114,7 +114,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length
 
     fseek(file, -4, SEEK_CUR);
 
-    if(prependheader == true)
+    if(prependheader)
     {
         alloc(length + 44);
 

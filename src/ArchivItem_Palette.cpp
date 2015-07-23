@@ -107,7 +107,7 @@ int libsiedler2::ArchivItem_Palette::load(FILE* file, bool skip)
     if(file == NULL)
         return 1;
 
-    if(skip == true)
+    if(skip)
     {
         // Unbekannte 2 Bytes überspringen
         fseek(file, 2, SEEK_CUR);
@@ -137,7 +137,7 @@ int libsiedler2::ArchivItem_Palette::write(FILE* file, bool skip) const
     if(file == NULL)
         return 1;
 
-    if(skip == true)
+    if(skip)
     {
         short unknown = 0x0100;
         if(libendian::le_write_s(unknown, file) != 0)
