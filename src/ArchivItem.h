@@ -21,6 +21,9 @@
 
 #pragma once
 
+#include <cstdio>
+#include <cstring>
+
 namespace libsiedler2
 {
     /// Basisklasse der Archivelemente.

@@ -22,6 +22,7 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include "ArchivInfo.h"
 
 namespace libsiedler2
 {

@@ -23,6 +23,7 @@
 
 #include "ArchivItem.h"
 #include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
 
 namespace libsiedler2
 {
