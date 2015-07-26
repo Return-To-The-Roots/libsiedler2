@@ -23,11 +23,12 @@
 
 #include "ArchivItem.h"
 #include "ArchivItem_Text.h"
+#include <cstdlib>
 
 namespace libsiedler2
 {
 
-/// Klasse für INI-Dateien (genauergesagt eine Sektion).
+/// Klasse fï¿½r INI-Dateien (genauergesagt eine Sektion).
     class ArchivItem_Ini : public ArchivItem, public ArchivInfo
     {
         public:
@@ -40,7 +41,7 @@ namespace libsiedler2
             /// Kopierkonstruktor von @p ArchivItem_Ini.
             ArchivItem_Ini(const ArchivItem_Ini* item);
 
-            /// lädt die INI-Daten aus einer Datei.
+            /// lï¿½dt die INI-Daten aus einer Datei.
             int load(FILE* file);
 
             /// schreibt die INI-Daten in eine Datei.
@@ -63,7 +64,7 @@ namespace libsiedler2
                 return atoi(getValue(name));
             }
 
-            /// fügt einen Eintrag hinzu.
+            /// fï¿½gt einen Eintrag hinzu.
             void addValue(const char* name, const char* value);
 
             /// schreibt einen Wert in die Ini
@@ -72,13 +73,13 @@ namespace libsiedler2
                 ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
                 if(item)
                 {
-                    // setText überschreibt Namen, daher nochmals setzen
+                    // setText ï¿½berschreibt Namen, daher nochmals setzen
                     item->setText(value);
                     item->setName(name);
                 }
                 else
                 {
-                    // nicht gefunden, also hinzufügen
+                    // nicht gefunden, also hinzufï¿½gen
                     addValue(name, value);
                 }
             }
@@ -91,13 +92,13 @@ namespace libsiedler2
                 ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
                 if(item)
                 {
-                    // setText überschreibt Namen, daher nochmals setzen
+                    // setText ï¿½berschreibt Namen, daher nochmals setzen
                     item->setText(temp);
                     item->setName(name);
                 }
                 else
                 {
-                    // nicht gefunden, also hinzufügen
+                    // nicht gefunden, also hinzufï¿½gen
                     addValue(name, temp);
                 }
             }
