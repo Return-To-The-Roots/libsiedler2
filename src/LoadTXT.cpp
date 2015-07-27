@@ -1,4 +1,4 @@
-// $Id: LoadTXT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadTXT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,10 +31,10 @@ static char THIS_FILE[] = __FILE__;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine GER/ENG-File in ein ArchivInfo.
+ *  lÃ¤dt eine GER/ENG-File in ein ArchivInfo.
  *
  *  @param[in]  file       Dateiname der GER/ENG-File
- *  @param[out] items      ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items      ArchivInfo-Struktur, welche gefÃ¼llt wird
  *  @param[in]  conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
@@ -52,14 +52,14 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
     if(file == NULL || items == NULL)
         return 1;
 
-    // Datei zum lesen öffnen
+    // Datei zum lesen Ã¶ffnen
     txt = fopen(file, "rb");
 
     // hat das geklappt?
     if(txt == NULL)
         return 2;
 
-    // Länge bestimmen
+    // LÃ¤nge bestimmen
     fseek(txt, 0, SEEK_END);
     length = ftell(txt);
     fseek(txt, 0, SEEK_SET);
@@ -71,7 +71,7 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
     // ist es eine TXT-File? (Header 0xE7FD)
     if( header != (short)0xE7FD )
     {
-        // den Header zurückspringen
+        // den Header zurÃ¼ckspringen
         fseek(txt, -2, SEEK_CUR);
 
         // Plain-Text
@@ -120,7 +120,7 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
                 starts[x] = s + 10;
         }
 
-        // Daten einlesen, zwecks Längenbestimmung
+        // Daten einlesen, zwecks LÃ¤ngenbestimmung
         unsigned int pos = ftell(txt);
         unsigned int rest = size - pos;
         char* buffer = new char[rest + 1];

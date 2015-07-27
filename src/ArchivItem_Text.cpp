@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Text.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Text.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Text
  *
- *  Klasse für Texte.
+ *  Klasse fÃ¼r Texte.
  *
  *  @author FloSoft
  */
@@ -50,7 +50,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem_Text::length
  *
- *  Die Länge des Textes.
+ *  Die LÃ¤nge des Textes.
  *
  *  @author FloSoft
  */
@@ -102,7 +102,7 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(const ArchivItem_Text* item) : Arc
  *
  *  @param[in] file       Dateihandle aus denen die Farbwerte geladen werden sollen
  *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
- *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
+ *  @param[in] length     LÃ¤nge des Blocks (Wieviel Bytes sollen eingelesen werden?)
  *
  *  @author FloSoft
  */
@@ -120,11 +120,11 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(FILE* file, bool conversion, unsig
  *
  *  @param[in] file       Dateihandle aus denen der Text geladen werden sollen
  *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
- *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
+ *  @param[in] length     LÃ¤nge des Blocks (Wieviel Bytes sollen eingelesen werden?)
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
- *  @todo Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
+ *  @todo Hmm nur temporÃ¤rer Fix! ist dieses doofe Escape-zeichen am Ende der Files
  *
  *  @author FloSoft
  */
@@ -139,13 +139,13 @@ int libsiedler2::ArchivItem_Text::load(FILE* file, bool conversion, unsigned int
     this->length = length;
     if(this->length == 0)
     {
-        // Länge der Datei bestimmen
+        // LÃ¤nge der Datei bestimmen
         fseek(file, 0, SEEK_END);
         this->length = ftell(file) - pos;
         fseek(file, pos, SEEK_SET);
     }
 
-    // Alten Text ggf. löschen
+    // Alten Text ggf. lÃ¶schen
     delete[] text;
 
     text = new char[this->length + 1];
@@ -155,7 +155,7 @@ int libsiedler2::ArchivItem_Text::load(FILE* file, bool conversion, unsigned int
     if(libendian::le_read_c(text, this->length, file) != (int)this->length)
         return 2;
 
-    /// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
+    /// TODO: Hmm nur temporÃ¤rer Fix! ist dieses doofe Escape-zeichen am Ende der Files
     if(text[this->length - 1] == 26)
         text[this->length - 1] = 0;
 
@@ -194,7 +194,7 @@ int libsiedler2::ArchivItem_Text::write(FILE* file, bool conversion) const
     if(file == NULL)
         return 1;
 
-    // Wenn Länge 0, nix schreiben, ist ja kein Fehler!
+    // Wenn LÃ¤nge 0, nix schreiben, ist ja kein Fehler!
     if(length == 0)
         return 0;
 
@@ -245,9 +245,9 @@ const char* libsiedler2::ArchivItem_Text::getText(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Länge.
+ *  liefert die LÃ¤nge.
  *
- *  @return liefert die Länge des Textes
+ *  @return liefert die LÃ¤nge des Textes
  *
  *  @author FloSoft
  */
@@ -261,15 +261,15 @@ unsigned int libsiedler2::ArchivItem_Text::getLength(void) const
  *  setzt den Text.
  *
  *  @param[in] text       Der Text der gesetzt werden soll, falls @p NULL, wird
- *                        evtl vorhandener Text gelöscht
+ *                        evtl vorhandener Text gelÃ¶scht
  *  @param[in] conversion Soll ggf. ANSI-Charset in OEM umgewandelt werden?
- *  @param[in] length     Länge des Textes, bei @p 0 wird @p strlen verwendet
+ *  @param[in] length     LÃ¤nge des Textes, bei @p 0 wird @p strlen verwendet
  *
  *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Text::setText(const char* text, bool conversion, unsigned int length)
 {
-    // alten Text löschen
+    // alten Text lÃ¶schen
     delete[] this->text;
     this->length = 0;
 
@@ -277,7 +277,7 @@ void libsiedler2::ArchivItem_Text::setText(const char* text, bool conversion, un
     if(text == NULL)
         return;
 
-    // ggf. Länge bestimmen
+    // ggf. LÃ¤nge bestimmen
     if(length == 0)
         length = (unsigned int)strlen(text);
 

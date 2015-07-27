@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bitmap.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap
  *
- *  Basis-Basisklasse für Bitmapitems.
+ *  Basis-Basisklasse fÃ¼r Bitmapitems.
  *
  *  @author FloSoft
  */
@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap
  *
- *  Basisklasse für Bitmapitems.
+ *  Basisklasse fÃ¼r Bitmapitems.
  *
  *  @author FloSoft
  */
@@ -57,7 +57,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::baseArchivItem_Bitmap::height
  *
- *  Höhe des Bildes.
+ *  HÃ¶he des Bildes.
  *
  *  @author FloSoft
  */
@@ -81,7 +81,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::baseArchivItem_Bitmap::length
  *
- *  Länge der Bilddaten.
+ *  LÃ¤nge der Bilddaten.
  *
  *  @author FloSoft
  */
@@ -97,7 +97,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::baseArchivItem_Bitmap::tex_height
  *
- *  Höhe der Textur.
+ *  HÃ¶he der Textur.
  *
  *  @author FloSoft
  */
@@ -113,7 +113,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::baseArchivItem_Bitmap::tex_length
  *
- *  Länge der Texturdaten.
+ *  LÃ¤nge der Texturdaten.
  *
  *  @author FloSoft
  */
@@ -260,9 +260,9 @@ void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
  *  @param[in] x X Koordinate des Pixels
  *  @param[in] y Y Koordinate des Pixels
  *  @param[in] r Roter Wert
- *  @param[in] g Grüner Wert
+ *  @param[in] g GrÃ¼ner Wert
  *  @param[in] b Blauer Wert
- *  @param[in] a Alpha Wert (bei paletted nur 0xFF/0x00 unterstützt)
+ *  @param[in] a Alpha Wert (bei paletted nur 0xFF/0x00 unterstÃ¼tzt)
  *
  *  @author FloSoft
  */
@@ -354,7 +354,7 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
 ///////////////////////////////////////////////////////////////////////////////
 /** @function int libsiedler2::baseArchivItem_Bitmap::load(FILE *file, const ArchivItem_Palette *palette)
  *
- *  lädt die Bilddaten aus einer Datei.
+ *  lÃ¤dt die Bilddaten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
@@ -378,7 +378,7 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  alloziert Bildspeicher für die gewünschte Größe.
+ *  alloziert Bildspeicher fÃ¼r die gewÃ¼nschte GrÃ¶ÃŸe.
  *
  *  @author FloSoft
  */
@@ -428,7 +428,7 @@ void libsiedler2::baseArchivItem_Bitmap::tex_alloc(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  räumt den Bildspeicher auf.
+ *  rÃ¤umt den Bildspeicher auf.
  *
  *  @author FloSoft
  */
@@ -447,11 +447,11 @@ void libsiedler2::baseArchivItem_Bitmap::tex_clear(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die nächste 2er Potenz von einer Zahl.
+ *  liefert die nÃ¤chste 2er Potenz von einer Zahl.
  *
- *  @param[in] n Zahl zu der die nächste 2er Potenz gesucht werden soll
+ *  @param[in] n Zahl zu der die nÃ¤chste 2er Potenz gesucht werden soll
  *
- *  @return nächste 2er Potenz
+ *  @return nÃ¤chste 2er Potenz
  *
  *  @author FloSoft
  */
@@ -468,9 +468,9 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::tex_pow2(unsigned short n)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Länge des Datenblocks.
+ *  liefert die LÃ¤nge des Datenblocks.
  *
- *  @return Länge des Datenblocks
+ *  @return LÃ¤nge des Datenblocks
  *
  *  @author FloSoft
  */
@@ -533,9 +533,9 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::getWidth(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Höhe des Bildes.
+ *  liefert die HÃ¶he des Bildes.
  *
- *  @return Höhe des Bildes
+ *  @return HÃ¶he des Bildes
  *
  *  @author FloSoft
  */
@@ -546,9 +546,9 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::getHeight(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  setzt die Länge des Datenblocks.
+ *  setzt die LÃ¤nge des Datenblocks.
  *
- *  @param[in] length Länge des Datenblocks
+ *  @param[in] length LÃ¤nge des Datenblocks
  *
  *  @author FloSoft
  */
@@ -598,9 +598,9 @@ void libsiedler2::baseArchivItem_Bitmap::setWidth(unsigned short width)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  setzt die Höhe des Bildes.
+ *  setzt die HÃ¶he des Bildes.
  *
- *  @param[in] height Höhe des Bildes
+ *  @param[in] height HÃ¶he des Bildes
  *
  *  @author FloSoft
  */
@@ -723,7 +723,7 @@ void libsiedler2::baseArchivItem_Bitmap::getVisibleArea(int& vx, int& vy, int& v
  *
  *  @param[in,out] buffer        Zielpuffer
  *  @param[in]     buffer_width  Breite des Puffers
- *  @param[in]     buffer_height Höhe des Puffers
+ *  @param[in]     buffer_height HÃ¶he des Puffers
  *  @param[in]     buffer_format Texturformat des Puffers
  *  @param[in]     palette       Grundpalette
  *  @param[in]     to_x          Ziel-X-Koordinate
@@ -731,7 +731,7 @@ void libsiedler2::baseArchivItem_Bitmap::getVisibleArea(int& vx, int& vy, int& v
  *  @param[in]     from_x        Quell-X-Koordinate
  *  @param[in]     from_y        Quell-Y-Koordinate
  *  @param[in]     from_w        zu kopierende Breite
- *  @param[in]     from_h        zu kopierende Höhe
+ *  @param[in]     from_h        zu kopierende HÃ¶he
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  *
@@ -789,13 +789,13 @@ int libsiedler2::baseArchivItem_Bitmap::print(unsigned char* buffer,
                         case 1:
                         {
                             // Ziel ist auch Paletted
-                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verÃ¤ndert
                                 buffer[position] = tex_data[position2];
                         } break;
                         case 4:
                         {
                             // Ziel ist RGB+A
-                            if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
+                            if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verÃ¤ndert
                             {
                                 palette->get(tex_data[position2], &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
                                 buffer[position + 3] = 0xFF;
@@ -810,13 +810,13 @@ int libsiedler2::baseArchivItem_Bitmap::print(unsigned char* buffer,
                         case 1:
                         {
                             // Ziel ist Paletted
-                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verÃ¤ndert
                                 buffer[position] = tex_getPixel(x, y, palette);
                         } break;
                         case 4:
                         {
                             // Ziel ist auch RGB+A
-                            if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
+                            if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verÃ¤ndert
                             {
                                 buffer[position + 0] = tex_data[position2 + 0]; // b
                                 buffer[position + 1] = tex_data[position2 + 1]; // g
@@ -838,13 +838,13 @@ int libsiedler2::baseArchivItem_Bitmap::print(unsigned char* buffer,
 /**
  *  erzeugt ein Bitmap aus einem Puffer.
  *
- *  "überstehende" Ränder werden mit Transparenz aufgefüllt.
+ *  "Ã¼berstehende" RÃ¤nder werden mit Transparenz aufgefÃ¼llt.
  *
  *  @param[in]     width         Breite des neuen Bildes
- *  @param[in]     height        Höhe des neuen Bildes
+ *  @param[in]     height        HÃ¶he des neuen Bildes
  *  @param[in]     buffer        Quellpuffer
  *  @param[in]     buffer_width  Breite des Puffers
- *  @param[in]     buffer_height Höhe des Puffers
+ *  @param[in]     buffer_height HÃ¶he des Puffers
  *  @param[in]     buffer_format Texturformat des Puffers
  *  @param[in]     palette       Grundpalette
  *
@@ -919,7 +919,7 @@ int libsiedler2::baseArchivItem_Bitmap::create(unsigned short width,
 /**
  *  setzt die Grundpalette.
  *
- *  @param[in] palette Palette die zukünftig verwendet werden soll.
+ *  @param[in] palette Palette die zukÃ¼nftig verwendet werden soll.
  *
  *  @author FloSoft
  */

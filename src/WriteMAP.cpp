@@ -1,4 +1,4 @@
-// $Id: WriteMAP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+﻿// $Id: WriteMAP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -67,7 +67,7 @@ int libsiedler2::loader::WriteMAP(const char* file, const ArchivInfo* items, lon
     if(nr == -1)
         return 2;
 
-    // Datei zum lesen �ffnen
+    // Datei zum lesen öffnen
     map = fopen(file, "wb");
 
     // hat das geklappt?

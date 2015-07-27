@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Ini.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Ini.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Ini
  *
- *  Klasse für INI-Dateien (genauergesagt eine Sektion).
+ *  Klasse fÃ¼r INI-Dateien (genauergesagt eine Sektion).
  *
  *  @author FloSoft
  */
@@ -75,7 +75,7 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini* info) : Archiv
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die INI-Daten aus einer Datei.
+ *  lÃ¤dt die INI-Daten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
  *
@@ -183,7 +183,7 @@ int libsiedler2::ArchivItem_Ini::write(FILE* file) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  fügt einen Eintrag hinzu.
+ *  fÃ¼gt einen Eintrag hinzu.
  *
  *  @param[in] name   Variablenname
  *  @param[in] value  Wert

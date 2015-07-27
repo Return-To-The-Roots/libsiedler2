@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Other.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound_Other.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,7 +25,7 @@
 
 namespace libsiedler2
 {
-    /// Basisklasse für Other-Sounds.
+    /// Basisklasse fÃ¼r Other-Sounds.
     class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
     {
         public:
@@ -38,16 +38,16 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Sound_Other.
             virtual ~baseArchivItem_Sound_Other(void);
 
-            /// lädt die Daten aus einer Datei.
+            /// lÃ¤dt die Daten aus einer Datei.
             int load(FILE* file, unsigned int length);
 
             /// schreibt die Daten in eine Datei.
             int write(FILE* file) const;
 
-            /// alloziert Soundspeicher für die gewünschte Größe.
+            /// alloziert Soundspeicher fÃ¼r die gewÃ¼nschte GrÃ¶ÃŸe.
             void alloc(unsigned int length);
 
-            /// räumt den Soundspeicher auf.
+            /// rÃ¤umt den Soundspeicher auf.
             void clear(void);
 
             const unsigned char* getData() { return data; }
@@ -58,7 +58,7 @@ namespace libsiedler2
             unsigned int length;
     };
 
-    /// Klasse für Other-Sounds.
+    /// Klasse fÃ¼r Other-Sounds.
     class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
     {
         public:

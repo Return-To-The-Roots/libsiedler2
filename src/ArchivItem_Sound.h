@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -34,7 +34,7 @@ namespace libsiedler2
         SOUNDTYPE_OTHER = 4
     };
 
-    /// Basis-Basisklasse für Sounditems.
+    /// Basis-Basisklasse fÃ¼r Sounditems.
     class baseArchivItem_Sound : public ArchivItem
     {
         public:
@@ -53,7 +53,7 @@ namespace libsiedler2
             /// liefert den Typ des Sounds.
             unsigned short getType(void) const;
 
-            /// lädt die Sound-Daten aus einer Datei.
+            /// lÃ¤dt die Sound-Daten aus einer Datei.
             virtual int load(FILE* file, unsigned int length);
 
             /// schreibt die Sound-Daten in eine Datei.
@@ -65,7 +65,7 @@ namespace libsiedler2
             unsigned short type;
     };
 
-    /// Basisklasse für Sounditems.
+    /// Basisklasse fÃ¼r Sounditems.
     class ArchivItem_Sound : public virtual baseArchivItem_Sound
     {
     };

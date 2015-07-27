@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map_Header.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Map_Header.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,7 +25,7 @@
 
 namespace libsiedler2
 {
-    /// Klasse für einen Mapheader.
+    /// Klasse fÃ¼r einen Mapheader.
     class ArchivItem_Map_Header : public ArchivItem
     {
         public:
@@ -36,7 +36,7 @@ namespace libsiedler2
             /// Destruktor von @p ArchivItem_Map_Header.
             ~ArchivItem_Map_Header(void);
 
-            /// lädt den Mapheader aus einer Datei.
+            /// lÃ¤dt den Mapheader aus einer Datei.
             int load(FILE* file);
             /// schreibt den Mapheader in eine Datei.
             int write(FILE* file) const;

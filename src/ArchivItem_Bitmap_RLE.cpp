@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_RLE.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bitmap_RLE.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap_RLE
  *
- *  Basisklasse für RLE-Bitmaps.
+ *  Basisklasse fÃ¼r RLE-Bitmaps.
  *
  *  @author FloSoft
  */
@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_RLE
  *
- *  Klasse für RLE-Bitmaps.
+ *  Klasse fÃ¼r RLE-Bitmaps.
  *
  *  @author FloSoft
  */
@@ -98,7 +98,7 @@ libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Bilddaten aus einer Datei.
+ *  lÃ¤dt die Bilddaten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
@@ -128,21 +128,21 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Pa
     if(libendian::le_read_s(&ny, file) != 0)
         return 3;
 
-    // Unbekannte Daten überspringen
+    // Unbekannte Daten Ã¼berspringen
     fseek(file, 4, SEEK_CUR);
 
     // Breite einlesen
     if(libendian::le_read_us(&width, file) != 0)
         return 4;
 
-    // Höhe einlesen
+    // HÃ¶he einlesen
     if(libendian::le_read_us(&height, file) != 0)
         return 5;
 
-    // Unbekannte Daten überspringen
+    // Unbekannte Daten Ã¼berspringen
     fseek(file, 2, SEEK_CUR);
 
-    // Länge einlesen
+    // LÃ¤nge einlesen
     if(libendian::le_read_ui(&length, file) != 0)
         return 6;
 
@@ -181,11 +181,11 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Pa
                     tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
             }
 
-            // FF überspringen
+            // FF Ã¼berspringen
             ++position;
         }
 
-        // FF überspringen
+        // FF Ã¼berspringen
         ++position;
 
         if(position != length - (height * 2) )
@@ -206,7 +206,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Pa
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
- *  @bug Bei zu großen Bilddaten gibts einen Überlauf der Zeilenstartadressen,
+ *  @bug Bei zu groÃŸen Bilddaten gibts einen Ãœberlauf der Zeilenstartadressen,
  *       im Moment wird dann der Zeilenstart auf 0xFFFF gesetzt.
  *
  *  @author FloSoft
@@ -242,7 +242,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(FILE* file, const ArchivItem_P
     if(libendian::le_write_us(width, file) != 0)
         return 6;
 
-    // Höhe einlesen
+    // HÃ¶he einlesen
     if(libendian::le_write_us(height, file) != 0)
         return 7;
 
@@ -251,7 +251,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(FILE* file, const ArchivItem_P
     if(libendian::le_write_c(unknown2, 2, file) != 2)
         return 8;
 
-    // maximale größe von RLE: width*height*2
+    // maximale grÃ¶ÃŸe von RLE: width*height*2
     data = new unsigned char[height * 4 + width * height * 2];
     memset(data, 0, width * height * 2);
 
@@ -310,7 +310,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(FILE* file, const ArchivItem_P
 
     unsigned int length = position + height * 2;
 
-    // Länge schreiben
+    // LÃ¤nge schreiben
     if(libendian::le_write_ui(length, file) != 0)
         return 9;
 

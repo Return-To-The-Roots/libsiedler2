@@ -1,4 +1,4 @@
-// $Id: ArchivItem.h 9359 2014-04-25 15:37:22Z FloSoft $
+﻿// $Id: ArchivItem.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -63,7 +63,7 @@ namespace libsiedler2
                 return name;
             }
 
-            /// l�dt die Daten aus einer Datei.
+            /// lädt die Daten aus einer Datei.
             virtual int load(FILE* file);
 
             /// schreibt die Daten in eine Datei.

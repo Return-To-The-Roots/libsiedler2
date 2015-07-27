@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Midi.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound_Midi.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Sound_Midi
  *
- *  Basisklasse für MIDI-Sounds.
+ *  Basisklasse fÃ¼r MIDI-Sounds.
  *
  *  @author FloSoft
  */
@@ -99,7 +99,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length
     if(strncmp(header, "MThd", 4) != 0)
         return 3;
 
-    // Länge einlesen
+    // LÃ¤nge einlesen
     if(libendian::be_read_ui(&length, file) != 0)
         return 4;
 
@@ -129,7 +129,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length
         {
             case 0x4D54726B: // "MTrk"
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, file) != 0)
                     return 10;
 
@@ -147,7 +147,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length
         }
     }
 
-    // auf jeden Fall kompletten Datensatz überspringen
+    // auf jeden Fall kompletten Datensatz Ã¼berspringen
     fseek(file, position + item_length, SEEK_SET);
     return 0;
 }
@@ -161,7 +161,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::write(FILE* file) const
     for(unsigned short i = 0; i < tracks; ++i)
         length += tracklist[i].getMidLength(false);
 
-    // LST-Länge schreiben
+    // LST-LÃ¤nge schreiben
     if(libendian::le_write_ui(length + 14, file) != 0)
         return 2;
 
@@ -169,7 +169,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::write(FILE* file) const
     if(libendian::le_write_c("MThd", 4, file) != 4)
         return 3;
 
-    // Länge schreiben
+    // LÃ¤nge schreiben
     if(libendian::be_write_ui(length, file) != 0)
         return 4;
 

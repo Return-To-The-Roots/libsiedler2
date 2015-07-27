@@ -1,4 +1,4 @@
-// $Id: WriteLST.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: WriteLST.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @param[in] file    Dateiname der LST-File
  *  @param[in] palette Grundpalette der LST-File
- *  @param[in] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[in] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -50,7 +50,7 @@ int libsiedler2::loader::WriteLST(const char* file, const ArchivItem_Palette* pa
     if(file == NULL || items == NULL)
         return 1;
 
-    // Datei zum schreiben öffnen
+    // Datei zum schreiben Ã¶ffnen
     lst = fopen(file, "wb");
 
     // hat das geklappt?

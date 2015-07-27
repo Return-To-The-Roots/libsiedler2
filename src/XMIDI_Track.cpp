@@ -1,4 +1,4 @@
-// $Id: XMIDI_Track.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: XMIDI_Track.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -410,7 +410,7 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
     track->clearMid();
     unsigned int mid_length = 8;
 
-    // Größe des Tracks ermitteln
+    // GrÃ¶ÃŸe des Tracks ermitteln
     for (event = events; event; event = event->next)
     {
         if (event->status == 0xFF && event->data[0] == 0x2f)

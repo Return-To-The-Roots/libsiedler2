@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Raw.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bitmap_Raw.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,7 +25,7 @@
 
 namespace libsiedler2
 {
-    /// Basisklasse für Raw-Bitmaps.
+    /// Basisklasse fÃ¼r Raw-Bitmaps.
     class baseArchivItem_Bitmap_Raw : public virtual baseArchivItem_Bitmap
     {
         public:
@@ -41,14 +41,14 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Bitmap_Raw.
             ~baseArchivItem_Bitmap_Raw(void);
 
-            /// lädt die Bilddaten aus einer Datei.
+            /// lÃ¤dt die Bilddaten aus einer Datei.
             int load(FILE* file, const ArchivItem_Palette* palette);
 
             /// schreibt die Bilddaten in eine Datei.
             int write(FILE* file, const ArchivItem_Palette* palette) const;
     };
 
-    /// Klasse für Raw-Bitmaps.
+    /// Klasse fÃ¼r Raw-Bitmaps.
     class ArchivItem_Bitmap_Raw : public baseArchivItem_Bitmap_Raw, public ArchivItem_Bitmap
     {
         public:

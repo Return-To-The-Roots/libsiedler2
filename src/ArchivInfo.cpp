@@ -1,4 +1,4 @@
-// $Id: ArchivInfo.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivInfo.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivInfo
  *
- *  Klasse für Archivdateien.
+ *  Klasse fÃ¼r Archivdateien.
  *
  *  @author FloSoft
  */
@@ -92,7 +92,7 @@ libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo* info) : data(NULL), count(
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Destruktor von @p ArchivInfo, räumt automatisch auf.
+ *  Destruktor von @p ArchivInfo, rÃ¤umt automatisch auf.
  *
  *  @author FloSoft
  */
@@ -103,7 +103,7 @@ libsiedler2::ArchivInfo::~ArchivInfo(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  erstellt den Datensatz in einer bestimmten Größe.
+ *  erstellt den Datensatz in einer bestimmten GrÃ¶ÃŸe.
  *
  *  @param[in] count Elementanzahl auf den der Datensatz angelegt werden soll
  *
@@ -121,9 +121,9 @@ void libsiedler2::ArchivInfo::alloc(unsigned long count)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  vergrößert den Datensatz um eine bestimmten Größe.
+ *  vergrÃ¶ÃŸert den Datensatz um eine bestimmten GrÃ¶ÃŸe.
  *
- *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
+ *  @param[in] increment Elementanzahl um den der Datensatz vergrÃ¶ÃŸert werden soll
  *
  *  @author FloSoft
  */
@@ -169,7 +169,7 @@ void libsiedler2::ArchivInfo::clear(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
+ *  Setzt den Inhalt eines ArchivItems auf das des Ãœbergebenen.
  *
  *  @param[in] index Index des zu setzenden Eintrags
  *  @param[in] item  Item mit dem zu setzenden Inhalt
@@ -179,7 +179,7 @@ void libsiedler2::ArchivInfo::clear(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
+ *  kopiert den Inhalt eines ArchivItems auf das des Ãœbergebenen.
  *
  *  @param[in] index Index des zu setzenden Eintrags
  *  @param[in] item  Item mit dem zu kopierenden Inhalt
@@ -193,7 +193,7 @@ void libsiedler2::ArchivInfo::setC(int index, const ArchivItem* item)
 
     if( (unsigned long)index < count && index >= 0)
     {
-        // ist das Item gültig?
+        // ist das Item gÃ¼ltig?
         if(item == NULL)
             data[(unsigned long)index] = NULL;
         else
@@ -206,16 +206,16 @@ void libsiedler2::ArchivInfo::setC(int index, const ArchivItem* item)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  fügt ein Element hinten an.
+ *  fÃ¼gt ein Element hinten an.
  *
- *  @param[in] item Item mit dem anzufügenden Inhalt
+ *  @param[in] item Item mit dem anzufÃ¼genden Inhalt
  *
  *  @author FloSoft
  */
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  fügt ein Element hinten an und kopiert die Daten von @p item.
+ *  fÃ¼gt ein Element hinten an und kopiert die Daten von @p item.
  *
  *  @param[in] item Item mit dem zu kopierenden Inhalt
  *
@@ -266,9 +266,9 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem* item)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Größe des Archivs.
+ *  liefert die GrÃ¶ÃŸe des Archivs.
  *
- *  @return liefert die Größe des Archivs.
+ *  @return liefert die GrÃ¶ÃŸe des Archivs.
  *
  *  @author FloSoft
  */

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Raw.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Raw.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Raw
  *
- *  Basisklasse für Rawdaten.
+ *  Basisklasse fÃ¼r Rawdaten.
  *
  *  @author FloSoft
  */
@@ -86,10 +86,10 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Rawdaten aus einer Datei.
+ *  lÃ¤dt die Rawdaten aus einer Datei.
  *
  *  @param[in] file   Dateihandle der Datei
- *  @param[in] length Länge des Blocks (aus Datei lesen = 0xFFFFFFFF)
+ *  @param[in] length LÃ¤nge des Blocks (aus Datei lesen = 0xFFFFFFFF)
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
@@ -124,7 +124,7 @@ int libsiedler2::baseArchivItem_Raw::load(FILE* file, unsigned int length)
  *  schreibt die Rawdaten in eine Datei.
  *
  *  @param[in] file        Dateihandle der Datei
- *  @param[in] with_length Soll die Blocklänge mitgeschrieben werden?
+ *  @param[in] with_length Soll die BlocklÃ¤nge mitgeschrieben werden?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
@@ -152,7 +152,7 @@ int libsiedler2::baseArchivItem_Raw::write(FILE* file, bool with_length) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Länge des Datenblocks.
+ *  liefert die LÃ¤nge des Datenblocks.
  *
  *  @author FloSoft
  */
@@ -163,7 +163,7 @@ unsigned int libsiedler2::baseArchivItem_Raw::getLength(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Daten zurück (ro).
+ *  liefert die Daten zurÃ¼ck (ro).
  *
  *  @author FloSoft
  */
@@ -174,7 +174,7 @@ const unsigned char* libsiedler2::baseArchivItem_Raw::getData(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Daten zurück (rw).
+ *  liefert die Daten zurÃ¼ck (rw).
  *
  *  @author FloSoft
  */
@@ -187,7 +187,7 @@ unsigned char* libsiedler2::baseArchivItem_Raw::getData(void)
 /**
  *  erzeugt den Datenblock.
  *
- *  @param[in] length Die Länge des gewünschten Datenblocks.
+ *  @param[in] length Die LÃ¤nge des gewÃ¼nschten Datenblocks.
  *
  *  @author FloSoft
  */
@@ -208,7 +208,7 @@ unsigned char* libsiedler2::baseArchivItem_Raw::alloc(unsigned int length)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  löscht den Datenblock.
+ *  lÃ¶scht den Datenblock.
  *
  *  @author FloSoft
  */

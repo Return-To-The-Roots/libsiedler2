@@ -1,4 +1,4 @@
-// $Id: WriteType.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+﻿// $Id: WriteType.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
  *  @param[in]  bobtype Typ des Items
  *  @param[in]  file    Filehandle auf die auszulesende Datei
  *  @param[in]  palette Grundpalette
- *  @param[out] item    ArchivItem-Struktur, welche gef�llt wird
+ *  @param[out] item    ArchivItem-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *

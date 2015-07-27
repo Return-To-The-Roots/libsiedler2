@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_XMidi.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound_XMidi.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Sound_XMidi
  *
- *  Basisklasse für XMIDI-Sounds.
+ *  Basisklasse fÃ¼r XMIDI-Sounds.
  *
  *  @author FloSoft
  */
@@ -96,7 +96,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
     if(strncmp(header, "FORM", 4) != 0)
         return 3;
 
-    // Länge einlesen
+    // LÃ¤nge einlesen
     if(libendian::be_read_ui(&length, file) != 0)
         return 4;
 
@@ -122,7 +122,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
             {
                 case 0x494E464F: // "INFO"
                 {
-                    // Länge einlesen
+                    // LÃ¤nge einlesen
                     if(libendian::be_read_ui(&length, file) != 0)
                         return 7;
 
@@ -138,7 +138,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
                 } break;
                 case 0x43415420: // "CAT "
                 {
-                    // Länge einlesen
+                    // LÃ¤nge einlesen
                     if(libendian::be_read_ui(&length, file) != 0)
                         return 10;
 
@@ -180,7 +180,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
             } break;
             case 0x54494D42: // "TIMB"
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, file) != 0)
                     return 16;
 
@@ -192,7 +192,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
             } break;
             case 0x45564E54: // "EVNT"
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, file) != 0)
                     return 17;
 
@@ -212,7 +212,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
         }
     }
 
-    // auf jeden Fall kompletten Datensatz überspringen
+    // auf jeden Fall kompletten Datensatz Ã¼berspringen
     fseek(file, position + item_length, SEEK_SET);
     return 0;
 }
@@ -226,7 +226,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::write(FILE* file) const
     for(unsigned short i = 0; i < tracks; ++i)
         length += tracklist[i].getMidLength(false);
 
-    // LST-Länge schreiben
+    // LST-LÃ¤nge schreiben
     if(libendian::le_write_ui(length + 14, file) != 0)
         return 2;
 
@@ -234,7 +234,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::write(FILE* file) const
     if(libendian::le_write_c("MThd", 4, file) != 4)
         return 3;
 
-    // Länge schreiben
+    // LÃ¤nge schreiben
     if(libendian::be_write_ui(length, file) != 0)
         return 4;
 

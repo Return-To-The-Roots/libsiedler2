@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Map.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Map
  *
- *  Klasse für eine Mapfile.
+ *  Klasse fÃ¼r eine Mapfile.
  *
  *  @author FloSoft
  */
@@ -75,7 +75,7 @@ libsiedler2::ArchivItem_Map::~ArchivItem_Map(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Mapdaten aus einer Datei.
+ *  lÃ¤dt die Mapdaten aus einer Datei.
  *
  *  @param[in] file Dateihandle der Datei
  *  @param[in] only_header Soll nur der Header gelesen werden?
@@ -91,7 +91,7 @@ int libsiedler2::ArchivItem_Map::load(FILE* file, bool only_header)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Mapdaten aus einer Datei.
+ *  lÃ¤dt die Mapdaten aus einer Datei.
  *
  *  @param[in] file        Dateihandle der Datei
  *  @param[in] only_header Soll nur der Header gelesen werden?
@@ -125,7 +125,7 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
     unsigned short width, height;
     for(unsigned int i = 0; i < 14; ++i)
     {
-        // 6 Unbekannte Daten überspringen
+        // 6 Unbekannte Daten Ã¼berspringen
         fseek(file, 6, SEEK_CUR);
 
         // ggf paar bytes weiterspringen
@@ -150,7 +150,7 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
         header->setWidth(width);
         header->setHeight(height);
 
-        // 6 Unbekannte Daten überspringen
+        // 6 Unbekannte Daten Ã¼berspringen
         fseek(file, 6 - seek, SEEK_CUR);
 
         ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>((*allocator)(BOBTYPE_RAW, 0, NULL));

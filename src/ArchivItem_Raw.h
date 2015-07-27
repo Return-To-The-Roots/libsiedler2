@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Raw.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Raw.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,7 +25,7 @@
 
 namespace libsiedler2
 {
-    /// Basisklasse für Rawdaten.
+    /// Basisklasse fÃ¼r Rawdaten.
     class baseArchivItem_Raw : public ArchivItem
     {
         public:
@@ -36,30 +36,30 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Raw.
             ~baseArchivItem_Raw(void);
 
-            /// lädt die Rawdaten aus einer Datei.
+            /// lÃ¤dt die Rawdaten aus einer Datei.
             int load(FILE* file, unsigned int length = 0xFFFFFFFF);
             /// schreibt die Rawdaten in eine Datei.
             int write(FILE* file, bool with_length) const;
 
-            /// liefert die Länge des Datenblocks.
+            /// liefert die LÃ¤nge des Datenblocks.
             unsigned int getLength(void) const;
 
-            /// liefert die Daten zurück (ro).
+            /// liefert die Daten zurÃ¼ck (ro).
             const unsigned char* getData(void) const;
-            /// liefert die Daten zurück (rw).
+            /// liefert die Daten zurÃ¼ck (rw).
             unsigned char* getData(void);
 
             /// erzeugt den Datenblock.
             unsigned char* alloc(unsigned int length);
-            /// löscht den Datenblock.
+            /// lÃ¶scht den Datenblock.
             void clear(void);
 
         private:
             unsigned char* data; ///< Die Daten.
-            unsigned int length; ///< Die Länge der Daten.
+            unsigned int length; ///< Die LÃ¤nge der Daten.
     };
 
-    /// Klasse für Rawdaten.
+    /// Klasse fÃ¼r Rawdaten.
     class ArchivItem_Raw : public virtual baseArchivItem_Raw
     {
         public:

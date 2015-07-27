@@ -1,4 +1,4 @@
-// $Id: prototypen.h 9372 2014-04-28 15:25:24Z FloSoft $
+Ôªø// $Id: prototypen.h 9372 2014-04-28 15:25:24Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,46 +26,46 @@ namespace libsiedler2
 	/// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 	namespace loader
 	{
-		/// l‰dt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
+		/// l√§dt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
 		int LoadType(unsigned short bobtype, FILE *lst, const ArchivItem_Palette *palette, ArchivItem **item);
 
 		/// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
 		int WriteType(unsigned short bobtype, FILE *lst, const ArchivItem_Palette *palette, const ArchivItem *item);
 
-		/// l‰dt eine LST-File in ein ArchivInfo.
+		/// l√§dt eine LST-File in ein ArchivInfo.
 		int LoadLST(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items);
 
 		/// schreibt ein ArchivInfo eine LST-File.
 		int WriteLST(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items);
 
-		/// l‰dt eine TLST-File (beschriebenes LST-File in Textform) in ein ArchivInfo.
+		/// l√§dt eine TLST-File (beschriebenes LST-File in Textform) in ein ArchivInfo.
 		int LoadTLST(const char *file, ArchivInfo *items);
 
-		/// l‰dt eine BBM-File in ein ArchivInfo.
+		/// l√§dt eine BBM-File in ein ArchivInfo.
 		int LoadBBM(const char *file, ArchivInfo *items);
 
 		/// schreibt ein ArchivInfo in eine BBM-File.
 		int WriteBBM(const char *file, const ArchivInfo *items);
 
-		/// l‰dt eine ACT-File in ein ArchivInfo.
+		/// l√§dt eine ACT-File in ein ArchivInfo.
 		int LoadACT(const char *file, ArchivInfo *items);
 
 		/// schreibt ein ArchivInfo in eine ACT-File.
 		int WriteACT(const char *file, const ArchivInfo *items, long nr = -1);
 
-		/// l‰dt eine DAT/IDX-File in ein ArchivInfo.
+		/// l√§dt eine DAT/IDX-File in ein ArchivInfo.
 		int LoadDATIDX(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items);
 
 		/// schreibt ein ArchivInfo in eine DAT/IDX-File.
 		int WriteDATIDX(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items);
 
-		/// l‰dt eine BMP-File in ein ArchivInfo.
+		/// l√§dt eine BMP-File in ein ArchivInfo.
 		int LoadBMP(const char *file, ArchivItem **image, ArchivItem **palette = NULL);
 
 		/// schreibt ein ArchivInfo in eine BMP-File.
 		int WriteBMP(const char *file, const ArchivItem_Palette *palette, const ArchivInfo *items, long nr = -1);
 
-		/// l‰dt eine GER/ENG-File in ein ArchivInfo.
+		/// l√§dt eine GER/ENG-File in ein ArchivInfo.
 		int LoadTXT(const char *file, ArchivInfo *items, bool conversion = true);
 
 #		define LoadGER LoadTXT
@@ -77,13 +77,13 @@ namespace libsiedler2
 #		define WriteGER WriteTXT
 #		define WriteENG WriteTXT
 
-		/// l‰dt eine LBM-File in ein ArchivInfo.
+		/// l√§dt eine LBM-File in ein ArchivInfo.
 		int LoadLBM(const char *file, ArchivInfo *items);
 
 		/// schreibt ein ArchivInfo in eine LBM-File.
 		int WriteLBM(const char *file, const ArchivInfo *items);
 
-		/// l‰dt eine SWD/WSD-File in ein ArchivInfo.
+		/// l√§dt eine SWD/WSD-File in ein ArchivInfo.
 		int LoadMAP(const char *file, ArchivInfo *items, bool only_header = false);
 
 #		define LoadSWD LoadMAP
@@ -95,7 +95,7 @@ namespace libsiedler2
 #		define WriteSWD WriteMAP
 #		define WriteWSD WriteMAP
 
-		/// l‰dt eine BOB-File in ein ArchivInfo.
+		/// l√§dt eine BOB-File in ein ArchivInfo.
 		int LoadBOB(const char *file, const ArchivItem_Palette *palette, ArchivInfo *items);
 
 		/// schreibt ein ArchivInfo in eine BOB-File.
@@ -111,7 +111,7 @@ namespace libsiedler2
 
 #		define WriteWAV WriteSND
 
-		/// l‰dt eine INI-File in ein ArchivInfo.
+		/// l√§dt eine INI-File in ein ArchivInfo.
 		int LoadINI(const char *file, ArchivInfo *items);
 		int WriteINI(const char *file, const ArchivInfo *items);
 	}

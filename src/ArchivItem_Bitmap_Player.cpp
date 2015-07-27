@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Player.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+Ôªø// $Id: ArchivItem_Bitmap_Player.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap_Player
  *
- *  Basisklasse f¸r Player-Bitmaps.
+ *  Basisklasse f√ºr Player-Bitmaps.
  *
  *  @author FloSoft
  */
@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_Player
  *
- *  Klasse f¸r Player-Bitmaps.
+ *  Klasse f√ºr Player-Bitmaps.
  *
  *  @author FloSoft
  */
@@ -57,7 +57,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::baseArchivItem_Bitmap_Player::tex_plength
  *
- *  L‰nge der Spielerfarbendaten.
+ *  L√§nge der Spielerfarbendaten.
  *
  *  @author FloSoft
  */
@@ -130,7 +130,7 @@ libsiedler2::baseArchivItem_Bitmap_Player::~baseArchivItem_Bitmap_Player(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  l‰dt die Bilddaten aus einer Datei.
+ *  l√§dt die Bilddaten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
@@ -161,21 +161,21 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(FILE* file, const ArchivItem
     if(libendian::le_read_s(&ny, file) != 0)
         return 3;
 
-    // Unbekannte Daten ¸berspringen
+    // Unbekannte Daten √ºberspringen
     fseek(file, 4, SEEK_CUR);
 
     // Breite einlesen
     if(libendian::le_read_us(&width, file) != 0)
         return 4;
 
-    // Hˆhe einlesen
+    // H√∂he einlesen
     if(libendian::le_read_us(&height, file) != 0)
         return 5;
 
-    // Unbekannte Daten ¸berspringen
+    // Unbekannte Daten √ºberspringen
     fseek(file, 2, SEEK_CUR);
 
-    // L‰nge einlesen
+    // L√§nge einlesen
     if(libendian::le_read_ui(&length, file) != 0)
         return 6;
 
@@ -206,14 +206,14 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(FILE* file, const ArchivItem
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  l‰dt die Bilddaten aus einem Puffer.
+ *  l√§dt die Bilddaten aus einem Puffer.
  *
  *  @param[in] width    Breite des Puffers
- *  @param[in] height   Hˆhe des Puffers
+ *  @param[in] height   H√∂he des Puffers
  *  @param[in] image    Bilddaten (komprimierte Form)
  *  @param[in] starts   Startadressen der Bildzeilen
  *  @param[in] absolute Die Startadressen sind absolut/relativ
- *  @param[in] length   L‰nge des Puffers
+ *  @param[in] length   L√§nge des Puffers
  *  @param[in] palette  Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
@@ -336,7 +336,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE* file, const ArchivIte
     if(libendian::le_write_us(width, file) != 0)
         return 6;
 
-    // Hˆhe schreiben
+    // H√∂he schreiben
     if(libendian::le_write_us(height, file) != 0)
         return 7;
 
@@ -345,7 +345,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE* file, const ArchivIte
     if(libendian::le_write_c(unknown2, 2, file) != 2)
         return 8;
 
-    // maximale grˆﬂe von Player-Image: width*height*2 (sollte reichen :P)
+    // maximale gr√∂√üe von Player-Image: width*height*2 (sollte reichen :P)
     unsigned char* data = new unsigned char[height * 2 + width * height * 2];
     memset(data, 0, width * height * 2);
 
@@ -419,7 +419,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE* file, const ArchivIte
 
     unsigned int length = position + height * 2;
 
-    // L‰nge schreiben
+    // L√§nge schreiben
     if(libendian::le_write_ui(length, file) != 0)
         return 9;
 
@@ -439,7 +439,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE* file, const ArchivIte
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  alloziert Bildspeicher f¸r die gew¸nschte Grˆﬂe.
+ *  alloziert Bildspeicher f√ºr die gew√ºnschte Gr√∂√üe.
  *
  *  @author FloSoft
  */
@@ -460,7 +460,7 @@ void libsiedler2::baseArchivItem_Bitmap_Player::tex_alloc(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  r‰umt den Bildspeicher auf.
+ *  r√§umt den Bildspeicher auf.
  *
  *  @author FloSoft
  */
@@ -485,13 +485,13 @@ void libsiedler2::baseArchivItem_Bitmap_Player::tex_clear(void)
  *  z.B. pal05.bbm: 128-131 (blau), 132-135 (gelb), 136-139 (rot), usw
  *  jeweils der erste Wert (128, 132, 136, usw) ist dann der Grundfarbindex.
  *
- *  "¸berstehende" R‰nder werden mit Transparenz aufgef¸llt.
+ *  "√ºberstehende" R√§nder werden mit Transparenz aufgef√ºllt.
  *
  *  @param[in]     width         Breite des neuen Bildes
- *  @param[in]     height        Hˆhe des neuen Bildes
+ *  @param[in]     height        H√∂he des neuen Bildes
  *  @param[in]     buffer        Quellpuffer
  *  @param[in]     buffer_width  Breite des Puffers
- *  @param[in]     buffer_height Hˆhe des Puffers
+ *  @param[in]     buffer_height H√∂he des Puffers
  *  @param[in]     buffer_format Texturformat des Puffers
  *  @param[in]     palette       Grundpalette
  *  @param[in]     color         Grundfarbindex der benutzt werden soll
@@ -702,7 +702,7 @@ void libsiedler2::baseArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy,
  *
  *  @param[in,out] buffer        Zielpuffer
  *  @param[in]     buffer_width  Breite des Puffers
- *  @param[in]     buffer_height Hˆhe des Puffers
+ *  @param[in]     buffer_height H√∂he des Puffers
  *  @param[in]     buffer_format Texturformat des Puffers
  *  @param[in]     palette       Grundpalette
  *  @param[in]     color         Grundfarbindex der benutzt werden soll
@@ -711,7 +711,7 @@ void libsiedler2::baseArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy,
  *  @param[in]     from_x        Quell-X-Koordinate
  *  @param[in]     from_y        Quell-Y-Koordinate
  *  @param[in]     from_w        zu kopierende Breite
- *  @param[in]     from_h        zu kopierende Hˆhe
+ *  @param[in]     from_h        zu kopierende H√∂he
  *  @param[in]     only_player   bei @p true wird nur die Playerschicht kopiert
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
@@ -778,7 +778,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
                                 // Playerfarbe setzen
                                 buffer[position] = tex_pdata[position3] + color;
                             }
-                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht ver‰ndert
+                            if(tex_data[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht ver√§ndert
                             {
                                 if(!only_player)
                                 {
@@ -796,7 +796,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
                                 buffer[position + 3] = 0xFF;
                                 palette->get(tex_pdata[position3] + color, &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
                             }
-                            if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht ver‰ndert
+                            if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht ver√§ndert
                             {
                                 if(!only_player)
                                 {
@@ -820,7 +820,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
                                 // Playerfarbe setzen
                                 buffer[position] = tex_pdata[position3] + color;
                             }
-                            if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht ver‰ndert
+                            if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht ver√§ndert
                             {
                                 if(!only_player)
                                 {
@@ -838,7 +838,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
                                 palette->get(tex_pdata[position3] + color, &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
                                 buffer[position + 3] = 0xFF; // a
                             }
-                            if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht ver‰ndert
+                            if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht ver√§ndert
                             {
                                 if(!only_player)
                                 {

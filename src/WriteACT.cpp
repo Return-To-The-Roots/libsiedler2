@@ -1,4 +1,4 @@
-// $Id: WriteACT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+﻿// $Id: WriteACT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -68,7 +68,7 @@ int libsiedler2::loader::WriteACT(const char* file, const ArchivInfo* items, lon
     if(nr == -1)
         return 2;
 
-    // Datei zum schreiben �ffnen
+    // Datei zum schreiben öffnen
     act = fopen(file, "wb");
 
     // hat das geklappt?

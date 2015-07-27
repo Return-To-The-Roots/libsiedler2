@@ -1,4 +1,4 @@
-// Copyright (c) 2005 - 2015 Settlers Freaks (sf-team at siedler25.org)
+Ôªø// Copyright (c) 2005 - 2015 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -22,9 +22,9 @@
 namespace libsiedler2
 {
     /**
-     *  @brief Texturformat-Aufz‰hlungstyp.
+     *  @brief Texturformat-Aufz√§hlungstyp.
      *
-     *  Enth‰lt alle unterst¸tzten Texturformate als Aufz‰hlungswerte.
+     *  Enth√§lt alle unterst√ºtzten Texturformate als Aufz√§hlungswerte.
      *
      *  @author FloSoft
      */
@@ -42,9 +42,9 @@ namespace libsiedler2
     TEXTURFORMAT getTextureFormat(void);
 
     /**
-     *  @brief Bobtype-Aufz‰hlungstyp.
+     *  @brief Bobtype-Aufz√§hlungstyp.
      *
-     *  Enth‰lt alle unterst¸tzten Bobtypes als Aufz‰hlungswerte.
+     *  Enth√§lt alle unterst√ºtzten Bobtypes als Aufz√§hlungswerte.
      *
      *  @author FloSoft
      */
@@ -80,7 +80,7 @@ namespace libsiedler2
     /// Der Standard-Item-Allocator.
     ArchivItem* StandardAllocator(unsigned short type, unsigned short subtype, const ArchivItem* item);
 
-    /// L‰dt die Datei im Format ihrer Endung.
+    /// L√§dt die Datei im Format ihrer Endung.
     int Load(const char* file, ArchivInfo* items, const ArchivItem_Palette* palette = NULL);
 
     /// Schreibt die Datei im Format ihrer Endung.

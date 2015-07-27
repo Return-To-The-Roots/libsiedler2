@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Other.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound_Other.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Sound_Other
  *
- *  Klasse für Other-Sounds.
+ *  Klasse fÃ¼r Other-Sounds.
  *
  *  @author FloSoft
  */
@@ -86,10 +86,10 @@ libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Daten aus einer Datei.
+ *  lÃ¤dt die Daten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
- *  @param[in] length  Länge der Daten
+ *  @param[in] length  LÃ¤nge der Daten
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
@@ -134,9 +134,9 @@ int libsiedler2::baseArchivItem_Sound_Other::write(FILE* file) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  alloziert Soundspeicher für die gewünschte Größe.
+ *  alloziert Soundspeicher fÃ¼r die gewÃ¼nschte GrÃ¶ÃŸe.
  *
- *  @param[in] length Größe des Speichers
+ *  @param[in] length GrÃ¶ÃŸe des Speichers
  *
  *  @author FloSoft
  */
@@ -155,7 +155,7 @@ void libsiedler2::baseArchivItem_Sound_Other::alloc(unsigned int length)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  räumt den Soundspeicher auf.
+ *  rÃ¤umt den Soundspeicher auf.
  *
  *  @author FloSoft
  */

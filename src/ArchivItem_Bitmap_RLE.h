@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_RLE.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bitmap_RLE.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,7 +26,7 @@
 
 namespace libsiedler2
 {
-    /// Basisklasse für RLE-Bitmaps.
+    /// Basisklasse fÃ¼r RLE-Bitmaps.
     class baseArchivItem_Bitmap_RLE : public virtual baseArchivItem_Bitmap
     {
         public:
@@ -42,14 +42,14 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Bitmap_RLE.
             ~baseArchivItem_Bitmap_RLE(void);
 
-            /// lädt die Bilddaten aus einer Datei.
+            /// lÃ¤dt die Bilddaten aus einer Datei.
             int load(FILE* file, const ArchivItem_Palette* palette);
 
             /// schreibt die Bilddaten in eine Datei.
             int write(FILE* file, const ArchivItem_Palette* palette) const;
     };
 
-    /// Klasse für RLE-Bitmaps.
+    /// Klasse fÃ¼r RLE-Bitmaps.
     class ArchivItem_Bitmap_RLE : public baseArchivItem_Bitmap_RLE, public ArchivItem_Bitmap
     {
         public:

@@ -1,4 +1,4 @@
-// $Id: WriteBBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: WriteBBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -59,7 +59,7 @@ int libsiedler2::loader::WriteBBM(const char* file, const ArchivInfo* items)
             ++count;
     }
 
-    // Datei zum schreiben öffnen
+    // Datei zum schreiben Ã¶ffnen
     bbm = fopen(file, "wb");
 
     // hat das geklappt?
@@ -70,7 +70,7 @@ int libsiedler2::loader::WriteBBM(const char* file, const ArchivInfo* items)
     if(libendian::le_write_c(header, 4, bbm) != 4)
         return 3;
 
-    // Länge schreiben
+    // LÃ¤nge schreiben
     length = 4 + count * (256 * 3 + 8);
     if(libendian::le_write_ui(length, bbm) != 0)
         return 4;
@@ -88,7 +88,7 @@ int libsiedler2::loader::WriteBBM(const char* file, const ArchivInfo* items)
             if(libendian::be_write_c(cmap, 4, bbm) != 4)
                 return 6;
 
-            // Länge schreiben
+            // LÃ¤nge schreiben
             length = 256 * 3;
             if(libendian::be_write_ui(length, bbm) != 0)
                 return 7;

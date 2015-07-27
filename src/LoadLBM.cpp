@@ -1,4 +1,4 @@
-// $Id: LoadLBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadLBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,10 +31,10 @@ static char THIS_FILE[] = __FILE__;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine LBM-File in ein ArchivInfo.
+ *  lÃ¤dt eine LBM-File in ein ArchivInfo.
  *
  *  @param[in]  file    Dateiname der LBM-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -52,7 +52,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
     if(file == NULL || items == NULL)
         return 1;
 
-    // Datei zum lesen öffnen
+    // Datei zum lesen Ã¶ffnen
     lbm = fopen(file, "rb");
 
     // hat das geklappt?
@@ -71,7 +71,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
     if(strncmp(header, "FORM", 4) != 0)
         return 4;
 
-    // Länge einlesen
+    // LÃ¤nge einlesen
     if(libendian::le_read_ui(&length, lbm) != 0)
         return 5;
 
@@ -105,7 +105,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
         {
             case 0x424D4844: // "BHMD"
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, lbm) != 0)
                     return 9;
 
@@ -143,12 +143,12 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
 
                 length -= 12;
 
-                // Rest überspringen
+                // Rest Ã¼berspringen
                 fseek(lbm, length, SEEK_CUR);
             } break;
             case 0x434D4150: // "CMAP"
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, lbm) != 0)
                     return 16;
 
@@ -156,7 +156,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
                 if(length & 1)
                     ++length;
 
-                // Ist Länge wirklich so groß wie Farbtabelle?
+                // Ist LÃ¤nge wirklich so groÃŸ wie Farbtabelle?
                 if(length != 256 * 3)
                     return 17;
 
@@ -175,7 +175,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
             } break;
             case 0x424F4459: // "BODY"
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, lbm) != 0)
                     return 19;
 
@@ -258,7 +258,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
             } break;
             default:
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, lbm) != 0)
                     return 24;
 
@@ -266,7 +266,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
                 if(length & 1)
                     ++length;
 
-                // Rest überspringen
+                // Rest Ã¼berspringen
                 fseek(lbm, length, SEEK_CUR);
             } break;
         }

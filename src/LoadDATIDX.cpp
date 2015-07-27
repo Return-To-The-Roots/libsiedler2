@@ -1,4 +1,4 @@
-// $Id: LoadDATIDX.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadDATIDX.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,11 +31,11 @@ static char THIS_FILE[] = __FILE__;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine DAT/IDX-File in ein ArchivInfo.
+ *  lÃ¤dt eine DAT/IDX-File in ein ArchivInfo.
  *
  *  @param[in]  file    Dateiname der DAT/IDX-File
  *  @param[in]  palette Grundpalette der DAT/IDX-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -64,14 +64,14 @@ int libsiedler2::loader::LoadDATIDX(const char* file, const ArchivItem_Palette* 
     datfile[length - 3] = 'A';
     datfile[length - 4] = 'D';
 
-    // Datei zum lesen öffnen
+    // Datei zum lesen Ã¶ffnen
     dat = fopen(datfile, "rb");
 
     // hat das geklappt?
     if(dat == NULL)
         return 2;
 
-    // IDX-Datei zum lesen öffnen
+    // IDX-Datei zum lesen Ã¶ffnen
     idx = fopen(idxfile, "rb");
 
     // hat das geklappt?
@@ -85,7 +85,7 @@ int libsiedler2::loader::LoadDATIDX(const char* file, const ArchivItem_Palette* 
     if(libendian::le_read_ui(&count, idx) != 0)
         return 5;
 
-    // Platz für items anlegen
+    // Platz fÃ¼r items anlegen
     items->alloc(count);
 
     // items einlesen
@@ -104,7 +104,7 @@ int libsiedler2::loader::LoadDATIDX(const char* file, const ArchivItem_Palette* 
         if(libendian::le_read_ui(&offset, idx) != 0)
             return 7;
 
-        // Unbekannte Daten überspringen
+        // Unbekannte Daten Ã¼berspringen
         fseek(idx, 6, SEEK_CUR);
 
         // BobType einlesen

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map_Header.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Map_Header.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Map_Header
  *
- *  Klasse für einen Mapheader.
+ *  Klasse fÃ¼r einen Mapheader.
  *
  *  @author FloSoft
  */
@@ -86,7 +86,7 @@ libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt den Mapheader aus einer Datei.
+ *  lÃ¤dt den Mapheader aus einer Datei.
  *
  *  @param[in] file Dateihandle der Datei
  *
@@ -106,7 +106,7 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE* file)
     if(libendian::le_read_c(id, 10, file) != 10)
         return 2;
 
-    // und prüfen
+    // und prÃ¼fen
     if(memcmp(id, VALID_ID, 10))
         return 3;
 
@@ -135,7 +135,7 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE* file)
     if(libendian::le_read_us(&width, file) != 0)
         return 5;
 
-    // Höhe einlesen
+    // HÃ¶he einlesen
     if(libendian::le_read_us(&height, file) != 0)
         return 6;
 
@@ -212,7 +212,7 @@ void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Höhe der Map.
+ *  liefert die HÃ¶he der Map.
  *
  *  @author FloSoft
  */
@@ -223,9 +223,9 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getHeight(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  setzt die Höhe der Map.
+ *  setzt die HÃ¶he der Map.
  *
- *  @param[in] height Höhe der Map
+ *  @param[in] height HÃ¶he der Map
  *
  *  @author FloSoft
  */

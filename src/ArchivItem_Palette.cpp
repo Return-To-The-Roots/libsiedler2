@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Palette.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Palette.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Palette
  *
- *  Klasse für Paletten.
+ *  Klasse fÃ¼r Paletten.
  *
  *  @author FloSoft
  */
@@ -80,7 +80,7 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(const ArchivItem_Palette* it
  *  einer Datei.
  *
  *  @param[in] file Dateihandle aus denen die Farbwerte geladen werden sollen
- *  @param[in] skip Sollen 2 Unbekannte Bytes übersprungen werden (bei LST) oder direkt?
+ *  @param[in] skip Sollen 2 Unbekannte Bytes Ã¼bersprungen werden (bei LST) oder direkt?
  *
  *  @author FloSoft
  */
@@ -96,7 +96,7 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(FILE* file, bool skip) : Arc
  *  liest die Farbwerte aus einer Datei.
  *
  *  @param[in] file Dateihandle aus denen die Farbwerte geladen werden sollen
- *  @param[in] skip Sollen 2 Unbekannte Bytes übersprungen werden (bei LST) oder direkt?
+ *  @param[in] skip Sollen 2 Unbekannte Bytes Ã¼bersprungen werden (bei LST) oder direkt?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
@@ -109,7 +109,7 @@ int libsiedler2::ArchivItem_Palette::load(FILE* file, bool skip)
 
     if(skip)
     {
-        // Unbekannte 2 Bytes überspringen
+        // Unbekannte 2 Bytes Ã¼berspringen
         fseek(file, 2, SEEK_CUR);
     }
 
@@ -158,7 +158,7 @@ int libsiedler2::ArchivItem_Palette::write(FILE* file, bool skip) const
  *
  *  @param[in] index Index des Farbwertes
  *  @param[in] r     Roter Farbwert
- *  @param[in] g     Grüner Farbwert
+ *  @param[in] g     GrÃ¼ner Farbwert
  *  @param[in] b     Blauer Farbwert
  *
  *  @author FloSoft
@@ -176,7 +176,7 @@ void libsiedler2::ArchivItem_Palette::set(unsigned char index, unsigned char r, 
  *
  *  @param[in]  index Index des Farbwertes
  *  @param[out] r     Roter Farbwert
- *  @param[out] g     Grüner Farbwert
+ *  @param[out] g     GrÃ¼ner Farbwert
  *  @param[out] b     Blauer Farbwert
  *
  *  @author FloSoft
@@ -198,7 +198,7 @@ void libsiedler2::ArchivItem_Palette::get(unsigned char index, unsigned char* r,
  *  liefert einen Index zum entsprechenden RGB-Wert.
  *
  *  @param[in] r     Roter Farbwert
- *  @param[in] g     Grüner Farbwert
+ *  @param[in] g     GrÃ¼ner Farbwert
  *  @param[in] b     Blauer Farbwert
  *
  *  @return Farbindex der RGB-Farbe
@@ -239,7 +239,7 @@ const unsigned char* const libsiedler2::ArchivItem_Palette::operator[](int index
 /**
  *  kopiert die Palette in einen Puffer (als RGBA)
  *
- *  @param[in,out] buffer Zielpuffer für die Palettendaten (muss 256*4-Byte groß sein)
+ *  @param[in,out] buffer Zielpuffer fÃ¼r die Palettendaten (muss 256*4-Byte groÃŸ sein)
  *
  *  @author FloSoft
  */

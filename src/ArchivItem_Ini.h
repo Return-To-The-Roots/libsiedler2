@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Ini.h 9359 2014-04-25 15:37:22Z FloSoft $
+﻿// $Id: ArchivItem_Ini.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -28,7 +28,7 @@
 namespace libsiedler2
 {
 
-/// Klasse f�r INI-Dateien (genauergesagt eine Sektion).
+/// Klasse für INI-Dateien (genauergesagt eine Sektion).
     class ArchivItem_Ini : public ArchivItem, public ArchivInfo
     {
         public:
@@ -41,7 +41,7 @@ namespace libsiedler2
             /// Kopierkonstruktor von @p ArchivItem_Ini.
             ArchivItem_Ini(const ArchivItem_Ini* item);
 
-            /// l�dt die INI-Daten aus einer Datei.
+            /// lädt die INI-Daten aus einer Datei.
             int load(FILE* file);
 
             /// schreibt die INI-Daten in eine Datei.
@@ -64,7 +64,7 @@ namespace libsiedler2
                 return atoi(getValue(name));
             }
 
-            /// f�gt einen Eintrag hinzu.
+            /// fügt einen Eintrag hinzu.
             void addValue(const char* name, const char* value);
 
             /// schreibt einen Wert in die Ini
@@ -73,13 +73,13 @@ namespace libsiedler2
                 ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
                 if(item)
                 {
-                    // setText �berschreibt Namen, daher nochmals setzen
+                    // setText überschreibt Namen, daher nochmals setzen
                     item->setText(value);
                     item->setName(name);
                 }
                 else
                 {
-                    // nicht gefunden, also hinzuf�gen
+                    // nicht gefunden, also hinzufügen
                     addValue(name, value);
                 }
             }
@@ -92,13 +92,13 @@ namespace libsiedler2
                 ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
                 if(item)
                 {
-                    // setText �berschreibt Namen, daher nochmals setzen
+                    // setText überschreibt Namen, daher nochmals setzen
                     item->setText(temp);
                     item->setName(name);
                 }
                 else
                 {
-                    // nicht gefunden, also hinzuf�gen
+                    // nicht gefunden, also hinzufügen
                     addValue(name, temp);
                 }
             }

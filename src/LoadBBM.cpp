@@ -1,4 +1,4 @@
-// $Id: LoadBBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadBBM.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,10 +31,10 @@ static char THIS_FILE[] = __FILE__;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine BBM-File in ein ArchivInfo.
+ *  lÃ¤dt eine BBM-File in ein ArchivInfo.
  *
  *  @param[in]  file    Dateiname der BBM-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -53,7 +53,7 @@ int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
     if(file == NULL || items == NULL)
         return 1;
 
-    // Datei zum lesen öffnen
+    // Datei zum lesen Ã¶ffnen
     bbm = fopen(file, "rb");
 
     // hat das geklappt?
@@ -72,7 +72,7 @@ int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
     if(strncmp(header, "FORM", 4) != 0)
         return 4;
 
-    // Länge einlesen
+    // LÃ¤nge einlesen
     if(libendian::le_read_ui(&length, bbm) != 0)
         return 5;
 
@@ -95,7 +95,7 @@ int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
         {
             case 0x434D4150: // "CMAP"
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, bbm) != 0)
                     return 9;
 
@@ -103,7 +103,7 @@ int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
                 if(length & 1)
                     ++length;
 
-                // Ist Länge wirklich so groß wie Farbtabelle?
+                // Ist LÃ¤nge wirklich so groÃŸ wie Farbtabelle?
                 if(length != 256 * 3)
                     return 10;
 
@@ -132,7 +132,7 @@ int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
             } break;
             default:
             {
-                // Länge einlesen
+                // LÃ¤nge einlesen
                 if(libendian::be_read_ui(&length, bbm) != 0)
                     return 12;
 
@@ -144,7 +144,7 @@ int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
                 {
                     unsigned char* buffer = new unsigned char[length];
 
-                    // überspringen
+                    // Ã¼berspringen
                     if(libendian::le_read_uc(buffer, length, bbm) != (int)length)
                         return 13;
 

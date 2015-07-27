@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bitmap.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,7 +26,7 @@
 
 namespace libsiedler2
 {
-    /// Basis-Basisklasse für Bitmapitems.
+    /// Basis-Basisklasse fÃ¼r Bitmapitems.
     class baseArchivItem_Bitmap : public ArchivItem
     {
         public:
@@ -46,13 +46,13 @@ namespace libsiedler2
             /// liefert einen Pixel an einem bestimmten Punkt.
             unsigned char tex_getPixel(unsigned short x, unsigned short y, const ArchivItem_Palette* palette) const;
 
-            /// lädt die Bilddaten aus einer Datei.
+            /// lÃ¤dt die Bilddaten aus einer Datei.
             virtual int load(FILE* file, const ArchivItem_Palette* palette) = 0;
 
             /// schreibt die Bilddaten in eine Datei.
             virtual int write(FILE* file, const ArchivItem_Palette* palette) const = 0;
 
-            /// liefert die Länge des Datenblocks.
+            /// liefert die LÃ¤nge des Datenblocks.
             unsigned int getLength(void) const;
 
             /// liefert den Textur-Datenblock.
@@ -67,13 +67,13 @@ namespace libsiedler2
             /// liefert die Breite des Bildes.
             unsigned short getWidth(void) const;
 
-            /// liefert die Höhe des Bildes.
+            /// liefert die HÃ¶he des Bildes.
             unsigned short getHeight(void) const;
 
-            /// gibt Palette zurück
+            /// gibt Palette zurÃ¼ck
             const ArchivItem_Palette* getPalette() const { return palette; }
 
-            /// setzt die Länge des Datenblocks.
+            /// setzt die LÃ¤nge des Datenblocks.
             void setLength(unsigned int length);
 
             /// setzt den X-Nullpunkt.
@@ -85,13 +85,13 @@ namespace libsiedler2
             /// setzt die Breite des Bildes.
             void setWidth(unsigned short width);
 
-            /// setzt die Höhe des Bildes.
+            /// setzt die HÃ¶he des Bildes.
             void setHeight(unsigned short height);
 
-            /// alloziert Bildspeicher für die gewünschte Größe.
+            /// alloziert Bildspeicher fÃ¼r die gewÃ¼nschte GrÃ¶ÃŸe.
             void tex_alloc(void);
 
-            /// räumt den Bildspeicher auf.
+            /// rÃ¤umt den Bildspeicher auf.
             void tex_clear(void);
 
             /// setzt die Grundpalette des Bildes.
@@ -124,31 +124,31 @@ namespace libsiedler2
                                int buffer_format,
                                const ArchivItem_Palette* palette);
 
-            /// liefert die nächste Quadratzahl zu einer Zahl.
+            /// liefert die nÃ¤chste Quadratzahl zu einer Zahl.
             static unsigned short tex_pow2(unsigned short n);
 
         protected:
             unsigned short width;       ///< Breite des Bildes.
-            unsigned short height;      ///< Höhe des Bildes.
+            unsigned short height;      ///< HÃ¶he des Bildes.
 
             short nx;                   ///< X-Nullpunkt.
             short ny;                   ///< Y-Nullpunkt.
 
-            unsigned int length;        ///< Länge der Bilddaten.
+            unsigned int length;        ///< LÃ¤nge der Bilddaten.
 
             unsigned short tex_width;   ///< Breite der Textur.
-            unsigned short tex_height;  ///< Höhe der Textur.
+            unsigned short tex_height;  ///< HÃ¶he der Textur.
 
             unsigned short tex_bpp;     ///< Bytebreite der Textur pro Pixel.
 
-            unsigned int tex_length;    ///< Länge der Texturdaten.
+            unsigned int tex_length;    ///< LÃ¤nge der Texturdaten.
             unsigned char* tex_data;    ///< Die Texturdaten.
 
             const ArchivItem_Palette* palette; ///< Die Palette.
             int format; ///< Das Texturformat.
     };
 
-    /// Basisklasse für Bitmapitems.
+    /// Basisklasse fÃ¼r Bitmapitems.
     class ArchivItem_Bitmap : public virtual baseArchivItem_Bitmap
     {
     };

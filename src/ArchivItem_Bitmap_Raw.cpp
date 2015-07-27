@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Raw.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bitmap_Raw.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw
  *
- *  Basisklasse für Raw-Bitmaps.
+ *  Basisklasse fÃ¼r Raw-Bitmaps.
  *
  *  @author FloSoft
  */
@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_Raw
  *
- *  Klasse für Raw-Bitmaps.
+ *  Klasse fÃ¼r Raw-Bitmaps.
  *
  *  @author FloSoft
  */
@@ -98,7 +98,7 @@ libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Bilddaten aus einer Datei.
+ *  lÃ¤dt die Bilddaten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
@@ -120,10 +120,10 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
 
     tex_clear();
 
-    // Unbekannte Daten überspringen
+    // Unbekannte Daten Ã¼berspringen
     fseek(file, 2, SEEK_CUR);
 
-    // Länge einlesen
+    // LÃ¤nge einlesen
     if(libendian::le_read_ui(&length, file) != 0)
         return 2;
 
@@ -147,7 +147,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
     if(libendian::le_read_us(&width, file) != 0)
         return 6;
 
-    // Höhe einlesen
+    // HÃ¶he einlesen
     if(libendian::le_read_us(&height, file) != 0)
         return 7;
 
@@ -168,7 +168,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
         delete[] data;
     }
 
-    // Unbekannte Daten überspringen
+    // Unbekannte Daten Ã¼berspringen
     fseek(file, 8, SEEK_CUR);
 
     return 0;
@@ -202,7 +202,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(FILE* file, const ArchivItem_P
     if(libendian::le_write_c(unknown, 2, file) != 2)
         return 3;
 
-    // Länge schreiben
+    // LÃ¤nge schreiben
     unsigned int length = width * height;
     if(libendian::le_write_ui(length, file) != 0)
         return 4;
@@ -231,7 +231,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(FILE* file, const ArchivItem_P
     if(libendian::le_write_us(width, file) != 0)
         return 8;
 
-    // Höhe schreiben
+    // HÃ¶he schreiben
     if(libendian::le_write_us(height, file) != 0)
         return 9;
 

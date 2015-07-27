@@ -1,4 +1,4 @@
-// $Id: LoadMAP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadMAP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,10 +31,10 @@ static char THIS_FILE[] = __FILE__;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine MAP-File in ein ArchivInfo.
+ *  lÃ¤dt eine MAP-File in ein ArchivInfo.
  *
  *  @param[in]  file    Dateiname der MAP-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -47,7 +47,7 @@ int libsiedler2::loader::LoadMAP(const char* file, ArchivInfo* items, bool only_
     if(file == NULL || items == NULL)
         return 1;
 
-    // Datei zum lesen öffnen
+    // Datei zum lesen Ã¶ffnen
     map = fopen(file, "rb");
 
     // hat das geklappt?

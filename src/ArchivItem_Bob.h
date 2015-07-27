@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bob.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bob.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -27,7 +27,7 @@
 
 namespace libsiedler2
 {
-    /// Klasse für Bobfiles.
+    /// Klasse fÃ¼r Bobfiles.
     class ArchivItem_Bob : public ArchivItem, public ArchivInfo
     {
         public:
@@ -43,7 +43,7 @@ namespace libsiedler2
             /// Destruktor von @p ArchivItem_Bob.
             ~ArchivItem_Bob(void);
 
-            /// lädt die Bobdaten aus einer Datei.
+            /// lÃ¤dt die Bobdaten aus einer Datei.
             int load(FILE* file, const ArchivItem_Palette* palette);
 
             /// schreibt die Bobdaten in eine Datei.
@@ -54,7 +54,7 @@ namespace libsiedler2
         protected:
             unsigned short good_count; /// Warenanzahl
             unsigned short item_count; /// Bildanzahl
-            unsigned short* links;     /// "Links" (Zugehörigkeiten der Bilder)
+            unsigned short* links;     /// "Links" (ZugehÃ¶rigkeiten der Bilder)
     };
 }
 

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Wave.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound_Wave.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,7 +25,7 @@
 
 namespace libsiedler2
 {
-    /// Basisklasse für WAVE-Sounds.
+    /// Basisklasse fÃ¼r WAVE-Sounds.
     class baseArchivItem_Sound_Wave : public virtual baseArchivItem_Sound
     {
         public:
@@ -38,17 +38,17 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Sound_Wave.
             ~baseArchivItem_Sound_Wave(void);
 
-            /// lädt die Wave-Daten aus einer Datei.
+            /// lÃ¤dt die Wave-Daten aus einer Datei.
             int load(FILE* file, unsigned int length);
 
             /// schreibt die Wave-Daten in eine Datei.
             int write(FILE* file) const { return write(file, false); }
             int write(FILE* file, bool stripheader = false) const;
 
-            /// alloziert Soundspeicher für die gewünschte Größe.
+            /// alloziert Soundspeicher fÃ¼r die gewÃ¼nschte GrÃ¶ÃŸe.
             void alloc(unsigned int length);
 
-            /// räumt den Soundspeicher auf.
+            /// rÃ¤umt den Soundspeicher auf.
             void clear(void);
 
             void setData(const unsigned char* data, unsigned int length)
@@ -65,7 +65,7 @@ namespace libsiedler2
             unsigned int length;
     };
 
-    /// Klasse für WAVE-Sounds.
+    /// Klasse fÃ¼r WAVE-Sounds.
     class ArchivItem_Sound_Wave : public virtual baseArchivItem_Sound_Wave, public ArchivItem_Sound
     {
         public:

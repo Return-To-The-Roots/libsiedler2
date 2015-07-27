@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Font.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Font.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Font
  *
- *  Klasse für Fonts.
+ *  Klasse fÃ¼r Fonts.
  *
  *  @author FloSoft
  */
@@ -79,7 +79,7 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font* item) : Arc
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Fontdaten aus einer Datei.
+ *  lÃ¤dt die Fontdaten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
@@ -101,7 +101,7 @@ int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* pal
     if(libendian::le_read_uc(&dy, 1, file) != 1)
         return 3;
 
-    // Speicher für Buchstaben alloziieren
+    // Speicher fÃ¼r Buchstaben alloziieren
     alloc(256);
 
     // Buchstaben einlesen

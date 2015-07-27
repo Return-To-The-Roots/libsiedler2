@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Text.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Text.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,7 +25,7 @@
 
 namespace libsiedler2
 {
-    /// Klasse für Texte.
+    /// Klasse fÃ¼r Texte.
     class ArchivItem_Text : public ArchivItem
     {
         public:
@@ -50,7 +50,7 @@ namespace libsiedler2
             // liefert den Text.
             const char* getText(void) const;
 
-            // liefert die Länge.
+            // liefert die LÃ¤nge.
             unsigned int getLength(void) const;
 
             // setzt den Text.
@@ -58,7 +58,7 @@ namespace libsiedler2
 
         private:
             char* text;          ///< Der Textspeicher.
-            unsigned int length; ///< Die Länge des Textes.
+            unsigned int length; ///< Die LÃ¤nge des Textes.
     };
 }
 

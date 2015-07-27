@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Wave.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound_Wave.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Sound_Wave
  *
- *  Klasse für WAVE-Sounds.
+ *  Klasse fÃ¼r WAVE-Sounds.
  *
  *  @author FloSoft
  */
@@ -88,10 +88,10 @@ libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Wave-Daten aus einer Datei.
+ *  lÃ¤dt die Wave-Daten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
- *  @param[in] length  Länge der Daten
+ *  @param[in] length  LÃ¤nge der Daten
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
@@ -215,9 +215,9 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(FILE* file, bool stripheader) 
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  alloziert Soundspeicher für die gewünschte Größe.
+ *  alloziert Soundspeicher fÃ¼r die gewÃ¼nschte GrÃ¶ÃŸe.
  *
- *  @param[in] length Größe des Speichers
+ *  @param[in] length GrÃ¶ÃŸe des Speichers
  *
  *  @author FloSoft
  */
@@ -236,7 +236,7 @@ void libsiedler2::baseArchivItem_Sound_Wave::alloc(unsigned int length)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  räumt den Soundspeicher auf.
+ *  rÃ¤umt den Soundspeicher auf.
  *
  *  @author FloSoft
  */

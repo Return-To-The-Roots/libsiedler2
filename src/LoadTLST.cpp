@@ -1,4 +1,4 @@
-// $Id: LoadTLST.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadTLST.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,11 +31,11 @@ static char THIS_FILE[] = __FILE__;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine LST-File in ein ArchivInfo.
+ *  lÃ¤dt eine LST-File in ein ArchivInfo.
  *
  *  @param[in]  file    Dateiname der LST-File
  *  @param[in]  palette Grundpalette der LST-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *

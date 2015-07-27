@@ -1,4 +1,4 @@
-// $Id: WriteINI.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: WriteINI.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
  *  schreibt ein ArchivInfo in eine INI-File.
  *
  *  @param[in]  file    Dateiname der INI-File
- *  @param[in] items    ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[in] items    ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -45,7 +45,7 @@ int libsiedler2::loader::WriteINI(const char* file, const ArchivInfo* items)
     if(file == NULL || items == NULL)
         return 1;
 
-    // Datei zum schreiben öffnen
+    // Datei zum schreiben Ã¶ffnen
     FILE* ini = fopen(file, "wb");
     if (ini == 0)
         return 2;

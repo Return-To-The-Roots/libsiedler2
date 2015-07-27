@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bob.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bob.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bob
  *
- *  Klasse für Bobfiles.
+ *  Klasse fÃ¼r Bobfiles.
  *
  *  @author FloSoft
  */
@@ -95,7 +95,7 @@ libsiedler2::ArchivItem_Bob::~ArchivItem_Bob(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Bobdaten aus einer Datei.
+ *  lÃ¤dt die Bobdaten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
@@ -111,7 +111,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
 
     alloc(96);
 
-    // Größe des ersten Farbblocks auslesen
+    // GrÃ¶ÃŸe des ersten Farbblocks auslesen
     unsigned short size;
     if(libendian::le_read_us(&size, file) != 0)
         return 2;
@@ -123,7 +123,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
     if(libendian::le_read_uc(raw_base, size, file) != size)
         return 3;
 
-    // Einzelner Bilder auslesen ( untere Körper )
+    // Einzelner Bilder auslesen ( untere KÃ¶rper )
     for(unsigned int i = 0; i < 96; ++i)
     {
         baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>((*allocator)(BOBTYPE_BITMAP_PLAYER, 0, NULL));
@@ -165,7 +165,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
 
     delete[] raw_base;
 
-    // erstmal die 6 Farbblöcke fr die 6 Richtungen
+    // erstmal die 6 FarbblÃ¶cke fr die 6 Richtungen
     unsigned char* raw[6];
     unsigned short sizes[6];
 
@@ -181,7 +181,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
         if(id != 0xF501)
             return 10;
 
-        // Größe des Farbblocks
+        // GrÃ¶ÃŸe des Farbblocks
         if(libendian::le_read_us(&sizes[i], file) != 0)
             return 11;
 
@@ -260,7 +260,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
 
         used[links[i]] = true;
 
-        // 2 Unbekannte Null-Bytes überspringen
+        // 2 Unbekannte Null-Bytes Ã¼berspringen
         fseek(file, 2, SEEK_CUR);
     }
 

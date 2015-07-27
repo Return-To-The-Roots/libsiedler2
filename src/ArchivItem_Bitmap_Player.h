@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Bitmap_Player.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Bitmap_Player.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,7 +26,7 @@
 
 namespace libsiedler2
 {
-    /// Basisklasse für Player-Bitmaps.
+    /// Basisklasse fÃ¼r Player-Bitmaps.
     class baseArchivItem_Bitmap_Player : public virtual baseArchivItem_Bitmap
     {
         public:
@@ -42,19 +42,19 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Bitmap_Player.
             ~baseArchivItem_Bitmap_Player(void);
 
-            /// lädt die Bilddaten aus einer Datei.
+            /// lÃ¤dt die Bilddaten aus einer Datei.
             int load(FILE* file, const ArchivItem_Palette* palette);
 
-            /// lädt die Bilddaten aus einem Puffer.
+            /// lÃ¤dt die Bilddaten aus einem Puffer.
             int load(unsigned short width, unsigned short height, const unsigned char* image, const unsigned short* starts, bool absolute, unsigned int length, const ArchivItem_Palette* palette);
 
             /// schreibt die Bilddaten in eine Datei.
             int write(FILE* file, const ArchivItem_Palette* palette) const;
 
-            /// alloziert Bildspeicher für die gewünschte Größe.
+            /// alloziert Bildspeicher fÃ¼r die gewÃ¼nschte GrÃ¶ÃŸe.
             void tex_alloc(void);
 
-            /// räumt den Bildspeicher auf.
+            /// rÃ¤umt den Bildspeicher auf.
             void tex_clear(void);
 
             void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
@@ -86,10 +86,10 @@ namespace libsiedler2
 
         protected:
             unsigned char* tex_pdata; ///< Die Spielerfarbedaten.
-            unsigned int tex_plength; ///< Länge der Spielerfarbendaten.
+            unsigned int tex_plength; ///< LÃ¤nge der Spielerfarbendaten.
     };
 
-    /// Klasse für Player-Bitmaps.
+    /// Klasse fÃ¼r Player-Bitmaps.
     class ArchivItem_Bitmap_Player : public baseArchivItem_Bitmap_Player, public ArchivItem_Bitmap
     {
         public:

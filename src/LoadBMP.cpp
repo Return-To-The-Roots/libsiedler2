@@ -1,4 +1,4 @@
-// $Id: LoadBMP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadBMP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -69,10 +69,10 @@ static inline void LoadBMP_ReadLine(FILE* bmp,
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine BMP-File in ein ArchivInfo.
+ *  lÃ¤dt eine BMP-File in ein ArchivInfo.
  *
  *  @param[in]  file    Dateiname der BMP-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -111,7 +111,7 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
     if(file == NULL || image == NULL)
         return 1;
 
-    // Datei zum lesen öffnen
+    // Datei zum lesen Ã¶ffnen
     bmp = fopen(file, "rb");
 
     // hat das geklappt?
@@ -194,7 +194,7 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
         return 8;
     }
 
-    // Einträge in der Farbtabelle
+    // EintrÃ¤ge in der Farbtabelle
     if(bmih.clrused == 0)
         bmih.clrused = (int)pow(2.0, bmih.bbp);
 

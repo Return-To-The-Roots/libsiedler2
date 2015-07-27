@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Map.h 9359 2014-04-25 15:37:22Z FloSoft $
+Ôªø// $Id: ArchivItem_Map.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,7 +26,7 @@
 
 namespace libsiedler2
 {
-    /// Klasse f¸r eine Mapfile.
+    /// Klasse f√ºr eine Mapfile.
     class ArchivItem_Map : public ArchivItem, public ArchivInfo
     {
         public:
@@ -37,13 +37,13 @@ namespace libsiedler2
             /// Destruktor von @p ArchivItem_Map.
             ~ArchivItem_Map(void);
 
-            /// l‰dt die Mapdaten aus einer Datei.
+            /// l√§dt die Mapdaten aus einer Datei.
             virtual int load(FILE* file, bool only_header);
             /// schreibt die Mapdaten in eine Datei.
             virtual int write(FILE* file) const;
 
         protected:
-            /// l‰dt die Mapdaten aus einer Datei.
+            /// l√§dt die Mapdaten aus einer Datei.
             int loadHelper(FILE* file, bool only_header);
     };
 }

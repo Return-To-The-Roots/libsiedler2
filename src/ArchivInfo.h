@@ -1,4 +1,4 @@
-// $Id: ArchivInfo.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivInfo.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,7 +26,7 @@
 
 namespace libsiedler2
 {
-    /// Klasse für Archivdateien.
+    /// Klasse fÃ¼r Archivdateien.
     class ArchivInfo
     {
         public:
@@ -37,19 +37,19 @@ namespace libsiedler2
             ArchivInfo(const ArchivInfo& info);
             ArchivInfo(const ArchivInfo* info);
 
-            /// Destruktor von @p ArchivInfo, räumt automatisch auf.
+            /// Destruktor von @p ArchivInfo, rÃ¤umt automatisch auf.
             virtual ~ArchivInfo(void);
 
-            /// erstellt den Datensatz in einer bestimmten Größe.
+            /// erstellt den Datensatz in einer bestimmten GrÃ¶ÃŸe.
             void alloc(unsigned long count);
 
-            /// vergrößert den Datensatz um eine bestimmten Größe.
+            /// vergrÃ¶ÃŸert den Datensatz um eine bestimmten GrÃ¶ÃŸe.
             void alloc_inc(unsigned long increment);
 
             /// gibt die angelegten Daten wieder frei.
             void clear(void);
 
-            /// setzt den Inhalt auf das übergebene ArchivInfo
+            /// setzt den Inhalt auf das Ã¼bergebene ArchivInfo
             inline void set(const ArchivInfo* info)
             {
                 alloc(info->count);
@@ -57,7 +57,7 @@ namespace libsiedler2
                     setC(i, info->get(i));
             }
 
-            /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
+            /// Setzt den Inhalt eines ArchivItems auf das des Ãœbergebenen.
             inline void set(int index, ArchivItem* item)
             {
                 if(!data)
@@ -67,10 +67,10 @@ namespace libsiedler2
                     data[(unsigned long)index] = item;
             }
 
-            /// kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
+            /// kopiert den Inhalt eines ArchivItems auf das des Ãœbergebenen.
             void setC(int index, const ArchivItem* item);
 
-            /// fügt ein Element hinten an.
+            /// fÃ¼gt ein Element hinten an.
             inline void push(ArchivItem* item)
             {
                 alloc_inc(1);
@@ -78,7 +78,7 @@ namespace libsiedler2
                 data[count - 1] = item;
             }
 
-            /// fügt ein Element hinten an und kopiert die Daten von @p item.
+            /// fÃ¼gt ein Element hinten an und kopiert die Daten von @p item.
             void pushC(const ArchivItem* item);
 
             /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
@@ -141,7 +141,7 @@ namespace libsiedler2
                 return NULL;
             }
 
-            /// liefert die Größe des Archivs.
+            /// liefert die GrÃ¶ÃŸe des Archivs.
             inline unsigned long getCount(void) const
             {
                 return count;

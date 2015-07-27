@@ -1,4 +1,4 @@
-// $Id: LoadType.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: LoadType.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -31,12 +31,12 @@ static char THIS_FILE[] = __FILE__;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
+ *  lÃ¤dt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
  *
  *  @param[in]  bobtype Typ des Items
  *  @param[in]  file    Filehandle auf die auszulesende Datei
  *  @param[in]  palette Grundpalette
- *  @param[out] item    ArchivItem-Struktur, welche gefüllt wird
+ *  @param[out] item    ArchivItem-Struktur, welche gefÃ¼llt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
@@ -61,7 +61,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         {
             unsigned int length;
 
-            // Länge einlesen
+            // LÃ¤nge einlesen
             if(libendian::le_read_ui(&length, file) != 0)
                 return 4;
 

@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound_Midi.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound_Midi.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -26,7 +26,7 @@
 
 namespace libsiedler2
 {
-    /// Basisklasse für MIDI-Sounds.
+    /// Basisklasse fÃ¼r MIDI-Sounds.
     class baseArchivItem_Sound_Midi : public virtual baseArchivItem_Sound
     {
         public:
@@ -50,7 +50,7 @@ namespace libsiedler2
             MIDI_Track tracklist[256];
     };
 
-    /// Klasse für MIDI-Sounds.
+    /// Klasse fÃ¼r MIDI-Sounds.
     class ArchivItem_Sound_Midi : public virtual baseArchivItem_Sound_Midi, public ArchivItem_Sound
     {
         public:

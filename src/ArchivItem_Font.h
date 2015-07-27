@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Font.h 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Font.h 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -28,7 +28,7 @@
 namespace libsiedler2
 {
 
-/// Klasse für Fonts.
+/// Klasse fÃ¼r Fonts.
     class ArchivItem_Font : public ArchivItem, public ArchivInfo
     {
         public:
@@ -38,7 +38,7 @@ namespace libsiedler2
             /// Kopierkonstruktor von @p ArchivItem_Font.
             ArchivItem_Font(const ArchivItem_Font* item);
 
-            /// lädt die Fontdaten aus einer Datei.
+            /// lÃ¤dt die Fontdaten aus einer Datei.
             int load(FILE* file, const ArchivItem_Palette* palette);
 
             /// schreibt die Fontdaten in eine Datei.

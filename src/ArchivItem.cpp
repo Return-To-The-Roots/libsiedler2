@@ -1,4 +1,4 @@
-// $Id: ArchivItem.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+﻿// $Id: ArchivItem.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -129,7 +129,7 @@ libsiedler2::ArchivItem::~ArchivItem(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  l�dt die Daten aus einer Datei.
+ *  lädt die Daten aus einer Datei.
  *
  *  @param[in] file Dateihandle der Datei
  *

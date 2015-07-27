@@ -1,4 +1,4 @@
-// $Id: WriteBMP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: WriteBMP.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @param[in] file    Dateiname der BMP-File
  *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
- *  @param[in] palette Palette die für das Bitmap verwendet werden soll
+ *  @param[in] palette Palette die fÃ¼r das Bitmap verwendet werden soll
  *  @param[in] nr      Nummer des Bitmaps das geschrieben werden soll
                        (@p -1 erste Bitmap das gefunden wird)
  *
@@ -104,7 +104,7 @@ int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* pa
 
     const baseArchivItem_Bitmap* bitmap = dynamic_cast<const baseArchivItem_Bitmap*>(items->get(nr));
 
-    // Datei zum schreiben öffnen
+    // Datei zum schreiben Ã¶ffnen
     bmp = fopen(file, "wb");
 
     // hat das geklappt?

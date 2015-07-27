@@ -1,4 +1,4 @@
-// $Id: ArchivItem_Sound.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: ArchivItem_Sound.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Sound
  *
- *  Basisklasse für Sounditems.
+ *  Basisklasse fÃ¼r Sounditems.
  *
  *  @author FloSoft
  */
@@ -101,10 +101,10 @@ unsigned short libsiedler2::baseArchivItem_Sound::getType(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  lädt die Sound-Daten aus einer Datei.
+ *  lÃ¤dt die Sound-Daten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
- *  @param[in] length  Länge der Daten
+ *  @param[in] length  LÃ¤nge der Daten
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
@@ -144,7 +144,7 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
     // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
     if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
     {
-        // Länge einlesen
+        // LÃ¤nge einlesen
         libendian::le_read_ui(&length, file);
 
         // Typ einlesen

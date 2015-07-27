@@ -1,4 +1,4 @@
-// $Id: WriteTXT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: WriteTXT.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -61,7 +61,7 @@ int libsiedler2::loader::WriteTXT(const char* file, const ArchivInfo* items, boo
         }
     }
 
-    // Datei zum lesen öffnen
+    // Datei zum lesen Ã¶ffnen
     txt = fopen(file, "wb");
 
     // hat das geklappt?
@@ -112,7 +112,7 @@ int libsiedler2::loader::WriteTXT(const char* file, const ArchivInfo* items, boo
             }
         }
 
-        // Größe schreiben
+        // GrÃ¶ÃŸe schreiben
         if(libendian::le_write_ui(size, txt) != 0)
             return 8;
 

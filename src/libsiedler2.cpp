@@ -1,4 +1,4 @@
-// $Id: libsiedler2.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+ï»¿// $Id: libsiedler2.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
  *  libsiedler2 ist eine Grafikbibliothek zum einfachen Zugriff auf
  *  die Dateiformate von Siedler II.
  *
- *  Sie kann natürlich auch verschiedene andere Formate lesen und schreiben,
+ *  Sie kann natÃ¼rlich auch verschiedene andere Formate lesen und schreiben,
  *  damit man die verschiedenen Formate hin und her konvertieren kann.
  *
  *  @author FloSoft
@@ -49,7 +49,7 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @brief Hauptnamensraum von @p libsiedler2
  *
- *  Enthält alle Klassen und exportierten Funktionen von @p libsiedler2.
+ *  EnthÃ¤lt alle Klassen und exportierten Funktionen von @p libsiedler2.
  *
  *  @author FloSoft
  */
@@ -57,14 +57,14 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////////
 /** @namespace libsiedler2::loader
  *
- *  Enthält alle Lade und Schreibfunktionen der einzelnen Dateitypen.
+ *  EnthÃ¤lt alle Lade und Schreibfunktionen der einzelnen Dateitypen.
  *
  *  @author FloSoft
  */
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Das gewählte Texturformat.
+ *  Das gewÃ¤hlte Texturformat.
  *
  *  @ingroup textureformat
  *
@@ -76,9 +76,9 @@ libsiedler2::TEXTURFORMAT texturformat;
 /**
  *  Setzt das verwendete Texturausgabeformat.
  *
- *  @param[in] format gewünschte Format
+ *  @param[in] format gewÃ¼nschte Format
  *
- *  @return liefert das vorherige Texturausgabeformat zurück
+ *  @return liefert das vorherige Texturausgabeformat zurÃ¼ck
  *
  *  @author FloSoft
  */
@@ -90,7 +90,7 @@ libsiedler2::TEXTURFORMAT libsiedler2::setTextureFormat(TEXTURFORMAT format)
     // Neues setzen
     texturformat = format;
 
-    // und Altes zurückliefern
+    // und Altes zurÃ¼ckliefern
     return old;
 }
 
@@ -98,13 +98,13 @@ libsiedler2::TEXTURFORMAT libsiedler2::setTextureFormat(TEXTURFORMAT format)
 /**
  *  liefert das verwendete Texturausgabeformat.
  *
- *  @return liefert das Texturausgabeformat zurück
+ *  @return liefert das Texturausgabeformat zurÃ¼ck
  *
  *  @author FloSoft
  */
 libsiedler2::TEXTURFORMAT libsiedler2::getTextureFormat(void)
 {
-    // Aktuelles zurückliefern
+    // Aktuelles zurÃ¼ckliefern
     return texturformat;
 }
 
@@ -278,10 +278,10 @@ libsiedler2::ArchivItem* libsiedler2::StandardAllocator(unsigned short type, uns
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Lädt die Datei im Format ihrer Endung.
+ *  LÃ¤dt die Datei im Format ihrer Endung.
  *
  *  @param[in]  file    Dateiname der Datei
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   ArchivInfo-Struktur, welche gefÃ¼llt wird
  *  @param[in]  palette Palette, welche benutzt werden soll
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
