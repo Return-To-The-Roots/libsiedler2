@@ -60,16 +60,16 @@ libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(void) : base
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other* item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
+libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other& item) : baseArchivItem_Sound( item )
 {
-    type = item->type;
-    length = item->length;
+    type = item.type;
+    length = item.length;
     data = NULL;
 
     if(length != 0)
     {
         data = new unsigned char[length];
-        memcpy(data, item->data, length);
+        memcpy(data, item.data, length);
     }
 }
 

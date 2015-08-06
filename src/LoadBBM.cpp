@@ -108,7 +108,7 @@ int libsiedler2::loader::LoadBBM(const char* file, ArchivInfo* items)
                     return 10;
 
                 // Daten von Item auswerten
-                ArchivItem_Palette* palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
+                ArchivItem_Palette* palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
                 items->push(palette);
 
                 const char* name = strrchr(file, '/');

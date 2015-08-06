@@ -67,11 +67,11 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette(const ArchivItem_Palette* item) : ArchivItem( (ArchivItem*)item )
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette(const ArchivItem_Palette& item) : ArchivItem( item )
 {
     setBobType(5);
 
-    memcpy(colors, item->colors, 3 * 256);
+    memcpy(colors, item.colors, 3 * 256);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -35,7 +35,6 @@ namespace libsiedler2
 
             /// Kopierkonstruktor von @p ArchivInfo.
             ArchivInfo(const ArchivInfo& info);
-            ArchivInfo(const ArchivInfo* info);
 
             /// Destruktor von @p ArchivInfo, räumt automatisch auf.
             virtual ~ArchivInfo(void);
@@ -50,11 +49,11 @@ namespace libsiedler2
             void clear(void);
 
             /// setzt den Inhalt auf das übergebene ArchivInfo
-            inline void set(const ArchivInfo* info)
+            inline void set(const ArchivInfo& info)
             {
-                alloc(info->count);
+                alloc(info.count);
                 for(unsigned long i = 0; i < count; ++i)
-                    setC(i, info->get(i));
+                    setC(i, info.get(i));
             }
 
             /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
@@ -162,6 +161,8 @@ namespace libsiedler2
             /// Zuweisungsoperator von @p ArchivInfo.
             inline ArchivInfo& operator=(const ArchivInfo& info)
             {
+                if(this == &info)
+                    return *this;
                 alloc(info.count);
 
                 for(unsigned long i = 0; i < count; ++i)
@@ -171,7 +172,7 @@ namespace libsiedler2
             }
 
             /// Kopierfunktion von @p ArchivInfo.
-            void copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo* source);
+            void copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo& source);
 
         protected:
             ArchivItem** data;   ///< die Elemente.

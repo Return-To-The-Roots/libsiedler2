@@ -63,14 +63,16 @@ int libsiedler2::loader::LoadBOB(const char* file, const ArchivItem_Palette* pal
     if(header != 0xF601F501)
         return 4;
 
-    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>((*allocator)(BOBTYPE_BOB, 0, NULL));
+    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(allocator->create(BOBTYPE_BOB, 0));
 
     const char* name = strrchr(file, '/');
     if(name)
         item->setName(name + 1);
 
-    if(item->load(bob, palette) != 0)
+    if(item->load(bob, palette) != 0){
+        delete item;
         return 5;
+    }
 
     // Item alloziieren und zuweisen
     items->alloc(1);

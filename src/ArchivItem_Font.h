@@ -36,7 +36,7 @@ namespace libsiedler2
             ArchivItem_Font(void);
 
             /// Kopierkonstruktor von @p ArchivItem_Font.
-            ArchivItem_Font(const ArchivItem_Font* item);
+            ArchivItem_Font(const ArchivItem_Font& item);
 
             /// lädt die Fontdaten aus einer Datei.
             int load(FILE* file, const ArchivItem_Palette* palette);

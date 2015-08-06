@@ -33,7 +33,7 @@ namespace libsiedler2
             baseArchivItem_Sound_Other(void);
 
             /// Kopierkonstruktor von @p baseArchivItem_Sound_Other.
-            baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other* item);
+            baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other& item);
 
             /// Destruktor von @p baseArchivItem_Sound_Other.
             virtual ~baseArchivItem_Sound_Other(void);
@@ -66,7 +66,7 @@ namespace libsiedler2
             ArchivItem_Sound_Other(void) : baseArchivItem_Sound_Other() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Sound_Other.
-            ArchivItem_Sound_Other(const ArchivItem_Sound_Other* item) : baseArchivItem_Sound_Other(item) {}
+            ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound_Other(item) {}
     };
 }
 

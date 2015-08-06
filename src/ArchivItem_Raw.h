@@ -32,7 +32,7 @@ namespace libsiedler2
             /// Konstruktor von @p baseArchivItem_Raw.
             baseArchivItem_Raw(void);
             /// Kopierkonstruktor von @p baseArchivItem_Raw.
-            baseArchivItem_Raw(const baseArchivItem_Raw* item);
+            baseArchivItem_Raw(const baseArchivItem_Raw& item);
             /// Destruktor von @p baseArchivItem_Raw.
             ~baseArchivItem_Raw(void);
 
@@ -66,7 +66,7 @@ namespace libsiedler2
             /// Konstruktor von @p baseArchivItem_Raw.
             ArchivItem_Raw(void) : baseArchivItem_Raw() {}
             /// Kopierkonstruktor von @p baseArchivItem_Raw.
-            ArchivItem_Raw(const ArchivItem_Raw* item) : baseArchivItem_Raw(item) {}
+            ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
     };
 }
 

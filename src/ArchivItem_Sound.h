@@ -42,7 +42,7 @@ namespace libsiedler2
             baseArchivItem_Sound(void);
 
             /// Kopierkonstruktor von @p ArchivItem_Sound.
-            baseArchivItem_Sound(const baseArchivItem_Sound* item);
+            baseArchivItem_Sound(const baseArchivItem_Sound& item);
 
             /// virtueller Destruktor von @p ArchivItem_Sound.
             virtual ~baseArchivItem_Sound(void);

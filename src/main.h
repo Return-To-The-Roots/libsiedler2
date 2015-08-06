@@ -56,7 +56,9 @@
 #include "libsiedler2.h"
 #include "libendian.h"
 
-extern libsiedler2::TEXTURFORMAT texturformat;
-extern libsiedler2::allocatorType allocator;
+namespace libsiedler2{
+    extern TEXTURFORMAT texturformat;
+    extern IAllocator* allocator;
+};
 
 #endif // MAIN_H_INCLUDED

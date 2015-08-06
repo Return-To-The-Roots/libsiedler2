@@ -34,7 +34,7 @@ namespace libsiedler2
             baseArchivItem_Bitmap(void);
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap.
-            baseArchivItem_Bitmap(const baseArchivItem_Bitmap* item);
+            baseArchivItem_Bitmap(const baseArchivItem_Bitmap& item);
 
             /// virtueller Destruktor von @p ArchivItem_Bitmap.
             virtual ~baseArchivItem_Bitmap(void);

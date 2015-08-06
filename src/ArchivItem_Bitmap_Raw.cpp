@@ -65,7 +65,7 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(void) : baseAr
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw* item) : baseArchivItem_Bitmap((baseArchivItem_Bitmap*)item)
+libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item) : baseArchivItem_Bitmap(item)
 {
     setBobType(BOBTYPE_BITMAP_RAW);
 }

@@ -63,15 +63,15 @@ libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(void)
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(const ArchivItem_Map_Header* item)
+libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(const ArchivItem_Map_Header& item)
     : ArchivItem(item),
-      width(item->width), height(item->height), gfxset(item->gfxset), player(item->player)
+      width(item.width), height(item.height), gfxset(item.gfxset), player(item.player)
 {
     memset(name, 0, 21);
     memset(author, 0, 21);
 
-    setName(item->name);
-    setAuthor(item->author);
+    setName(item.name);
+    setAuthor(item.author);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

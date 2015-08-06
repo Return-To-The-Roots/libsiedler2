@@ -36,7 +36,7 @@ namespace libsiedler2
             ~ArchivItem_Text(void);
 
             /// Kopierkonstruktor von @p ArchivItem_Text.
-            ArchivItem_Text(const ArchivItem_Text* item);
+            ArchivItem_Text(const ArchivItem_Text& item);
 
             /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
             ArchivItem_Text(FILE* file, bool conversion = true, unsigned int length = 0);

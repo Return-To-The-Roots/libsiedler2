@@ -35,7 +35,7 @@ namespace libsiedler2
             ArchivItem_Bob(void);
 
             /// Kopierkonstruktor von @p ArchivItem_Bob.
-            ArchivItem_Bob(const ArchivItem_Bob* item);
+            ArchivItem_Bob(const ArchivItem_Bob& item);
 
             /// Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten.
             ArchivItem_Bob(FILE* file, const ArchivItem_Palette* palette);

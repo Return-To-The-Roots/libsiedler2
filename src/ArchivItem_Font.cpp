@@ -73,7 +73,7 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font(void) : ArchivItem(), ArchivInfo()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font* item) : ArchivItem( item ), ArchivInfo( item ), dx(item->dx), dy(item->dy)
+libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font& item) : ArchivItem( item ), ArchivInfo( item ), dx(item.dx), dy(item.dy)
 {
 }
 

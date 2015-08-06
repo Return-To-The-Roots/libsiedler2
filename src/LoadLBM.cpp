@@ -19,6 +19,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
+#include <boost/move/unique_ptr.hpp>
 #include "main.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,7 +84,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
     if(strncmp(pbm, "PBM ", 4) != 0)
         return 7;
 
-    baseArchivItem_Bitmap* bitmap = dynamic_cast<baseArchivItem_Bitmap*>((*allocator)(BOBTYPE_BITMAP_RAW, 0, NULL));
+    boost::movelib::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
     bitmap->setFormat(FORMAT_PALETTED);
     ArchivItem_Palette* palette = NULL;
     unsigned short compression;
@@ -161,7 +162,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
                     return 17;
 
                 // Daten von Item auswerten
-                palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
+                palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
                 items->set(1, palette);
 
                 // Farbpalette lesen
@@ -263,7 +264,7 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
                         }
                     } break;
                 }
-                items->set(0, bitmap);
+                items->set(0, bitmap.release());
             } break;
             default:
             {

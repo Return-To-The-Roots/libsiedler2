@@ -36,7 +36,7 @@ namespace libsiedler2
             ArchivItem_Palette(void);
 
             /// Kopierkonstruktor von @p ArchivItem_Palette.
-            ArchivItem_Palette(const ArchivItem_Palette* item);
+            ArchivItem_Palette(const ArchivItem_Palette&);
 
             /// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.
             ArchivItem_Palette(FILE* file, bool skip = true);

@@ -74,19 +74,6 @@ libsiedler2::ArchivInfo::ArchivInfo(void) : data(NULL), count(0)
  */
 libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(NULL), count(0)
 {
-    set(&info);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p ArchivInfo.
- *
- *  @param[in] info Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo* info) : data(NULL), count(0)
-{
     set(info);
 }
 
@@ -199,7 +186,7 @@ void libsiedler2::ArchivInfo::setC(int index, const ArchivItem* item)
         else
         {
             // ja, dann neues item erstellen
-            data[(unsigned long)index] = (ArchivItem*)(*allocator)(0, 0, item);
+            data[(unsigned long)index] = allocator->clone(*item);
         }
     }
 }
@@ -226,7 +213,7 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem* item)
     alloc_inc(1);
 
     if(item)
-        data[count - 1] = (ArchivItem*)(*allocator)(0, 0, item);
+        data[count - 1] = allocator->clone(*item);
     else
         data[count - 1] = NULL;
 }
@@ -306,11 +293,11 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem* item)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo* source)
+void libsiedler2::ArchivInfo::copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo& source)
 {
     if(to + count > this->count)
         alloc_inc(to + count - this->count);
 
     for(unsigned int f = from; f < from + count; ++to, ++f)
-        setC(to, source->get(f));
+        setC(to, source.get(f));
 }

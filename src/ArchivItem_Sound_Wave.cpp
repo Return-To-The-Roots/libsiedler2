@@ -62,16 +62,16 @@ libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(void) : baseAr
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave* item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
+libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave& item) : baseArchivItem_Sound( item )
 {
-    type = item->type;
-    length = item->length;
+    type = item.type;
+    length = item.length;
     data = NULL;
 
     if(length != 0)
     {
         data = new unsigned char[length];
-        memcpy(data, item->data, length);
+        memcpy(data, item.data, length);
     }
 }
 

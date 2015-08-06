@@ -3,6 +3,7 @@
 #################################################################################
 
 INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libendian/src")
+FIND_PACKAGE(Boost 1.57.0 REQUIRED)
 
 IF (MSVC)
 	ADD_DEFINITIONS(/WX) # warning = error
@@ -10,6 +11,8 @@ IF (MSVC)
 	# disable MSVC posix functions
 	ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
 ENDIF()
+
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 ADD_LIBRARY(siedler2 libsiedler2.cpp ArchivInfo.cpp ArchivItem.cpp
             ArchivItem_Bitmap.cpp ArchivItem_Bitmap_Player.cpp

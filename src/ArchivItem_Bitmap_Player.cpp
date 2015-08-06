@@ -84,14 +84,14 @@ libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(void) : 
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player* item) : baseArchivItem_Bitmap((baseArchivItem_Bitmap*)item)
+libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player& item) : baseArchivItem_Bitmap(item)
 {
     setBobType(BOBTYPE_BITMAP_PLAYER);
 
-    tex_plength = item->tex_plength;
+    tex_plength = item.tex_plength;
 
     tex_pdata = new unsigned char[tex_plength];
-    memcpy(tex_pdata, item->tex_pdata, tex_plength);
+    memcpy(tex_pdata, item.tex_pdata, tex_plength);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

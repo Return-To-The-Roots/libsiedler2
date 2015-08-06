@@ -34,7 +34,7 @@ namespace libsiedler2
             baseArchivItem_Bitmap_Player(void);
 
             /// Kopierkonstruktor von @p baseArchivItem_Bitmap_Player.
-            baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player* item);
+            baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player& item);
 
             /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
             baseArchivItem_Bitmap_Player(FILE* file, const ArchivItem_Palette* palette);
@@ -97,7 +97,7 @@ namespace libsiedler2
             ArchivItem_Bitmap_Player(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Player() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap_Player.
-            ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player* item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Player(item) {}
+            ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Player(item) {}
     };
 }
 

@@ -64,9 +64,11 @@ int libsiedler2::loader::LoadACT(const char* file, ArchivInfo* items)
     if(size != 768)
         return 3;
 
-    ArchivItem_Palette* palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
-    if(palette->load(act, false) != 0)
+    ArchivItem_Palette* palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
+    if(palette->load(act, false) != 0){
+        delete palette;
         return 4;
+    }
 
     // einlesen
     items->alloc(1);

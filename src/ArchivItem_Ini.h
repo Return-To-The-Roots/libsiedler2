@@ -39,7 +39,7 @@ namespace libsiedler2
             ArchivItem_Ini(const char* name);
 
             /// Kopierkonstruktor von @p ArchivItem_Ini.
-            ArchivItem_Ini(const ArchivItem_Ini* item);
+            ArchivItem_Ini(const ArchivItem_Ini& item);
 
             /// lädt die INI-Daten aus einer Datei.
             int load(FILE* file);

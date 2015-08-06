@@ -75,10 +75,10 @@ libsiedler2::ArchivItem::ArchivItem(void)
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem::ArchivItem(const ArchivItem* item)
+libsiedler2::ArchivItem::ArchivItem(const ArchivItem& item)
 {
-    bobtype = item->bobtype;
-    memcpy(name, item->name, 64);
+    bobtype = item.bobtype;
+    memcpy(name, item.name, 64);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

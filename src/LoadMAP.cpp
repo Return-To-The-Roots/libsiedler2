@@ -54,9 +54,11 @@ int libsiedler2::loader::LoadMAP(const char* file, ArchivInfo* items, bool only_
     if(map == NULL)
         return 2;
 
-    ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>((*allocator)(BOBTYPE_MAP, 0, NULL));
-    if(item->load(map, only_header) != 0)
+    ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>(allocator->create(BOBTYPE_MAP, 0));
+    if(item->load(map, only_header) != 0){
+        delete item;
         return 3;
+    }
 
     // Datei schliessen
     fclose(map);

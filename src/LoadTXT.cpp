@@ -77,7 +77,7 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
         // Plain-Text
         items->alloc(1);
 
-        ArchivItem_Text* item = (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL);
+        ArchivItem_Text* item = (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0);
         item->load(txt, conversion);
 
         // Item erzeugen
@@ -137,13 +137,13 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
                 fseek(txt, i, SEEK_SET);
 
                 // einlesen
-                ArchivItem_Text* item = (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL);
+                ArchivItem_Text* item = (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0);
                 item->load(txt, conversion, (unsigned int)strlen(&buffer[i - pos]));
 
                 items->set(x, item);
             }
             else
-                items->set(x, (ArchivItem_Text*)(*allocator)(BOBTYPE_TEXT, 0, NULL));
+                items->set(x, (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0));
         }
         delete[] buffer;
         delete[] starts;

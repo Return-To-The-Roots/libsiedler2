@@ -54,6 +54,8 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  */
 
+namespace libsiedler2{
+
 ///////////////////////////////////////////////////////////////////////////////
 /** @namespace libsiedler2::loader
  *
@@ -70,7 +72,7 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-libsiedler2::TEXTURFORMAT texturformat;
+TEXTURFORMAT texturformat;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -82,7 +84,7 @@ libsiedler2::TEXTURFORMAT texturformat;
  *
  *  @author FloSoft
  */
-libsiedler2::TEXTURFORMAT libsiedler2::setTextureFormat(TEXTURFORMAT format)
+TEXTURFORMAT setTextureFormat(TEXTURFORMAT format)
 {
     // altes Texturformat sichern
     TEXTURFORMAT old = texturformat;
@@ -102,7 +104,7 @@ libsiedler2::TEXTURFORMAT libsiedler2::setTextureFormat(TEXTURFORMAT format)
  *
  *  @author FloSoft
  */
-libsiedler2::TEXTURFORMAT libsiedler2::getTextureFormat(void)
+TEXTURFORMAT getTextureFormat(void)
 {
     // Aktuelles zurückliefern
     return texturformat;
@@ -114,7 +116,7 @@ libsiedler2::TEXTURFORMAT libsiedler2::getTextureFormat(void)
  *
  *  @author FloSoft
  */
-libsiedler2::allocatorType allocator = libsiedler2::StandardAllocator;
+IAllocator* allocator = new StandardAllocator();
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -124,9 +126,10 @@ libsiedler2::allocatorType allocator = libsiedler2::StandardAllocator;
  *
  *  @author FloSoft
  */
-void libsiedler2::setAllocator(allocatorType new_allocator)
+void setAllocator(IAllocator* newAllocator)
 {
-    allocator = new_allocator;
+    delete allocator;
+    allocator = newAllocator;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,143 +138,114 @@ void libsiedler2::setAllocator(allocatorType new_allocator)
  *
  *  @param[in] type    Der Typ des Items
  *  @param[in] subtype Der Subtyp des Items
+ *
+ *  @author FloSoft
+ */
+ArchivItem* StandardAllocator::create(unsigned short type, unsigned short subtype) const
+{
+    switch(type)
+    {
+        case BOBTYPE_SOUND: // WAVs, MIDIs
+        {
+            switch(subtype)
+            {
+                case SOUNDTYPE_NONE:
+                    return NULL;
+                case SOUNDTYPE_MIDI: // MIDI
+                    return new ArchivItem_Sound_Midi();
+                case SOUNDTYPE_WAVE: // WAV
+                    return new ArchivItem_Sound_Wave();
+                case SOUNDTYPE_XMIDI: // XMIDI
+                    return new ArchivItem_Sound_XMidi();
+                case SOUNDTYPE_OTHER: // Andere
+                    return new ArchivItem_Sound_Other();
+            }
+            break;
+        }
+        case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
+            return new ArchivItem_Bitmap_RLE();
+        case BOBTYPE_FONT: // Font
+            return new ArchivItem_Font();
+        case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
+            return new ArchivItem_Bitmap_Player();
+        case BOBTYPE_PALETTE: // Palette
+            return new ArchivItem_Palette();
+        case BOBTYPE_BOB: // Bobfiles
+            return new ArchivItem_Bob();
+        case BOBTYPE_BITMAP_SHADOW: // Schatten
+            return new ArchivItem_Bitmap_Shadow();
+        case BOBTYPE_MAP: // Mapfiles
+            return new ArchivItem_Map();
+        case BOBTYPE_TEXT: // Text
+            return new ArchivItem_Text();
+        case BOBTYPE_RAW: // Raw-Item
+            return new ArchivItem_Raw();
+        case BOBTYPE_MAP_HEADER: // Mapheader-Item
+            return new ArchivItem_Map_Header();
+        case BOBTYPE_INI: // INI-Datei-Item
+            return new ArchivItem_Ini();
+        case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
+            return new ArchivItem_Bitmap_Raw();
+    }
+    return NULL;
+}
+
+/**
+ *  Der Standard-Item-Allocator.
+ *
  *  @param[in] item    Das zu kopierende Item
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem* libsiedler2::StandardAllocator(unsigned short type, unsigned short subtype, const libsiedler2::ArchivItem* item)
+ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
 {
-    if(item)
-        type = item->getBobType();
+    BOBTYPES type = static_cast<BOBTYPES>(item.getBobType());
 
     switch(type)
     {
         case BOBTYPE_SOUND: // WAVs, MIDIs
         {
-            const ArchivItem_Sound* i = dynamic_cast<const ArchivItem_Sound*>(item);
-            if(item)
-                subtype = i->getType();
+            SOUNDTYPES subtype = static_cast<SOUNDTYPES>(dynamic_cast<const ArchivItem_Sound&>(item).getType());
 
             switch(subtype)
             {
                 case SOUNDTYPE_NONE:
-                {
                     return NULL;
-                } break;
                 case SOUNDTYPE_MIDI: // MIDI
-                {
-                    if(!item)
-                        return new ArchivItem_Sound_Midi();
-                    else
-                        return new ArchivItem_Sound_Midi( dynamic_cast<const ArchivItem_Sound_Midi*>(item) );
-                } break;
+                    return new ArchivItem_Sound_Midi( dynamic_cast<const ArchivItem_Sound_Midi&>(item) );
                 case SOUNDTYPE_WAVE: // WAV
-                {
-                    if(!item)
-                        return new ArchivItem_Sound_Wave();
-                    else
-                        return new ArchivItem_Sound_Wave( dynamic_cast<const ArchivItem_Sound_Wave*>(item) );
-                } break;
+                    return new ArchivItem_Sound_Wave( dynamic_cast<const ArchivItem_Sound_Wave&>(item) );
                 case SOUNDTYPE_XMIDI: // XMIDI
-                {
-                    if(!item)
-                        return new ArchivItem_Sound_XMidi();
-                    else
-                        return new ArchivItem_Sound_XMidi( dynamic_cast<const ArchivItem_Sound_XMidi*>(item) );
-                } break;
+                    return new ArchivItem_Sound_XMidi( dynamic_cast<const ArchivItem_Sound_XMidi&>(item) );
                 case SOUNDTYPE_OTHER: // Andere
-                {
-                    if(!item)
-                        return new ArchivItem_Sound_Other();
-                    else
-                        return new ArchivItem_Sound_Other( dynamic_cast<const ArchivItem_Sound_Other*>(item) );
-                } break;
+                    return new ArchivItem_Sound_Other( dynamic_cast<const ArchivItem_Sound_Other&>(item) );
             }
-        } break;
+            break;
+        }
         case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
-        {
-            if(!item)
-                return new ArchivItem_Bitmap_RLE();
-            else
-                return new ArchivItem_Bitmap_RLE( dynamic_cast<const ArchivItem_Bitmap_RLE*>(item) );
-        } break;
+            return new ArchivItem_Bitmap_RLE( dynamic_cast<const ArchivItem_Bitmap_RLE&>(item) );
         case BOBTYPE_FONT: // Font
-        {
-            if(!item)
-                return new ArchivItem_Font();
-            else
-                return new ArchivItem_Font( dynamic_cast<const ArchivItem_Font*>(item) );
-        } break;
+            return new ArchivItem_Font( dynamic_cast<const ArchivItem_Font&>(item) );
         case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
-        {
-            if(!item)
-                return new ArchivItem_Bitmap_Player();
-            else
-                return new ArchivItem_Bitmap_Player( dynamic_cast<const ArchivItem_Bitmap_Player*>(item) );
-        } break;
+            return new ArchivItem_Bitmap_Player( dynamic_cast<const ArchivItem_Bitmap_Player&>(item) );
         case BOBTYPE_PALETTE: // Palette
-        {
-            if(!item)
-                return new ArchivItem_Palette();
-            else
-                return new ArchivItem_Palette( dynamic_cast<const ArchivItem_Palette*>(item) );
-        } break;
+            return new ArchivItem_Palette( dynamic_cast<const ArchivItem_Palette&>(item) );
         case BOBTYPE_BOB: // Bobfiles
-        {
-            if(!item)
-                return new ArchivItem_Bob();
-            else
-                return new ArchivItem_Bob( dynamic_cast<const ArchivItem_Bob*>(item) );
-        } break;
+            return new ArchivItem_Bob( dynamic_cast<const ArchivItem_Bob&>(item) );
         case BOBTYPE_BITMAP_SHADOW: // Schatten
-        {
-            if(!item)
-                return new ArchivItem_Bitmap_Shadow();
-            else
-                return new ArchivItem_Bitmap_Shadow( dynamic_cast<const ArchivItem_Bitmap_Shadow*>(item) );
-        } break;
+            return new ArchivItem_Bitmap_Shadow( dynamic_cast<const ArchivItem_Bitmap_Shadow&>(item) );
         case BOBTYPE_MAP: // Mapfiles
-        {
-            if(!item)
-                return new ArchivItem_Map();
-            else
-                return new ArchivItem_Map( dynamic_cast<const ArchivItem_Map*>(item) );
-        } break;
+            return new ArchivItem_Map( dynamic_cast<const ArchivItem_Map&>(item) );
         case BOBTYPE_TEXT: // Text
-        {
-            if(!item)
-                return new ArchivItem_Text();
-            else
-                return new ArchivItem_Text( dynamic_cast<const ArchivItem_Text*>(item) );
-        } break;
+            return new ArchivItem_Text( dynamic_cast<const ArchivItem_Text&>(item) );
         case BOBTYPE_RAW: // Raw-Item
-        {
-            if(!item)
-                return new ArchivItem_Raw();
-            else
-                return new ArchivItem_Raw( dynamic_cast<const ArchivItem_Raw*>(item) );
-        } break;
+            return new ArchivItem_Raw( dynamic_cast<const ArchivItem_Raw&>(item) );
         case BOBTYPE_MAP_HEADER: // Mapheader-Item
-        {
-            if(!item)
-                return new ArchivItem_Map_Header();
-            else
-                return new ArchivItem_Map_Header( dynamic_cast<const ArchivItem_Map_Header*>(item) );
-        } break;
+            return new ArchivItem_Map_Header( dynamic_cast<const ArchivItem_Map_Header&>(item) );
         case BOBTYPE_INI: // INI-Datei-Item
-        {
-            if(!item)
-                return new ArchivItem_Ini();
-            else
-                return new ArchivItem_Ini( dynamic_cast<const ArchivItem_Ini*>(item) );
-        } break;
+            return new ArchivItem_Ini( dynamic_cast<const ArchivItem_Ini&>(item) );
         case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-        {
-            if(!item)
-                return new ArchivItem_Bitmap_Raw();
-            else
-                return new ArchivItem_Bitmap_Raw( dynamic_cast<const ArchivItem_Bitmap_Raw*>(item) );
-        } break;
+            return new ArchivItem_Bitmap_Raw( dynamic_cast<const ArchivItem_Bitmap_Raw&>(item) );
     }
     return NULL;
 }
@@ -288,7 +262,7 @@ libsiedler2::ArchivItem* libsiedler2::StandardAllocator(unsigned short type, uns
  *
  *  @author FloSoft
  */
-int libsiedler2::Load(const char* file, libsiedler2::ArchivInfo* items, const libsiedler2::ArchivItem_Palette* palette)
+int Load(const char* file, ArchivInfo* items, const ArchivItem_Palette* palette)
 {
     if(!file)
         return 1;
@@ -348,7 +322,7 @@ int libsiedler2::Load(const char* file, libsiedler2::ArchivInfo* items, const li
  *
  *  @author FloSoft
  */
-int libsiedler2::Write(const char* file, const libsiedler2::ArchivInfo* items, const libsiedler2::ArchivItem_Palette* palette)
+int Write(const char* file, const ArchivInfo* items, const ArchivItem_Palette* palette)
 {
     if(!file)
         return 1;
@@ -390,3 +364,5 @@ int libsiedler2::Write(const char* file, const libsiedler2::ArchivInfo* items, c
 
     return ret;
 }
+
+} // namespace libsiedler2

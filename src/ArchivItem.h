@@ -34,7 +34,7 @@ namespace libsiedler2
             ArchivItem();
 
             /// Kopierkonstruktor von @p ArchivItem.
-            ArchivItem(const ArchivItem* item);
+            ArchivItem(const ArchivItem& item);
 
             /// virtueller Destruktor von @p ArchivItem.
             virtual ~ArchivItem();

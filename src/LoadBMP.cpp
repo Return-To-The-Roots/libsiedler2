@@ -166,7 +166,7 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
     if(bmih.planes != 1)
         return 6;
 
-    baseArchivItem_Bitmap* bitmap = dynamic_cast<baseArchivItem_Bitmap*>((*allocator)(BOBTYPE_BITMAP_RAW, 0, NULL));
+    baseArchivItem_Bitmap* bitmap = dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0));
     bitmap->setName(file);
 
     switch(bmih.bbp)
@@ -203,8 +203,8 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
     if(bmih.bbp == 8)
     {
         if(palette)
-            *palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
-        //ArchivItem_Palette *palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
+            *palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
+        //ArchivItem_Palette *palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0, NULL);
         //items->set(0, palette);
 
         // Farbpalette lesen

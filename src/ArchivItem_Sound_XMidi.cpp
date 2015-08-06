@@ -59,12 +59,12 @@ libsiedler2::baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(void) : base
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi* item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
+libsiedler2::baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound( item )
 {
-    tracks = item->tracks;
+    tracks = item.tracks;
 
     for(unsigned int i = 0; i < 256; ++i)
-        tracklist[i].copy(&item->tracklist[i]);
+        tracklist[i].copy(item.tracklist[i]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

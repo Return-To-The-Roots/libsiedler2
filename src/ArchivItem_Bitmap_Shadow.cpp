@@ -65,7 +65,7 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(void) : 
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow* item) : baseArchivItem_Bitmap((baseArchivItem_Bitmap*)item)
+libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item) : baseArchivItem_Bitmap(item)
 {
     setBobType(BOBTYPE_BITMAP_SHADOW);
 }

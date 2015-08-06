@@ -27,9 +27,9 @@ class MIDI_Track
 {
     public:
         MIDI_Track();
-        MIDI_Track(const MIDI_Track* item);
+        MIDI_Track(const MIDI_Track& item);
         ~MIDI_Track();
-        void copy(const MIDI_Track* item);
+        void copy(const MIDI_Track& item);
 
         void allocXMid(unsigned int length);
         int readXMid(FILE* file);

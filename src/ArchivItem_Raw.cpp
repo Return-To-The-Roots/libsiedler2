@@ -61,16 +61,16 @@ libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(void)
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const baseArchivItem_Raw* item)
+libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const baseArchivItem_Raw& item)
     : ArchivItem(item),
       data(NULL)
 {
     setBobType(BOBTYPE_RAW);
 
-    alloc(item->length);
+    alloc(item.length);
 
-    if(item->length > 0)
-        memcpy(data, item->data, item->length);
+    if(item.length > 0)
+        memcpy(data, item.data, item.length);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

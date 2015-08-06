@@ -40,7 +40,7 @@ MIDI_Track::MIDI_Track()
     mid_length = 0;
 }
 
-MIDI_Track::MIDI_Track(const MIDI_Track* item)
+MIDI_Track::MIDI_Track(const MIDI_Track& item)
 {
     copy(item);
 }
@@ -51,15 +51,15 @@ MIDI_Track::~MIDI_Track()
     clearMid();
 }
 
-void MIDI_Track::copy(const MIDI_Track* item)
+void MIDI_Track::copy(const MIDI_Track& item)
 {
-    allocXMid(item->xmid_length);
+    allocXMid(item.xmid_length);
     if(xmid_length > 0)
-        memcpy(xmid_data, item->xmid_data, xmid_length);
+        memcpy(xmid_data, item.xmid_data, xmid_length);
 
-    allocMid(item->mid_length > 14 ? item->mid_length - 14 : item->mid_length);
+    allocMid(item.mid_length > 14 ? item.mid_length - 14 : item.mid_length);
     if(mid_length > 0)
-        memcpy(mid_data, item->mid_data, mid_length);
+        memcpy(mid_data, item.mid_data, mid_length);
 }
 
 void MIDI_Track::allocXMid(unsigned int length)

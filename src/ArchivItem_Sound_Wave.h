@@ -33,7 +33,7 @@ namespace libsiedler2
             baseArchivItem_Sound_Wave(void);
 
             /// Kopierkonstruktor von @p baseArchivItem_Sound_Wave.
-            baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave* item);
+            baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave& item);
 
             /// Destruktor von @p baseArchivItem_Sound_Wave.
             ~baseArchivItem_Sound_Wave(void);
@@ -73,7 +73,7 @@ namespace libsiedler2
             ArchivItem_Sound_Wave(void) : baseArchivItem_Sound_Wave() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Sound_Wave.
-            ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave* item) : baseArchivItem_Sound_Wave(item) {}
+            ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound_Wave(item) {}
     };
 }
 

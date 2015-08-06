@@ -66,19 +66,23 @@ namespace libsiedler2
     };
 
     /**
-     *  @brief Allocatortyp.
-     *
-     *  Funktionspointerprototyp des Item-Allocators.
-     *
-     *  @author FloSoft
+     *  @brief Abstract ArchivItem factory
      */
-    typedef ArchivItem* (*allocatorType)(unsigned short type, unsigned short subtype, const ArchivItem* item);
+    class IAllocator{
+    public:
+        virtual ~IAllocator(){}
+        virtual ArchivItem* create(unsigned short type, unsigned short subtype) const = 0;
+        virtual ArchivItem* clone(const ArchivItem& item) const = 0;
+    };
+
+    class StandardAllocator: public IAllocator{
+    public:
+        virtual ArchivItem* create(unsigned short type, unsigned short subtype) const;
+        virtual ArchivItem* clone(const ArchivItem& item) const;
+    };
 
     /// Setzt den Item-Allocator.
-    void setAllocator(allocatorType new_allocator);
-
-    /// Der Standard-Item-Allocator.
-    ArchivItem* StandardAllocator(unsigned short type, unsigned short subtype, const ArchivItem* item);
+    void setAllocator(IAllocator* newAllocator);
 
     /// Lädt die Datei im Format ihrer Endung.
     int Load(const char* file, ArchivInfo* items, const ArchivItem_Palette* palette = NULL);

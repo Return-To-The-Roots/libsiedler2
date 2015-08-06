@@ -162,33 +162,33 @@ libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(void) : ArchivItem()
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(const baseArchivItem_Bitmap* item) : ArchivItem( (ArchivItem*)item )
+libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(const baseArchivItem_Bitmap& item) : ArchivItem( item )
 {
-    width = item->width;
-    height = item->height;
+    width = item.width;
+    height = item.height;
 
-    nx = item->nx;
-    ny = item->ny;
+    nx = item.nx;
+    ny = item.ny;
 
-    length = item->length;
+    length = item.length;
 
-    tex_width = item->tex_width;
-    tex_height = item->tex_height;
+    tex_width = item.tex_width;
+    tex_height = item.tex_height;
 
-    tex_bpp = item->tex_bpp;
+    tex_bpp = item.tex_bpp;
 
-    tex_length = item->tex_length;
+    tex_length = item.tex_length;
     tex_data = NULL;
 
     if(tex_length != 0)
     {
         tex_data = new unsigned char[tex_length];
-        memcpy(tex_data, item->tex_data, tex_length);
+        memcpy(tex_data, item.tex_data, tex_length);
     }
 
     palette = NULL;
-    setPalette(item->palette);
-    setFormat(item->format);
+    setPalette(item.palette);
+    setFormat(item.format);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -929,7 +929,7 @@ void libsiedler2::baseArchivItem_Bitmap::setPalette(const ArchivItem_Palette* pa
     delete this->palette;
 
     if(palette)
-        this->palette = dynamic_cast<ArchivItem_Palette*>((*allocator)(BOBTYPE_PALETTE, 0, palette));
+        this->palette = dynamic_cast<ArchivItem_Palette*>(allocator->clone(*palette));
     else
         this->palette = NULL;
 }

@@ -87,12 +87,12 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Text::ArchivItem_Text(const ArchivItem_Text* item) : ArchivItem( (ArchivItem*)item )
+libsiedler2::ArchivItem_Text::ArchivItem_Text(const ArchivItem_Text& item) : ArchivItem( item )
 {
     text = NULL;
     setBobType(BOBTYPE_TEXT);
 
-    setText(item->text, false, item->length);
+    setText(item.text, false, item.length);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -57,12 +57,12 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob(void) : ArchivItem(), ArchivInfo(), 
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob(const ArchivItem_Bob* item) : ArchivItem( (ArchivItem*)item ), ArchivInfo( (ArchivInfo*)item ), good_count(item->good_count), item_count(item->good_count)
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob(const ArchivItem_Bob& item) : ArchivItem( item ), ArchivInfo( item ), good_count(item.good_count), item_count(item.good_count)
 {
     setBobType(BOBTYPE_BOB);
 
-    links = new unsigned short[item->item_count];
-    memcpy(links, item->links, sizeof(unsigned short)*item->item_count);
+    links = new unsigned short[item.item_count];
+    memcpy(links, item.links, sizeof(unsigned short) * item.item_count);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -126,7 +126,6 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
     // Einzelner Bilder auslesen ( untere Körper )
     for(unsigned int i = 0; i < 96; ++i)
     {
-        baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>((*allocator)(BOBTYPE_BITMAP_PLAYER, 0, NULL));
         unsigned short id;
 
         // ID lesen
@@ -152,11 +151,14 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
         if(libendian::le_read_uc(&ny, 1, file) != 1)
             return 8;
 
+        baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(allocator->create(BOBTYPE_BITMAP_PLAYER, 0));
         image->setNx(16);
         image->setNy(ny);
 
-        if(image->load(32, height, raw_base, starts, true, size, palette) != 0)
+        if(image->load(32, height, raw_base, starts, true, size, palette) != 0){
+            delete image;
             return 9;
+        }
 
         delete[] starts;
 
@@ -244,13 +246,15 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
 
         if(!used[links[i]])
         {
-            baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>((*allocator)(BOBTYPE_BITMAP_PLAYER, 0, NULL));
+            baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(allocator->create(BOBTYPE_BITMAP_PLAYER, 0));
 
             image->setNx(16);
             image->setNy(ny[links[i]]);
 
-            if(image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, sizes[i % 6], palette) != 0)
+            if(image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, sizes[i % 6], palette) != 0){
+                delete image;
                 return 21;
+            }
 
             set(96 + links[i], image);
 

@@ -60,12 +60,12 @@ libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(void) : baseAr
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi* item) : baseArchivItem_Sound( (baseArchivItem_Sound*)item )
+libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item) : baseArchivItem_Sound( item )
 {
-    tracks = item->tracks;
+    tracks = item.tracks;
 
     for(unsigned int i = 0; i < 256; ++i)
-        tracklist[i].copy(&item->tracklist[i]);
+        tracklist[i].copy(item.tracklist[i]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
