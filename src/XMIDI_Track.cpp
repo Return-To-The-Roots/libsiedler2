@@ -1,4 +1,4 @@
-﻿// $Id: XMIDI_Track.cpp 9359 2014-04-25 15:37:22Z FloSoft $
+// $Id: XMIDI_Track.cpp 9359 2014-04-25 15:37:22Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
