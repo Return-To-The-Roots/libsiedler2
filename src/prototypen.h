@@ -1,4 +1,4 @@
-﻿// $Id: prototypen.h 9372 2014-04-28 15:25:24Z FloSoft $
+// $Id: prototypen.h 9372 2014-04-28 15:25:24Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
