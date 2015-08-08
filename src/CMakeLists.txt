@@ -7,6 +7,8 @@ INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libendian/src")
 IF (MSVC)
 	ADD_DEFINITIONS(/WX) # warning = error
 	ADD_DEFINITIONS(/MP) # parallel compilation
+	# disable MSVC posix functions
+	ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
 ENDIF()
 
 ADD_LIBRARY(siedler2 libsiedler2.cpp ArchivInfo.cpp ArchivItem.cpp

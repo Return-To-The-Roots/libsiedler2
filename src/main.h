@@ -28,11 +28,10 @@
 #ifdef _WIN32
 #   define _CRTDBG_MAP_ALLOC
 #   include <windows.h>
-
 #   if defined _DEBUG && defined _MSC_VER
-#   include <crtdbg.h>
+#       include <crtdbg.h>
 #   endif // _DEBUG
-#define strlwr _strlwr
+#   define strlwr _strlwr
 #else
 #   include <unistd.h>
 #   include "strlwr.h"
