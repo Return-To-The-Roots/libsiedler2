@@ -117,8 +117,10 @@ int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* pal
             continue;
 
         // Daten von Item auswerten
-        if(loader::LoadType(bobtype, file, palette, getP(i)) != 0)
+        ArchivItem* item;
+        if(loader::LoadType(bobtype, file, palette, item) != 0)
             return 5;
+        set(i, item);
     }
 
     return 0;
@@ -166,7 +168,7 @@ int libsiedler2::ArchivItem_Font::write(FILE* file, const ArchivItem_Palette* pa
             continue;
 
         // Daten von Item auswerten
-        if(loader::WriteType(bobtype, file, palette, item) != 0)
+        if(loader::WriteType(bobtype, file, palette, *item) != 0)
             return 5;
     }
 

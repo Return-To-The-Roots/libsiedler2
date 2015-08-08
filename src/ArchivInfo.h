@@ -22,7 +22,7 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include <cstring>
+#include <vector>
 
 namespace libsiedler2
 {
@@ -40,143 +40,112 @@ namespace libsiedler2
             virtual ~ArchivInfo(void);
 
             /// erstellt den Datensatz in einer bestimmten Größe.
-            void alloc(unsigned long count);
+            void alloc(size_t count);
 
-            /// vergrößert den Datensatz um eine bestimmten Größe.
-            void alloc_inc(unsigned long increment);
+            /**
+             *  vergrößert den Datensatz um eine bestimmten Größe.
+             *
+             *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
+            */
+            void alloc_inc(size_t increment)
+            {
+                data.resize(size() + increment);
+            }
 
             /// gibt die angelegten Daten wieder frei.
             void clear(void);
 
-            /// setzt den Inhalt auf das übergebene ArchivInfo
-            inline void set(const ArchivInfo& info)
-            {
-                alloc(info.count);
-                for(unsigned long i = 0; i < count; ++i)
-                    setC(i, info.get(i));
-            }
-
             /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
-            inline void set(int index, ArchivItem* item)
+            /// Transfers ownership!
+            inline void set(size_t index, ArchivItem* item)
             {
-                if(!data)
-                    return;
-
-                if( (unsigned long)index < count && index >= 0)
-                    data[(unsigned long)index] = item;
+               if(index < size()){
+                   delete data[index];
+                   data[index] = item;
+               }else
+                   delete item;
             }
 
             /// kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
-            void setC(int index, const ArchivItem* item);
+            void setC(size_t index, const ArchivItem& item);
 
-            /// fügt ein Element hinten an.
+            /// Deletes the item at the given index
+            void clearItem(size_t index)
+            {
+                set(index, NULL);
+            }
+
+            /// Adds an element to the end. Transfers ownership!
             inline void push(ArchivItem* item)
             {
-                alloc_inc(1);
-
-                data[count - 1] = item;
+                data.push_back(item);
             }
 
             /// fügt ein Element hinten an und kopiert die Daten von @p item.
-            void pushC(const ArchivItem* item);
+            void pushC(const ArchivItem& item);
 
             /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
-            inline ArchivItem* get(int index)
+            inline ArchivItem* get(size_t index)
             {
-                if(!data)
-                    return NULL;
-
-                if( (unsigned long)index < count && index >= 0)
-                    return data[(unsigned long)index];
-
-                return NULL;
+                return (index < size()) ? data[index] : NULL;
             }
 
             /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
-            inline const ArchivItem* get(int index) const
+            inline const ArchivItem* get(size_t index) const
             {
-                if(!data)
-                    return NULL;
-
-                if( (unsigned long)index < count && index >= 0)
-                    return data[(unsigned long)index];
-
-                return NULL;
-            }
-
-            /// liefert den Pointer eines ArchivItems am entsprechenden Index.
-            inline ArchivItem** getP(int index)
-            {
-                if(!data)
-                    return NULL;
-
-                if( (unsigned long)index < count && index >= 0)
-                    return &data[(unsigned long)index];
-
-                return NULL;
+                return (index < size()) ? data[index] : NULL;
             }
 
             /// liefert das erste Item mit entsprechenden Namen
-            inline ArchivItem* find(const char* name)
+            inline ArchivItem* find(const std::string& name)
             {
-                for(unsigned long i = 0; i < getCount(); ++i)
+                for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
                 {
-                    if(get(i) && strcmp(get(i)->getName(), name) == 0)
-                        return get(i);
+                    if(*it && (*it)->getName() == name)
+                        return *it;
                 }
 
                 return NULL;
             }
 
             /// liefert das erste Item mit entsprechenden Namen
-            inline const ArchivItem* find(const char* name) const
+            inline const ArchivItem* find(const std::string& name) const
             {
-                for(unsigned long i = 0; i < getCount(); ++i)
+                for(std::vector<ArchivItem*>::const_iterator it = data.begin(); it != data.end(); ++it)
                 {
-                    if(get(i) && strcmp(get(i)->getName(), name) == 0)
-                        return get(i);
+                    if(*it && (*it)->getName() == name)
+                        return *it;
                 }
 
                 return NULL;
             }
 
             /// liefert die Größe des Archivs.
-            inline unsigned long getCount(void) const
+            inline size_t size() const
             {
-                return count;
+                return data.size();
             }
 
             /// Index-Operator von @p ArchivInfo.
-            inline const ArchivItem* operator[](int index) const
+            inline const ArchivItem* operator[](size_t index) const
             {
                 return get(index);
             }
 
             /// Index-Operator von @p ArchivInfo.
-            inline ArchivItem* operator[](int index)
+            inline ArchivItem* operator[](size_t index)
             {
                 return get(index);
             }
 
             /// Zuweisungsoperator von @p ArchivInfo.
-            inline ArchivInfo& operator=(const ArchivInfo& info)
-            {
-                if(this == &info)
-                    return *this;
-                alloc(info.count);
-
-                for(unsigned long i = 0; i < count; ++i)
-                    setC(i, info.get(i));
-
-                return *this;
-            }
+            ArchivInfo& operator=(const ArchivInfo& info);
 
             /// Kopierfunktion von @p ArchivInfo.
-            void copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo& source);
+            void copy(size_t to, size_t from, size_t count, const ArchivInfo& source);
 
         protected:
-            ArchivItem** data;   ///< die Elemente.
-            unsigned long count; ///< Anzahl der Elemente.
+            std::vector<ArchivItem*> data;   ///< die Elemente.
     };
 }
 

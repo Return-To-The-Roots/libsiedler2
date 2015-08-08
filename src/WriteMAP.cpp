@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -40,21 +41,19 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteMAP(const char* file, const ArchivInfo* items, long nr)
+int libsiedler2::loader::WriteMAP(const std::string& file, const ArchivInfo& items, long nr)
 {
-    FILE* map;
-
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     if(nr == -1)
     {
         // Palette in ArchivInfo suchen, erste Palette wird geschrieben
-        for(unsigned long i = 0; i < items->getCount(); ++i)
+        for(unsigned long i = 0; i < items.size(); ++i)
         {
-            if(!items->get(i))
+            if(!items.get(i))
                 continue;
-            if(items->get(i)->getBobType() == BOBTYPE_MAP)
+            if(items.get(i)->getBobType() == BOBTYPE_MAP)
             {
                 nr = i;
                 break;
@@ -68,18 +67,15 @@ int libsiedler2::loader::WriteMAP(const char* file, const ArchivInfo* items, lon
         return 2;
 
     // Datei zum lesen öffnen
-    map = fopen(file, "wb");
+    boost::scoped_ptr<FILE> map(fopen(file.c_str(), "wb"));
 
     // hat das geklappt?
-    if(map == NULL)
+    if(!map)
         return 2;
 
-    const ArchivItem_Map* item = dynamic_cast<const ArchivItem_Map*>(items->get(nr));
-    if(item->write(map) != 0)
+    const ArchivItem_Map* item = dynamic_cast<const ArchivItem_Map*>(items.get(nr));
+    if(item->write(map.get()) != 0)
         return 3;
-
-    // Datei schliessen
-    fclose(map);
 
     return 0;
 }

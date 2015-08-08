@@ -262,50 +262,49 @@ ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
  *
  *  @author FloSoft
  */
-int Load(const char* file, ArchivInfo* items, const ArchivItem_Palette* palette)
+int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette)
 {
-    if(!file)
+    if(file.empty())
         return 1;
 
-    // String kopieren und auf Lower-Case bringen
-    char* filen = strlwr(strdup(file));
-
     // Endung holen
-    const char* endung = strrchr(filen, '.');
-    if(!endung)
+    size_t extPos = file.find_last_of('.');
+    if(extPos == std::string::npos)
         return 2;
-    ++endung;
+    std::string extension = file.substr(extPos + 1);
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
     int ret = 254;
 
     // Datei laden
-    if(strncmp(endung, "act", 3) == 0)
+    if(extension == "act")
         ret = loader::LoadACT(file, items);
-    else if(strncmp(endung, "bbm", 3) == 0)
+    else if(extension == "bbm")
         ret = loader::LoadBBM(file, items);
-    else if(strncmp(endung, "bmp", 3) == 0)
+    else if(extension == "bmp")
     {
-        items->alloc(2);
-        ret = loader::LoadBMP(file, items->getP(0), items->getP(1));
+        items.clear();
+        ArchivItem *bmp, *palette;
+        ret = loader::LoadBMP(file, bmp, &palette);
+        items.push(bmp);
+        items.push(palette);
     }
-    else if(strncmp(endung, "bob", 3) == 0)
+    else if(extension == "bob")
         ret = loader::LoadBOB(file, palette, items);
-    else if(strncmp(endung, "dat", 3) == 0 || strncmp(endung, "idx", 3) == 0)
+    else if(extension == "dat" || extension == "idx")
         ret = loader::LoadDATIDX(file, palette, items);
-    else if(strncmp(endung, "lbm", 3) == 0)
+    else if(extension == "lbm")
         ret = loader::LoadLBM(file, items);
-    else if(strncmp(endung, "lst", 3) == 0)
+    else if(extension == "lst")
         ret = loader::LoadLST(file, palette, items);
-    else if(strncmp(endung, "tlst", 4) == 0)
+    else if(extension == "tlst")
         ret = loader::LoadTLST(file, items);
-    else if(strncmp(endung, "swd", 3) == 0 || strncmp(endung, "wld", 3) == 0)
+    else if(extension == "swd" || extension == "wld")
         ret = loader::LoadMAP(file, items);
-    else if(strncmp(endung, "ger", 3) == 0 || strncmp(endung, "eng", 3) == 0)
+    else if(extension == "ger" || extension == "eng")
         ret = loader::LoadTXT(file, items);
-    else if(strncmp(endung, "ini", 4) == 0)
+    else if(extension == "ini")
         ret = loader::LoadINI(file, items);
-
-    free(filen);
 
     return ret;
 }
@@ -322,28 +321,29 @@ int Load(const char* file, ArchivInfo* items, const ArchivItem_Palette* palette)
  *
  *  @author FloSoft
  */
-int Write(const char* file, const ArchivInfo* items, const ArchivItem_Palette* palette)
+int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette)
 {
-    if(!file)
+    if(file.empty())
         return 1;
 
     // String kopieren und auf Lower-Case bringen
-    char* filen = strlwr(strdup(file));
+    std::string filen(file);
+    std::transform(filen.begin(), filen.end(), filen.begin(), ::tolower);
 
     // Endung holen
-    const char* endung = strrchr(filen, '.');
-    if(!endung)
+    size_t extPos = filen.find_last_of('.');
+    if(extPos == std::string::npos)
         return 2;
-    ++endung;
+    std::string extension = filen.substr(extPos + 1);
 
     int ret = 0;
 
     // Datei schreiben
-    if(strncmp(endung, "act", 3) == 0)
+    if(extension == "act")
         ret = loader::WriteACT(file, items);
-    else if(strncmp(endung, "bbm", 3) == 0)
+    else if(extension == "bbm")
         ret = loader::WriteBBM(file, items);
-    else if(strncmp(endung, "bmp", 3) == 0)
+    else if(extension == "bmp")
         ret = loader::WriteBMP(file, palette, items);
     /*else if(strncmp(endung, "bob", 3)==0)
         ret = loader::WriteBOB(file, palette, items);*/
@@ -351,16 +351,14 @@ int Write(const char* file, const ArchivInfo* items, const ArchivItem_Palette* p
         ret = loader::WriteDATIDX(file, palette, items);*/
     /*else if(strncmp(endung, "lbm", 3)==0)
         ret = loader::WriteLBM(file, items);*/
-    else if(strncmp(endung, "lst", 3) == 0)
+    else if(extension == "lst")
         ret = loader::WriteLST(file, palette, items);
     /*else if(strncmp(endung, "swd", 3)==0 || strncmp(endung, "wld", 3)==0)
         ret = loader::WriteMAP(file, items);*/
-    else if(strncmp(endung, "ger", 3) == 0 || strncmp(endung, "eng", 3) == 0)
+    else if(extension == "ger" || extension == "eng")
         ret = loader::WriteTXT(file, items, false);
-    else if(strncmp(endung, "ini", 3) == 0)
+    else if(extension == "ini")
         ret = loader::WriteINI(file, items);
-
-    free(filen);
 
     return ret;
 }

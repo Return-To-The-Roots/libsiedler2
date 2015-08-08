@@ -43,17 +43,10 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const ArchivItem_Palette* palette, ArchivItem** item)
+int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const ArchivItem_Palette* palette, ArchivItem*& item)
 {
-    if(file == NULL || item == NULL)
+    if(!file)
         return 1;
-
-    // ist das Item schon belegt?
-    if(*item)
-    {
-        delete *item;
-        *item = NULL;
-    }
 
     switch(bobtype)
     {
@@ -66,9 +59,11 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 return 4;
 
             baseArchivItem_Sound* nitem = baseArchivItem_Sound::findSubType(file);
-            if(!nitem || nitem->load(file, length) != 0)
+            if(!nitem || nitem->load(file, length) != 0){
+                delete item;
                 return 5;
-            *item = nitem;
+            }
+            item = nitem;
         } break;
         case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
         {
@@ -77,7 +72,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 6;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_FONT: // Font
         {
@@ -86,7 +81,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 7;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
         {
@@ -95,7 +90,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 8;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_PALETTE: // Palette
         {
@@ -104,7 +99,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 9;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_BOB: // Bobfile
         {
@@ -113,7 +108,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 10;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_BITMAP_SHADOW: // Schatten
         {
@@ -122,7 +117,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 11;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_MAP: // Mapfile
         {
@@ -131,7 +126,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 12;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_TEXT: // Textfile
         {
@@ -140,7 +135,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 13;
             }
-            *item = nitem;
+            item = nitem;
         } break;
         case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
         {
@@ -149,12 +144,12 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
                 delete nitem;
                 return 14;
             }
-            *item = nitem;
+            item = nitem;
         } break;
     }
 
-    if(*item != NULL)
-        (*item)->setBobType(bobtype);
+    if(item != NULL)
+        item->setBobType(bobtype);
 
     return 0;
 }

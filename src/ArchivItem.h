@@ -22,7 +22,7 @@
 #pragma once
 
 #include <cstdio>
-#include <cstring>
+#include <string>
 
 namespace libsiedler2
 {
@@ -32,9 +32,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p ArchivItem.
             ArchivItem();
-
-            /// Kopierkonstruktor von @p ArchivItem.
-            ArchivItem(const ArchivItem& item);
 
             /// virtueller Destruktor von @p ArchivItem.
             virtual ~ArchivItem();
@@ -52,13 +49,13 @@ namespace libsiedler2
             }
 
             /// setzt den Namen des Items.
-            inline void setName(const char* name)
+            inline void setName(const std::string& name)
             {
-                strncpy(this->name, name, 63);
+                this->name = name;
             }
 
             /// liefert den Namen des Items.
-            inline const char* getName(void) const
+            inline std::string getName(void) const
             {
                 return name;
             }
@@ -71,7 +68,7 @@ namespace libsiedler2
 
         protected:
             unsigned short bobtype; ///< Bobtype des Elements.
-            char name[64];          ///< Name des Elements.
+            std::string name;          ///< Name des Elements.
     };
 }
 

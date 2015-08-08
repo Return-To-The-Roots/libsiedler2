@@ -55,7 +55,7 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(void) : ArchivItem(), ArchivInfo()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const char* name) : ArchivItem(), ArchivInfo()
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(), ArchivInfo()
 {
     setName(name);
     setBobType(BOBTYPE_INI);
@@ -166,7 +166,7 @@ int libsiedler2::ArchivItem_Ini::write(FILE* file) const
     if(fputs(section.c_str(), file) < 0)
         return 2;
 
-    for(unsigned long i = 0; i < getCount(); ++i)
+    for(unsigned long i = 0; i < size(); ++i)
     {
         const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(get(i));
 
@@ -190,7 +190,7 @@ int libsiedler2::ArchivItem_Ini::write(FILE* file) const
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Ini::addValue(const char* name, const char* value)
+void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
     ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( allocator->create(BOBTYPE_TEXT, 0) );
     item->setText(value);

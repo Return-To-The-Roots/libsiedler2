@@ -20,6 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include <boost/scoped_ptr.hpp>
+#include <boost/scoped_array.hpp>
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -43,45 +46,39 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conversion)
+int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, bool conversion)
 {
-    FILE* txt;
     short header;
-    long length;
 
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    txt = fopen(file, "rb");
+    boost::scoped_ptr<FILE> txt(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(txt == NULL)
+    if(!txt)
         return 2;
 
     // Länge bestimmen
-    fseek(txt, 0, SEEK_END);
-    length = ftell(txt);
-    fseek(txt, 0, SEEK_SET);
+    size_t length = getFileLength(txt.get());
 
     // Header einlesen
-    if(libendian::be_read_s(&header, txt) != 0)
+    if(libendian::be_read_s(&header, txt.get()) != 0)
         return 3;
+
+    items.clear();
 
     // ist es eine TXT-File? (Header 0xE7FD)
     if( header != (short)0xE7FD )
     {
         // den Header zurückspringen
-        fseek(txt, -2, SEEK_CUR);
-
-        // Plain-Text
-        items->alloc(1);
+        fseek(txt.get(), -2, SEEK_CUR);
 
         ArchivItem_Text* item = (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0);
-        item->load(txt, conversion);
+        item->load(txt.get(), conversion);
 
-        // Item erzeugen
-        items->set(0, item);
+        items.push(item);
     }
     else
     {
@@ -89,13 +86,13 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
         unsigned short count, unknown;
         unsigned int size;
 
-        if(libendian::le_read_us(&count, txt) != 0)
+        if(libendian::le_read_us(&count, txt.get()) != 0)
             return 4;
 
-        if(libendian::le_read_us(&unknown, txt) != 0)
+        if(libendian::le_read_us(&unknown, txt.get()) != 0)
             return 5;
 
-        if(libendian::le_read_ui(&size, txt) != 0)
+        if(libendian::le_read_ui(&size, txt.get()) != 0)
             return 6;
 
         if(size == 0)
@@ -103,17 +100,13 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
         else
             size += 10;
 
-        // Anzahl alloziieren
-        items->alloc(count);
-
-        int* starts = new int[count];
-        memset(starts, 0, sizeof(int)*count);
+        std::vector<int> starts(count);
 
         // Starts einlesen
         for(unsigned short x = 0; x < count; ++x)
         {
             int s;
-            if(libendian::le_read_i(&s, txt) != 0)
+            if(libendian::le_read_i(&s, txt.get()) != 0)
                 return 7;
 
             if(s != 0)
@@ -121,10 +114,10 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
         }
 
         // Daten einlesen, zwecks Längenbestimmung
-        unsigned int pos = ftell(txt);
+        unsigned int pos = ftell(txt.get());
         unsigned int rest = size - pos;
-        char* buffer = new char[rest + 1];
-        if(libendian::le_read_c(buffer, rest, txt) != (int)rest)
+        boost::scoped_array<char> buffer(new char[rest + 1]);
+        if(libendian::le_read_c(buffer.get(), rest, txt.get()) != (int)rest)
             return 8;
 
         for(unsigned short x = 0; x < count; ++x)
@@ -134,19 +127,17 @@ int libsiedler2::loader::LoadTXT(const char* file, ArchivInfo* items, bool conve
             if(i != 0)
             {
                 // An Start springen
-                fseek(txt, i, SEEK_SET);
+                fseek(txt.get(), i, SEEK_SET);
 
                 // einlesen
                 ArchivItem_Text* item = (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0);
-                item->load(txt, conversion, (unsigned int)strlen(&buffer[i - pos]));
+                item->load(txt.get(), conversion, (unsigned int)strlen(&buffer[i - pos]));
 
-                items->set(x, item);
+                items.push(item);
             }
             else
-                items->set(x, (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0));
+                items.push((ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0));
         }
-        delete[] buffer;
-        delete[] starts;
     }
 
     // alles ok

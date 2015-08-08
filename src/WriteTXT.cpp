@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -41,19 +42,17 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteTXT(const char* file, const ArchivInfo* items, bool conversion)
+int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& items, bool conversion)
 {
-    FILE* txt;
-
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
-    if(items->getCount() == 0)
+    if(items.size() == 0)
         return 2;
 
-    for(unsigned long i = 0; i < items->getCount(); ++i)
+    for(unsigned long i = 0; i < items.size(); ++i)
     {
-        const ArchivItem* item = items->get(i);
+        const ArchivItem* item = items.get(i);
         if(item)
         {
             if(item->getBobType() != BOBTYPE_TEXT)
@@ -62,84 +61,78 @@ int libsiedler2::loader::WriteTXT(const char* file, const ArchivInfo* items, boo
     }
 
     // Datei zum lesen öffnen
-    txt = fopen(file, "wb");
+    boost::scoped_ptr<FILE> txt(fopen(file.c_str(), "wb"));
 
     // hat das geklappt?
     if(txt == NULL)
         return 2;
 
     // Plain-Text ?
-    if(items->getCount() == 1)
+    if(items.size() == 1)
     {
-        const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items->get(0));
-        if(item->write(txt, conversion) != 0)
+        const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(0));
+        if(item->write(txt.get(), conversion) != 0)
             return 4;
     }
     else
     {
         // "archiviert"
         unsigned short header = 0xE7FD;
-        unsigned short count = (unsigned short)items->getCount();
+        unsigned short count = (unsigned short)items.size();
         unsigned short unknown = 0x0001;
 
         // Header schreiben
-        if(libendian::be_write_us(header, txt) != 0)
+        if(libendian::be_write_us(header, txt.get()) != 0)
             return 5;
 
         // Anzahl schreiben
-        if(libendian::le_write_us(count, txt) != 0)
+        if(libendian::le_write_us(count, txt.get()) != 0)
             return 6;
 
         // Unbekannte Bytes schreiben
-        if(libendian::le_write_us(unknown, txt) != 0)
+        if(libendian::le_write_us(unknown, txt.get()) != 0)
             return 7;
 
-        int* starts = new int[count];
-        memset(starts, 0, sizeof(int)*count);
+        std::vector<int> starts(count);
 
         unsigned int size = count * 4;
         for(unsigned long i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items->get(i));
+            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(i));
 
             if(item)
             {
-                if(item->getLength() != 0)
+                if(item->getText().size() != 0)
                 {
                     starts[i] = size;
-                    size += item->getLength() + 1;
+                    size += item->getText().size() + 1;
                 }
             }
         }
 
         // Größe schreiben
-        if(libendian::le_write_ui(size, txt) != 0)
+        if(libendian::le_write_ui(size, txt.get()) != 0)
             return 8;
 
         // Starts schreiben
         for(unsigned long i = 0; i < count; ++i)
         {
-            if(libendian::le_write_i(starts[i], txt) != 0)
+            if(libendian::le_write_i(starts[i], txt.get()) != 0)
                 return 9;
         }
 
         // Texte schreiben
         for(unsigned long i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items->get(i));
+            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(i));
 
             if(item)
             {
-                if(item->write(txt, conversion) != 0)
+                if(item->write(txt.get(), conversion) != 0)
                     return 10;
             }
         }
-
-        delete[] starts;
     }
-
-    // Datei schliessen
-    fclose(txt);
 
     return 0;
 }

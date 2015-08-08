@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -40,26 +41,23 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteINI(const char* file, const ArchivInfo* items)
+int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& items)
 {
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum schreiben öffnen
-    FILE* ini = fopen(file, "wb");
-    if (ini == 0)
+    boost::scoped_ptr<FILE> ini(fopen(file.c_str(), "wb"));
+    if (!ini)
         return 2;
 
-    for(unsigned long i = 0; i < items->getCount(); ++i)
+    for(unsigned long i = 0; i < items.size(); ++i)
     {
-        const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items->get(i));
+        const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
 
         if(item)
-            item->write(ini);
+            item->write(ini.get());
     }
-
-    // Datei schliessen
-    fclose(ini);
 
     // alles ok
     return 0;

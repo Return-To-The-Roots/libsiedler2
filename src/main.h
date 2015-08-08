@@ -59,6 +59,21 @@
 namespace libsiedler2{
     extern TEXTURFORMAT texturformat;
     extern IAllocator* allocator;
-};
+    inline size_t getFileLength(FILE* f)
+    {
+        fseek(f, 0, SEEK_END);
+        size_t length = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        return length;
+    }
+} // namespace libsiedler2
+
+namespace boost{
+    // support boost::scoped_ptr
+    inline void checked_delete(FILE* x)
+    {
+        fclose(x);
+    }
+} // namespace boost
 
 #endif // MAIN_H_INCLUDED

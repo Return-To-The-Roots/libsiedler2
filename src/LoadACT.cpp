@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -41,41 +42,37 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadACT(const char* file, ArchivInfo* items)
+int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
 {
-    FILE* act;
     long size;
 
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    act = fopen(file, "rb");
+    boost::scoped_ptr<FILE> act(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(act == NULL)
+    if(!act)
         return 2;
 
-    fseek(act, 0, SEEK_END);
-    size = ftell(act);
-    fseek(act, 0, SEEK_SET);
+    fseek(act.get(), 0, SEEK_END);
+    size = ftell(act.get());
+    fseek(act.get(), 0, SEEK_SET);
 
     // sind es 256*3 Bytes, also somit 8bit-RGB?
-    if(size != 768)
+    if(size != 256*3)
         return 3;
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
-    if(palette->load(act, false) != 0){
+    if(palette->load(act.get(), false) != 0){
         delete palette;
         return 4;
     }
 
     // einlesen
-    items->alloc(1);
-    items->set(0, palette);
-
-    // Datei schliessen
-    fclose(act);
+    items.clear();
+    items.push(palette);
 
     // Alles OK
     return 0;

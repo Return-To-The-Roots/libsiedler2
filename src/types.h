@@ -85,10 +85,10 @@ namespace libsiedler2
     void setAllocator(IAllocator* newAllocator);
 
     /// Lädt die Datei im Format ihrer Endung.
-    int Load(const char* file, ArchivInfo* items, const ArchivItem_Palette* palette = NULL);
+    int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
 
     /// Schreibt die Datei im Format ihrer Endung.
-    int Write(const char* file, const ArchivInfo* items, const ArchivItem_Palette* palette = NULL);
+    int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
 }
 
 #endif // types_h__

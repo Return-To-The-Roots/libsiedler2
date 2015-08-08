@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadTLST(const char* file, ArchivInfo* items)
+int libsiedler2::loader::LoadTLST(const std::string& file, ArchivInfo& items)
 {
     return 0;
 }

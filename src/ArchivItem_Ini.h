@@ -36,7 +36,7 @@ namespace libsiedler2
             ArchivItem_Ini(void);
 
             /// Konstruktor von @p ArchivItem_Ini.
-            ArchivItem_Ini(const char* name);
+            ArchivItem_Ini(const std::string& name);
 
             /// Kopierkonstruktor von @p ArchivItem_Ini.
             ArchivItem_Ini(const ArchivItem_Ini& item);
@@ -48,27 +48,26 @@ namespace libsiedler2
             int write(FILE* file) const;
 
             /// liest einen Wert aus der Ini
-            inline const char* getValue(const char* name) const
+            inline std::string getValue(const std::string& name) const
             {
                 const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(find(name));
                 if(item)
                 {
-                    if(item->getText())
-                        return item->getText();
+                    return item->getText();
                 }
                 return "";
             }
 
-            inline int getValueI(const char* name) const
+            inline int getValueI(const std::string& name) const
             {
-                return atoi(getValue(name));
+                return atoi(getValue(name).c_str());
             }
 
             /// fügt einen Eintrag hinzu.
-            void addValue(const char* name, const char* value);
+            void addValue(const std::string& name, const std::string& value);
 
             /// schreibt einen Wert in die Ini
-            inline void setValue(const char* name, const char* value)
+            inline void setValue(const std::string& name, const std::string& value)
             {
                 ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
                 if(item)
@@ -84,7 +83,7 @@ namespace libsiedler2
                 }
             }
 
-            inline void setValue(const char* name, int value)
+            inline void setValue(const std::string& name, int value)
             {
                 char temp[512];
                 snprintf(temp, 256, "%d", value);

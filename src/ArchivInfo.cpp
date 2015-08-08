@@ -30,24 +30,18 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+namespace libsiedler2{
 ///////////////////////////////////////////////////////////////////////////////
-/** @class libsiedler2::ArchivInfo
+/** @class ArchivInfo
  *
  *  Klasse für Archivdateien.
  *
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/** @var libsiedler2::ArchivInfo::count
- *
- *  Anzahl der Elemente.
- *
- *  @author FloSoft
- */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** @var libsiedler2::ArchivInfo::data
+/** @var ArchivInfo::data
  *
  *  die Elemente.
  *
@@ -60,7 +54,7 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivInfo::ArchivInfo(void) : data(NULL), count(0)
+ArchivInfo::ArchivInfo(void)
 {
 }
 
@@ -72,9 +66,20 @@ libsiedler2::ArchivInfo::ArchivInfo(void) : data(NULL), count(0)
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(NULL), count(0)
+ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(info.data)
 {
-    set(info);
+    for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
+        *it = allocator->clone(**it);
+}
+
+ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
+    if(this == &info)
+        return *this;
+    clear();
+    data.reserve(info.size());
+    for(std::vector<ArchivItem*>::const_iterator it = info.data.begin(); it != info.data.end(); ++it)
+        data.push_back(allocator->clone(**it));
+    return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,7 +88,7 @@ libsiedler2::ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(NULL), count(
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivInfo::~ArchivInfo(void)
+ArchivInfo::~ArchivInfo(void)
 {
     clear();
 }
@@ -96,40 +101,11 @@ libsiedler2::ArchivInfo::~ArchivInfo(void)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::alloc(unsigned long count)
+void ArchivInfo::alloc(size_t count)
 {
     clear();
 
-    this->count = count;
-    data = new ArchivItem*[count];
-
-    memset(data, 0, sizeof(ArchivItem*)*count);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  vergrößert den Datensatz um eine bestimmten Größe.
- *
- *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
- *
- *  @author FloSoft
- */
-void libsiedler2::ArchivInfo::alloc_inc(unsigned long increment)
-{
-    ArchivItem** new_data = new ArchivItem*[count + increment];
-
-    memset(new_data, 0, sizeof(ArchivItem*) * (count + increment));
-
-    if(count > 0 && data)
-    {
-        for(unsigned long i = 0; i < count; ++i)
-            new_data[i] = data[i];
-
-        delete[] data;
-    }
-
-    data = new_data;
-    count += increment;
+    data.resize(count);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -138,20 +114,12 @@ void libsiedler2::ArchivInfo::alloc_inc(unsigned long increment)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::clear(void)
+void ArchivInfo::clear(void)
 {
-    if(data)
-    {
-        for(unsigned long c = 0; c < count; ++c)
-        {
-            delete data[c];
-            data[c] = NULL;
-        }
-        delete[] data;
-    }
-
-    data = NULL;
-    count = 0;
+    
+    for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
+        delete *it;
+    data.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -173,22 +141,9 @@ void libsiedler2::ArchivInfo::clear(void)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::setC(int index, const ArchivItem* item)
+void ArchivInfo::setC(size_t index, const ArchivItem& item)
 {
-    if(!data)
-        return;
-
-    if( (unsigned long)index < count && index >= 0)
-    {
-        // ist das Item gültig?
-        if(item == NULL)
-            data[(unsigned long)index] = NULL;
-        else
-        {
-            // ja, dann neues item erstellen
-            data[(unsigned long)index] = allocator->clone(*item);
-        }
-    }
+    set(index, allocator->clone(item));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -208,14 +163,9 @@ void libsiedler2::ArchivInfo::setC(int index, const ArchivItem* item)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::pushC(const ArchivItem* item)
+void ArchivInfo::pushC(const ArchivItem& item)
 {
-    alloc_inc(1);
-
-    if(item)
-        data[count - 1] = allocator->clone(*item);
-    else
-        data[count - 1] = NULL;
+    data.push_back(allocator->clone(item));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -293,11 +243,13 @@ void libsiedler2::ArchivInfo::pushC(const ArchivItem* item)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivInfo::copy(unsigned int to, unsigned int from, unsigned int count, const ArchivInfo& source)
+void ArchivInfo::copy(size_t to, size_t from, size_t count, const ArchivInfo& source)
 {
-    if(to + count > this->count)
-        alloc_inc(to + count - this->count);
+    if(to + count > size())
+        data.resize(to + count);
 
-    for(unsigned int f = from; f < from + count; ++to, ++f)
-        setC(to, source.get(f));
+    for(size_t f = from; f < from + count; ++to, ++f)
+        setC(to, *source.get(f));
+}
+
 }

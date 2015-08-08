@@ -63,22 +63,7 @@ static char THIS_FILE[] = __FILE__;
 libsiedler2::ArchivItem::ArchivItem(void)
 {
     bobtype = 0;
-    memset(name, 0, 64);
     setName("untitled");
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p ArchivItem.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::ArchivItem::ArchivItem(const ArchivItem& item)
-{
-    bobtype = item.bobtype;
-    memcpy(name, item.name, 64);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include <boost/scoped_ptr.hpp>
+#include <boost/move/unique_ptr.hpp>
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -80,7 +83,7 @@ static inline void LoadBMP_ReadLine(FILE* bmp,
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivItem** palette)
+int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, ArchivItem** palette)
 {
     struct BMHD
     {
@@ -104,57 +107,60 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
         int clrused; // 36
         int clrimp; // 40
     } bmih ;
+
+    image = NULL;
+    if(palette)
+        *palette = NULL;
+
     bool bottomup = false;
 
-    FILE* bmp;
-
-    if(file == NULL || image == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    bmp = fopen(file, "rb");
+    boost::scoped_ptr<FILE> bmp(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(bmp == NULL)
+    if(!bmp)
         return 2;
 
     // Bitmap-Header einlesen
-    if(libendian::le_read_us(&bmhd.header, bmp) != 0)
+    if(libendian::le_read_us(&bmhd.header, bmp.get()) != 0)
         return 3;
-    if(libendian::le_read_ui(&bmhd.size, bmp) != 0)
+    if(libendian::le_read_ui(&bmhd.size, bmp.get()) != 0)
         return 3;
-    if(libendian::le_read_ui(&bmhd.reserved, bmp) != 0)
+    if(libendian::le_read_ui(&bmhd.reserved, bmp.get()) != 0)
         return 3;
-    if(libendian::le_read_ui(&bmhd.offset, bmp) != 0)
+    if(libendian::le_read_ui(&bmhd.offset, bmp.get()) != 0)
         return 3;
 
     if(bmhd.header != 0x4D42)
         return 4;
 
     // Bitmap-Info-Header einlesen
-    //if(libendian::le_read_c((char*)&bmih, 40, bmp) != 40)
+    //if(libendian::le_read_c((char*)&bmih, 40, bmp.get()) != 40)
     //  return 5;
-    if(libendian::le_read_ui(&bmih.length, bmp) != 0)
+    if(libendian::le_read_ui(&bmih.length, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.width, bmp) != 0)
+    if(libendian::le_read_i(&bmih.width, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.height, bmp) != 0)
+    if(libendian::le_read_i(&bmih.height, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_s(&bmih.planes, bmp) != 0)
+    if(libendian::le_read_s(&bmih.planes, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_s(&bmih.bbp, bmp) != 0)
+    if(libendian::le_read_s(&bmih.bbp, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_ui(&bmih.compression, bmp) != 0)
+    if(libendian::le_read_ui(&bmih.compression, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_ui(&bmih.size, bmp) != 0)
+    if(libendian::le_read_ui(&bmih.size, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.xppm, bmp) != 0)
+    if(libendian::le_read_i(&bmih.xppm, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.yppm, bmp) != 0)
+    if(libendian::le_read_i(&bmih.yppm, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.clrused, bmp) != 0)
+    if(libendian::le_read_i(&bmih.clrused, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.clrimp, bmp) != 0)
+    if(libendian::le_read_i(&bmih.clrimp, bmp.get()) != 0)
         return 5;
 
     if(bmih.height > 0)
@@ -166,7 +172,7 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
     if(bmih.planes != 1)
         return 6;
 
-    baseArchivItem_Bitmap* bitmap = dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0));
+    boost::movelib::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
     bitmap->setName(file);
 
     switch(bmih.bbp)
@@ -182,7 +188,6 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
         default:
         {
             fprintf(stderr, "unknown bitmap depth: %d ", bmih.bbp);
-            delete bitmap;
             return 7;
         } break;
     }
@@ -190,7 +195,6 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
     // keine Kompression
     if(bmih.compression != 0)
     {
-        delete bitmap;
         return 8;
     }
 
@@ -209,8 +213,9 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
 
         // Farbpalette lesen
         unsigned char colors[256][4];
-        if(libendian::le_read_uc(colors[0], bmih.clrused * 4, bmp) != bmih.clrused * 4)
+        if(libendian::le_read_uc(colors[0], bmih.clrused * 4, bmp.get()) != bmih.clrused * 4){
             return 10;
+        }
 
         // Farbpalette zuweisen
         if(palette)
@@ -222,9 +227,6 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
         }
     }
 
-    // Bitmap zuweisen
-    *image = bitmap;
-
     // Bitmapdaten setzen
     bitmap->setWidth(bmih.width);
     bitmap->setHeight(bmih.height);
@@ -233,29 +235,26 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
 
     unsigned char bbp = (bmih.bbp / 8);
     unsigned int size = bmih.width * bmih.height * bbp;
-    unsigned char* buffer = new unsigned char[bmih.width * bbp];
-    memset(buffer, 0, bmih.width * (bmih.bbp / 8));
+    std::vector<unsigned char> buffer(bmih.width * bbp);
 
     // Bitmap Pixel einlesen
     if(bottomup)
     {
         // Bottom-Up, "von unten nach oben"
         for(int y = bmih.height - 1; y >= 0; --y)
-            LoadBMP_ReadLine(bmp, y, bmih.size, size, bmih.width, bbp, bitmap, buffer);
+            LoadBMP_ReadLine(bmp.get(), y, bmih.size, size, bmih.width, bbp, bitmap.get(), &buffer.front());
     }
     else
     {
         // Top-Down, "von oben nach unten"
         for(int y = 0; y < bmih.height; ++y)
-            LoadBMP_ReadLine(bmp, y, bmih.size, size, bmih.width, bbp, bitmap, buffer);
+            LoadBMP_ReadLine(bmp.get(), y, bmih.size, size, bmih.width, bbp, bitmap.get(), &buffer.front());
     }
-    if(ftell(bmp) % 4 > 0)
-        fseek(bmp, 4 - (ftell(bmp) % 4), SEEK_CUR);
+    if(ftell(bmp.get()) % 4 > 0)
+        fseek(bmp.get(), 4 - (ftell(bmp.get()) % 4), SEEK_CUR);
 
-    delete[] buffer;
-
-    // Datei schliessen
-    fclose(bmp);
+    // Bitmap zuweisen
+    image = bitmap.release();
 
     // alles ok
     return 0;

@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -45,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items, long nr)
+int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items, long nr)
 {
     struct BMHD
     {
@@ -70,20 +71,18 @@ int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* pa
         int clrimp; // 40
     } bmih = { 40, 0, 0, 1, 24, 0, 40, 0, 0, 0, 0 };
 
-    FILE* bmp;
-
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     if(nr == -1)
     {
         // Bitmap in ArchivInfo suchen, erstes Bitmap wird geschrieben
-        for(unsigned long i = 0; i < items->getCount(); ++i)
+        for(unsigned long i = 0; i < items.size(); ++i)
         {
-            if(!items->get(i))
+            if(!items.get(i))
                 continue;
 
-            switch(items->get(i)->getBobType())
+            switch(items.get(i)->getBobType())
             {
                 case BOBTYPE_BITMAP_PLAYER:
                 case BOBTYPE_BITMAP_RLE:
@@ -102,13 +101,13 @@ int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* pa
     if(nr == -1)
         return 2;
 
-    const baseArchivItem_Bitmap* bitmap = dynamic_cast<const baseArchivItem_Bitmap*>(items->get(nr));
+    const baseArchivItem_Bitmap* bitmap = dynamic_cast<const baseArchivItem_Bitmap*>(items.get(nr));
 
     // Datei zum schreiben öffnen
-    bmp = fopen(file, "wb");
+    boost::scoped_ptr<FILE> bmp(fopen(file.c_str(), "wb"));
 
     // hat das geklappt?
-    if(bmp == NULL)
+    if(!bmp)
         return 3;
 
     bmih.height = bitmap->getHeight();
@@ -118,46 +117,46 @@ int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* pa
     bmhd.size = 0;
 
     // Bitmap-Header schreiben
-    //if(libendian::le_write_uc((unsigned char*)&bmhd, 14, bmp) != 14)
+    //if(libendian::le_write_uc((unsigned char*)&bmhd, 14, bmp.get()) != 14)
     //  return 4;
-    if(libendian::le_write_us(bmhd.header, bmp) != 0)
+    if(libendian::le_write_us(bmhd.header, bmp.get()) != 0)
         return 4;
-    if(libendian::le_write_ui(bmhd.size, bmp) != 0)
+    if(libendian::le_write_ui(bmhd.size, bmp.get()) != 0)
         return 4;
-    if(libendian::le_write_ui(bmhd.reserved, bmp) != 0)
+    if(libendian::le_write_ui(bmhd.reserved, bmp.get()) != 0)
         return 4;
-    if(libendian::le_write_ui(bmhd.offset, bmp) != 0)
+    if(libendian::le_write_ui(bmhd.offset, bmp.get()) != 0)
         return 4;
 
     // Bitmap-Info-Header schreiben
-    //if(libendian::le_write_uc((unsigned char*)&bmih, 40, bmp) != 40)
+    //if(libendian::le_write_uc((unsigned char*)&bmih, 40, bmp.get()) != 40)
     //  return 5;
-    if(libendian::le_write_ui(bmih.length, bmp) != 0)
+    if(libendian::le_write_ui(bmih.length, bmp.get()) != 0)
         return 5;
-    if(libendian::le_write_i(bmih.width, bmp) != 0)
+    if(libendian::le_write_i(bmih.width, bmp.get()) != 0)
         return 5;
-    if(libendian::le_write_i(bmih.height, bmp) != 0)
+    if(libendian::le_write_i(bmih.height, bmp.get()) != 0)
         return 5;
-    if(libendian::le_write_s(bmih.planes, bmp) != 0)
+    if(libendian::le_write_s(bmih.planes, bmp.get()) != 0)
         return 5;
-    if(libendian::le_write_s(bmih.bbp, bmp) != 0)
+    if(libendian::le_write_s(bmih.bbp, bmp.get()) != 0)
         return 5;
-    if(libendian::le_write_ui(bmih.compression, bmp) != 0)
-        return 5;
-
-    unsigned int bmihsizepos = ftell(bmp);
-    if(libendian::le_write_ui(bmih.size, bmp) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.xppm, bmp) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.yppm, bmp) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.clrused, bmp) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.clrimp, bmp) != 0)
+    if(libendian::le_write_ui(bmih.compression, bmp.get()) != 0)
         return 5;
 
-    fflush(bmp);
+    unsigned int bmihsizepos = ftell(bmp.get());
+    if(libendian::le_write_ui(bmih.size, bmp.get()) != 0)
+        return 5;
+    if(libendian::le_write_i(bmih.xppm, bmp.get()) != 0)
+        return 5;
+    if(libendian::le_write_i(bmih.yppm, bmp.get()) != 0)
+        return 5;
+    if(libendian::le_write_i(bmih.clrused, bmp.get()) != 0)
+        return 5;
+    if(libendian::le_write_i(bmih.clrimp, bmp.get()) != 0)
+        return 5;
+
+    fflush(bmp.get());
 
     // Farbpalette lesen
     unsigned char colors[256][4];
@@ -170,7 +169,7 @@ int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* pa
     }
 
     // Farbpalette schreiben
-    if(libendian::le_write_uc(colors[0], bmih.clrused * 4, bmp) != bmih.clrused * 4)
+    if(libendian::le_write_uc(colors[0], bmih.clrused * 4, bmp.get()) != bmih.clrused * 4)
         return 6;
 
     unsigned char* buffer = new unsigned char[bmih.width * bmih.height * 4 + 1];
@@ -198,7 +197,7 @@ int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* pa
                 case 8:
                 {
                     unsigned char color = buffer[x + bmih.width * y];
-                    libendian::le_write_uc(&color, 1, bmp);
+                    libendian::le_write_uc(&color, 1, bmp.get());
                 } break;
                 case 24:
                 {
@@ -211,30 +210,27 @@ int libsiedler2::loader::WriteBMP(const char* file, const ArchivItem_Palette* pa
                         g = 0x00;
                         b = 0x8f;
                     }
-                    if(libendian::le_write_uc(&b, 1, bmp) != 1)
+                    if(libendian::le_write_uc(&b, 1, bmp.get()) != 1)
                         return 8;
-                    if(libendian::le_write_uc(&g, 1, bmp) != 1)
+                    if(libendian::le_write_uc(&g, 1, bmp.get()) != 1)
                         return 8;
-                    if(libendian::le_write_uc(&r, 1, bmp) != 1)
+                    if(libendian::le_write_uc(&r, 1, bmp.get()) != 1)
                         return 8;
                 } break;
             }
         }
         if((bmih.width * bmih.bbp / 8) % 4 > 0)
-            libendian::le_write_uc(placeholder, 4 - (bmih.width * bmih.bbp / 8) % 4, bmp);
+            libendian::le_write_uc(placeholder, 4 - (bmih.width * bmih.bbp / 8) % 4, bmp.get());
     }
-    if(ftell(bmp) % 4 > 0)
-        libendian::le_write_uc(placeholder, 4 - (ftell(bmp) % 4), bmp);
+    if(ftell(bmp.get()) % 4 > 0)
+        libendian::le_write_uc(placeholder, 4 - (ftell(bmp.get()) % 4), bmp.get());
 
     delete[] buffer;
 
-    unsigned int endsize = ftell(bmp);
-    fseek(bmp, bmihsizepos, SEEK_SET);
-    if(libendian::le_write_ui(endsize - bmihsizepos, bmp) != 0)
+    unsigned int endsize = ftell(bmp.get());
+    fseek(bmp.get(), bmihsizepos, SEEK_SET);
+    if(libendian::le_write_ui(endsize - bmihsizepos, bmp.get()) != 0)
         return 9;
-
-    // Datei schliessen
-    fclose(bmp);
 
     // alles ok
     return 0;
