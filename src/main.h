@@ -47,7 +47,7 @@
 #include <algorithm>
 
 #ifdef _WIN32
-#   define class class __declspec(dllexport)
+//#   define class class __declspec(dllexport)
 #ifndef __CYGWIN__
 #   define snprintf _snprintf
 #endif
