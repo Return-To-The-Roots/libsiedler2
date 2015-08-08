@@ -22,6 +22,10 @@
 #include "main.h"
 #include "libsiedler2.h"
 
+#ifdef _MSC_VER
+#define strdup _strdup
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
 #if defined _WIN32 && defined _DEBUG && defined _MSC_VER && defined _MSC_VER
