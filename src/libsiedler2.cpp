@@ -23,6 +23,7 @@
 #include "libsiedler2.h"
 
 #ifdef _MSC_VER
+#undef strdup
 #define strdup _strdup
 #endif
 
