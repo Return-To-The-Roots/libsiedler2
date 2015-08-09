@@ -21,7 +21,7 @@
 // Header
 #include "main.h"
 #include <boost/scoped_ptr.hpp>
-#include <boost/move/unique_ptr.hpp>
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     if(bmih.planes != 1)
         return 6;
 
-    boost::movelib::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
+    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
     bitmap->setName(file);
 
     switch(bmih.bbp)

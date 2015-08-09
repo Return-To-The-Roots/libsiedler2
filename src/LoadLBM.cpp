@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
-#include <boost/move/unique_ptr.hpp>
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     if(strncmp(pbm, "PBM ", 4) != 0)
         return 7;
 
-    boost::movelib::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
+    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
     bitmap->setFormat(FORMAT_PALETTED);
     ArchivItem_Palette* palette = NULL;
     unsigned short compression;

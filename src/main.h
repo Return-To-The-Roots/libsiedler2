@@ -66,6 +66,14 @@ namespace libsiedler2{
         fseek(f, 0, SEEK_SET);
         return length;
     }
+
+    template<typename T>
+    struct Deleter {
+        void operator()(T *p)
+        {
+            delete p;
+        }
+    };
 } // namespace libsiedler2
 
 namespace boost{
