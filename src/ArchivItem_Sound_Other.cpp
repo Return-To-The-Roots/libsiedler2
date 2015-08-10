@@ -46,31 +46,7 @@ static char THIS_FILE[] = __FILE__;
  */
 libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(void) : baseArchivItem_Sound()
 {
-    length = 0;
-    data = NULL;
-
     setType(SOUNDTYPE_OTHER);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p baseArchivItem_Sound_Other.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other& item) : baseArchivItem_Sound( item )
-{
-    type = item.type;
-    length = item.length;
-    data = NULL;
-
-    if(length != 0)
-    {
-        data = new unsigned char[length];
-        memcpy(data, item.data, length);
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -80,9 +56,7 @@ libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(const baseAr
  *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other(void)
-{
-    clear();
-}
+{}
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -100,9 +74,9 @@ int libsiedler2::baseArchivItem_Sound_Other::load(FILE* file, unsigned int lengt
     if(file == NULL || length == 0)
         return 1;
 
-    alloc(length);
+    data.resize(length);
 
-    if(libendian::le_read_uc(data, length, file) != (int)length)
+    if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
         return 2;
 
     return 0;
@@ -123,34 +97,13 @@ int libsiedler2::baseArchivItem_Sound_Other::write(FILE* file) const
     if(file == NULL)
         return 1;
 
-    if(libendian::le_write_ui(length, file) != 0)
+    if(libendian::le_write_ui(data.size(), file) != 0)
         return 2;
 
-    if(libendian::le_write_uc(data, length, file) != (int)length)
+    if(libendian::le_write_uc(&data.front(), data.size(), file) != (int)data.size())
         return 3;
 
     return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  alloziert Soundspeicher für die gewünschte Größe.
- *
- *  @param[in] length Größe des Speichers
- *
- *  @author FloSoft
- */
-void libsiedler2::baseArchivItem_Sound_Other::alloc(unsigned int length)
-{
-    clear();
-
-    this->length = length;
-
-    if(length != 0)
-    {
-        data = new unsigned char[length];
-        memset(data, 0, length);
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -161,8 +114,5 @@ void libsiedler2::baseArchivItem_Sound_Other::alloc(unsigned int length)
  */
 void libsiedler2::baseArchivItem_Sound_Other::clear(void)
 {
-    delete[] data;
-
-    length = 0;
-    data = NULL;
+    data.resize(0);
 }

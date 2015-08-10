@@ -64,7 +64,7 @@ libsiedler2::baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseAr
     tracks = item.tracks;
 
     for(unsigned int i = 0; i < 256; ++i)
-        tracklist[i].copy(item.tracklist[i]);
+        tracklist[i] = item.tracklist[i];
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -200,8 +200,7 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
                 if(length & 1)
                     ++length;
 
-                tracklist[track_nr].allocXMid(length);
-                if(tracklist[track_nr].readXMid(file) != 0)
+                if(tracklist[track_nr].readXMid(file, length) != 0)
                     return 18;
 
                 if(tracklist[track_nr].XMid2Mid() != 0)

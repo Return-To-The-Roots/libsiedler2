@@ -22,6 +22,7 @@
 #pragma once
 
 #include "ArchivItem_Sound.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -31,9 +32,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p baseArchivItem_Sound_Wave.
             baseArchivItem_Sound_Wave(void);
-
-            /// Kopierkonstruktor von @p baseArchivItem_Sound_Wave.
-            baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave& item);
 
             /// Destruktor von @p baseArchivItem_Sound_Wave.
             ~baseArchivItem_Sound_Wave(void);
@@ -45,24 +43,19 @@ namespace libsiedler2
             int write(FILE* file) const { return write(file, false); }
             int write(FILE* file, bool stripheader = false) const;
 
-            /// alloziert Soundspeicher für die gewünschte Größe.
-            void alloc(unsigned int length);
-
             /// räumt den Soundspeicher auf.
             void clear(void);
 
-            void setData(const unsigned char* data, unsigned int length)
+            void setData(const std::vector<unsigned char>& data)
             {
-                alloc(length);
-                memcpy(this->data, data, sizeof(unsigned char)*length);
+                this->data = data;
             }
 
-            const unsigned char* getData() { return data; }
-            unsigned int getLength() { return length; }
+            const std::vector<unsigned char>& getData() { return data; }
+            unsigned int getLength() { return data.size(); }
 
         protected:
-            unsigned char* data;
-            unsigned int length;
+            std::vector<unsigned char> data;
     };
 
     /// Klasse für WAVE-Sounds.

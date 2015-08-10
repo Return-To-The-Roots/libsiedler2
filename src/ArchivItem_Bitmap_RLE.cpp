@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_RLE.h"
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -109,8 +110,6 @@ libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE(void)
  */
 int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Palette* palette)
 {
-    unsigned char* data = NULL;
-
     if(file == NULL)
         return 1;
     if(palette == NULL)
@@ -146,21 +145,20 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Pa
     if(libendian::le_read_ui(&length, file) != 0)
         return 6;
 
+    std::vector<unsigned char> data(length);
     // Daten einlesen
     if(length != 0)
     {
-        data = new unsigned char[length];
-        if(libendian::le_read_uc(data, length, file) != (int)length)
+        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
             return 7;
     }
 
     // Speicher anlegen
     tex_alloc();
 
-    if(length != 0 && data)
+    if(length != 0)
     {
-        unsigned char* image = &data[height * 2];
-        unsigned int position = 0;
+        unsigned int position = height * 2;
 
         // Einlesen
         for(unsigned short y = 0; y < height; ++y)
@@ -171,12 +169,12 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Pa
             while(x < width)
             {
                 // farbige Pixel setzen
-                unsigned char count = image[position++];
+                unsigned char count = data[position++];
                 for(unsigned char i = 0; i < count; ++i, ++x)
-                    tex_setPixel(x, y, image[position++], palette);
+                    tex_setPixel(x, y, data[position++], palette);
 
                 // transparente Pixel setzen
-                count = image[position++];
+                count = data[position++];
                 for(unsigned char i = 0; i < count; ++i, ++x)
                     tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
             }
@@ -188,10 +186,8 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Pa
         // FF überspringen
         ++position;
 
-        if(position != length - (height * 2) )
+        if(position != length)
             return 8;
-
-        delete[] data;
     }
 
     return 0;
@@ -213,8 +209,6 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(FILE* file, const ArchivItem_Pa
  */
 int libsiedler2::baseArchivItem_Bitmap_RLE::write(FILE* file, const ArchivItem_Palette* palette) const
 {
-    unsigned char* data = NULL;
-
     if(file == NULL)
         return 1;
     if(palette == NULL)
@@ -252,12 +246,11 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(FILE* file, const ArchivItem_P
         return 8;
 
     // maximale größe von RLE: width*height*2
-    data = new unsigned char[height * 4 + width * height * 2];
-    memset(data, 0, width * height * 2);
+    std::vector<unsigned char> data(height * 4 + width * height * 2);
 
     // Startadressen
     unsigned char* image = &data[height * 2];
-    unsigned short* starts = (unsigned short*)&data[0];
+    unsigned short* const starts = (unsigned short*)&data[0];
 
     // RLE kodieren
     unsigned int position = 0;
@@ -317,13 +310,11 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(FILE* file, const ArchivItem_P
     // Daten schreiben
     for(unsigned int i = 0; i < height; ++i)
     {
-        if(libendian::le_write_us(((unsigned short*)data)[i], file) != 0)
+        if(libendian::le_write_us(starts[i], file) != 0)
             return 10;
     }
     if(libendian::le_write_uc(&data[height * 2], length - (height * 2), file) != (int)(length - (height * 2)))
         return 11;
-
-    delete[] data;
 
     return 0;
 }

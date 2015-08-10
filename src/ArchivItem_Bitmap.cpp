@@ -147,9 +147,6 @@ libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(void) : ArchivItem()
 
     tex_bpp = 0;
 
-    tex_length = 0;
-    tex_data = NULL;
-
     palette = NULL;
     format = FORMAT_UNKNOWN;
 }
@@ -177,14 +174,7 @@ libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(const baseArchivItem_B
 
     tex_bpp = item.tex_bpp;
 
-    tex_length = item.tex_length;
-    tex_data = NULL;
-
-    if(tex_length != 0)
-    {
-        tex_data = new unsigned char[tex_length];
-        memcpy(tex_data, item.tex_data, tex_length);
-    }
+    tex_data = item.tex_data;
 
     palette = NULL;
     setPalette(item.palette);
@@ -221,7 +211,7 @@ void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
         unsigned char color,
         const ArchivItem_Palette* palette)
 {
-    if(tex_data == NULL)
+    if(tex_data.empty())
         return;
     if(palette == NULL)
         palette = this->palette;
@@ -321,7 +311,7 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
         unsigned short y,
         const ArchivItem_Palette* palette) const
 {
-    if(tex_data == NULL)
+    if(tex_data.empty())
         return 0;
     if(palette == NULL)
         palette = this->palette;
@@ -404,26 +394,19 @@ void libsiedler2::baseArchivItem_Bitmap::tex_alloc(void)
         } break;
     }
 
-    tex_length = tex_width * tex_height * tex_bpp;
-
-    if(tex_length != 0)
+    unsigned char clear = 0x7F;
+    switch(format)
     {
-        tex_data = new unsigned char[tex_length];
-
-        unsigned char clear = 0x7F;
-        switch(format)
+        case FORMAT_RGBA:
         {
-            case FORMAT_RGBA:
-            {
-                clear = 0x00;
-            } break;
-            case FORMAT_PALETTED:
-            {
-                clear = TRANSPARENT_INDEX;
-            } break;
-        }
-        memset(tex_data, clear, tex_length);
+            clear = 0x00;
+        } break;
+        case FORMAT_PALETTED:
+        {
+            clear = TRANSPARENT_INDEX;
+        } break;
     }
+    tex_data.resize(tex_width * tex_height * tex_bpp, clear);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -434,15 +417,12 @@ void libsiedler2::baseArchivItem_Bitmap::tex_alloc(void)
  */
 void libsiedler2::baseArchivItem_Bitmap::tex_clear(void)
 {
-    delete[] tex_data;
-
     tex_width = 0;
     tex_height = 0;
 
     tex_bpp = 0;
 
-    tex_length = 0;
-    tex_data = NULL;
+    tex_data.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -487,7 +467,7 @@ unsigned int libsiedler2::baseArchivItem_Bitmap::getLength(void) const
  *
  *  @author FloSoft
  */
-const unsigned char* libsiedler2::baseArchivItem_Bitmap::getTexData(void) const
+const std::vector<unsigned char>& libsiedler2::baseArchivItem_Bitmap::getTexData(void) const
 {
     return tex_data;
 }

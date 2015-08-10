@@ -23,6 +23,7 @@
 
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -32,9 +33,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p baseArchivItem_Bitmap_Player.
             baseArchivItem_Bitmap_Player(void);
-
-            /// Kopierkonstruktor von @p baseArchivItem_Bitmap_Player.
-            baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player& item);
 
             /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
             baseArchivItem_Bitmap_Player(FILE* file, const ArchivItem_Palette* palette);
@@ -85,8 +83,7 @@ namespace libsiedler2
                        unsigned char color);
 
         protected:
-            unsigned char* tex_pdata; ///< Die Spielerfarbedaten.
-            unsigned int tex_plength; ///< Länge der Spielerfarbendaten.
+            std::vector<unsigned char> tex_pdata; ///< Die Spielerfarbedaten.
     };
 
     /// Klasse für Player-Bitmaps.

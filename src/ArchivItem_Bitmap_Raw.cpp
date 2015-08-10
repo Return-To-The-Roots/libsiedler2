@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Raw.h"
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -109,8 +110,6 @@ libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw(void)
  */
 int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Palette* palette)
 {
-    unsigned char* data = NULL;
-
     if(file == NULL)
         return 1;
     if(palette == NULL)
@@ -127,11 +126,11 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
     if(libendian::le_read_ui(&length, file) != 0)
         return 2;
 
+    std::vector<unsigned char> data(length);
     // Daten einlesen
     if(length != 0)
     {
-        data = new unsigned char[length];
-        if(libendian::le_read_uc(data, length, file) != (int)length)
+        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
             return 3;
     }
 
@@ -154,7 +153,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
     // Speicher anlegen
     tex_alloc();
 
-    if(length != 0 && data)
+    if(length != 0)
     {
         for(unsigned short y = 0; y < height; ++y)
         {
@@ -164,8 +163,6 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
                 tex_setPixel(x, y, data[y * width + x], palette);
             }
         }
-
-        delete[] data;
     }
 
     // Unbekannte Daten überspringen

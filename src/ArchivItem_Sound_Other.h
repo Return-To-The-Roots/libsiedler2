@@ -22,6 +22,7 @@
 #pragma once
 
 #include "ArchivItem_Sound.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -32,9 +33,6 @@ namespace libsiedler2
             /// Konstruktor von @p baseArchivItem_Sound_Other.
             baseArchivItem_Sound_Other(void);
 
-            /// Kopierkonstruktor von @p baseArchivItem_Sound_Other.
-            baseArchivItem_Sound_Other(const baseArchivItem_Sound_Other& item);
-
             /// Destruktor von @p baseArchivItem_Sound_Other.
             virtual ~baseArchivItem_Sound_Other(void);
 
@@ -44,18 +42,14 @@ namespace libsiedler2
             /// schreibt die Daten in eine Datei.
             int write(FILE* file) const;
 
-            /// alloziert Soundspeicher für die gewünschte Größe.
-            void alloc(unsigned int length);
-
             /// räumt den Soundspeicher auf.
             void clear(void);
 
-            const unsigned char* getData() { return data; }
-            unsigned int getLength() { return length; }
+            const std::vector<unsigned char> getData() { return data; }
+            unsigned int getLength() { return data.size(); }
 
         protected:
-            unsigned char* data;
-            unsigned int length;
+            std::vector<unsigned char> data;
     };
 
     /// Klasse für Other-Sounds.

@@ -23,6 +23,7 @@
 
 #include "ArchivItem.h"
 #include "ArchivItem_Palette.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -56,7 +57,7 @@ namespace libsiedler2
             unsigned int getLength(void) const;
 
             /// liefert den Textur-Datenblock.
-            const unsigned char* getTexData(void) const;
+            const std::vector<unsigned char>& getTexData(void) const;
 
             /// liefert den X-Nullpunkt.
             short getNx(void) const;
@@ -140,9 +141,7 @@ namespace libsiedler2
             unsigned short tex_height;  ///< Höhe der Textur.
 
             unsigned short tex_bpp;     ///< Bytebreite der Textur pro Pixel.
-
-            unsigned int tex_length;    ///< Länge der Texturdaten.
-            unsigned char* tex_data;    ///< Die Texturdaten.
+            std::vector<unsigned char> tex_data;    ///< Die Texturdaten.
 
             const ArchivItem_Palette* palette; ///< Die Palette.
             int format; ///< Das Texturformat.

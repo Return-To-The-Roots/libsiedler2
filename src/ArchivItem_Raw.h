@@ -22,6 +22,7 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -31,8 +32,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p baseArchivItem_Raw.
             baseArchivItem_Raw(void);
-            /// Kopierkonstruktor von @p baseArchivItem_Raw.
-            baseArchivItem_Raw(const baseArchivItem_Raw& item);
             /// Destruktor von @p baseArchivItem_Raw.
             ~baseArchivItem_Raw(void);
 
@@ -45,18 +44,15 @@ namespace libsiedler2
             unsigned int getLength(void) const;
 
             /// liefert die Daten zurück (ro).
-            const unsigned char* getData(void) const;
+            const std::vector<unsigned char>& getData(void) const;
             /// liefert die Daten zurück (rw).
-            unsigned char* getData(void);
+            std::vector<unsigned char>& getData(void);
 
-            /// erzeugt den Datenblock.
-            unsigned char* alloc(unsigned int length);
             /// löscht den Datenblock.
             void clear(void);
 
         private:
-            unsigned char* data; ///< Die Daten.
-            unsigned int length; ///< Die Länge der Daten.
+            std::vector<unsigned char> data; ///< Die Daten.
     };
 
     /// Klasse für Rawdaten.

@@ -24,6 +24,7 @@
 #include "ArchivItem.h"
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -33,9 +34,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p ArchivItem_Bob.
             ArchivItem_Bob(void);
-
-            /// Kopierkonstruktor von @p ArchivItem_Bob.
-            ArchivItem_Bob(const ArchivItem_Bob& item);
 
             /// Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten.
             ArchivItem_Bob(FILE* file, const ArchivItem_Palette* palette);
@@ -54,7 +52,7 @@ namespace libsiedler2
         protected:
             unsigned short good_count; /// Warenanzahl
             unsigned short item_count; /// Bildanzahl
-            unsigned short* links;     /// "Links" (Zugehörigkeiten der Bilder)
+            std::vector<unsigned short> links;     /// "Links" (Zugehörigkeiten der Bilder)
     };
 }
 

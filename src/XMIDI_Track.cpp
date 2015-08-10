@@ -26,6 +26,7 @@
 #include "GammaTable.h"
 
 #include "../../libendian/src/endianess.h"
+#include <algorithm>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -58,8 +59,8 @@ XMIDI_Track::~XMIDI_Track()
         while((current = next))
         {
             next = current->next;
-            if ((current->status >> 4) == 0xF)
-                delete[] (current->buffer);
+            /*if ((current->status >> 4) == 0xF)
+                delete[] (current->buffer);*/
             delete current;
         }
     }
@@ -87,7 +88,7 @@ int XMIDI_Track::ConvertTrackToList()
     first_state fs;
     memset(&fs, 0, sizeof(first_state));
 
-    while (!end && position < track->xmid_length)
+    while (!end && position < track->xmid_data.size())
     {
         GetVLQ2(data);
         time += data;
@@ -329,21 +330,18 @@ int XMIDI_Track::ConvertSystemMessage(const int time, const unsigned char status
         i++;
     }
 
-    i += GetVLQ(current->len);
+    unsigned int len;
+    i += GetVLQ(len);
 
-    if (!current->len)
-    {
-        current->buffer = NULL;
+    current->buffer.clear();
+    if (!len)
         return i;
-    }
 
-    current->buffer = new unsigned char[current->len];
-    memset(current->buffer, 0, current->len);
+    current->buffer.resize(len);
 
-    memcpy(current->buffer, &track->xmid_data[position], current->len);
-    position += current->len;
+    std::copy(track->xmid_data.begin() + position, track->xmid_data.begin() + position + len, current->buffer.begin());
 
-    return i + current->len;
+    return i + len;
 }
 
 void XMIDI_Track::CreateNewEvent(int time)
@@ -449,13 +447,10 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
                 if (event->status == 0xFF)
                     mid_length++;
 
-                mid_length += PutVLQ(event->len, false);
+                mid_length += PutVLQ(event->buffer.size(), false);
 
-                if (event->len)
-                {
-                    for (j = 0; j < event->len; j++)
-                        mid_length++;
-                }
+                for (j = 0; j < event->buffer.size(); j++)
+                    mid_length++;
                 break;
         }
     }
@@ -472,7 +467,7 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
 
 
     // Speicher anlegen
-    track->allocMid(mid_length);
+    track->mid_data.resize(mid_length);
 
     // nun Stream in die das Array schreiben
     unsigned int i = 14;
@@ -531,13 +526,10 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
                 if (event->status == 0xFF)
                     track->mid_data[i++] = event->data[0];
 
-                i += PutVLQ(event->len, true, i);
+                i += PutVLQ(event->buffer.size(), true, i);
 
-                if (event->len)
-                {
-                    for (j = 0; j < event->len; j++)
-                        track->mid_data[i++] = event->buffer[j];
-                }
+                for (j = 0; j < event->buffer.size(); j++)
+                    track->mid_data[i++] = event->buffer[j];
                 break;
         }
     }

@@ -65,7 +65,7 @@ libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArch
     tracks = item.tracks;
 
     for(unsigned int i = 0; i < 256; ++i)
-        tracklist[i].copy(item.tracklist[i]);
+        tracklist[i] = item.tracklist[i];
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -136,8 +136,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length
                 fseek(file, -8, SEEK_CUR);
                 length += 8;
 
-                tracklist[track_nr].allocMid(length);
-                if(tracklist[track_nr].readMid(file) != 0)
+                if(tracklist[track_nr].readMid(file, length) != 0)
                     return 11;
 
                 ++track_nr;

@@ -48,31 +48,7 @@ static char THIS_FILE[] = __FILE__;
  */
 libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(void) : baseArchivItem_Sound()
 {
-    length = 0;
-    data = NULL;
-
     setType(SOUNDTYPE_WAVE);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p baseArchivItem_Sound_Wave.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(const baseArchivItem_Sound_Wave& item) : baseArchivItem_Sound( item )
-{
-    type = item.type;
-    length = item.length;
-    data = NULL;
-
-    if(length != 0)
-    {
-        data = new unsigned char[length];
-        memcpy(data, item.data, length);
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,9 +58,7 @@ libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(const baseArch
  *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave(void)
-{
-    clear();
-}
+{}
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -116,7 +90,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length
 
     if(prependheader)
     {
-        alloc(length + 44);
+        data.resize(length + 44);
 
         if(libendian::le_read_uc(&data[44], length, file) != (int)length)
             return 2;
@@ -171,9 +145,9 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length
     }
     else
     {
-        alloc(length);
+        data.resize(length);
 
-        if(libendian::le_read_uc(data, length, file) != (int)length)
+        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
             return 3;
     }
 
@@ -196,12 +170,12 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(FILE* file, bool stripheader) 
     if(file == NULL)
         return 1;
 
-    unsigned char* start = data;
-    unsigned int length = this->length;
+    const unsigned char* start = &data.front();
+    unsigned int length = data.size();
     if(stripheader)
     {
         start = &data[44];
-        length = this->length - 44;
+        length -= 44;
     }
 
     if(libendian::le_write_ui(length, file) != 0)
@@ -215,35 +189,11 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(FILE* file, bool stripheader) 
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  alloziert Soundspeicher für die gewünschte Größe.
- *
- *  @param[in] length Größe des Speichers
- *
- *  @author FloSoft
- */
-void libsiedler2::baseArchivItem_Sound_Wave::alloc(unsigned int length)
-{
-    clear();
-
-    this->length = length;
-
-    if(length != 0)
-    {
-        data = new unsigned char[length];
-        memset(data, 0, length);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
  *  räumt den Soundspeicher auf.
  *
  *  @author FloSoft
  */
 void libsiedler2::baseArchivItem_Sound_Wave::clear(void)
 {
-    delete[] data;
-
-    length = 0;
-    data = NULL;
+    data.clear();
 }

@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include <boost/scoped_ptr.hpp>
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -172,16 +173,15 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     if(libendian::le_write_uc(colors[0], bmih.clrused * 4, bmp.get()) != bmih.clrused * 4)
         return 6;
 
-    unsigned char* buffer = new unsigned char[bmih.width * bmih.height * 4 + 1];
-    memset(buffer, 0x00, bmih.width * bmih.height * 4 + 1);
+    std::vector<unsigned char> buffer(bmih.width * bmih.height * 4 + 1);
 
     /// @todo: bug im print?!?
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        if(dynamic_cast<const baseArchivItem_Bitmap_Player*>(bitmap)->print(buffer, bmih.width, bmih.height, FORMAT_RGBA, palette, 128) != 0)
+        if(dynamic_cast<const baseArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette, 128) != 0)
             return 7;
     }
-    else if(bitmap->print(buffer, bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
+    else if(bitmap->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
         return 7;
 
     unsigned char placeholder[80];
@@ -224,8 +224,6 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     }
     if(ftell(bmp.get()) % 4 > 0)
         libendian::le_write_uc(placeholder, 4 - (ftell(bmp.get()) % 4), bmp.get());
-
-    delete[] buffer;
 
     unsigned int endsize = ftell(bmp.get());
     fseek(bmp.get(), bmihsizepos, SEEK_SET);
