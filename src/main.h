@@ -32,6 +32,10 @@
 #   endif // _DEBUG
 #endif // !_WIN32
 
+#if _MSC_VER < 1900
+#   define snprintf _snprintf
+#endif
+
 #include <cstdio>
 
 namespace libsiedler2{

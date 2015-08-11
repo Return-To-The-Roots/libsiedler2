@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Ini.h"
+#include "ArchivItem_Text.h"
 #include "types.h"
 #include <cstring>
 
@@ -199,4 +200,49 @@ void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::s
     item->setName(name);
 
     push(item);
+}
+
+std::string libsiedler2::ArchivItem_Ini::getValue(const std::string& name) const
+{
+    const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(find(name));
+    if(item)
+    {
+        return item->getText();
+    }
+    return "";
+}
+
+void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::string& value)
+{
+    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
+    if(item)
+    {
+        // setText überschreibt Namen, daher nochmals setzen
+        item->setText(value);
+        item->setName(name);
+    }
+    else
+    {
+        // nicht gefunden, also hinzufügen
+        addValue(name, value);
+    }
+}
+
+void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, int value)
+{
+    char temp[512];
+    snprintf(temp, 256, "%d", value);
+
+    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
+    if(item)
+    {
+        // setText überschreibt Namen, daher nochmals setzen
+        item->setText(temp);
+        item->setName(name);
+    }
+    else
+    {
+        // nicht gefunden, also hinzufügen
+        addValue(name, temp);
+    }
 }

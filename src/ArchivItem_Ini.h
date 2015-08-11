@@ -22,7 +22,6 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include "ArchivItem_Text.h"
 #include "ArchivInfo.h"
 #include <cstdlib>
 
@@ -49,15 +48,7 @@ namespace libsiedler2
             int write(FILE* file) const;
 
             /// liest einen Wert aus der Ini
-            inline std::string getValue(const std::string& name) const
-            {
-                const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(find(name));
-                if(item)
-                {
-                    return item->getText();
-                }
-                return "";
-            }
+            std::string getValue(const std::string& name) const;
 
             inline int getValueI(const std::string& name) const
             {
@@ -68,40 +59,8 @@ namespace libsiedler2
             void addValue(const std::string& name, const std::string& value);
 
             /// schreibt einen Wert in die Ini
-            inline void setValue(const std::string& name, const std::string& value)
-            {
-                ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
-                if(item)
-                {
-                    // setText überschreibt Namen, daher nochmals setzen
-                    item->setText(value);
-                    item->setName(name);
-                }
-                else
-                {
-                    // nicht gefunden, also hinzufügen
-                    addValue(name, value);
-                }
-            }
-
-            inline void setValue(const std::string& name, int value)
-            {
-                char temp[512];
-                snprintf(temp, 256, "%d", value);
-
-                ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
-                if(item)
-                {
-                    // setText überschreibt Namen, daher nochmals setzen
-                    item->setText(temp);
-                    item->setName(name);
-                }
-                else
-                {
-                    // nicht gefunden, also hinzufügen
-                    addValue(name, temp);
-                }
-            }
+            void setValue(const std::string& name, const std::string& value);
+            void setValue(const std::string& name, int value);
     };
 
 }
