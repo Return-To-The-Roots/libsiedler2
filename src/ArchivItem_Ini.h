@@ -23,6 +23,7 @@
 
 #include "ArchivItem.h"
 #include "ArchivItem_Text.h"
+#include "ArchivInfo.h"
 #include <cstdlib>
 
 namespace libsiedler2

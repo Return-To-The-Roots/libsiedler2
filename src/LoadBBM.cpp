@@ -20,9 +20,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
 #include <sstream>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -107,7 +113,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
                     return 10;
 
                 // Daten von Item auswerten
-                ArchivItem_Palette* palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
+                ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0);
                 items.push(palette);
 
                 size_t namePos = file.find_last_of('/');
@@ -119,13 +125,13 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
                 }
 
                 // Farbpalette lesen
-                unsigned char colors[256][3];
-                if(libendian::le_read_uc(colors[0], 256 * 3, bbm.get()) != 256 * 3)
+                Color colors[256];
+                if(libendian::le_read_uc(&colors[0].r, sizeof(colors), bbm.get()) != sizeof(colors))
                     return 10;
 
                 // Farbpalette zuweisen
                 for(unsigned int k = 0; k < 256; ++k)
-                    palette->set(k, colors[k][0], colors[k][1], colors[k][2]);
+                    palette->set(k, colors[k]);
 
                 ++i;
             } break;

@@ -235,7 +235,7 @@ void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
                     tex_data[position + 3] = 0x00;
                 else
                 {
-                    palette->get(color, &tex_data[position + 2], &tex_data[position + 1], &tex_data[position + 0]);
+                    palette->get(color, tex_data[position + 2], tex_data[position + 1], tex_data[position + 0]);
                     tex_data[position + 3] = 0xFF;
                 }
             } break;
@@ -277,7 +277,7 @@ void libsiedler2::baseArchivItem_Bitmap::tex_setPixel(unsigned short x,
                 if(a == 0x00)
                     tex_data[position] = TRANSPARENT_INDEX;
                 else
-                    tex_data[position] = palette->lookup(r, g, b);
+                    tex_data[position] = palette->lookup(Color(r, g, b));
             } break;
             case 4:
             {
@@ -380,32 +380,24 @@ void libsiedler2::baseArchivItem_Bitmap::tex_alloc(void)
     tex_height = tex_pow2(height);
 
     if(format == FORMAT_UNKNOWN)
-        format = texturformat;
+        format = getTextureFormat();
 
+    unsigned char clear;
     switch(format)
     {
         case FORMAT_RGBA:
-        {
             tex_bpp = 4;
-        } break;
+            clear = 0x00;
+            break;
         case FORMAT_PALETTED:
-        {
             tex_bpp = 1;
-        } break;
+            clear = TRANSPARENT_INDEX;
+            break;
+        default:
+            tex_bpp = 0;
+            clear = 0x7F;
     }
 
-    unsigned char clear = 0x7F;
-    switch(format)
-    {
-        case FORMAT_RGBA:
-        {
-            clear = 0x00;
-        } break;
-        case FORMAT_PALETTED:
-        {
-            clear = TRANSPARENT_INDEX;
-        } break;
-    }
     tex_data.resize(tex_width * tex_height * tex_bpp, clear);
 }
 
@@ -720,7 +712,7 @@ void libsiedler2::baseArchivItem_Bitmap::getVisibleArea(int& vx, int& vy, int& v
 int libsiedler2::baseArchivItem_Bitmap::print(unsigned char* buffer,
         unsigned short buffer_width,
         unsigned short buffer_height,
-        int buffer_format,
+        TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette,
         unsigned short to_x,
         unsigned short to_y,
@@ -741,17 +733,18 @@ int libsiedler2::baseArchivItem_Bitmap::print(unsigned char* buffer,
     if(from_h == 0 || from_y + from_h > tex_height)
         from_h = tex_height - from_y;
 
-    unsigned short bpp = 0;
+    unsigned short bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
-        {
             bpp = 4;
-        } break;
+            break;
         case FORMAT_PALETTED:
-        {
             bpp = 1;
-        } break;
+            break;
+        default:
+            bpp = 0;
+            break;
     }
 
     for(unsigned short y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
@@ -777,7 +770,7 @@ int libsiedler2::baseArchivItem_Bitmap::print(unsigned char* buffer,
                             // Ziel ist RGB+A
                             if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
                             {
-                                palette->get(tex_data[position2], &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
+                                palette->get(tex_data[position2], buffer[position + 2], buffer[position + 1], buffer[position + 0]);
                                 buffer[position + 3] = 0xFF;
                             }
                         } break;
@@ -837,7 +830,7 @@ int libsiedler2::baseArchivItem_Bitmap::create(unsigned short width,
         const unsigned char* buffer,
         unsigned short buffer_width,
         unsigned short buffer_height,
-        int buffer_format,
+        TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette)
 {
     if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0)
@@ -855,17 +848,18 @@ int libsiedler2::baseArchivItem_Bitmap::create(unsigned short width,
     // Texturspeicher anfordern
     tex_alloc();
 
-    unsigned short bpp = 0;
+    unsigned short bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
-        {
             bpp = 4;
-        } break;
+            break;
         case FORMAT_PALETTED:
-        {
             bpp = 1;
-        } break;
+            break;
+        default:
+            bpp = 0;
+            break;
     }
 
     for(unsigned int y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
@@ -877,16 +871,16 @@ int libsiedler2::baseArchivItem_Bitmap::create(unsigned short width,
             switch(buffer_format)
             {
                 case FORMAT_RGBA:
-                {
                     if(buffer[position + 3] != 0x00)
                         tex_setPixel(x, y, buffer[position + 2], buffer[position + 1], buffer[position], buffer[position + 3]);
                     else
                         tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
-                } break;
+                    break;
                 case FORMAT_PALETTED:
-                {
                     tex_setPixel(x, y, buffer[position], palette);
-                } break;
+                    break;
+                default:
+                    break; // Do nothing
             }
         }
     }
@@ -909,7 +903,7 @@ void libsiedler2::baseArchivItem_Bitmap::setPalette(const ArchivItem_Palette* pa
     delete this->palette;
 
     if(palette)
-        this->palette = dynamic_cast<ArchivItem_Palette*>(allocator->clone(*palette));
+        this->palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().clone(*palette));
     else
         this->palette = NULL;
 }

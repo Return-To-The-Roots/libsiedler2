@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivInfo.h"
+#include "types.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -69,7 +70,7 @@ ArchivInfo::ArchivInfo(void)
 ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(info.data)
 {
     for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
-        *it = allocator->clone(**it);
+        *it = getAllocator().clone(**it);
 }
 
 ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
@@ -78,7 +79,7 @@ ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
     clear();
     data.reserve(info.size());
     for(std::vector<ArchivItem*>::const_iterator it = info.data.begin(); it != info.data.end(); ++it)
-        data.push_back(allocator->clone(**it));
+        data.push_back(getAllocator().clone(**it));
     return *this;
 }
 
@@ -143,7 +144,7 @@ void ArchivInfo::clear(void)
  */
 void ArchivInfo::setC(size_t index, const ArchivItem& item)
 {
-    set(index, allocator->clone(item));
+    set(index, getAllocator().clone(item));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -165,7 +166,7 @@ void ArchivInfo::setC(size_t index, const ArchivItem& item)
  */
 void ArchivInfo::pushC(const ArchivItem& item)
 {
-    data.push_back(allocator->clone(item));
+    data.push_back(getAllocator().clone(item));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

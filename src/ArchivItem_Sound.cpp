@@ -21,6 +21,9 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound.h"
+#include "types.h"
+#include <libendian.h>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -153,28 +156,28 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         if(strncmp(header, "XMID", 4) == 0 || strncmp(header, "XDIR", 4) == 0)
         {
             // xmidi
-            item = dynamic_cast<baseArchivItem_Sound*>(allocator->create(BOBTYPE_SOUND, SOUNDTYPE_XMIDI));
+            item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_XMIDI));
         }
         else if(strncmp(header, "WAVE", 4) == 0)
         {
             // wave-format inkl-header
-            item = dynamic_cast<baseArchivItem_Sound*>(allocator->create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
+            item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
         }
     }
     else if(strncmp(header, "MThd", 4) == 0)
     {
         // midi
-        item = dynamic_cast<baseArchivItem_Sound*>(allocator->create(BOBTYPE_SOUND, SOUNDTYPE_MIDI));
+        item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_MIDI));
     }
     else if(strncmp(header, "OggS", 4) == 0 || strncmp(header, "ID3", 3) == 0 || ((unsigned char)header[0] == 0xFF && (unsigned char)header[1] == 0xFB) )
     {
         // ogg, mp3 (id3tag, ohne),
-        item = dynamic_cast<baseArchivItem_Sound*>(allocator->create(BOBTYPE_SOUND, SOUNDTYPE_OTHER));
+        item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_OTHER));
     }
     else
     {
         // wave-format ohne header?
-        item = dynamic_cast<baseArchivItem_Sound*>(allocator->create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
+        item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
     }
 
     fseek(file, oldpos, SEEK_SET);

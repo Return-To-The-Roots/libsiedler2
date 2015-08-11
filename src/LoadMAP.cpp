@@ -20,6 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Map.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
 #include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,7 +57,7 @@ int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, boo
     if(!map)
         return 2;
 
-    ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>(allocator->create(BOBTYPE_MAP, 0));
+    ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP, 0));
     if(item->load(map.get(), only_header) != 0){
         delete item;
         return 3;

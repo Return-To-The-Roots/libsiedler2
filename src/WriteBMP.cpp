@@ -20,8 +20,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Bitmap.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 #include <boost/scoped_ptr.hpp>
 #include <vector>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -166,7 +174,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     for(int i = 0; i < bmih.clrused; ++i)
     {
         colors[i][3] = 0;
-        palette->get(i, &colors[i][2], &colors[i][1], &colors[i][0]);
+        palette->get(i, colors[i][2], colors[i][1], colors[i][0]);
     }
 
     // Farbpalette schreiben

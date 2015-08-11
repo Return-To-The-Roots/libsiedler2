@@ -21,8 +21,9 @@
 // Header
 #include "main.h"
 #include "MIDI_Track.h"
-
 #include "XMIDI_Track.h"
+#include <libendian.h>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

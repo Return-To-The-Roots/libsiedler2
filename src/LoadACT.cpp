@@ -20,6 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
 #include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +68,7 @@ int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
     if(size != 256*3)
         return 3;
 
-    ArchivItem_Palette* palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
+    ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0);
     if(palette->load(act.get(), false) != 0){
         delete palette;
         return 4;

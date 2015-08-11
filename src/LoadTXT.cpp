@@ -20,9 +20,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Text.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
 #include <vector>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -75,7 +81,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         // den Header zurückspringen
         fseek(txt.get(), -2, SEEK_CUR);
 
-        ArchivItem_Text* item = (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0);
+        ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT, 0);
         item->load(txt.get(), conversion);
 
         items.push(item);
@@ -130,13 +136,13 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
                 fseek(txt.get(), i, SEEK_SET);
 
                 // einlesen
-                ArchivItem_Text* item = (ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0);
+                ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT, 0);
                 item->load(txt.get(), conversion, (unsigned int)strlen(&buffer[i - pos]));
 
                 items.push(item);
             }
             else
-                items.push((ArchivItem_Text*)allocator->create(BOBTYPE_TEXT, 0));
+                items.push((ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT, 0));
         }
     }
 

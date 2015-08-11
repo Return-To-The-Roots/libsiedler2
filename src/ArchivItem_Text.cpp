@@ -22,6 +22,8 @@
 #include "main.h"
 #include "ArchivItem_Text.h"
 #include "oem.h"
+#include "types.h"
+#include <libendian.h>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 #include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,12 +99,12 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
                 return 7;
 
             // Farbpalette zuweisen
-            unsigned char colors[256][3];
+            Color colors[256];
             for(unsigned int k = 0; k < 256; ++k)
-                palette->get(k, &colors[k][0], &colors[k][1], &colors[k][2]);
+                colors[k] = (*palette)[k];
 
             // Farbpalette schreiben
-            if(libendian::le_write_uc(colors[0], 256 * 3, bbm.get()) != 256 * 3)
+            if(libendian::le_write_uc(&colors[0].r, sizeof(colors), bbm.get()) != sizeof(colors))
                 return 8;
         }
     }

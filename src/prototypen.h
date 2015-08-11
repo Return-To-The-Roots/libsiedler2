@@ -25,6 +25,11 @@
 
 namespace libsiedler2
 {
+    //Fwd decl
+    class ArchivItem_Palette;
+    class ArchivItem;
+    class ArchivInfo;
+
 	/// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 	namespace loader
 	{

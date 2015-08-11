@@ -23,6 +23,7 @@
 
 #include "ArchivItem.h"
 #include "ArchivItem_Palette.h"
+#include "types.h"
 #include <vector>
 
 namespace libsiedler2
@@ -99,7 +100,7 @@ namespace libsiedler2
             void setPalette(const ArchivItem_Palette* palette);
 
             /// setzt das Format des Bildes.
-            void setFormat(int format) { this->format = format; }
+            void setFormat(TEXTURFORMAT format) { this->format = format; }
 
             virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
@@ -107,7 +108,7 @@ namespace libsiedler2
             virtual int print(unsigned char* buffer,
                               unsigned short buffer_width,
                               unsigned short buffer_height,
-                              int buffer_format,
+                              TEXTURFORMAT buffer_format,
                               const ArchivItem_Palette* palette,
                               unsigned short to_x = 0,
                               unsigned short to_y = 0,
@@ -122,7 +123,7 @@ namespace libsiedler2
                                const unsigned char* buffer,
                                unsigned short buffer_width,
                                unsigned short buffer_height,
-                               int buffer_format,
+                               TEXTURFORMAT buffer_format,
                                const ArchivItem_Palette* palette);
 
             /// liefert die nächste Quadratzahl zu einer Zahl.
@@ -144,7 +145,7 @@ namespace libsiedler2
             std::vector<unsigned char> tex_data;    ///< Die Texturdaten.
 
             const ArchivItem_Palette* palette; ///< Die Palette.
-            int format; ///< Das Texturformat.
+            TEXTURFORMAT format; ///< Das Texturformat.
     };
 
     /// Basisklasse für Bitmapitems.

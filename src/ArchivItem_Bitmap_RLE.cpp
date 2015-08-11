@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_RLE.h"
+#include <libendian.h>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////

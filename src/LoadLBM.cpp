@@ -20,8 +20,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Bitmap.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include <libendian.h>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -81,7 +86,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     if(strncmp(pbm, "PBM ", 4) != 0)
         return 7;
 
-    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
+    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW, 0)));
     bitmap->setFormat(FORMAT_PALETTED);
     ArchivItem_Palette* palette = NULL;
     unsigned short compression;
@@ -159,7 +164,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                     return 17;
 
                 // Daten von Item auswerten
-                palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
+                palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0);
                 items.set(1, palette);
 
                 // Farbpalette lesen
@@ -169,7 +174,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 
                 // Farbpalette zuweisen
                 for(unsigned int k = 0; k < 256; ++k)
-                    palette->set(k, colors[k][0], colors[k][1], colors[k][2]);
+                    palette->set(k, Color(colors[k][0], colors[k][1], colors[k][2]));
             } break;
             case 0x424F4459: // "BODY"
             {

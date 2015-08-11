@@ -21,6 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Raw.h"
+#include "types.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

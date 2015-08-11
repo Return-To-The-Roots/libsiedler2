@@ -21,8 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_Wave.h"
-
-#include "../../libendian/src/endianess.h"
+#include <libendian.h>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

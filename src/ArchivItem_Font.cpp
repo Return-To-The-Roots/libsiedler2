@@ -21,6 +21,9 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Font.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Shadow.h"
+#include <libendian.h>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////

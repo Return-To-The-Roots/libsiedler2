@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_Other.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

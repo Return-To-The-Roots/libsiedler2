@@ -20,9 +20,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Bitmap.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <vector>
+#include <cmath>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -172,7 +179,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     if(bmih.planes != 1)
         return 6;
 
-    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(allocator->create(BOBTYPE_BITMAP_RAW, 0)));
+    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW, 0)));
     bitmap->setName(file);
 
     switch(bmih.bbp)
@@ -200,15 +207,15 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
 
     // Einträge in der Farbtabelle
     if(bmih.clrused == 0)
-        bmih.clrused = (int)pow(2.0, bmih.bbp);
+        bmih.clrused = (int)pow(2, bmih.bbp);
 
     //items->alloc(2);
 
     if(bmih.bbp == 8)
     {
         if(palette)
-            *palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0);
-        //ArchivItem_Palette *palette = (ArchivItem_Palette*)allocator->create(BOBTYPE_PALETTE, 0, NULL);
+            *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0);
+        //ArchivItem_Palette *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0, NULL);
         //items->set(0, palette);
 
         // Farbpalette lesen
@@ -220,10 +227,11 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
         // Farbpalette zuweisen
         if(palette)
         {
+            ArchivItem_Palette* pal = dynamic_cast<ArchivItem_Palette*>(*palette);
             for(int i = 0; i < bmih.clrused; ++i)
-                dynamic_cast<ArchivItem_Palette*>(*palette)->set(i, colors[i][2], colors[i][1], colors[i][0]);
+                pal->set(i, Color(colors[i][2], colors[i][1], colors[i][0]));
 
-            bitmap->setPalette(dynamic_cast<ArchivItem_Palette*>(*palette));
+            bitmap->setPalette(pal);
         }
     }
 

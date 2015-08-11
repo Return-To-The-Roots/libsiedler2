@@ -61,7 +61,7 @@ namespace libsiedler2
             int print(unsigned char* buffer,
                       unsigned short buffer_width,
                       unsigned short buffer_height,
-                      int buffer_format,
+                      TEXTURFORMAT buffer_format,
                       const ArchivItem_Palette* palette,
                       unsigned char color,
                       unsigned short to_x = 0,
@@ -78,7 +78,7 @@ namespace libsiedler2
                        const unsigned char* buffer,
                        unsigned short buffer_width,
                        unsigned short buffer_height,
-                       int buffer_format,
+                       TEXTURFORMAT buffer_format,
                        const ArchivItem_Palette* palette,
                        unsigned char color);
 

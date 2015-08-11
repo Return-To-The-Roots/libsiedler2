@@ -24,9 +24,9 @@
 
 #include "MIDI_Track.h"
 #include "GammaTable.h"
-
-#include "../../libendian/src/endianess.h"
+#include <libendian.h>
 #include <algorithm>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

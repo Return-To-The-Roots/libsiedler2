@@ -21,6 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_XMidi.h"
+#include <libendian.h>
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

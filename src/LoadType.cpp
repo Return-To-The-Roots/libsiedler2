@@ -20,6 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "prototypen.h"
+#include "archives.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -67,7 +70,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
         {
-            baseArchivItem_Bitmap_RLE* nitem = dynamic_cast<baseArchivItem_Bitmap_RLE*>(allocator->create(BOBTYPE_BITMAP_RLE, 0));
+            baseArchivItem_Bitmap_RLE* nitem = dynamic_cast<baseArchivItem_Bitmap_RLE*>(getAllocator().create(BOBTYPE_BITMAP_RLE, 0));
             if(nitem->load(file, palette) != 0){
                 delete nitem;
                 return 6;
@@ -76,7 +79,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_FONT: // Font
         {
-            ArchivItem_Font* nitem = dynamic_cast<ArchivItem_Font*>(allocator->create(BOBTYPE_FONT, 0));
+            ArchivItem_Font* nitem = dynamic_cast<ArchivItem_Font*>(getAllocator().create(BOBTYPE_FONT, 0));
             if(nitem->load(file, palette) != 0){
                 delete nitem;
                 return 7;
@@ -85,7 +88,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
         {
-            baseArchivItem_Bitmap_Player* nitem = dynamic_cast<baseArchivItem_Bitmap_Player*>(allocator->create(BOBTYPE_BITMAP_PLAYER, 0));
+            baseArchivItem_Bitmap_Player* nitem = dynamic_cast<baseArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER, 0));
             if(nitem->load(file, palette) != 0){
                 delete nitem;
                 return 8;
@@ -94,7 +97,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_PALETTE: // Palette
         {
-            ArchivItem_Palette* nitem =  dynamic_cast<ArchivItem_Palette*>(allocator->create(BOBTYPE_PALETTE, 0));
+            ArchivItem_Palette* nitem =  dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE, 0));
             if(nitem->load(file) != 0){
                 delete nitem;
                 return 9;
@@ -103,7 +106,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_BOB: // Bobfile
         {
-            ArchivItem_Bob* nitem = dynamic_cast<ArchivItem_Bob*>(allocator->create(BOBTYPE_BOB, 0));
+            ArchivItem_Bob* nitem = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB, 0));
             if(nitem->load(file, palette) != 0){
                 delete nitem;
                 return 10;
@@ -112,7 +115,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_BITMAP_SHADOW: // Schatten
         {
-            baseArchivItem_Bitmap_Shadow* nitem = dynamic_cast<baseArchivItem_Bitmap_Shadow*>(allocator->create(BOBTYPE_BITMAP_SHADOW, 0));
+            baseArchivItem_Bitmap_Shadow* nitem = dynamic_cast<baseArchivItem_Bitmap_Shadow*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW, 0));
             if(nitem->load(file, palette) != 0){
                 delete nitem;
                 return 11;
@@ -121,7 +124,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_MAP: // Mapfile
         {
-            ArchivItem_Map* nitem = dynamic_cast<ArchivItem_Map*>(allocator->create(BOBTYPE_MAP, 0));
+            ArchivItem_Map* nitem = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP, 0));
             if(nitem->load(file, false) != 0){
                 delete nitem;
                 return 12;
@@ -130,7 +133,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_TEXT: // Textfile
         {
-            ArchivItem_Text* nitem =  dynamic_cast<ArchivItem_Text*>(allocator->create(BOBTYPE_TEXT, 0));
+            ArchivItem_Text* nitem =  dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT, 0));
             if(nitem->load(file) != 0){
                 delete nitem;
                 return 13;
@@ -139,7 +142,7 @@ int libsiedler2::loader::LoadType(unsigned short bobtype, FILE* file, const Arch
         } break;
         case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
         {
-            baseArchivItem_Bitmap_Raw* nitem = dynamic_cast<baseArchivItem_Bitmap_Raw*>(allocator->create(BOBTYPE_BITMAP_RAW, 0));
+            baseArchivItem_Bitmap_Raw* nitem = dynamic_cast<baseArchivItem_Bitmap_Raw*>(getAllocator().create(BOBTYPE_BITMAP_RAW, 0));
             if(nitem->load(file, palette) != 0){
                 delete nitem;
                 return 14;

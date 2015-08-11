@@ -19,6 +19,8 @@
 #ifndef types_h__
 #define types_h__
 
+#include <string>
+
 namespace libsiedler2
 {
     /**
@@ -65,6 +67,11 @@ namespace libsiedler2
         BOBTYPE_BITMAP_RAW = 14
     };
 
+    // Fwd decl
+    class ArchivItem;
+    class ArchivInfo;
+    class ArchivItem_Palette;
+
     /**
      *  @brief Abstract ArchivItem factory
      */
@@ -80,6 +87,8 @@ namespace libsiedler2
         virtual ArchivItem* create(unsigned short type, unsigned short subtype) const;
         virtual ArchivItem* clone(const ArchivItem& item) const;
     };
+
+    const IAllocator& getAllocator();
 
     /// Setzt den Item-Allocator.
     void setAllocator(IAllocator* newAllocator);

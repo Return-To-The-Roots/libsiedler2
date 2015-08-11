@@ -27,38 +27,14 @@
 
 #ifdef _WIN32
 #   define _CRTDBG_MAP_ALLOC
-#   include <windows.h>
 #   if defined _DEBUG && defined _MSC_VER
 #       include <crtdbg.h>
 #   endif // _DEBUG
-#   define strlwr _strlwr
-#else
-#   include <unistd.h>
-#   include "strlwr.h"
 #endif // !_WIN32
 
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cmath>
-
-#include <string>
-#include <sstream>
-#include <algorithm>
-
-#ifdef _WIN32
-//#   define class class __declspec(dllexport)
-#ifndef __CYGWIN__
-#   define snprintf _snprintf
-#endif
-#endif
-
-#include "libsiedler2.h"
-#include "libendian.h"
 
 namespace libsiedler2{
-    extern TEXTURFORMAT texturformat;
-    extern IAllocator* allocator;
     inline size_t getFileLength(FILE* f)
     {
         fseek(f, 0, SEEK_END);

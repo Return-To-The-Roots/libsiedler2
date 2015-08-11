@@ -21,6 +21,9 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bob.h"
+#include "ArchivItem_Bitmap_Player.h"
+#include "types.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -133,7 +136,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
         if(libendian::le_read_uc(&ny, 1, file) != 1)
             return 8;
 
-        baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(allocator->create(BOBTYPE_BITMAP_PLAYER, 0));
+        baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER, 0));
         image->setNx(16);
         image->setNy(ny);
 
@@ -223,7 +226,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
 
         if(!used[links[i]])
         {
-            baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(allocator->create(BOBTYPE_BITMAP_PLAYER, 0));
+            baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER, 0));
 
             image->setNx(16);
             image->setNy(ny[links[i]]);

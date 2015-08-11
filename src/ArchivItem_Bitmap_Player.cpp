@@ -21,6 +21,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Player.h"
+#include <libendian.h>
 #include <boost/scoped_array.hpp>
 #include <vector>
 
@@ -467,7 +468,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::create(unsigned short width,
         const unsigned char* buffer,
         unsigned short buffer_width,
         unsigned short buffer_height,
-        int buffer_format,
+        TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette,
         unsigned char color)
 {
@@ -483,17 +484,18 @@ int libsiedler2::baseArchivItem_Bitmap_Player::create(unsigned short width,
     // Texturspeicher anfordern
     tex_alloc();
 
-    unsigned short bpp = 0;
+    unsigned short bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
-        {
             bpp = 4;
-        } break;
+            break;
         case FORMAT_PALETTED:
-        {
             bpp = 1;
-        } break;
+            break;
+        default:
+            bpp = 0;
+            break;
     }
 
     for(unsigned int y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
@@ -531,6 +533,8 @@ int libsiedler2::baseArchivItem_Bitmap_Player::create(unsigned short width,
                     }
                     tex_setPixel(x, y, c, palette);
                 } break;
+                default:
+                    break;
             }
         }
     }
@@ -683,7 +687,7 @@ void libsiedler2::baseArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy,
 int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
         unsigned short buffer_width,
         unsigned short buffer_height,
-        int buffer_format,
+        TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette,
         unsigned char color,
         unsigned short to_x,
@@ -706,17 +710,18 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
     if(from_h == 0 || from_y + from_h > height)
         from_h = height - from_y;
 
-    unsigned short bpp = 0;
+    unsigned short bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
-        {
             bpp = 4;
-        } break;
+            break;
         case FORMAT_PALETTED:
-        {
             bpp = 1;
-        } break;
+            break;
+        default:
+            bpp = 0;
+            break;
     }
 
     for(unsigned short y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
@@ -756,7 +761,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
                             {
                                 // Playerfarbe setzen
                                 buffer[position + 3] = 0xFF;
-                                palette->get(tex_pdata[position3] + color, &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
+                                palette->get(tex_pdata[position3] + color, buffer[position + 2], buffer[position + 1], buffer[position + 0]);
                             }
                             if(tex_data[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
                             {
@@ -764,7 +769,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
                                 {
                                     // normale Pixel setzen
                                     buffer[position + 3] = 0xFF;
-                                    palette->get(tex_data[position2], &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
+                                    palette->get(tex_data[position2], buffer[position + 2], buffer[position + 1], buffer[position + 0]);
                                 }
                             }
                         } break;
@@ -797,7 +802,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
                             if(tex_pdata[position3] != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                palette->get(tex_pdata[position3] + color, &buffer[position + 2], &buffer[position + 1], &buffer[position + 0]);
+                                palette->get(tex_pdata[position3] + color, buffer[position + 2], buffer[position + 1], buffer[position + 0]);
                                 buffer[position + 3] = 0xFF; // a
                             }
                             if(tex_data[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert

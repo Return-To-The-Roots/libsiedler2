@@ -20,7 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
-#include "libsiedler2.h"
+#include "types.h"
+#include "archives.h"
+#include "prototypen.h"
+#include <algorithm>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -117,6 +120,10 @@ TEXTURFORMAT getTextureFormat(void)
  *  @author FloSoft
  */
 IAllocator* allocator = new StandardAllocator();
+const IAllocator& getAllocator()
+{
+    return *allocator;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
