@@ -113,7 +113,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
                     return 10;
 
                 // Daten von Item auswerten
-                ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0);
+                ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
                 items.push(palette);
 
                 size_t namePos = file.find_last_of('/');

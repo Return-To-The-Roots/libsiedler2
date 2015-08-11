@@ -86,7 +86,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     if(strncmp(pbm, "PBM ", 4) != 0)
         return 7;
 
-    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW, 0)));
+    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setFormat(FORMAT_PALETTED);
     ArchivItem_Palette* palette = NULL;
     unsigned short compression;
@@ -164,7 +164,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                     return 17;
 
                 // Daten von Item auswerten
-                palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0);
+                palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
                 items.set(1, palette);
 
                 // Farbpalette lesen

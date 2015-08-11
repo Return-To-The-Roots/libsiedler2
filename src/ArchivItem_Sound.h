@@ -22,18 +22,10 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include "enumTypes.h"
 
 namespace libsiedler2
 {
-    enum SOUNDTYPES
-    {
-        SOUNDTYPE_NONE = 0,
-        SOUNDTYPE_WAVE = 1,
-        SOUNDTYPE_MIDI = 2,
-        SOUNDTYPE_XMIDI = 3,
-        SOUNDTYPE_OTHER = 4
-    };
-
     /// Basis-Basisklasse für Sounditems.
     class baseArchivItem_Sound : public ArchivItem
     {
@@ -48,10 +40,10 @@ namespace libsiedler2
             virtual ~baseArchivItem_Sound(void);
 
             /// setzt den Typ des Sounds.
-            void setType(unsigned short type);
+            void setType(SOUNDTYPES type);
 
             /// liefert den Typ des Sounds.
-            unsigned short getType(void) const;
+            SOUNDTYPES getType(void) const;
 
             /// lädt die Sound-Daten aus einer Datei.
             virtual int load(FILE* file, unsigned int length);
@@ -62,7 +54,7 @@ namespace libsiedler2
             static baseArchivItem_Sound* findSubType(FILE* file);
 
         protected:
-            unsigned short type;
+            SOUNDTYPES type;
     };
 
     /// Basisklasse für Sounditems.

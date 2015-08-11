@@ -84,7 +84,7 @@ libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound(void)
  *
  *  @author FloSoft
  */
-void libsiedler2::baseArchivItem_Sound::setType(unsigned short type)
+void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
 {
     this->type = type;
 }
@@ -97,7 +97,7 @@ void libsiedler2::baseArchivItem_Sound::setType(unsigned short type)
  *
  *  @author FloSoft
  */
-unsigned short libsiedler2::baseArchivItem_Sound::getType(void) const
+libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType(void) const
 {
     return type;
 }

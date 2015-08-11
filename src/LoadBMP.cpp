@@ -179,7 +179,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     if(bmih.planes != 1)
         return 6;
 
-    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW, 0)));
+    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setName(file);
 
     switch(bmih.bbp)
@@ -214,8 +214,8 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     if(bmih.bbp == 8)
     {
         if(palette)
-            *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0);
-        //ArchivItem_Palette *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, 0, NULL);
+            *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
+        //ArchivItem_Palette *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, NULL);
         //items->set(0, palette);
 
         // Farbpalette lesen

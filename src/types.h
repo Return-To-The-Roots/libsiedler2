@@ -19,53 +19,16 @@
 #ifndef types_h__
 #define types_h__
 
+#include "enumTypes.h"
 #include <string>
 
 namespace libsiedler2
 {
-    /**
-     *  @brief Texturformat-Aufzählungstyp.
-     *
-     *  Enthält alle unterstützten Texturformate als Aufzählungswerte.
-     *
-     *  @author FloSoft
-     */
-    enum TEXTURFORMAT
-    {
-        FORMAT_UNKNOWN = 0,
-        FORMAT_PALETTED = 1,
-        FORMAT_RGBA = 4
-    };
-
     /// Setzt das verwendete Texturausgabeformat.
     TEXTURFORMAT setTextureFormat(TEXTURFORMAT format);
 
     /// liefert das verwendete Texturausgabeformat.
     TEXTURFORMAT getTextureFormat(void);
-
-    /**
-     *  @brief Bobtype-Aufzählungstyp.
-     *
-     *  Enthält alle unterstützten Bobtypes als Aufzählungswerte.
-     *
-     *  @author FloSoft
-     */
-    enum BOBTYPES
-    {
-        BOBTYPE_SOUND = 1,
-        BOBTYPE_BITMAP_RLE = 2,
-        BOBTYPE_FONT = 3,
-        BOBTYPE_BITMAP_PLAYER = 4,
-        BOBTYPE_PALETTE = 5,
-        BOBTYPE_BOB = 6,
-        BOBTYPE_BITMAP_SHADOW = 7,
-        BOBTYPE_MAP = 8,
-        BOBTYPE_TEXT = 9,
-        BOBTYPE_RAW = 10,
-        BOBTYPE_MAP_HEADER = 11,
-        BOBTYPE_INI = 12,
-        BOBTYPE_BITMAP_RAW = 14
-    };
 
     // Fwd decl
     class ArchivItem;
@@ -78,13 +41,13 @@ namespace libsiedler2
     class IAllocator{
     public:
         virtual ~IAllocator(){}
-        virtual ArchivItem* create(unsigned short type, unsigned short subtype) const = 0;
+        virtual ArchivItem* create(BOBTYPES type, SOUNDTYPES subtype = SOUNDTYPE_NONE) const = 0;
         virtual ArchivItem* clone(const ArchivItem& item) const = 0;
     };
 
     class StandardAllocator: public IAllocator{
     public:
-        virtual ArchivItem* create(unsigned short type, unsigned short subtype) const;
+        virtual ArchivItem* create(BOBTYPES type, SOUNDTYPES subtype = SOUNDTYPE_NONE) const;
         virtual ArchivItem* clone(const ArchivItem& item) const;
     };
 

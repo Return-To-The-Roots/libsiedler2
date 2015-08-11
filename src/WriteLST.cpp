@@ -72,7 +72,6 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
     for(unsigned int i = 0; i < count; ++i)
     {
         unsigned short used = 0x0100;
-        unsigned short bobtype;
 
         const ArchivItem* item = items.get(i);
 
@@ -86,7 +85,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         if(!item)
             continue;
 
-        bobtype = item->getBobType();
+        BOBTYPES bobtype = item->getBobType();
 
         // bobtype des Items schreiben
         if(libendian::le_write_us(bobtype, lst.get()) != 0)

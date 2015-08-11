@@ -69,7 +69,7 @@ int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palet
     if(header != 0xF601F501)
         return 4;
 
-    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB, 0));
+    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
 
     size_t nameIdx = file.find_last_of('/');
     if(nameIdx != std::string::npos)

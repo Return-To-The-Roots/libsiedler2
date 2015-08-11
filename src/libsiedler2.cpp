@@ -148,7 +148,7 @@ void setAllocator(IAllocator* newAllocator)
  *
  *  @author FloSoft
  */
-ArchivItem* StandardAllocator::create(unsigned short type, unsigned short subtype) const
+ArchivItem* StandardAllocator::create(BOBTYPES type, SOUNDTYPES subtype) const
 {
     switch(type)
     {

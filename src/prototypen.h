@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "enumTypes.h"
 #include <string>
 
 namespace libsiedler2
@@ -34,10 +35,10 @@ namespace libsiedler2
 	namespace loader
 	{
 		/// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-		int LoadType(unsigned short bobtype, FILE *lst, const ArchivItem_Palette* palette, ArchivItem *&item);
+		int LoadType(BOBTYPES bobtype, FILE *lst, const ArchivItem_Palette* palette, ArchivItem *&item);
 
 		/// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-		int WriteType(unsigned short bobtype, FILE *lst, const ArchivItem_Palette* palette, const ArchivItem& item);
+		int WriteType(BOBTYPES bobtype, FILE *lst, const ArchivItem_Palette* palette, const ArchivItem& item);
 
 		/// lädt eine LST-File in ein ArchivInfo.
 		int LoadLST(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items);

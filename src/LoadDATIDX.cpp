@@ -90,7 +90,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
         char name[17];
         unsigned int offset;
         short idxbobtype;
-        short bobtype;
+        short bobtype_s;
 
         // Name einlesen
         if(libendian::le_read_c(name, 16, idx.get()) != 16)
@@ -111,11 +111,12 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
         fseek(dat.get(), offset, SEEK_SET);
 
         // BobType einlesen
-        if(libendian::le_read_s(&bobtype, dat.get()) != 0)
+        if(libendian::le_read_s(&bobtype_s, dat.get()) != 0)
             return 9;
 
-        if(idxbobtype != bobtype)
+        if(idxbobtype != bobtype_s)
             continue;
+        BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
 
         // Daten von Item auswerten
         ArchivItem* item;

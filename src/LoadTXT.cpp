@@ -81,7 +81,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         // den Header zurückspringen
         fseek(txt.get(), -2, SEEK_CUR);
 
-        ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT, 0);
+        ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
         item->load(txt.get(), conversion);
 
         items.push(item);
@@ -136,13 +136,13 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
                 fseek(txt.get(), i, SEEK_SET);
 
                 // einlesen
-                ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT, 0);
+                ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
                 item->load(txt.get(), conversion, (unsigned int)strlen(&buffer[i - pos]));
 
                 items.push(item);
             }
             else
-                items.push((ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT, 0));
+                items.push((ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT));
         }
     }
 

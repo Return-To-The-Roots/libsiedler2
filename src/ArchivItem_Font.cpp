@@ -110,13 +110,14 @@ int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* pal
     // Buchstaben einlesen
     for(unsigned long i = 32; i < 256; ++i)
     {
-        short bobtype;
+        short bobtype_s;
 
         // bobtype des Items einlesen
-        if(libendian::le_read_s(&bobtype, file) != 0)
+        if(libendian::le_read_s(&bobtype_s, file) != 0)
             return 4;
+        BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
 
-        if(bobtype == 0x0000)
+        if(bobtype == BOBTYPE_NONE)
             continue;
 
         // Daten von Item auswerten
@@ -158,7 +159,7 @@ int libsiedler2::ArchivItem_Font::write(FILE* file, const ArchivItem_Palette* pa
     for(unsigned long i = 32; i < 256; ++i)
     {
         const ArchivItem* item = get(i);
-        short bobtype = 0;
+        BOBTYPES bobtype = BOBTYPE_NONE;
 
         if(item)
             bobtype = item->getBobType();

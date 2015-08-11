@@ -85,7 +85,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
     for(unsigned int i = 0; i < count; ++i)
     {
         short used;
-        short bobtype;
+        short bobtype_s;
 
         // use-Flag einlesen
         if(libendian::be_read_s(&used, lst.get()) != 0)
@@ -100,9 +100,9 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
         }
 
         // bobtype des Items einlesen
-        if(libendian::le_read_s(&bobtype, lst.get()) != 0)
+        if(libendian::le_read_s(&bobtype_s, lst.get()) != 0)
             return 7;
-
+        BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
         //fprintf(stderr, "bobtype %d\n", bobtype);
 
         // Daten von Item auswerten

@@ -139,7 +139,7 @@ int libsiedler2::ArchivItem_Ini::load(FILE* file)
         if(name.length() == 0 || value.length() == 0)
             continue;
 
-        ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT, 0) );
+        ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT) );
         item->setText(value.c_str());
         item->setName(name.c_str());
 
@@ -195,7 +195,7 @@ int libsiedler2::ArchivItem_Ini::write(FILE* file) const
  */
 void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
-    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT, 0) );
+    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT) );
     item->setText(value);
     item->setName(name);
 
