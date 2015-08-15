@@ -115,6 +115,8 @@ int libsiedler2::loader::WriteType(BOBTYPES bobtype, std::ostream& file, const A
             if(i.write(file, palette) != 0)
                 return 10;
         } break;
+        default:
+            return 0;
     }
 
     return 0;

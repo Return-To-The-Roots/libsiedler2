@@ -193,6 +193,8 @@ ArchivItem* StandardAllocator::create(BOBTYPES type, SOUNDTYPES subtype) const
             return new ArchivItem_Ini();
         case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             return new ArchivItem_Bitmap_Raw();
+        default:
+            return NULL;
     }
     return NULL;
 }
@@ -253,6 +255,8 @@ ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
             return new ArchivItem_Ini( dynamic_cast<const ArchivItem_Ini&>(item) );
         case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             return new ArchivItem_Bitmap_Raw( dynamic_cast<const ArchivItem_Bitmap_Raw&>(item) );
+        default:
+            return NULL;
     }
     return NULL;
 }

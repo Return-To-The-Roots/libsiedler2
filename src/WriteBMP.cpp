@@ -100,6 +100,9 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
                 {
                     nr = i;
                 } break;
+                default:
+                    nr = -1;
+                    break;
             }
             if(nr != -1)
                 break;
