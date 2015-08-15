@@ -51,7 +51,7 @@ int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, boo
         return 1;
 
     // Datei zum lesen öffnen
-    std::ifstream map(file, std::ios_base::binary);
+    std::ifstream map(file.c_str(), std::ios_base::binary);
 
     // hat das geklappt?
     if(!map)

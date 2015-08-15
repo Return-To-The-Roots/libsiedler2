@@ -24,6 +24,8 @@
 #include "ArchivItem_Text.h"
 #include "types.h"
 #include <cstring>
+#include <iostream>
+#include <stdexcept>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

@@ -51,7 +51,7 @@ int libsiedler2::loader::LoadSND(const std::string& file, ArchivInfo& items)
         return 1;
 
     // Datei zum lesen öffnen
-    std::ifstream snd(file, std::ios_base::binary);
+    std::ifstream snd(file.c_str(), std::ios_base::binary);
 
     // hat das geklappt?
     if(!snd)

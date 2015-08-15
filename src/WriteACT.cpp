@@ -73,7 +73,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& ite
         return 2;
 
     // Datei zum schreiben öffnen
-    std::ofstream act(file, std::ios_base::binary);
+    std::ofstream act(file.c_str(), std::ios_base::binary);
 
     // hat das geklappt?
     if(!act)

@@ -50,7 +50,7 @@ int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
         return 1;
 
     // Datei zum lesen öffnen
-    std::ifstream ini(file, std::ios_base::binary);
+    std::ifstream ini(file.c_str(), std::ios_base::binary);
 
     // hat das geklappt?
     if(!ini)

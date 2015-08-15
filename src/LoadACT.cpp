@@ -52,7 +52,7 @@ int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
         return 1;
 
     // Datei zum lesen öffnen
-    std::ifstream act(file, std::ios_base::binary);
+    std::ifstream act(file.c_str(), std::ios_base::binary);
 
     // hat das geklappt?
     if(!act)

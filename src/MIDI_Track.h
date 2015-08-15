@@ -22,6 +22,7 @@
 #pragma once
 
 #include <vector>
+#include <iosfwd>
 
 class XMIDI_Track;
 

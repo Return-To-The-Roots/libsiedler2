@@ -50,7 +50,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
         return 1;
 
     // Datei zum schreiben öffnen
-    std::ofstream ini(file, std::ios_base::binary);
+    std::ofstream ini(file.c_str(), std::ios_base::binary);
     if (!ini)
         return 2;
 

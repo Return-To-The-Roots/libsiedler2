@@ -71,7 +71,7 @@ int libsiedler2::loader::WriteMAP(const std::string& file, const ArchivInfo& ite
         return 2;
 
     // Datei zum lesen öffnen
-    std::ofstream map(file, std::ios_base::binary);
+    std::ofstream map(file.c_str(), std::ios_base::binary);
 
     // hat das geklappt?
     if(!map)
