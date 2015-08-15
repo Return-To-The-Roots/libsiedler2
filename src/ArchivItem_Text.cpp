@@ -23,7 +23,8 @@
 #include "ArchivItem_Text.h"
 #include "oem.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,7 +90,7 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Text::ArchivItem_Text(FILE* file, bool conversion, unsigned int length) : ArchivItem()
+libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, unsigned int length) : ArchivItem()
 {
     setBobType(BOBTYPE_TEXT);
 
@@ -110,27 +111,25 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(FILE* file, bool conversion, unsig
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Text::load(FILE* file, bool conversion, unsigned int length)
+int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsigned int length)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
-    // Aktuelle Position bestimmen
-    long pos = ftell(file);
-
-    if(length == 0)
+    std::vector<char> text;
+    if(length)
     {
-        // Länge der Datei bestimmen
-        fseek(file, 0, SEEK_END);
-        length = ftell(file) - pos;
-        fseek(file, pos, SEEK_SET);
+        text.resize(length + 1);
+        if(!file.read(&text.front(), length))
+            return 2;
+    }else
+    {
+        // Read all that is there
+        text.assign(
+            std::istreambuf_iterator<char>(file), 
+            std::istreambuf_iterator<char>());
+        text.push_back(0);
     }
-
-    std::vector<char>text(length + 1);
-
-    // Einlesen
-    if(libendian::le_read_c(&text.front(), length, file) != (int)length)
-        return 2;
 
     /// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
     if(text[length - 1] == 26)
@@ -167,9 +166,9 @@ int libsiedler2::ArchivItem_Text::load(FILE* file, bool conversion, unsigned int
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Text::write(FILE* file, bool conversion) const
+int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
     // Wenn Länge 0, nix schreiben, ist ja kein Fehler!
@@ -200,7 +199,7 @@ int libsiedler2::ArchivItem_Text::write(FILE* file, bool conversion) const
         AnsiToOem(&text.front(), &text.front());
 
     // Schreiben
-    if(libendian::le_write_c(&text.front(), length + 1, file) != (int)length + 1)
+    if(!file.write(&text.front(), length + 1))
         return 2;
 
     return 0;

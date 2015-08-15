@@ -24,7 +24,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -73,7 +73,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& ite
         return 2;
 
     // Datei zum schreiben öffnen
-    boost::scoped_ptr<FILE> act(fopen(file.c_str(), "wb"));
+    std::ofstream act(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!act)
@@ -81,7 +81,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& ite
 
     // Farben schreiben
     ArchivItem_Palette* palette = (ArchivItem_Palette*)items.get(nr);
-    if(palette->write(act.get()) != 0)
+    if(palette->write(act) != 0)
         return 4;
 
     // alles ok

@@ -48,13 +48,13 @@ namespace libsiedler2
             ArchivItem_Palette(void);
 
             /// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.
-            ArchivItem_Palette(FILE* file, bool skip = true);
+            ArchivItem_Palette(std::istream& file, bool skip = true);
 
             /// liest die Farbwerte aus einer Datei.
-            int load(FILE* file, bool skip = true);
+            int load(std::istream& file, bool skip = true);
 
             /// schreibt die Farbwerte in eine Datei.
-            int write(FILE* file, bool skip = true) const;
+            int write(std::ostream& file, bool skip = true) const;
 
             /// setzt einen Farbwert am entsprechenden Index.
             void set(unsigned char index, Color clr);

@@ -38,13 +38,9 @@ namespace libsiedler2
             ~ArchivItem_Map(void);
 
             /// lädt die Mapdaten aus einer Datei.
-            virtual int load(FILE* file, bool only_header);
+            virtual int load(std::istream& file, bool only_header);
             /// schreibt die Mapdaten in eine Datei.
-            virtual int write(FILE* file) const;
-
-        protected:
-            /// lädt die Mapdaten aus einer Datei.
-            int loadHelper(FILE* file, bool only_header);
+            virtual int write(std::ostream& file) const;
     };
 }
 

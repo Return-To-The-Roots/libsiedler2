@@ -22,7 +22,8 @@
 #include "main.h"
 #include "prototypen.h"
 #include "archives.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -46,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadType(BOBTYPES bobtype, FILE* file, const ArchivItem_Palette* palette, ArchivItem*& item)
+int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const ArchivItem_Palette* palette, ArchivItem*& item)
 {
     if(!file)
         return 1;
@@ -55,11 +56,9 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, FILE* file, const ArchivItem
     {
         case BOBTYPE_SOUND: // WAVs, MIDIs
         {
+            libendian::LittleEndianIStreamRef fs(file);
             unsigned int length;
-
-            // Länge einlesen
-            if(libendian::le_read_ui(&length, file) != 0)
-                return 4;
+            fs >> length;
 
             baseArchivItem_Sound* nitem = baseArchivItem_Sound::findSubType(file);
             if(!nitem || nitem->load(file, length) != 0){

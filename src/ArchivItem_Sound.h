@@ -46,12 +46,12 @@ namespace libsiedler2
             SOUNDTYPES getType(void) const;
 
             /// lädt die Sound-Daten aus einer Datei.
-            virtual int load(FILE* file, unsigned int length);
+            virtual int load(std::istream& file, unsigned int length);
 
             /// schreibt die Sound-Daten in eine Datei.
-            virtual int write(FILE* file) const;
+            virtual int write(std::ostream& file) const;
 
-            static baseArchivItem_Sound* findSubType(FILE* file);
+            static baseArchivItem_Sound* findSubType(std::istream& file);
 
         protected:
             SOUNDTYPES type;

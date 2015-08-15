@@ -36,12 +36,9 @@ namespace libsiedler2
             ~baseArchivItem_Raw(void);
 
             /// lädt die Rawdaten aus einer Datei.
-            int load(FILE* file, unsigned int length = 0xFFFFFFFF);
+            int load(std::istream& file, unsigned int length = 0xFFFFFFFF);
             /// schreibt die Rawdaten in eine Datei.
-            int write(FILE* file, bool with_length) const;
-
-            /// liefert die Länge des Datenblocks.
-            unsigned int getLength(void) const;
+            int write(std::ostream& file, bool with_length) const;
 
             /// liefert die Daten zurück (ro).
             const std::vector<unsigned char>& getData(void) const;

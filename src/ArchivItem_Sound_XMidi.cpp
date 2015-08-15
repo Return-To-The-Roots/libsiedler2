@@ -21,7 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_XMidi.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,32 +80,30 @@ libsiedler2::baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi(void)
 {
 }
 
-int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound_XMidi::load(std::istream& file, unsigned int length)
 {
-    if(file == NULL || length == 0)
+    if(!file || length == 0)
         return 1;
 
+    libendian::BigEndianIStreamRef fs(file);
     unsigned int item_length = length;
-    long position = ftell(file);
+    long position = fs.getPosition();
 
     char header[4], subheader[4];
     unsigned int chunk;
 
     // Header einlesen
-    if(libendian::le_read_c(header, 4, file) != 4)
-        return 2;
+    fs >> header;
 
     // ist es eine XMIDI-File? (Header "FORM")
     if(strncmp(header, "FORM", 4) != 0)
         return 3;
 
     // Länge einlesen
-    if(libendian::be_read_ui(&length, file) != 0)
-        return 4;
+    fs >> length;
 
     // Typ einlesen
-    if(libendian::le_read_c(subheader, 4, file) != 4)
-        return 5;
+    fs >> subheader;
 
     // ist es eine singleTrack-XMIDI-File? (Typ "XMID")
     if(strncmp(subheader, "XMID", 4) == 0)
@@ -114,19 +113,17 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
     else if(strncmp(subheader, "XDIR", 4) == 0)
     {
         long xdir_length = length;
-        while(!feof(file) && ftell(file) - position < xdir_length)
+        while(!!fs && fs.getPosition() - position < xdir_length)
         {
             // Chunk-Typ einlesen
-            if(libendian::be_read_ui(&chunk, file) != 0)
-                return 6;
+            fs >> chunk;
 
             switch(chunk)
             {
                 case 0x494E464F: // "INFO"
                 {
                     // Länge einlesen
-                    if(libendian::be_read_ui(&length, file) != 0)
-                        return 7;
+                   fs >> length;
 
                     // Bei ungerader Zahl aufrunden
                     if(length & 1)
@@ -135,22 +132,19 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
                     if(length != 2)
                         return 8;
 
-                    if(libendian::le_read_us(&tracks, file) != 0)
-                        return 9;
+                    fs >> tracks;
                 } break;
                 case 0x43415420: // "CAT "
                 {
                     // Länge einlesen
-                    if(libendian::be_read_ui(&length, file) != 0)
-                        return 10;
+                    fs >> length;
 
                     // Bei ungerader Zahl aufrunden
                     if(length & 1)
                         ++length;
 
                     // Typ einlesen
-                    if(libendian::le_read_c(subheader, 4, file) != 4)
-                        return 11;
+                    fs >> subheader;
 
                     if(strncmp(subheader, "XMID", 4) != 0)
                         return 12;
@@ -168,14 +162,13 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
     while(track_nr < tracks)
     {
         // Chunk-Typ einlesen
-        if(libendian::be_read_ui(&chunk, file) != 0)
-            return 15;
+        fs >> chunk;
 
         switch(chunk)
         {
             case 0x464F524D: // "FORM"
             {
-                fseek(file, 4, SEEK_CUR);
+                fs.ignore(4);
             } break;
             case 0x584D4944: // "XMID"
             {
@@ -183,20 +176,18 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
             case 0x54494D42: // "TIMB"
             {
                 // Länge einlesen
-                if(libendian::be_read_ui(&length, file) != 0)
-                    return 16;
+                fs >> length;
 
                 // Bei ungerader Zahl aufrunden
                 if(length & 1)
                     ++length;
 
-                fseek(file, length, SEEK_CUR);
+                fs.ignore(length);
             } break;
             case 0x45564E54: // "EVNT"
             {
                 // Länge einlesen
-                if(libendian::be_read_ui(&length, file) != 0)
-                    return 17;
+                 fs >> length;
 
                 // Bei ungerader Zahl aufrunden
                 if(length & 1)
@@ -214,11 +205,11 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(FILE* file, unsigned int lengt
     }
 
     // auf jeden Fall kompletten Datensatz überspringen
-    fseek(file, position + item_length, SEEK_SET);
+    fs.setPosition(position + item_length);
     return 0;
 }
 
-int libsiedler2::baseArchivItem_Sound_XMidi::write(FILE* file) const
+int libsiedler2::baseArchivItem_Sound_XMidi::write(std::ostream& file) const
 {
     if(!file)
         return 1;
@@ -226,35 +217,30 @@ int libsiedler2::baseArchivItem_Sound_XMidi::write(FILE* file) const
     unsigned int length = 0;
     for(unsigned short i = 0; i < tracks; ++i)
         length += tracklist[i].getMidLength(false);
+    libendian::BigEndianOStreamRef fs(file);
+    libendian::LittleEndianOStreamRef fsLE(file);
 
-    // LST-Länge schreiben
-    if(libendian::le_write_ui(length + 14, file) != 0)
-        return 2;
+    // LST-Länge schreiben (Little Endian!)
+    fsLE << (length + 14);
 
     // Header schreiben
-    if(libendian::le_write_c("MThd", 4, file) != 4)
-        return 3;
+    fs.write("MThd", 4);
 
     // Länge schreiben
-    if(libendian::be_write_ui(length, file) != 0)
-        return 4;
+    fs << length;
 
     // Typ schreiben
-    if(libendian::be_write_us(0, file) != 0)
-        return 5;
+    fs << 0;
 
     // Tracksanzahl schreiben
-    if(libendian::be_write_us(tracks, file) != 0)
-        return 6;
+    fs << tracks;
 
     // PPQS schreiben
-    if(libendian::be_write_us(96, file) != 0)
-        return 7;
+    fs << 96;
 
     for(unsigned short i = 0; i < tracks; ++i)
     {
-        if(libendian::le_write_uc(tracklist[i].getMid(false), tracklist[i].getMidLength(false), file) != (int)tracklist[i].getMidLength(false))
-            return 8;
+        fs.write(tracklist[i].getMid(false), tracklist[i].getMidLength(false));
     }
 
     return 0;

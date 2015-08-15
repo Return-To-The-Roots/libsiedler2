@@ -21,7 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_Midi.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,13 +80,14 @@ libsiedler2::baseArchivItem_Sound_Midi::~baseArchivItem_Sound_Midi(void)
 {
 }
 
-int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound_Midi::load(std::istream& file, unsigned int length)
 {
-    if(file == NULL || length == 0)
+    if(!file || length == 0)
         return 1;
 
+    libendian::BigEndianIStreamRef fs(file);
     unsigned int item_length = length;
-    long position = ftell(file);
+    long position = fs.getPosition();
 
     char header[4];
     unsigned int chunk;
@@ -93,28 +95,23 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length
     unsigned short ppqs = 96;
 
     // Header einlesen
-    if(libendian::le_read_c(header, 4, file) != 4)
-        return 2;
+    fs >> header;
 
     // ist es eine MIDI-File? (Header "MThd")
     if(strncmp(header, "MThd", 4) != 0)
         return 3;
 
     // Länge einlesen
-    if(libendian::be_read_ui(&length, file) != 0)
-        return 4;
+    fs >> length;
 
     // Typ einlesen
-    if(libendian::be_read_us(&type, file) != 0)
-        return 5;
+    fs >> type;
 
     // Tracksanzahl einlesen
-    if(libendian::be_read_us(&tracks, file) != 0)
-        return 6;
+    fs >> tracks;
 
     // PPQS einlesen
-    if(libendian::be_read_us(&ppqs, file) != 0)
-        return 7;
+    fs >> ppqs;
 
     if(tracks == 0 || tracks > 256)
         return 8;
@@ -123,18 +120,16 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length
     while(track_nr < tracks)
     {
         // Chunk-Typ einlesen
-        if(libendian::be_read_ui(&chunk, file) != 0)
-            return 9;
+        fs >> chunk;
 
         switch(chunk)
         {
             case 0x4D54726B: // "MTrk"
             {
                 // Länge einlesen
-                if(libendian::be_read_ui(&length, file) != 0)
-                    return 10;
+                fs >> length;
 
-                fseek(file, -8, SEEK_CUR);
+                fs.setPositionRel(-8);
                 length += 8;
 
                 if(tracklist[track_nr].readMid(file, length) != 0)
@@ -148,47 +143,43 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(FILE* file, unsigned int length
     }
 
     // auf jeden Fall kompletten Datensatz überspringen
-    fseek(file, position + item_length, SEEK_SET);
+    fs.setPosition(position + item_length);
     return 0;
 }
 
-int libsiedler2::baseArchivItem_Sound_Midi::write(FILE* file) const
+int libsiedler2::baseArchivItem_Sound_Midi::write(std::ostream& file) const
 {
     if(!file)
         return 1;
+
+    libendian::BigEndianOStreamRef fs(file);
+    libendian::LittleEndianOStreamRef fsLE(file);
 
     unsigned int length = 0;
     for(unsigned short i = 0; i < tracks; ++i)
         length += tracklist[i].getMidLength(false);
 
-    // LST-Länge schreiben
-    if(libendian::le_write_ui(length + 14, file) != 0)
-        return 2;
+    // LST-Länge schreiben (little endian!)
+    fsLE << (length + 14);
 
     // Header schreiben
-    if(libendian::le_write_c("MThd", 4, file) != 4)
-        return 3;
+    fs.write("MThd", 4);
 
     // Länge schreiben
-    if(libendian::be_write_ui(length, file) != 0)
-        return 4;
+    fs << length;
 
     // Typ schreiben
-    if(libendian::be_write_us(0, file) != 0)
-        return 5;
+    fs << 0;
 
     // Tracksanzahl schreiben
-    if(libendian::be_write_us(tracks, file) != 0)
-        return 6;
+    fs << tracks;
 
     // PPQS schreiben
-    if(libendian::be_write_us(96, file) != 0)
-        return 7;
+    fs << 96;
 
     for(unsigned short i = 0; i < tracks; ++i)
     {
-        if(libendian::le_write_uc(tracklist[i].getMid(false), tracklist[i].getMidLength(false), file) != (int)tracklist[i].getMidLength(false))
-            return 8;
+        fs.write(tracklist[i].getMid(false), tracklist[i].getMidLength(false));
     }
 
     return 0;

@@ -24,8 +24,8 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -66,37 +66,34 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> txt(fopen(file.c_str(), "wb"));
+    libendian::LittleEndianOFStream fs(file);
 
     // hat das geklappt?
-    if(txt == NULL)
+    if(!fs)
         return 2;
 
     // Plain-Text ?
     if(items.size() == 1)
     {
         const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(0));
-        if(item->write(txt.get(), conversion) != 0)
+        if(item->write(fs.getStream(), conversion) != 0)
             return 4;
     }
     else
     {
         // "archiviert"
-        unsigned short header = 0xE7FD;
+        unsigned short header = 0xFDE7;
         unsigned short count = (unsigned short)items.size();
         unsigned short unknown = 0x0001;
 
         // Header schreiben
-        if(libendian::be_write_us(header, txt.get()) != 0)
-            return 5;
+        fs << header;
 
         // Anzahl schreiben
-        if(libendian::le_write_us(count, txt.get()) != 0)
-            return 6;
+        fs << count;
 
         // Unbekannte Bytes schreiben
-        if(libendian::le_write_us(unknown, txt.get()) != 0)
-            return 7;
+        fs << unknown;
 
         std::vector<int> starts(count);
 
@@ -116,15 +113,8 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
         }
 
         // Größe schreiben
-        if(libendian::le_write_ui(size, txt.get()) != 0)
-            return 8;
-
-        // Starts schreiben
-        for(unsigned long i = 0; i < count; ++i)
-        {
-            if(libendian::le_write_i(starts[i], txt.get()) != 0)
-                return 9;
-        }
+        fs << size;
+        fs << starts;
 
         // Texte schreiben
         for(unsigned long i = 0; i < count; ++i)
@@ -133,7 +123,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
 
             if(item)
             {
-                if(item->write(txt.get(), conversion) != 0)
+                if(item->write(fs.getStream(), conversion) != 0)
                     return 10;
             }
         }

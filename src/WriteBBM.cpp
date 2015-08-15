@@ -24,8 +24,8 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -48,7 +48,7 @@ static char THIS_FILE[] = __FILE__;
  */
 int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& items)
 {
-    char header[5] = "FORM", pbm[5] = "PBM ", cmap[5] = "CMAP";
+    char header[4] = {'F', 'O', 'R', 'M'}, pbm[4] = {'P', 'B', 'M', ' '}, cmap[4] = {'C', 'M', 'A', 'P'};
     unsigned long count = 0;
     unsigned int length = 0;
 
@@ -65,24 +65,21 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum schreiben öffnen
-    boost::scoped_ptr<FILE> bbm(fopen(file.c_str(), "wb"));
+    libendian::LittleEndianOFStream bbm(file);
 
     // hat das geklappt?
     if(!bbm)
         return 2;
 
     // Header schreiben
-    if(libendian::le_write_c(header, 4, bbm.get()) != 4)
-        return 3;
+    bbm << header;
 
     // Länge schreiben
     length = 4 + count * (256 * 3 + 8);
-    if(libendian::le_write_ui(length, bbm.get()) != 0)
-        return 4;
+    bbm << length;
 
     // Typ schreiben
-    if(libendian::le_write_c(pbm, 4, bbm.get()) != 4)
-        return 5;
+    bbm << pbm;
 
     for(unsigned long i = 0; i < items.size(); ++i)
     {
@@ -90,22 +87,14 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
         if(palette->getBobType() == BOBTYPE_PALETTE)
         {
             // Chunk schreiben
-            if(libendian::be_write_c(cmap, 4, bbm.get()) != 4)
-                return 6;
+            bbm << cmap;
 
             // Länge schreiben
             length = 256 * 3;
-            if(libendian::be_write_ui(length, bbm.get()) != 0)
-                return 7;
+            libendian::BigEndianOStreamRef fsBE(bbm.getStream());
+            fsBE << length;
 
-            // Farbpalette zuweisen
-            Color colors[256];
-            for(unsigned int k = 0; k < 256; ++k)
-                colors[k] = (*palette)[k];
-
-            // Farbpalette schreiben
-            if(libendian::le_write_uc(&colors[0].r, sizeof(colors), bbm.get()) != sizeof(colors))
-                return 8;
+            palette->write(bbm.getStream());
         }
     }
 

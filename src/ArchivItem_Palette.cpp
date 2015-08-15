@@ -22,7 +22,8 @@
 #include "main.h"
 #include "ArchivItem_Palette.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <stdexcept>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,7 +71,7 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette(FILE* file, bool skip) : ArchivItem()
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette(std::istream& file, bool skip) : ArchivItem()
 {
     setBobType(BOBTYPE_PALETTE);
 
@@ -88,20 +89,20 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(FILE* file, bool skip) : Arc
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Palette::load(FILE* file, bool skip)
+int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
+    libendian::LittleEndianIStreamRef fs(file);
     if(skip)
     {
         // Unbekannte 2 Bytes überspringen
-        fseek(file, 2, SEEK_CUR);
+        fs.ignore(2);
     }
 
     // Farben einlesen
-    if(libendian::le_read_uc(&colors[0].r, sizeof(colors), file) != sizeof(colors))
-        return 2;
+    fs.read(&colors[0].r, sizeof(colors));
 
     // alles ok
     return 0;
@@ -118,21 +119,20 @@ int libsiedler2::ArchivItem_Palette::load(FILE* file, bool skip)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Palette::write(FILE* file, bool skip) const
+int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
+    libendian::LittleEndianOStreamRef fs(file);
     if(skip)
     {
         short unknown = 0x0100;
-        if(libendian::le_write_s(unknown, file) != 0)
-            return 2;
+        fs << unknown;
     }
 
     // Farben schreiben
-    if(libendian::le_write_uc(&colors[0].r, sizeof(colors), file) != sizeof(colors))
-        return 3;
+    fs.write(&colors[0].r, sizeof(colors));
 
     // alles ok
     return 0;

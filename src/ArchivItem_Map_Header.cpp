@@ -23,7 +23,8 @@
 #include "ArchivItem_Map_Header.h"
 #include "oem.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,17 +76,17 @@ libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Map_Header::load(FILE* file)
+int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
     const char VALID_ID[10] = {'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0'};
     char id[10];
 
+    libendian::LittleEndianIStreamRef fs(file);
     // Signatur einlesen
-    if(libendian::le_read_c(id, 10, file) != 10)
-        return 2;
+    fs >> id;
 
     // und prüfen
     if(memcmp(id, VALID_ID, 10))
@@ -93,38 +94,32 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE* file)
 
     // Name einlesen
     char name[24];
-    if(libendian::le_read_c(name, 24, file) != 24)
-        return 4;
+    fs >> name;
     OemToAnsi(name, name);
     this->name = name;
 
     // GFX-Set einlesen
-    if(libendian::le_read_uc(&gfxset, 1, file) != 1)
-        return 7;
+    fs >> gfxset;
 
     // Spielerzahl einlesen
-    if(libendian::le_read_uc(&player, 1, file) != 1)
-        return 8;
+    fs >> player;
 
     // Autor einlesen
     char author[20];
-    if(libendian::le_read_c(author, 20, file) != 20)
-        return 9;
+    fs >> author;
     OemToAnsi(author, author);
     this->author = author;
 
-    long old = ftell(file);
-    fseek(file, 2348, SEEK_SET);
+    long old = fs.getPosition();
+    fs.setPosition(2348);
 
     // Breite einlesen
-    if(libendian::le_read_us(&width, file) != 0)
-        return 5;
+    fs >> width;
 
     // Höhe einlesen
-    if(libendian::le_read_us(&height, file) != 0)
-        return 6;
+    fs >> height;
 
-    fseek(file, old, SEEK_SET);
+    fs.setPosition(old);
 
     return 0;
 }
@@ -139,9 +134,9 @@ int libsiedler2::ArchivItem_Map_Header::load(FILE* file)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Map_Header::write(FILE* file) const
+int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
     return 256;

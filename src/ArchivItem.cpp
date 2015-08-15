@@ -122,7 +122,7 @@ libsiedler2::ArchivItem::~ArchivItem(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem::load(FILE* file)
+int libsiedler2::ArchivItem::load(std::istream& file)
 {
     return 256;
 }
@@ -137,7 +137,7 @@ int libsiedler2::ArchivItem::load(FILE* file)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem::write(FILE* file) const
+int libsiedler2::ArchivItem::write(std::ostream& file) const
 {
     return 256;
 }

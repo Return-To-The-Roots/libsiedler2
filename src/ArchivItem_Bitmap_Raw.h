@@ -36,16 +36,16 @@ namespace libsiedler2
             baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item);
 
             /// Konstruktor von @p baseArchivItem_Bitmap_Raw mit Laden der Bilddaten aus einer Datei.
-            baseArchivItem_Bitmap_Raw(FILE* file, const ArchivItem_Palette* palette);
+            baseArchivItem_Bitmap_Raw(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_Raw.
             ~baseArchivItem_Bitmap_Raw(void);
 
             /// lädt die Bilddaten aus einer Datei.
-            int load(FILE* file, const ArchivItem_Palette* palette);
+            int load(std::istream& file, const ArchivItem_Palette* palette);
 
             /// schreibt die Bilddaten in eine Datei.
-            int write(FILE* file, const ArchivItem_Palette* palette) const;
+            int write(std::ostream& file, const ArchivItem_Palette* palette) const;
     };
 
     /// Klasse für Raw-Bitmaps.

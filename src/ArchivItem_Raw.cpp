@@ -22,7 +22,8 @@
 #include "main.h"
 #include "ArchivItem_Raw.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -72,26 +73,21 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Raw::load(FILE* file, unsigned int length)
+int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned int length)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
     clear();
 
+    libendian::LittleEndianIStreamRef fs(file);
     if(length == 0xFFFFFFFF)
     {
-        if(libendian::le_read_ui(&length, file) != 0)
-            return 2;
+        fs >> length;
     }
 
     data.resize(length);
-
-    if(length > 0)
-    {
-        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
-            return 3;
-    }
+    fs >> data;
 
     return 0;
 }
@@ -107,35 +103,22 @@ int libsiedler2::baseArchivItem_Raw::load(FILE* file, unsigned int length)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Raw::write(FILE* file, bool with_length) const
+int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
+    libendian::LittleEndianOStreamRef fs(file);
     if(with_length)
     {
-        if(libendian::le_write_ui(data.size(), file) != 0)
-            return 2;
+        // Convert to unsigned first
+        unsigned length = data.size();
+        fs << length;
     }
 
-    if(data.size() > 0)
-    {
-        if(libendian::le_write_uc(&data.front(), data.size(), file) != (int)data.size())
-            return 3;
-    }
+    fs << data;
 
     return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  liefert die Länge des Datenblocks.
- *
- *  @author FloSoft
- */
-unsigned int libsiedler2::baseArchivItem_Raw::getLength(void) const
-{
-    return data.size();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_Wave.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,29 +72,29 @@ libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned int length)
 {
-    if(file == NULL || length == 0)
+    if(!file || length == 0)
         return 1;
 
     char header[4];
     bool prependheader = true;
+    libendian::LittleEndianIStreamRef fs(file);
 
     // Header einlesen
-    libendian::le_read_c(header, 4, file);
+    fs >> header;
 
     // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
     if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
         prependheader = false;
 
-    fseek(file, -4, SEEK_CUR);
+    fs.setPositionRel(-4);
 
     if(prependheader)
     {
         data.resize(length + 44);
 
-        if(libendian::le_read_uc(&data[44], length, file) != (int)length)
-            return 2;
+        fs.read(&data[44], length);
 
         //unsigned char header[] = {
         //   0 | 'R', 'I', 'F', 'F',
@@ -133,10 +134,8 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length
         unsigned int size = length + 16;
         unsigned int flength = length;
 
-#if BYTE_ORDER == BIG_ENDIAN
-        size = libendian::swap_ui(size);
-        flength = libendian::swap_ui(flength);
-#endif
+        boost::endian::native_to_little_inplace(size);
+        boost::endian::native_to_little_inplace(flength);
 
         memcpy(&header[4],  &size, 4);
         memcpy(&header[40], &flength,   4);
@@ -146,9 +145,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length
     else
     {
         data.resize(length);
-
-        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
-            return 3;
+        fs >> data;
     }
 
     return 0;
@@ -165,10 +162,12 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(FILE* file, unsigned int length
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound_Wave::write(FILE* file, bool stripheader) const
+int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool stripheader) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
+
+    libendian::LittleEndianOStreamRef fs(file);
 
     const unsigned char* start = &data.front();
     unsigned int length = data.size();
@@ -178,11 +177,9 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(FILE* file, bool stripheader) 
         length -= 44;
     }
 
-    if(libendian::le_write_ui(length, file) != 0)
-        return 2;
+    fs << length;
 
-    if(libendian::le_write_uc(start, length, file) != (int)length)
-        return 3;
+    fs.write(start, length);
 
     return 0;
 }

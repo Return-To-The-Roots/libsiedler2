@@ -24,9 +24,8 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
-#include <boost/scoped_array.hpp>
+#include <fstream>
+#include <EndianStream.h>
 #include <sstream>
 #include <cstring>
 
@@ -52,25 +51,21 @@ static char THIS_FILE[] = __FILE__;
  */
 int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
 {
-    char header[4], pbm[4];
-    unsigned int chunk;
+    char header[4], pbm[4], chunk[4];
     unsigned int i = 0;
 
     if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> bbm(fopen(file.c_str(), "rb"));
+    libendian::BigEndianIFStream fs(file);
 
     // hat das geklappt?
-    if(!bbm)
+    if(!fs)
         return 2;
 
-    long size = getFileLength(bbm.get());
-
     // Header einlesen
-    if(libendian::le_read_c(header, 4, bbm.get()) != 4)
-        return 3;
+    fs >> header;
 
     // ist es eine BBM-File? (Header "FORM")
     if(strncmp(header, "FORM", 4) != 0)
@@ -78,86 +73,58 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
 
     // Länge einlesen
     unsigned length;
-    if(libendian::le_read_ui(&length, bbm.get()) != 0)
-        return 5;
+    fs >> length;
 
     // Typ einlesen
-    if(libendian::le_read_c(pbm, 4, bbm.get()) != 4)
-        return 6;
+    fs >> pbm;
 
     // ist es eine BBM-File? (Typ "PBM ")
     if(strncmp(pbm, "PBM ", 4) != 0)
         return 7;
 
     // Chunks einlesen
-    while(!feof(bbm.get()) && ftell(bbm.get()) < size)
+    while(fs.readNoExcept(chunk, sizeof(chunk)))
     {
-        // Chunk-Typ einlesen
-        if(libendian::be_read_ui(&chunk, bbm.get()) != 0)
-            return 8;
-
-        switch(chunk)
+        if(strncmp(chunk, "CMAP", 4) == 0)
         {
-            case 0x434D4150: // "CMAP"
+            fs >> length;
+
+            // Bei ungerader Zahl aufrunden
+            if(length & 1)
+                ++length;
+
+            // Ist Länge wirklich so groß wie Farbtabelle?
+            if(length != 256 * 3)
+                return 10;
+
+            // Daten von Item auswerten
+            ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
+            items.push(palette);
+
+            size_t namePos = file.find_last_of('/');
+            if(namePos != std::string::npos)
             {
-                // Länge einlesen
-                if(libendian::be_read_ui(&length, bbm.get()) != 0)
-                    return 9;
+                std::stringstream rName;
+                rName << file.substr(namePos+1) << "(" << i << ")";
+                palette->setName(rName.str());
+            }
 
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
+            palette->load(fs.getStream(), false);
 
-                // Ist Länge wirklich so groß wie Farbtabelle?
-                if(length != 256 * 3)
-                    return 10;
+            ++i;
+        }else
+        {
+            fs >> length;
 
-                // Daten von Item auswerten
-                ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
-                items.push(palette);
+            // Bei ungerader Zahl aufrunden
+            if(length & 1)
+                ++length;
 
-                size_t namePos = file.find_last_of('/');
-                if(namePos != std::string::npos)
-                {
-                    std::stringstream rName;
-                    rName << file.substr(namePos+1) << "(" << i << ")";
-                    palette->setName(rName.str());
-                }
-
-                // Farbpalette lesen
-                Color colors[256];
-                if(libendian::le_read_uc(&colors[0].r, sizeof(colors), bbm.get()) != sizeof(colors))
-                    return 10;
-
-                // Farbpalette zuweisen
-                for(unsigned int k = 0; k < 256; ++k)
-                    palette->set(k, colors[k]);
-
-                ++i;
-            } break;
-            default:
-            {
-                // Länge einlesen
-                if(libendian::be_read_ui(&length, bbm.get()) != 0)
-                    return 12;
-
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
-
-                if(length > 0)
-                {
-                    boost::scoped_array<unsigned char> buffer(new unsigned char[length]);
-
-                    // überspringen
-                    if(libendian::le_read_uc(buffer.get(), length, bbm.get()) != (int)length)
-                        return 13;
-                }
-            } break;
+            fs.ignore(length);
         }
     }
 
-    if(items.size() == 0)
+    if(items.size() == 0 || !fs.isEOF())
         return 14;
 
     // alles ok

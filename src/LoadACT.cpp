@@ -24,7 +24,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -48,28 +48,23 @@ static char THIS_FILE[] = __FILE__;
  */
 int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
 {
-    long size;
-
-    if(file.empty())
+     if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> act(fopen(file.c_str(), "rb"));
+    std::ifstream act(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!act)
         return 2;
 
-    fseek(act.get(), 0, SEEK_END);
-    size = ftell(act.get());
-    fseek(act.get(), 0, SEEK_SET);
-
+    size_t size = getIStreamSize(act);
     // sind es 256*3 Bytes, also somit 8bit-RGB?
     if(size != 256*3)
         return 3;
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
-    if(palette->load(act.get(), false) != 0){
+    if(palette->load(act, false) != 0){
         delete palette;
         return 4;
     }

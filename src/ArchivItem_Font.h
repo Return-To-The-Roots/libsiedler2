@@ -39,10 +39,10 @@ namespace libsiedler2
             ArchivItem_Font(const ArchivItem_Font& item);
 
             /// lädt die Fontdaten aus einer Datei.
-            int load(FILE* file, const ArchivItem_Palette* palette);
+            int load(std::istream& file, const ArchivItem_Palette* palette);
 
             /// schreibt die Fontdaten in eine Datei.
-            int write(FILE* file, const ArchivItem_Palette* palette) const;
+            int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             /// liefert den X-Buchstabenabstand.
             inline unsigned char getDx(void) const

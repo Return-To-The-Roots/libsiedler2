@@ -140,8 +140,6 @@ libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(void) : ArchivItem()
     nx = 0;
     ny = 0;
 
-    length = 0;
-
     tex_width = 0;
     tex_height = 0;
 
@@ -166,8 +164,6 @@ libsiedler2::baseArchivItem_Bitmap::baseArchivItem_Bitmap(const baseArchivItem_B
 
     nx = item.nx;
     ny = item.ny;
-
-    length = item.length;
 
     tex_width = item.tex_width;
     tex_height = item.tex_height;
@@ -342,7 +338,7 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/** @function int libsiedler2::baseArchivItem_Bitmap::load(FILE *file, const ArchivItem_Palette *palette)
+/** @function int libsiedler2::baseArchivItem_Bitmap::load(std::istream&file, const ArchivItem_Palette *palette)
  *
  *  lädt die Bilddaten aus einer Datei.
  *
@@ -355,7 +351,7 @@ unsigned char libsiedler2::baseArchivItem_Bitmap::tex_getPixel(unsigned short x,
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** @function int libsiedler2::baseArchivItem_Bitmap::write(FILE *file, const ArchivItem_Palette *palette)
+/** @function int libsiedler2::baseArchivItem_Bitmap::write(std::ostream&file, const ArchivItem_Palette *palette)
  *  schreibt die Bilddaten in eine Datei.
  *
  *  @param[in] file    Dateihandle der Datei
@@ -440,19 +436,6 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::tex_pow2(unsigned short n)
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  liefert die Länge des Datenblocks.
- *
- *  @return Länge des Datenblocks
- *
- *  @author FloSoft
- */
-unsigned int libsiedler2::baseArchivItem_Bitmap::getLength(void) const
-{
-    return length;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
  *  liefert den Textur-Datenblock.
  *
  *  @return Der Textur-Datenblock
@@ -514,19 +497,6 @@ unsigned short libsiedler2::baseArchivItem_Bitmap::getWidth(void) const
 unsigned short libsiedler2::baseArchivItem_Bitmap::getHeight(void) const
 {
     return height;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  setzt die Länge des Datenblocks.
- *
- *  @param[in] length Länge des Datenblocks
- *
- *  @author FloSoft
- */
-void libsiedler2::baseArchivItem_Bitmap::setLength(unsigned int length)
-{
-    this->length = length;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -842,7 +812,6 @@ int libsiedler2::baseArchivItem_Bitmap::create(unsigned short width,
 
     this->width = width;
     this->height = height;
-    this->length = width * height;
     this->format = buffer_format;
 
     // Texturspeicher anfordern

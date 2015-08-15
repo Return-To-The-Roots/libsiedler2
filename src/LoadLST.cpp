@@ -22,8 +22,8 @@
 #include "main.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -55,29 +55,27 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
         return 1;
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> lst(fopen(file.c_str(), "rb"));
+    libendian::LittleEndianIFStream lst(file);
 
     // hat das geklappt?
     if(!lst)
         return 2;
 
     // Header einlesen
-    if(libendian::be_read_us(&header, lst.get()) != 0)
-        return 3;
+    lst >> header;
 
     // ist es eine GER/ENG-File? (Header 0xE7FD)
-    if(header == 0xE7FD)
+    if(header == 0xFDE7)
     {
         return LoadTXT(file, items);
     }
 
     // ist es eine LST-File? (Header 0x204E)
-    if(header != 0x204E)
+    if(header != 0x4E20)
         return 4;
 
     // Anzahl einlesen
-    if(libendian::le_read_ui(&count, lst.get()) != 0)
-        return 5;
+    lst >> count;
 
     items.clear();
 
@@ -88,11 +86,10 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
         short bobtype_s;
 
         // use-Flag einlesen
-        if(libendian::be_read_s(&used, lst.get()) != 0)
-            return 6;
+        lst >> used;
 
         // ist das Item benutzt?
-        if(used != 0x0100)
+        if(used != 0x0001)
         {
             //fprintf(stderr, "unused %04X\n", used);
             items.push(NULL);
@@ -100,14 +97,13 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
         }
 
         // bobtype des Items einlesen
-        if(libendian::le_read_s(&bobtype_s, lst.get()) != 0)
-            return 7;
+        lst >> bobtype_s;
         BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
         //fprintf(stderr, "bobtype %d\n", bobtype);
 
         // Daten von Item auswerten
         ArchivItem* item;
-        if(LoadType(bobtype, lst.get(), palette, item) != 0)
+        if(LoadType(bobtype, lst.getStream(), palette, item) != 0)
             return 8;
         items.push(item);
     }

@@ -36,9 +36,9 @@ namespace libsiedler2
             ~ArchivItem_Map_Header(void);
 
             /// lädt den Mapheader aus einer Datei.
-            int load(FILE* file);
+            int load(std::istream& file);
             /// schreibt den Mapheader in eine Datei.
-            int write(FILE* file) const;
+            int write(std::ostream& file) const;
 
             const std::string& getName(void) const;
             void setName(const std::string& name);

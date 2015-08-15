@@ -22,7 +22,8 @@
 #include "main.h"
 #include "MIDI_Track.h"
 #include "XMIDI_Track.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,10 +40,10 @@ MIDI_Track::MIDI_Track()
 MIDI_Track::~MIDI_Track()
 {}
 
-int MIDI_Track::readXMid(FILE* file, size_t length)
+int MIDI_Track::readXMid(std::istream& file, size_t length)
 {
     xmid_data.resize(length);
-    if(libendian::le_read_uc(&xmid_data.front(), length, file) != (int)length)
+    if(!file.read(reinterpret_cast<char*>(&xmid_data.front()), length))
         return 1;
     return 0;
 }
@@ -52,7 +53,7 @@ void MIDI_Track::clearXMid()
     xmid_data.clear();
 }
 
-int MIDI_Track::readMid(FILE* file, size_t length)
+int MIDI_Track::readMid(std::istream& file, size_t length)
 {
     clearMid();
     if(length == 0)
@@ -65,7 +66,7 @@ int MIDI_Track::readMid(FILE* file, size_t length)
     *reinterpret_cast<unsigned short*>(&mid_data[8]) = 0x0000; // type (MIDI 0)
     *reinterpret_cast<unsigned short*>(&mid_data[10]) = 0x0100; // trackanzahl (1)
     *reinterpret_cast<unsigned short*>(&mid_data[12]) = 0x3C00; // PPQN (?)
-    if(libendian::le_read_uc(&mid_data[14], length - 14, file) != (int)length - 14)
+    if(!file.read(reinterpret_cast<char*>(&mid_data[14]), length - 14))
         return 1;
     return 0;
 }

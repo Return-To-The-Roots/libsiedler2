@@ -45,9 +45,9 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::WriteType(BOBTYPES bobtype, FILE* file, const ArchivItem_Palette* palette, const ArchivItem& item)
+int libsiedler2::loader::WriteType(BOBTYPES bobtype, std::ostream& file, const ArchivItem_Palette* palette, const ArchivItem& item)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
     switch(bobtype)

@@ -86,62 +86,62 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : Archiv
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Ini::load(FILE* file)
+int libsiedler2::ArchivItem_Ini::load(std::istream& file)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
-    char temp[512];
-
-    memset(temp, 0, 512);
-    if(fgets(temp, 511, file) == NULL && !feof(file))
-        return 2;
-
-    std::string section(temp);
+    std::string section;
+    std::getline(file, section);
 
     size_t lr = section.find("\r");
     if (lr != std::string::npos) section.erase(lr, 1);
     size_t ln = section.find("\n");
     if (ln != std::string::npos) section.erase(ln, 1);
 
-    section = section.substr(section.find_first_of('[') + 1);
-    section = section.substr(0, section.find_first_of(']'));
-
-    if(section.length() == 0 && !feof(file))
+    if(!section.empty())
+    {
+        size_t pos = section.find('[');
+        if(pos == std::string::npos)
+            throw std::runtime_error("Invalid section");
+        section = section.substr(pos + 1);
+        pos = section.find(']');
+        if(pos == std::string::npos)
+            throw std::runtime_error("Invalid section");
+        section = section.substr(0, pos);
+    }
+    if(section.empty() && !file.eof())
         return 4;
 
-    setName(section.c_str());
+    setName(section);
 
-    if(feof(file))
+    if(!file)
         return 0;
 
     while(true)
     {
-        memset(temp, 0, 512);
-        if(fgets(temp, 511, file) == NULL && !feof(file))
-            return 5;
-
-        std::string entry(temp);
-
-        size_t lr = entry.find("\r");
+        std::string entry;
+        if(!std::getline(file, entry))
+            break;
+        lr = entry.find("\r");
         if (lr != std::string::npos) entry.erase(lr, 1);
-        size_t ln = entry.find("\n");
+        ln = section.find("\n");
         if (ln != std::string::npos) entry.erase(ln, 1);
-
-        if(entry.length() == 0 || feof(file))
+        if(entry.empty())
             break;
 
-        std::string name, value;
+        size_t pos = entry.find("=");
+        if(pos == std::string::npos)
+            throw std::runtime_error("Invalid value");
+        std::string name = entry.substr(0, pos);
+        std::string value = entry.substr(pos + 1);
 
-        name = entry.substr(0, entry.find("="));
-        value = entry.substr(entry.find("=") + 1);
-
-        if(name.length() == 0 || value.length() == 0)
+        if(name.empty() || value.empty())
             continue;
 
         ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT) );
-        item->setText(value.c_str());
-        item->setName(name.c_str());
+        item->setText(value);
+        item->setName(name);
 
         push(item);
     }
@@ -159,15 +159,14 @@ int libsiedler2::ArchivItem_Ini::load(FILE* file)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Ini::write(FILE* file) const
+int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
     std::string section = "[" + std::string(getName()) + "]\n";
 
-    if(fputs(section.c_str(), file) < 0)
-        return 2;
+    file << section;
 
     for(unsigned long i = 0; i < size(); ++i)
     {
@@ -175,11 +174,10 @@ int libsiedler2::ArchivItem_Ini::write(FILE* file) const
 
         std::string entry = std::string(item->getName()) + "=" + std::string(item->getText()) + "\n";
 
-        if(fputs(entry.c_str(), file) < 0)
-            return 3 + i;
+        file << entry;
     }
 
-    fputs("\n", file);
+    file << "\n";
 
     return 0;
 }

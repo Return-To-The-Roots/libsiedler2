@@ -23,9 +23,9 @@
 #include "ArchivItem_Bitmap.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,24 +50,19 @@ static char THIS_FILE[] = __FILE__;
  */
 int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 {
-    char header[4], pbm[4];
-    unsigned int chunk;
-
     if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> lbm(fopen(file.c_str(), "rb"));
+    libendian::BigEndianIFStream lbm(file);
 
     // hat das geklappt?
     if(!lbm)
         return 2;
 
-    long size = getFileLength(lbm.get());
-
+    char header[4], pbm[4];
     // Header einlesen
-    if(libendian::le_read_c(header, 4, lbm.get()) != 4)
-        return 3;
+    lbm >> header;
 
     // ist es eine LBM-File? (Header "FORM")
     if(strncmp(header, "FORM", 4) != 0)
@@ -75,12 +70,10 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 
     // Länge einlesen
     unsigned length;
-    if(libendian::le_read_ui(&length, lbm.get()) != 0)
-        return 5;
+    lbm >> length;
 
     // Typ einlesen
-    if(libendian::le_read_c(pbm, 4, lbm.get()) != 4)
-        return 6;
+    lbm >> pbm;
 
     // ist es eine LBM-File? (Typ "PBM ")
     if(strncmp(pbm, "PBM ", 4) != 0)
@@ -89,71 +82,61 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setFormat(FORMAT_PALETTED);
     ArchivItem_Palette* palette = NULL;
-    unsigned short compression;
-    unsigned short width, height;
-    unsigned short depth;
 
     // lbm has normally 2 items, palette (1) and image (0),
     // i'll change position of those items to be compatible with LoadBMP
     items.alloc(2);
 
+    unsigned short width, height;
+    unsigned short compression;
+    unsigned chunk;
     // Chunks einlesen
-    while(!feof(lbm.get()) && ftell(lbm.get()) < size)
+    while(lbm.readNoExcept(chunk))
     {
-        // Chunk-Typ einlesen
-        if(libendian::be_read_ui(&chunk, lbm.get()) != 0)
-            return 8;
-
         switch(chunk)
         {
             case 0x424D4844: // "BHMD"
             {
+
                 // Länge einlesen
-                if(libendian::be_read_ui(&length, lbm.get()) != 0)
-                    return 9;
+                lbm >> length;
 
                 // Bei ungerader Zahl aufrunden
                 if(length & 1)
                     ++length;
 
-                if(libendian::be_read_us(&width, lbm.get()) != 0)
-                    return 10;
-
-                if(libendian::be_read_us(&height, lbm.get()) != 0)
-                    return 11;
+                lbm >> width >> height;
 
                 bitmap->setWidth(width);
                 bitmap->setHeight(height);
 
                 // Unbekannte Daten ( 4 Byte ) berspringen
-                fseek(lbm.get(), 4, SEEK_CUR);
+                lbm.ignore(4);
 
                 // Farbtiefe einlesen
-                if(libendian::le_read_us(&depth, lbm.get()) != 0)
-                    return 12;
+                unsigned short depth;
+                lbm >> depth;
 
                 // Nur 256 Farben und nicht mehr!
-                if(depth != 8)
+                if(depth != 256 * 8)
                     return 13;
 
                 // Kompressionflag lesen
-                if(libendian::le_read_us(&compression, lbm.get()) != 0)
-                    return 14;
+                lbm >> compression;
 
                 // Keine bekannte Kompressionsart?
-                if(compression > 1)
+                if(compression != 0 && compression != 256)
                     return 15;
 
                 length -= 12;
 
                 // Rest überspringen
-                fseek(lbm.get(), length, SEEK_CUR);
+                lbm.ignore(length);
             } break;
             case 0x434D4150: // "CMAP"
             {
                 // Länge einlesen
-                if(libendian::be_read_ui(&length, lbm.get()) != 0)
-                    return 16;
+                lbm >> length;
 
                 // Bei ungerader Zahl aufrunden
                 if(length & 1)
@@ -166,21 +149,12 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                 // Daten von Item auswerten
                 palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
                 items.set(1, palette);
-
-                // Farbpalette lesen
-                unsigned char colors[256][3];
-                if(libendian::le_read_uc(colors[0], 256 * 3, lbm.get()) != 256 * 3)
-                    return 18;
-
-                // Farbpalette zuweisen
-                for(unsigned int k = 0; k < 256; ++k)
-                    palette->set(k, Color(colors[k][0], colors[k][1], colors[k][2]));
+                palette->load(lbm.getStream(), false);
             } break;
             case 0x424F4459: // "BODY"
             {
                 // Länge einlesen
-                if(libendian::be_read_ui(&length, lbm.get()) != 0)
-                    return 19;
+                lbm >> length;
 
                 // Bei ungerader Zahl aufrunden
                 if(length & 1)
@@ -208,32 +182,30 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                                 bitmap->tex_setPixel(x, y, color, palette);
                             }
                     } break;
-                    case 1: // komprimiert (RLE?)
+                    case 256: // komprimiert (RLE?)
                     {
                         // Welcher Pixel ist dran?
                         unsigned short x = 0, y = 0;
-                        unsigned char ctype;
-                        unsigned char color;
 
                         // Solange einlesen, bis Block zuende bzw. Datei zuende ist
-                        while(length >= 0 && !feof(lbm.get()) && ftell(lbm.get()) < size)
+                        while(length > 0 && !lbm.isEOF())
                         {
                             // Typ lesen
-                            if(libendian::le_read_uc(&ctype, 1, lbm.get()) != 1)
-                                return 21;
+                            signed char ctype;
+                            lbm >> ctype;
                             --length;
                             if(length == 0)
                                 continue;
 
-                            if(ctype < 128) // unkomprimierte Pixel
+                            if(ctype > 0) // unkomprimierte Pixel
                             {
-                                unsigned short count = ctype + 1;
+                                short count = 1 + static_cast<short>(ctype);
 
-                                for(unsigned short i = 0; i < count; ++i)
+                                for(short i = 0; i < count; ++i)
                                 {
                                     // Farbe auslesen
-                                    if(libendian::le_read_uc(&color, 1, lbm.get()) != 1)
-                                        return 22;
+                                    unsigned char color;
+                                    lbm >> color;
                                     --length;
 
                                     bitmap->tex_setPixel(x++, y, color, palette);
@@ -246,11 +218,11 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                             }
                             else // komprimierte Pixel
                             {
-                                unsigned short count = 0xFF - ctype + 2;
+                                short count = 1 - static_cast<short>(ctype);
 
                                 // Farbe auslesen
-                                if(libendian::le_read_uc(&color, 1, lbm.get()) != 1)
-                                    return 23;
+                                unsigned char color;
+                                lbm >> color;
                                 --length;
 
                                 for(unsigned short i = 0; i < count; ++i)
@@ -271,20 +243,19 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
             default:
             {
                 // Länge einlesen
-                if(libendian::be_read_ui(&length, lbm.get()) != 0)
-                    return 24;
+                lbm >> length;
 
                 // Bei ungerader Zahl aufrunden
                 if(length & 1)
                     ++length;
 
                 // Rest überspringen
-                fseek(lbm.get(), length, SEEK_CUR);
+                lbm.ignore(length);
             } break;
         }
     }
 
-    if(items.size() == 0)
+    if(items.size() == 0 || !lbm.isEOF())
         return 25;
 
     return 0;

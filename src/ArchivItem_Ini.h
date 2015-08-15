@@ -42,10 +42,10 @@ namespace libsiedler2
             ArchivItem_Ini(const ArchivItem_Ini& item);
 
             /// lädt die INI-Daten aus einer Datei.
-            int load(FILE* file);
+            int load(std::istream& file);
 
             /// schreibt die INI-Daten in eine Datei.
-            int write(FILE* file) const;
+            int write(std::ostream& file) const;
 
             /// liest einen Wert aus der Ini
             std::string getValue(const std::string& name) const;

@@ -24,7 +24,7 @@
 
 #include "MIDI_Track.h"
 #include "GammaTable.h"
-#include <libendian.h>
+#include <boost/endian/conversion.hpp>
 #include <algorithm>
 #include <cstring>
 
@@ -480,10 +480,7 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
     memcpy(&track->mid_data[i], "MTrk", 4);
     i += 4;
 
-    unsigned int length = mid_length - 8;
-#if BYTE_ORDER == LITTLE_ENDIAN
-    length = libendian::swap_ui(length);
-#endif
+    unsigned int length = boost::endian::big_to_native(mid_length - 8);
     memcpy(&track->mid_data[i], (unsigned char*)&length, 4);
     i += 4;
 

@@ -24,7 +24,8 @@
 #include "ArchivItem_Map_Header.h"
 #include "ArchivItem_Raw.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -88,25 +89,9 @@ libsiedler2::ArchivItem_Map::~ArchivItem_Map(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Map::load(FILE* file, bool only_header)
+int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
 {
-    return loadHelper(file, only_header);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  lädt die Mapdaten aus einer Datei.
- *
- *  @param[in] file        Dateihandle der Datei
- *  @param[in] only_header Soll nur der Header gelesen werden?
- *
- *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
- */
-int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
-{
-    if(file == NULL)
+    if(!file)
         return 1;
 
     ArchivItem_Map_Header* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
@@ -130,19 +115,19 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
     }
     set(1, layer);
 
+    libendian::LittleEndianIStreamRef fs(file);
     unsigned short width, height;
     for(unsigned int i = 0; i < 14; ++i)
     {
         // 6 Unbekannte Daten überspringen
-        fseek(file, 6, SEEK_CUR);
+        fs.ignore(6);
 
         // ggf paar bytes weiterspringen
         int seek = -4;
         do
         {
             seek += 2;
-            if(libendian::le_read_us(&width, file) != 0)
-                return 4;
+            fs >> width;
         }
         while(width == 0);
 
@@ -150,8 +135,7 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
         do
         {
             seek += 2;
-            if(libendian::le_read_us(&height, file) != 0)
-                return 5;
+            fs >> height;
         }
         while(height == 0);
 
@@ -159,7 +143,7 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
         header->setHeight(height);
 
         // 6 Unbekannte Daten überspringen
-        fseek(file, 6 - seek, SEEK_CUR);
+        fs.ignore(6 - seek);
 
         ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
         if(layer->load(file, header->getWidth() * header->getHeight()) != 0){
@@ -182,9 +166,9 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Map::write(FILE* file) const
+int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
     /// @todo Schreiben der Mapdaten.

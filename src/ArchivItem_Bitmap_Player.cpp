@@ -21,7 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Player.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <boost/scoped_array.hpp>
 #include <vector>
 
@@ -86,7 +87,7 @@ libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(void) : 
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(FILE* file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
+libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
     setBobType(BOBTYPE_BITMAP_PLAYER);
 
@@ -118,9 +119,9 @@ libsiedler2::baseArchivItem_Bitmap_Player::~baseArchivItem_Bitmap_Player(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::load(FILE* file, const ArchivItem_Palette* palette)
+int libsiedler2::baseArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette* palette)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
     if(palette == NULL)
         palette = this->palette;
@@ -128,55 +129,49 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(FILE* file, const ArchivItem
         return 2;
 
     tex_clear();
-
-    // Nullpunkt X einlesen
-    if(libendian::le_read_s(&nx, file) != 0)
-        return 2;
-
-    // Nullpunkt Y einlesen
-    if(libendian::le_read_s(&ny, file) != 0)
-        return 3;
-
-    // Unbekannte Daten überspringen
-    fseek(file, 4, SEEK_CUR);
-
-    // Breite einlesen
-    if(libendian::le_read_us(&width, file) != 0)
-        return 4;
-
-    // Höhe einlesen
-    if(libendian::le_read_us(&height, file) != 0)
-        return 5;
-
-    // Unbekannte Daten überspringen
-    fseek(file, 2, SEEK_CUR);
-
-    // Länge einlesen
-    if(libendian::le_read_ui(&length, file) != 0)
-        return 6;
-
-    unsigned short* starts = NULL;
-    boost::scoped_array<unsigned char> data;
-    // Daten einlesen
-    if(length != 0)
+    libendian::LittleEndianIStreamRef fs(file);
+    try
     {
-        data.reset(new unsigned char[length]);
+        // Nullpunkt X einlesen
+        fs >> nx;
 
-        starts = (unsigned short*)data.get();
+        // Nullpunkt Y einlesen
+        fs >> ny;
 
-        for(unsigned int i = 0; i < height; ++i)
+        // Unbekannte Daten überspringen
+        fs.ignore(4);
+
+        // Breite einlesen
+        fs >> width;
+
+        // Höhe einlesen
+        fs >> height;
+
+        // Unbekannte Daten überspringen
+        fs.ignore(2);
+
+        unsigned int length;
+        // Länge einlesen
+        fs >> length;
+
+        std::vector<unsigned short> starts;
+        std::vector<unsigned char> data;
+        // Daten einlesen
+        if(length >= height * sizeof(unsigned short))
         {
-            if(libendian::le_read_us(&starts[i], file) != 0)
-                return 7;
+            starts.resize(height);
+            data.resize(length - height * sizeof(unsigned short));
+            fs >> starts >> data;
         }
 
-        if(libendian::le_read_uc(&data[height * 2], length - (height * 2), file) != (int)(length - (height * 2)))
-            return 8;
+        if(load(width, height, data, starts, false, palette) != 0)
+            return 9;
+
+        }
+    catch (libendian::FileError&)
+    {
+        return 3;
     }
-
-    if(load(width, height, &data[height * 2], starts, false, length, palette) != 0)
-        return 9;
-
     return 0;
 }
 
@@ -196,27 +191,26 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(FILE* file, const ArchivItem
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::load(unsigned short width, unsigned short height, const unsigned char* image, const unsigned short* starts, bool absolute, unsigned int length, const ArchivItem_Palette* palette)
+int libsiedler2::baseArchivItem_Bitmap_Player::load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
 {
     this->width = width;
     this->height = height;
-    this->length = length;
 
     // Speicher anlegen
     tex_alloc();
 
-    if(length != 0 && image)
+    if(!image.empty())
     {
-        unsigned int position = 0;
-
         // Einlesen
         for(unsigned short y = 0; y < height; ++y)
         {
             unsigned short x = 0;
 
-            position = (unsigned int)starts[y] - (absolute ? 0 : (height * 2) );
+            unsigned position = starts[y];
+            if(!absoluteStarts)
+                position -= height * 2;
 
-            if (position > (length - (absolute ? 0 : (height * 2))))
+            if (position > image.size())
                 return 1;
 
             // Solange Zeile einlesen, bis x voll ist
@@ -283,9 +277,9 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(unsigned short width, unsign
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE* file, const ArchivItem_Palette* palette) const
+int libsiedler2::baseArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
     if(palette == NULL)
         palette = this->palette;
@@ -295,38 +289,32 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE* file, const ArchivIte
     if(width == 0 || height == 0)
         return 2;
 
+    libendian::LittleEndianOStreamRef fs(file);
     // Nullpunkt X schreiben
-    if(libendian::le_write_s(nx, file) != 0)
-        return 3;
+    fs << nx;
 
     // Nullpunkt Y schreiben
-    if(libendian::le_write_s(ny, file) != 0)
-        return 4;
+    fs << ny;
 
     // Unbekannte Daten schreiben
     char unknown[4] = {0x00, 0x00, 0x00, 0x00};
-    if(libendian::le_write_c(unknown, 4, file) != 4)
-        return 5;
+    fs.write(unknown, sizeof(unknown));
 
     // Breite schreiben
-    if(libendian::le_write_us(width, file) != 0)
-        return 6;
+    fs << width;
 
     // Höhe schreiben
-    if(libendian::le_write_us(height, file) != 0)
-        return 7;
+    fs << height;
 
     // Unbekannte Daten schreiben
     char unknown2[2] = {0x01, 0x00};
-    if(libendian::le_write_c(unknown2, 2, file) != 2)
-        return 8;
+    fs.write(unknown2, sizeof(unknown2));
 
     // maximale größe von Player-Image: width*height*2 (sollte reichen :P)
-    std::vector<unsigned char> data(height * 2 + width * height * 2);
+    std::vector<unsigned char> image(width * height * 2);
 
     // Startadressen
-    unsigned char* image = &data[height * 2];
-    unsigned short* const starts = (unsigned short*)&data[0];
+    std::vector<unsigned short> starts(height);
 
     unsigned short position = 0;
     for(unsigned short y = 0; y < height; ++y)
@@ -395,17 +383,10 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(FILE* file, const ArchivIte
     unsigned int length = position + height * 2;
 
     // Länge schreiben
-    if(libendian::le_write_ui(length, file) != 0)
-        return 9;
+    fs << length;
 
     // Daten schreiben
-    for(unsigned int i = 0; i < height; ++i)
-    {
-        if(libendian::le_write_us(starts[i], file) != 0)
-            return 10;
-    }
-    if(libendian::le_write_uc(&data[height * 2], length - (height * 2), file) != (int)(length - (height * 2)))
-        return 11;
+    fs << starts << image;
 
     return 0;
 }
@@ -477,7 +458,6 @@ int libsiedler2::baseArchivItem_Bitmap_Player::create(unsigned short width,
 
     this->width = width;
     this->height = height;
-    this->length = width * height;
     setPalette(palette);
     setFormat(buffer_format);
 

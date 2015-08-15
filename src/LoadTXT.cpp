@@ -24,9 +24,8 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
-#include <boost/scoped_array.hpp>
+#include <fstream>
+#include <EndianStream.h>
 #include <vector>
 #include <cstring>
 
@@ -60,29 +59,27 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         return 1;
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> txt(fopen(file.c_str(), "rb"));
+    libendian::LittleEndianIFStream fs(file);
 
     // hat das geklappt?
-    if(!txt)
+    if(!fs)
         return 2;
 
-    // Länge bestimmen
-    size_t length = getFileLength(txt.get());
+    size_t length = getIStreamSize(fs.getStream());
 
     // Header einlesen
-    if(libendian::be_read_s(&header, txt.get()) != 0)
-        return 3;
+    fs >> header;
 
     items.clear();
 
     // ist es eine TXT-File? (Header 0xE7FD)
-    if( header != (short)0xE7FD )
+    if( header != (short)0xFDE7 )
     {
         // den Header zurückspringen
-        fseek(txt.get(), -2, SEEK_CUR);
+        fs.setPositionRel(-2);
 
         ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
-        item->load(txt.get(), conversion);
+        item->load(fs.getStream(), conversion);
 
         items.push(item);
     }
@@ -92,14 +89,11 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         unsigned short count, unknown;
         unsigned int size;
 
-        if(libendian::le_read_us(&count, txt.get()) != 0)
-            return 4;
+        fs >> count;
 
-        if(libendian::le_read_us(&unknown, txt.get()) != 0)
-            return 5;
+        fs >> unknown;
 
-        if(libendian::le_read_ui(&size, txt.get()) != 0)
-            return 6;
+        fs >> size;
 
         if(size == 0)
             size = length;
@@ -112,19 +106,19 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         for(unsigned short x = 0; x < count; ++x)
         {
             int s;
-            if(libendian::le_read_i(&s, txt.get()) != 0)
-                return 7;
+            fs >> s;
 
             if(s != 0)
                 starts[x] = s + 10;
         }
 
         // Daten einlesen, zwecks Längenbestimmung
-        unsigned int pos = ftell(txt.get());
+        unsigned int pos = fs.getPosition();
         unsigned int rest = size - pos;
-        boost::scoped_array<char> buffer(new char[rest + 1]);
-        if(libendian::le_read_c(buffer.get(), rest, txt.get()) != (int)rest)
-            return 8;
+        std::vector<char> buffer(rest + 1);
+        buffer.resize(rest);
+        fs >> buffer;
+        buffer.push_back(0);
 
         for(unsigned short x = 0; x < count; ++x)
         {
@@ -133,16 +127,16 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
             if(i != 0)
             {
                 // An Start springen
-                fseek(txt.get(), i, SEEK_SET);
+                fs.setPosition(i);
 
                 // einlesen
                 ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
-                item->load(txt.get(), conversion, (unsigned int)strlen(&buffer[i - pos]));
+                item->load(fs.getStream(), conversion, (unsigned int)strlen(&buffer[i - pos]));
 
                 items.push(item);
             }
             else
-                items.push((ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT));
+                items.push(getAllocator().create(BOBTYPE_TEXT));
         }
     }
 

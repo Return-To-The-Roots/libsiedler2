@@ -39,8 +39,8 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Sound_Midi.
             ~baseArchivItem_Sound_Midi(void);
 
-            int load(FILE* file, unsigned int length);
-            int write(FILE* file) const;
+            int load(std::istream& file, unsigned int length);
+            int write(std::ostream& file) const;
 
             const MIDI_Track* getTrack(unsigned short track) const { if(track < tracks) return &tracklist[track]; return NULL; }
             unsigned short getTrackCount() const { return tracks; }

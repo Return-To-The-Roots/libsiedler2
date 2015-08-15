@@ -23,7 +23,7 @@
 #include "ArchivItem_Ini.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -50,7 +50,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
         return 1;
 
     // Datei zum schreiben öffnen
-    boost::scoped_ptr<FILE> ini(fopen(file.c_str(), "wb"));
+    std::ofstream ini(file, std::ios_base::binary);
     if (!ini)
         return 2;
 
@@ -59,7 +59,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
         const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
 
         if(item)
-            item->write(ini.get());
+            item->write(ini);
     }
 
     // alles ok

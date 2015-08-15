@@ -23,7 +23,8 @@
 #include "ArchivItem_Bob.h"
 #include "ArchivItem_Bitmap_Player.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -62,7 +63,7 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob(void) : ArchivItem(), ArchivInfo(), 
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob(FILE* file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
 {
     setBobType(BOBTYPE_BOB);
 
@@ -89,58 +90,45 @@ libsiedler2::ArchivItem_Bob::~ArchivItem_Bob(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* palette)
+int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 {
-    if(file == NULL || palette == NULL)
+    if(!file || palette == NULL)
         return 1;
 
     alloc(96);
-
+    libendian::LittleEndianIStreamRef fs(file);
     // Größe des ersten Farbblocks auslesen
     unsigned short size;
-    if(libendian::le_read_us(&size, file) != 0)
-        return 2;
-
-    // Speicher allokieren
-    std::vector<unsigned char>raw_base(size);
+    fs >> size;
 
     // Farbblock auslesen
-    if(libendian::le_read_uc(&raw_base.front(), size, file) != size)
-        return 3;
+    std::vector<unsigned char> raw_base(size);
+    fs >> raw_base;
 
     // Einzelner Bilder auslesen ( untere Körper )
     for(unsigned int i = 0; i < 96; ++i)
     {
         unsigned short id;
-
-        // ID lesen
-        if(libendian::be_read_us(&id, file) != 0)
-            return 4;
+        fs >> id;
 
         // stimmt die ID? (ID 0xF401)
-        if(id != 0xF401)
+        if(id != 0x01F4)
             return 5;
 
         unsigned char height;
-        if(libendian::le_read_uc(&height, 1, file) != 1)
-            return 6;
+        fs >> height;
 
         std::vector<unsigned short> starts(height);
-        for(unsigned int j = 0; j < height; ++j)
-        {
-            if(libendian::le_read_us(&starts[j], file) != 0)
-                return 7;
-        }
+        fs >> starts;
 
         unsigned char ny;
-        if(libendian::le_read_uc(&ny, 1, file) != 1)
-            return 8;
+        fs >> ny;
 
         baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
         image->setNx(16);
         image->setNy(ny);
 
-        if(image->load(32, height, &raw_base.front(), &starts.front(), true, size, palette) != 0){
+        if(image->load(32, height, raw_base, starts, true, palette) != 0){
             delete image;
             return 9;
         }
@@ -154,30 +142,22 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
     for(unsigned int i = 0; i < 6; ++i)
     {
         unsigned short id;
-
-        // ID lesen
-        if(libendian::be_read_us(&id, file) != 0)
-            return 7;
+        fs >> id;
 
         // stimmt die ID? (ID 0xF401)
-        if(id != 0xF501)
+        if(id != 0x01F5)
             return 10;
 
         // Größe des Farbblocks
         unsigned short size;
-        if(libendian::le_read_us(&size, file) != 0)
-            return 11;
+        fs >> size;
 
         raw[i].resize(size);
-
-        // und auslesen
-        if(libendian::le_read_uc(&raw[i].front(), size, file) != size)
-            return 12;
+        fs >> raw[i];
     }
 
     // Anzahl Warenbilder
-    if(libendian::le_read_us(&good_count, file) != 0)
-        return 13;
+    fs >> good_count;
 
     alloc_inc(good_count);
 
@@ -190,39 +170,28 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
     for(unsigned short i = 0; i < good_count; ++i)
     {
         unsigned short id;
-
-        // ID lesen
-        if(libendian::be_read_us(&id, file) != 0)
-            return 14;
+        fs >> id;
 
         // stimmt die ID? (ID 0xF401)
-        if(id != 0xF401)
+        if(id != 0x01F4)
             return 15;
 
-        if(libendian::le_read_uc(&heights[i], 1, file) != 1)
-            return 16;
+        fs >> heights[i];
 
         starts[i].resize(heights[i]);
-        for(unsigned int j = 0; j < heights[i]; ++j)
-        {
-            if(libendian::le_read_us(&starts[i][j], file) != 0)
-                return 17;
-        }
+        fs >> starts[i];
 
-        if(libendian::le_read_uc(&ny[i], 1, file) != 1)
-            return 18;
+        fs >> ny[i];
     }
 
     // Anzahl Bilder
-    if(libendian::le_read_us(&item_count, file) != 0)
-        return 19;
+    fs >> item_count;
 
     links.resize(item_count);
 
     for(unsigned int i = 0; i < item_count; ++i)
     {
-        if(libendian::le_read_us(&links[i], file) != 0)
-            return 20;
+        fs >> links[i];
 
         if(!used[links[i]])
         {
@@ -231,7 +200,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
             image->setNx(16);
             image->setNy(ny[links[i]]);
 
-            if(image->load(32, heights[links[i]], &raw[i % 6].front(), &starts[links[i]].front(), true, raw[i % 6].size(), palette) != 0){
+            if(image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, palette) != 0){
                 delete image;
                 return 21;
             }
@@ -244,7 +213,7 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
         used[links[i]] = true;
 
         // 2 Unbekannte Null-Bytes überspringen
-        fseek(file, 2, SEEK_CUR);
+        fs.ignore(2);
     }
 
     return 0;
@@ -261,9 +230,9 @@ int libsiedler2::ArchivItem_Bob::load(FILE* file, const ArchivItem_Palette* pale
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Bob::write(FILE* file, const ArchivItem_Palette* palette) const
+int libsiedler2::ArchivItem_Bob::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
-    if(file == NULL || palette == NULL)
+    if(!file || palette == NULL)
         return 1;
 
     /// @todo Schreiben der Bobdaten.

@@ -26,8 +26,8 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
+#include <EndianStream.h>
 #include <vector>
 #include <cstring>
 
@@ -113,10 +113,10 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     const baseArchivItem_Bitmap* bitmap = dynamic_cast<const baseArchivItem_Bitmap*>(items.get(nr));
 
     // Datei zum schreiben öffnen
-    boost::scoped_ptr<FILE> bmp(fopen(file.c_str(), "wb"));
+    libendian::LittleEndianOFStream fs(file);
 
     // hat das geklappt?
-    if(!bmp)
+    if(!fs)
         return 3;
 
     bmih.height = bitmap->getHeight();
@@ -128,44 +128,27 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     // Bitmap-Header schreiben
     //if(libendian::le_write_uc((unsigned char*)&bmhd, 14, bmp.get()) != 14)
     //  return 4;
-    if(libendian::le_write_us(bmhd.header, bmp.get()) != 0)
-        return 4;
-    if(libendian::le_write_ui(bmhd.size, bmp.get()) != 0)
-        return 4;
-    if(libendian::le_write_ui(bmhd.reserved, bmp.get()) != 0)
-        return 4;
-    if(libendian::le_write_ui(bmhd.offset, bmp.get()) != 0)
-        return 4;
+    fs << bmhd.header;
+    fs << bmhd.size;
+    fs << bmhd.reserved;
+    fs << bmhd.offset;
 
     // Bitmap-Info-Header schreiben
     //if(libendian::le_write_uc((unsigned char*)&bmih, 40, bmp.get()) != 40)
     //  return 5;
-    if(libendian::le_write_ui(bmih.length, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.width, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.height, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_s(bmih.planes, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_s(bmih.bbp, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_ui(bmih.compression, bmp.get()) != 0)
-        return 5;
+    fs << bmih.length;
+    fs << bmih.width;
+    fs << bmih.height;
+    fs << bmih.planes;
+    fs << bmih.bbp;
+    fs << bmih.compression;
 
-    unsigned int bmihsizepos = ftell(bmp.get());
-    if(libendian::le_write_ui(bmih.size, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.xppm, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.yppm, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.clrused, bmp.get()) != 0)
-        return 5;
-    if(libendian::le_write_i(bmih.clrimp, bmp.get()) != 0)
-        return 5;
-
-    fflush(bmp.get());
+    unsigned int bmihsizepos = fs.getPosition();
+    fs << bmih.size;
+    fs << bmih.xppm;
+    fs << bmih.yppm;
+    fs << bmih.clrused;
+    fs << bmih.clrimp;
 
     // Farbpalette lesen
     unsigned char colors[256][4];
@@ -178,8 +161,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     }
 
     // Farbpalette schreiben
-    if(libendian::le_write_uc(colors[0], bmih.clrused * 4, bmp.get()) != bmih.clrused * 4)
-        return 6;
+    fs.write(colors[0], bmih.clrused * 4);
 
     std::vector<unsigned char> buffer(bmih.width * bmih.height * 4 + 1);
 
@@ -205,7 +187,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
                 case 8:
                 {
                     unsigned char color = buffer[x + bmih.width * y];
-                    libendian::le_write_uc(&color, 1, bmp.get());
+                    fs << color;
                 } break;
                 case 24:
                 {
@@ -218,25 +200,19 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
                         g = 0x00;
                         b = 0x8f;
                     }
-                    if(libendian::le_write_uc(&b, 1, bmp.get()) != 1)
-                        return 8;
-                    if(libendian::le_write_uc(&g, 1, bmp.get()) != 1)
-                        return 8;
-                    if(libendian::le_write_uc(&r, 1, bmp.get()) != 1)
-                        return 8;
+                    fs << b << g << r;
                 } break;
             }
         }
         if((bmih.width * bmih.bbp / 8) % 4 > 0)
-            libendian::le_write_uc(placeholder, 4 - (bmih.width * bmih.bbp / 8) % 4, bmp.get());
+            fs.write(placeholder, 4 - (bmih.width * bmih.bbp / 8) % 4);
     }
-    if(ftell(bmp.get()) % 4 > 0)
-        libendian::le_write_uc(placeholder, 4 - (ftell(bmp.get()) % 4), bmp.get());
+    if(fs.getPosition() % 4 > 0)
+        fs.write(placeholder, 4 - fs.getPosition() % 4);
 
-    unsigned int endsize = ftell(bmp.get());
-    fseek(bmp.get(), bmihsizepos, SEEK_SET);
-    if(libendian::le_write_ui(endsize - bmihsizepos, bmp.get()) != 0)
-        return 9;
+    unsigned int endsize = fs.getPosition();
+    fs.setPosition(bmihsizepos);
+    fs << (endsize - bmihsizepos);
 
     // alles ok
     return 0;

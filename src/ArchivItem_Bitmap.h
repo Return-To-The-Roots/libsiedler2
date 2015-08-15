@@ -49,13 +49,10 @@ namespace libsiedler2
             unsigned char tex_getPixel(unsigned short x, unsigned short y, const ArchivItem_Palette* palette) const;
 
             /// lädt die Bilddaten aus einer Datei.
-            virtual int load(FILE* file, const ArchivItem_Palette* palette) = 0;
+            virtual int load(std::istream& file, const ArchivItem_Palette* palette) = 0;
 
             /// schreibt die Bilddaten in eine Datei.
-            virtual int write(FILE* file, const ArchivItem_Palette* palette) const = 0;
-
-            /// liefert die Länge des Datenblocks.
-            unsigned int getLength(void) const;
+            virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const = 0;
 
             /// liefert den Textur-Datenblock.
             const std::vector<unsigned char>& getTexData(void) const;
@@ -74,9 +71,6 @@ namespace libsiedler2
 
             /// gibt Palette zurück
             const ArchivItem_Palette* getPalette() const { return palette; }
-
-            /// setzt die Länge des Datenblocks.
-            void setLength(unsigned int length);
 
             /// setzt den X-Nullpunkt.
             void setNx(short nx);
@@ -135,8 +129,6 @@ namespace libsiedler2
 
             short nx;                   ///< X-Nullpunkt.
             short ny;                   ///< Y-Nullpunkt.
-
-            unsigned int length;        ///< Länge der Bilddaten.
 
             unsigned short tex_width;   ///< Breite der Textur.
             unsigned short tex_height;  ///< Höhe der Textur.

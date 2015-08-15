@@ -23,7 +23,7 @@
 #include "ArchivItem_Sound.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -51,20 +51,19 @@ int libsiedler2::loader::LoadSND(const std::string& file, ArchivInfo& items)
         return 1;
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> snd(fopen(file.c_str(), "rb"));
+    std::ifstream snd(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!snd)
         return 2;
 
-    size_t size = getFileLength(snd.get());
-
-    baseArchivItem_Sound* sound = baseArchivItem_Sound::findSubType(snd.get());
+    baseArchivItem_Sound* sound = baseArchivItem_Sound::findSubType(snd);
 
     if(!sound)
         return 3;
 
-    if(sound->load(snd.get(), size) != 0)
+    size_t size = getIStreamSize(snd);
+    if(sound->load(snd, size) != 0)
         return 4;
 
     items.clear();

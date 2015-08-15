@@ -21,7 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Shadow.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,7 +83,7 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const ba
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(FILE* file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
+libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
     setBobType(BOBTYPE_BITMAP_SHADOW);
     load(file, palette);
@@ -109,9 +110,9 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem_Palette* palette)
+int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const ArchivItem_Palette* palette)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
     if(palette == NULL)
         palette = this->palette;
@@ -120,39 +121,32 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem
 
     tex_clear();
 
+    libendian::LittleEndianIStreamRef fs(file);
     // Nullpunkt X einlesen
-    if(libendian::le_read_s(&nx, file) != 0)
-        return 2;
+    fs >> nx;
 
     // Nullpunkt Y einlesen
-    if(libendian::le_read_s(&ny, file) != 0)
-        return 3;
+    fs >> ny;
 
     // Unbekannte Daten überspringen
-    fseek(file, 4, SEEK_CUR);
+    fs.ignore(4);
 
     // Breite einlesen
-    if(libendian::le_read_us(&width, file) != 0)
-        return 4;
+    fs >> width;
 
     // Höhe einlesen
-    if(libendian::le_read_us(&height, file) != 0)
-        return 5;
+    fs >> height;
 
     // Unbekannte Daten überspringen
-    fseek(file, 2, SEEK_CUR);
+    fs.ignore(2);
 
     // Länge einlesen
-    if(libendian::le_read_ui(&length, file) != 0)
-        return 6;
+    unsigned int length;
+    fs >> length;
 
     std::vector<unsigned char> data(length);
     // Daten einlesen
-    if(length != 0)
-    {
-        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
-            return 7;
-    }
+    fs >> data;
 
     // Speicher anlegen
     tex_alloc();
@@ -207,9 +201,9 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Shadow::write(FILE* file, const ArchivItem_Palette* palette) const
+int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
     if(palette == NULL)
         palette = this->palette;
@@ -219,38 +213,32 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(FILE* file, const ArchivIte
     if(width == 0 || height == 0)
         return 2;
 
+    libendian::LittleEndianOStreamRef fs(file);
     // Nullpunkt X schreiben
-    if(libendian::le_write_s(nx, file) != 0)
-        return 3;
+    fs << nx;
 
     // Nullpunkt Y schreiben
-    if(libendian::le_write_s(ny, file) != 0)
-        return 4;
+    fs << ny;
 
     // Unbekannte Daten schreiben
     char unknown[4] = {0x00, 0x00, 0x00, 0x00};
-    if(libendian::le_write_c(unknown, 4, file) != 4)
-        return 5;
+    fs.write(unknown, sizeof(unknown));
 
     // Breite schreiben
-    if(libendian::le_write_us(width, file) != 0)
-        return 6;
+    fs << width;
 
     // Höhe einlesen
-    if(libendian::le_write_us(height, file) != 0)
-        return 7;
+    fs << height;
 
     // Unbekannte Daten schreiben
     char unknown2[2] = {0x01, 0x00};
-    if(libendian::le_write_c(unknown2, 2, file) != 2)
-        return 8;
+    fs.write(unknown2, sizeof(unknown2));
 
     // maximale größe von RLE: width*height*2
-    std::vector<unsigned char> data(height * 4 + width * height * 2);
+    std::vector<unsigned char> image(width * height * 2);
 
     // Startadressen
-    unsigned char* image = &data[height * 2];
-    unsigned short* const starts = (unsigned short*)&data[0];
+    std::vector<unsigned short> starts(height);
 
     // Schattendaten kodieren
     unsigned short position = 0;
@@ -295,17 +283,10 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(FILE* file, const ArchivIte
     unsigned int length = position + height * 2;
 
     // Länge schreiben
-    if(libendian::le_write_ui(length, file) != 0)
-        return 9;
+    fs << length;
 
     // Daten schreiben
-    for(unsigned int i = 0; i < height; ++i)
-    {
-        if(libendian::le_write_us(starts[i], file) != 0)
-            return 10;
-    }
-    if(libendian::le_write_uc(&data[height * 2], length - (height * 2), file) != (int)(length - (height * 2)))
-        return 11;
+    fs << starts << image;
 
     return 0;
 }

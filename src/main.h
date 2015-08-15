@@ -39,12 +39,13 @@
 #include <cstdio>
 
 namespace libsiedler2{
-    inline size_t getFileLength(FILE* f)
+    template<class T_Stream>
+    inline size_t getIStreamSize(T_Stream& stream)
     {
-        fseek(f, 0, SEEK_END);
-        size_t length = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        return length;
+        stream.seekg(0, T_Stream::end);
+        long pos = static_cast<long>(stream.tellg());
+        stream.seekg(0, T_Stream::beg);
+        return (pos < 0) ? 0 : pos;
     }
 
     template<typename T>
@@ -55,13 +56,5 @@ namespace libsiedler2{
         }
     };
 } // namespace libsiedler2
-
-namespace boost{
-    // support boost::scoped_ptr
-    inline void checked_delete(FILE* x)
-    {
-        fclose(x);
-    }
-} // namespace boost
 
 #endif // MAIN_H_INCLUDED

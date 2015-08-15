@@ -35,19 +35,19 @@ namespace libsiedler2
             baseArchivItem_Bitmap_Player(void);
 
             /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
-            baseArchivItem_Bitmap_Player(FILE* file, const ArchivItem_Palette* palette);
+            baseArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_Player.
             ~baseArchivItem_Bitmap_Player(void);
 
             /// lädt die Bilddaten aus einer Datei.
-            int load(FILE* file, const ArchivItem_Palette* palette);
+            virtual int load(std::istream& file, const ArchivItem_Palette* palette);
 
             /// lädt die Bilddaten aus einem Puffer.
-            int load(unsigned short width, unsigned short height, const unsigned char* image, const unsigned short* starts, bool absolute, unsigned int length, const ArchivItem_Palette* palette);
+            int load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette);
 
             /// schreibt die Bilddaten in eine Datei.
-            int write(FILE* file, const ArchivItem_Palette* palette) const;
+            virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             /// alloziert Bildspeicher für die gewünschte Größe.
             void tex_alloc(void);

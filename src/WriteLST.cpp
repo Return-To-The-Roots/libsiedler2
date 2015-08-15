@@ -22,8 +22,8 @@
 #include "main.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -47,31 +47,29 @@ static char THIS_FILE[] = __FILE__;
  */
 int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
-    short header = 0x204E;
+    short header = 0x4E20;
     unsigned int count = items.size();
 
     if(file.empty())
         return 1;
 
     // Datei zum schreiben öffnen
-    boost::scoped_ptr<FILE> lst(fopen(file.c_str(), "wb"));
+    libendian::LittleEndianOFStream lst(file);
 
     // hat das geklappt?
     if(!lst)
         return 2;
 
     // Header schreiben
-    if(libendian::be_write_s(header, lst.get()) != 0)
-        return 3;
+    lst << header;
 
     // Anzahl schreiben
-    if(libendian::le_write_ui(count, lst.get()) != 0)
-        return 5;
+    lst << count;
 
     // items schreiben
     for(unsigned int i = 0; i < count; ++i)
     {
-        unsigned short used = 0x0100;
+        unsigned short used = 0x0001;
 
         const ArchivItem* item = items.get(i);
 
@@ -79,8 +77,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
             used = 0x0000;
 
         // use-Flag schreiben
-        if(libendian::be_write_us(used, lst.get()) != 0)
-            return 6;
+        lst << used;
 
         if(!item)
             continue;
@@ -88,11 +85,10 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         BOBTYPES bobtype = item->getBobType();
 
         // bobtype des Items schreiben
-        if(libendian::le_write_us(bobtype, lst.get()) != 0)
-            return 7;
+        lst << bobtype;
 
         // Daten von Item schreiben
-        if(WriteType(bobtype, lst.get(), palette, *item) != 0)
+        if(WriteType(bobtype, lst.getStream(), palette, *item) != 0)
             return 8;
     }
 

@@ -21,7 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Raw.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,7 +83,7 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArch
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(FILE* file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
+libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
     setBobType(BOBTYPE_BITMAP_RAW);
     load(file, palette);
@@ -109,9 +110,9 @@ libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Palette* palette)
+int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const ArchivItem_Palette* palette)
 {
-    if(file == NULL)
+    if(!file)
         return 1;
     if(palette == NULL)
         palette = this->palette;
@@ -119,37 +120,29 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
         return 2;
 
     tex_clear();
-
+    libendian::LittleEndianIStreamRef fs(file);
     // Unbekannte Daten überspringen
-    fseek(file, 2, SEEK_CUR);
+    fs.ignore(2);
 
     // Länge einlesen
-    if(libendian::le_read_ui(&length, file) != 0)
-        return 2;
+    unsigned int length;
+    fs >> length;
 
     std::vector<unsigned char> data(length);
     // Daten einlesen
-    if(length != 0)
-    {
-        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
-            return 3;
-    }
+    fs >> data;
 
     // Nullpunkt X einlesen
-    if(libendian::le_read_s(&nx, file) != 0)
-        return 4;
+    fs >> nx;
 
     // Nullpunkt Y einlesen
-    if(libendian::le_read_s(&ny, file) != 0)
-        return 5;
+    fs >> ny;
 
     // Breite einlesen
-    if(libendian::le_read_us(&width, file) != 0)
-        return 6;
+    fs >> width;
 
     // Höhe einlesen
-    if(libendian::le_read_us(&height, file) != 0)
-        return 7;
+    fs >> height;
 
     // Speicher anlegen
     tex_alloc();
@@ -167,7 +160,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
     }
 
     // Unbekannte Daten überspringen
-    fseek(file, 8, SEEK_CUR);
+    fs.ignore(8);
 
     return 0;
 }
@@ -183,9 +176,9 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(FILE* file, const ArchivItem_Pa
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Raw::write(FILE* file, const ArchivItem_Palette* palette) const
+int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
     if(palette == NULL)
         palette = this->palette;
@@ -195,48 +188,39 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(FILE* file, const ArchivItem_P
     if(width == 0 || height == 0)
         return 2;
 
+    libendian::LittleEndianOStreamRef fs(file);
     // Unbekannte Daten schreiben
     char unknown[2] = {0x01, 0x00};
-    if(libendian::le_write_c(unknown, 2, file) != 2)
-        return 3;
+    fs.write(unknown, sizeof(unknown));
 
     // Länge schreiben
     unsigned int length = width * height;
-    if(libendian::le_write_ui(length, file) != 0)
-        return 4;
+    fs << length;
 
     for(unsigned short y = 0; y < height; ++y)
     {
         for(unsigned short x = 0; x < width; ++x)
         {
             // Pixel holen und schreiben
-            unsigned char color = tex_getPixel(x, y, palette);
-
-            if(libendian::le_write_uc(&color, 1, file) != 1)
-                return 5;
+            fs << tex_getPixel(x, y, palette);
         }
     }
 
     // Nullpunkt X schreiben
-    if(libendian::le_write_s(nx, file) != 0)
-        return 6;
+    fs << nx;
 
     // Nullpunkt Y schreiben
-    if(libendian::le_write_s(ny, file) != 0)
-        return 7;
+    fs << ny;
 
     // Breite schreiben
-    if(libendian::le_write_us(width, file) != 0)
-        return 8;
+    fs << width;
 
     // Höhe schreiben
-    if(libendian::le_write_us(height, file) != 0)
-        return 9;
+    fs << height;
 
     // Unbekannte Daten schreiben
     unsigned char unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
-    if(libendian::le_write_uc(unknown2, 8, file) != 8)
-        return 10;
+    fs.write(unknown, sizeof(unknown));
 
     return 0;
 }

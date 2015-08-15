@@ -25,7 +25,8 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -48,25 +49,23 @@ static char THIS_FILE[] = __FILE__;
  */
 int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
-    FILE* bob;
     unsigned int header;
 
     if(file.empty() || palette == NULL)
         return 1;
 
     // Datei zum lesen öffnen
-    bob = fopen(file.c_str(), "rb");
+    libendian::LittleEndianIFStream bob(file);
 
     // hat das geklappt?
-    if(bob == NULL)
+    if(!bob)
         return 2;
 
     // Header einlesen
-    if(libendian::be_read_ui(&header, bob) != 0)
-        return 3;
+    bob >> header;
 
     // ist es eine BOB-File? (Header 0xF601F501)
-    if(header != 0xF601F501)
+    if(header != 0x01F501F6)
         return 4;
 
     ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
@@ -75,7 +74,7 @@ int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palet
     if(nameIdx != std::string::npos)
         item->setName(file.substr(nameIdx + 1));
 
-    if(item->load(bob, palette) != 0){
+    if(item->load(bob.getStream(), palette) != 0){
         delete item;
         return 5;
     }
@@ -83,8 +82,6 @@ int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palet
     // Item alloziieren und zuweisen
     items.clear();
     items.push(item);
-
-    fclose(bob);
 
     return 0;
 }

@@ -22,8 +22,8 @@
 #include "main.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <libendian.h>
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -64,22 +64,21 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     datfile[datfile.size() - 1] = 'T';
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> dat(fopen(datfile.c_str(), "rb"));
+    libendian::LittleEndianIFStream dat(datfile);
 
     // hat das geklappt?
     if(!dat)
         return 2;
 
     // IDX-Datei zum lesen öffnen
-     boost::scoped_ptr<FILE> idx(fopen(idxfile.c_str(), "rb"));
+    libendian::LittleEndianIFStream idx(idxfile);
 
     // hat das geklappt?
     if(!idx)
         return 3;
 
     // Anzahl einlesen
-    if(libendian::le_read_ui(&count, idx.get()) != 0)
-        return 5;
+    idx >> count;
 
     // Platz für items anlegen
     items.alloc(count);
@@ -87,32 +86,28 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     // items einlesen
     for(unsigned int i = 0; i < count; ++i)
     {
-        char name[17];
+        char name[16];
         unsigned int offset;
         short idxbobtype;
         short bobtype_s;
 
         // Name einlesen
-        if(libendian::le_read_c(name, 16, idx.get()) != 16)
-            return 6;
+        idx >> name;
 
         // Offset einlesen
-        if(libendian::le_read_ui(&offset, idx.get()) != 0)
-            return 7;
+        idx >> offset;
 
         // Unbekannte Daten überspringen
-        fseek(idx.get(), 6, SEEK_CUR);
+        idx.ignore(6);
 
         // BobType einlesen
-        if(libendian::le_read_s(&idxbobtype, idx.get()) != 0)
-            return 8;
+        idx >> idxbobtype;
 
         // Zum Offset springen
-        fseek(dat.get(), offset, SEEK_SET);
+        dat.setPosition(offset);
 
         // BobType einlesen
-        if(libendian::le_read_s(&bobtype_s, dat.get()) != 0)
-            return 9;
+        dat >> bobtype_s;
 
         if(idxbobtype != bobtype_s)
             continue;
@@ -120,12 +115,12 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
 
         // Daten von Item auswerten
         ArchivItem* item;
-        if(LoadType(bobtype, dat.get(), palette, item) != 0)
+        if(LoadType(bobtype, dat.getStream(), palette, item) != 0)
             return 10;
 
         // Name setzen
         if(item)
-            item->setName(name);
+            item->setName(std::string(name, sizeof(name)));
         items.set(i, item);
     }
 

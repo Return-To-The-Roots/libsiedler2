@@ -22,7 +22,8 @@
 #include "main.h"
 #include "ArchivItem_Sound.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,7 +114,7 @@ libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType(void) const
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound::load(FILE* file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound::load(std::istream& file, unsigned int length)
 {
     return 254;
 }
@@ -128,30 +129,31 @@ int libsiedler2::baseArchivItem_Sound::load(FILE* file, unsigned int length)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound::write(FILE* file) const
+int libsiedler2::baseArchivItem_Sound::write(std::ostream& file) const
 {
     return 254;
 }
 
-libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubType(FILE* file)
+libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubType(std::istream& file)
 {
-    long oldpos = ftell(file);
+    libendian::LittleEndianIStreamRef fs(file);
+    long oldpos = fs.getPosition();
     baseArchivItem_Sound* item = NULL;
 
     char header[4];
     unsigned int length;
 
     // Header einlesen
-    libendian::le_read_c(header, 4, file);
+    fs >> header;
 
     // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
     if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
     {
         // Länge einlesen
-        libendian::le_read_ui(&length, file);
+        fs >> length;
 
         // Typ einlesen
-        libendian::le_read_c(header, 4, file);
+        fs >> header;
 
         if(strncmp(header, "XMID", 4) == 0 || strncmp(header, "XDIR", 4) == 0)
         {
@@ -180,6 +182,6 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
     }
 
-    fseek(file, oldpos, SEEK_SET);
+    fs.setPosition(oldpos);
     return item;
 }

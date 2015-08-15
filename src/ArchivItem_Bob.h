@@ -36,16 +36,16 @@ namespace libsiedler2
             ArchivItem_Bob(void);
 
             /// Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten.
-            ArchivItem_Bob(FILE* file, const ArchivItem_Palette* palette);
+            ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p ArchivItem_Bob.
             ~ArchivItem_Bob(void);
 
             /// lädt die Bobdaten aus einer Datei.
-            int load(FILE* file, const ArchivItem_Palette* palette);
+            int load(std::istream& file, const ArchivItem_Palette* palette);
 
             /// schreibt die Bobdaten in eine Datei.
-            int write(FILE* file, const ArchivItem_Palette* palette) const;
+            int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             inline unsigned short getLink(unsigned idx) {return(links[idx]);};
 

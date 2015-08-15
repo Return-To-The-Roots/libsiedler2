@@ -21,7 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Sound_Other.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -70,15 +71,15 @@ libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound_Other::load(FILE* file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, unsigned int length)
 {
-    if(file == NULL || length == 0)
+    if(!file || length == 0)
         return 1;
 
     data.resize(length);
+    libendian::LittleEndianIStreamRef fs(file);
 
-    if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
-        return 2;
+    fs >> data;
 
     return 0;
 }
@@ -93,16 +94,14 @@ int libsiedler2::baseArchivItem_Sound_Other::load(FILE* file, unsigned int lengt
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Sound_Other::write(FILE* file) const
+int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
 {
-    if(file == NULL)
+    if(!file)
         return 1;
 
-    if(libendian::le_write_ui(data.size(), file) != 0)
-        return 2;
-
-    if(libendian::le_write_uc(&data.front(), data.size(), file) != (int)data.size())
-        return 3;
+    libendian::LittleEndianOStreamRef fs(file);
+    unsigned length = data.size(); // Convert to unsigned
+    fs << length << data;
 
     return 0;
 }

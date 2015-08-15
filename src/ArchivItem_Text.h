@@ -37,13 +37,13 @@ namespace libsiedler2
             ~ArchivItem_Text(void);
 
             /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
-            ArchivItem_Text(FILE* file, bool conversion = true, unsigned int length = 0);
+            ArchivItem_Text(std::istream& file, bool conversion = true, unsigned int length = 0);
 
             /// liest den Text aus einer Datei.
-            int load(FILE* file, bool conversion = true, unsigned int length = 0);
+            int load(std::istream& file, bool conversion = true, unsigned int length = 0);
 
             /// schreibt den Text in eine Datei.
-            int write(FILE* file, bool conversion = true) const;
+            int write(std::ostream& file, bool conversion = true) const;
 
             // liefert den Text.
             const std::string& getText(void) const;

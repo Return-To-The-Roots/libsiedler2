@@ -24,7 +24,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <boost/scoped_ptr.hpp>
+#include <fstream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -51,14 +51,14 @@ int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, boo
         return 1;
 
     // Datei zum lesen öffnen
-    boost::scoped_ptr<FILE> map(fopen(file.c_str(), "rb"));
+    std::ifstream map(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!map)
         return 2;
 
     ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP));
-    if(item->load(map.get(), only_header) != 0){
+    if(item->load(map, only_header) != 0){
         delete item;
         return 3;
     }

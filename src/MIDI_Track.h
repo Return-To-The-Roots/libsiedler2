@@ -31,10 +31,10 @@ class MIDI_Track
         MIDI_Track();
         ~MIDI_Track();
 
-        int readXMid(FILE* file, size_t length);
+        int readXMid(std::istream& file, size_t length);
         void clearXMid();
 
-        int readMid(FILE* file, size_t length);
+        int readMid(std::istream& file, size_t length);
         void clearMid();
 
         int XMid2Mid();

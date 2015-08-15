@@ -23,7 +23,8 @@
 #include "ArchivItem_Font.h"
 #include "prototypen.h"
 #include "types.h"
-#include <libendian.h>
+#include <fstream>
+#include <EndianStream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -91,18 +92,14 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font& item) : Arc
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* palette)
+int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Palette* palette)
 {
-    if(file == NULL || palette == NULL)
+    if(!file || palette == NULL)
         return 1;
 
-    // X-Spacing einlesen
-    if(libendian::le_read_uc(&dx, 1, file) != 1)
-        return 2;
-
-    // Y-Spacing einlesen
-    if(libendian::le_read_uc(&dy, 1, file) != 1)
-        return 3;
+    libendian::LittleEndianIStreamRef fs(file);
+    // Spacing einlesen
+    fs >> dx >> dy;
 
     // Speicher für Buchstaben alloziieren
     alloc(256);
@@ -113,8 +110,7 @@ int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* pal
         short bobtype_s;
 
         // bobtype des Items einlesen
-        if(libendian::le_read_s(&bobtype_s, file) != 0)
-            return 4;
+        fs >> bobtype_s;
         BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
 
         if(bobtype == BOBTYPE_NONE)
@@ -141,19 +137,15 @@ int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* pal
  *
  *  @author FloSoft
  */
-int libsiedler2::ArchivItem_Font::write(FILE* file, const ArchivItem_Palette* palette) const
+int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
-    if(file == NULL || palette == NULL)
+    if(!file || palette == NULL)
         return 1;
 
-    // X-Spacing schreiben
-    unsigned char ddx = dx, ddy = dy;
-    if(libendian::le_write_uc(&ddx, 1, file) != 1)
-        return 2;
-
-    // Y-Spacing schreiben
-    if(libendian::le_write_uc(&ddy, 1, file) != 1)
-        return 3;
+    libendian::LittleEndianOStreamRef fs(file);
+    
+    // Spacing schreiben
+    fs << dx << dy;
 
     // Buchstaben schreiben
     for(unsigned long i = 32; i < 256; ++i)
@@ -165,8 +157,7 @@ int libsiedler2::ArchivItem_Font::write(FILE* file, const ArchivItem_Palette* pa
             bobtype = item->getBobType();
 
         // bobtype des Items schreiben
-        if(libendian::le_write_s(bobtype, file) != 0)
-            return 4;
+        fs << bobtype;
 
         if(item == NULL)
             continue;
