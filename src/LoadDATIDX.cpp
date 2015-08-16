@@ -22,8 +22,9 @@
 #include "main.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
 #include <EndianStream.h>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/stream.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -64,14 +65,20 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     datfile[datfile.size() - 1] = 'T';
 
     // Datei zum lesen öffnen
-    libendian::LittleEndianIFStream dat(datfile);
+    boost::iostreams::mapped_file_source mmapFile(datfile);
+    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+    MMStream mmapStream(mmapFile);
+    libendian::EndianIStream<false, MMStream& > dat(mmapStream);
 
     // hat das geklappt?
     if(!dat)
         return 2;
 
     // IDX-Datei zum lesen öffnen
-    libendian::LittleEndianIFStream idx(idxfile);
+    boost::iostreams::mapped_file_source mmapFileIdx(idxfile);
+    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+    MMStream mmapStreamIdx(mmapFileIdx);
+    libendian::EndianIStream<false, MMStream& > idx(mmapStreamIdx);
 
     // hat das geklappt?
     if(!idx)

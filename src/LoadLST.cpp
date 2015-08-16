@@ -22,8 +22,9 @@
 #include "main.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
 #include <EndianStream.h>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/stream.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -55,7 +56,10 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
         return 1;
 
     // Datei zum lesen öffnen
-    libendian::LittleEndianIFStream lst(file);
+    boost::iostreams::mapped_file_source mmapFile(file);
+    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+    MMStream mmapStream(mmapFile);
+    libendian::EndianIStream<false, MMStream& > lst(mmapStream);
 
     // hat das geklappt?
     if(!lst)

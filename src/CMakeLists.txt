@@ -3,7 +3,7 @@
 #################################################################################
 
 INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libendian/src")
-FIND_PACKAGE(Boost 1.57.0 REQUIRED)
+FIND_PACKAGE(Boost 1.57.0 COMPONENTS filesystem iostreams system REQUIRED)
 
 IF (MSVC)
 	ADD_DEFINITIONS(/WX) # warning = error

@@ -24,7 +24,8 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <fstream>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/stream.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -51,7 +52,9 @@ int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, boo
         return 1;
 
     // Datei zum lesen öffnen
-    std::ifstream map(file.c_str(), std::ios_base::binary);
+    boost::iostreams::mapped_file_source mmapFile(file);
+    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+    MMStream map(mmapFile);
 
     // hat das geklappt?
     if(!map)

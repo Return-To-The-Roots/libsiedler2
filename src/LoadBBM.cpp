@@ -24,8 +24,9 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "types.h"
-#include <fstream>
 #include <EndianStream.h>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/stream.hpp>
 #include <sstream>
 #include <cstring>
 
@@ -58,7 +59,10 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
         return 1;
 
     // Datei zum lesen öffnen
-    libendian::BigEndianIFStream fs(file);
+    boost::iostreams::mapped_file_source mmapFile(file);
+    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+    MMStream mmapStream(mmapFile);
+    libendian::EndianIStream<true, MMStream& > fs(mmapStream);
 
     // hat das geklappt?
     if(!fs)

@@ -28,6 +28,8 @@
 #include <fstream>
 #include <EndianStream.h>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/stream.hpp>
 #include <vector>
 #include <cmath>
 
@@ -126,7 +128,10 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
         return 1;
 
     // Datei zum lesen öffnen
-    libendian::LittleEndianIFStream bmp(file);
+    boost::iostreams::mapped_file_source mmapFile(file);
+    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+    MMStream mmapStream(mmapFile);
+    libendian::EndianIStream<false, MMStream& > bmp(mmapStream);
 
     // hat das geklappt?
     if(!bmp)
