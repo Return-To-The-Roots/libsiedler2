@@ -130,48 +130,41 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(std::istream& file, const Ar
 
     tex_clear();
     libendian::LittleEndianIStreamRef fs(file);
-    try
+    // Nullpunkt X einlesen
+    fs >> nx;
+
+    // Nullpunkt Y einlesen
+    fs >> ny;
+
+    // Unbekannte Daten überspringen
+    fs.ignore(4);
+
+    // Breite einlesen
+    fs >> width;
+
+    // Höhe einlesen
+    fs >> height;
+
+    // Unbekannte Daten überspringen
+    fs.ignore(2);
+
+    unsigned int length;
+    // Länge einlesen
+    fs >> length;
+
+    std::vector<unsigned short> starts;
+    std::vector<unsigned char> data;
+    // Daten einlesen
+    if(length >= height * sizeof(unsigned short))
     {
-        // Nullpunkt X einlesen
-        fs >> nx;
-
-        // Nullpunkt Y einlesen
-        fs >> ny;
-
-        // Unbekannte Daten überspringen
-        fs.ignore(4);
-
-        // Breite einlesen
-        fs >> width;
-
-        // Höhe einlesen
-        fs >> height;
-
-        // Unbekannte Daten überspringen
-        fs.ignore(2);
-
-        unsigned int length;
-        // Länge einlesen
-        fs >> length;
-
-        std::vector<unsigned short> starts;
-        std::vector<unsigned char> data;
-        // Daten einlesen
-        if(length >= height * sizeof(unsigned short))
-        {
-            starts.resize(height);
-            data.resize(length - height * sizeof(unsigned short));
-            fs >> starts >> data;
-        }
-
-        if(load(width, height, data, starts, false, palette) != 0)
-            return 9;
-
-        }
-    catch (libendian::FileError&)
-    {
-        return 3;
+        starts.resize(height);
+        data.resize(length - height * sizeof(unsigned short));
+        fs >> starts >> data;
     }
+
+    if(load(width, height, data, starts, false, palette) != 0)
+        return 9;
+
     return 0;
 }
 
