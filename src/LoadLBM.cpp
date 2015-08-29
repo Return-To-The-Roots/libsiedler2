@@ -194,7 +194,16 @@ int libsiedler2::loader::LoadLBM(const char* file, ArchivInfo* items)
                 {
                     case 0: // unkomprimiert
                     {
-                        /*assert(false);*/
+                        if(length != width * height)
+                            return 222;
+                        for(int y = 0; y<height; ++y)
+                            for(int x = 0; x<width; ++x)
+                            {
+                                unsigned char color;
+                                if(libendian::le_read_uc(&color, 1, lbm) != 1)
+                                    return 22;
+                                bitmap->tex_setPixel(x, y, color, palette);
+                            }
                     } break;
                     case 1: // komprimiert (RLE?)
                     {
