@@ -203,7 +203,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                             for(int x = 0; x<width; ++x)
                             {
                                 unsigned char color;
-                                if(libendian::le_read_uc(&color, 1, lbm) != 1)
+                                if(libendian::le_read_uc(&color, 1, lbm.get()) != 1)
                                     return 22;
                                 bitmap->tex_setPixel(x, y, color, palette);
                             }

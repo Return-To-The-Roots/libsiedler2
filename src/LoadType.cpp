@@ -149,6 +149,8 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, FILE* file, const ArchivItem
             }
             item = nitem;
         } break;
+        default: 
+            return 15;
     }
 
     if(item != NULL)
