@@ -20,6 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Sound.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -41,37 +45,30 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadSND(const char* file, ArchivInfo* items)
+int libsiedler2::loader::LoadSND(const std::string& file, ArchivInfo& items)
 {
-    FILE* snd;
-    long size;
-
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    snd = fopen(file, "rb");
+    boost::scoped_ptr<FILE> snd(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(snd == NULL)
+    if(!snd)
         return 2;
 
-    fseek(snd, 0, SEEK_END);
-    size = ftell(snd);
-    fseek(snd, 0, SEEK_SET);
+    size_t size = getFileLength(snd.get());
 
-    baseArchivItem_Sound* sound = baseArchivItem_Sound::findSubType(snd);
+    baseArchivItem_Sound* sound = baseArchivItem_Sound::findSubType(snd.get());
 
     if(!sound)
         return 3;
 
-    if(sound->load(snd, size) != 0)
+    if(sound->load(snd.get(), size) != 0)
         return 4;
 
-    items->alloc(1);
-    items->set(0, sound);
-
-    fclose(snd);
+    items.clear();
+    items.push(sound);
 
     return 0;
 }

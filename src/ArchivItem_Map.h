@@ -33,7 +33,7 @@ namespace libsiedler2
             /// Konstruktor von @p ArchivItem_Map.
             ArchivItem_Map(void);
             /// Kopierkonstruktor von @p ArchivItem_Map.
-            ArchivItem_Map(const ArchivItem_Map* item);
+            ArchivItem_Map(const ArchivItem_Map& item);
             /// Destruktor von @p ArchivItem_Map.
             ~ArchivItem_Map(void);
 

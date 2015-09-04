@@ -22,11 +22,23 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include <boost/array.hpp>
 
 namespace libsiedler2
 {
     /// Index des Transparenzwertes
     const unsigned char TRANSPARENT_INDEX = 254;
+    struct Color
+    {
+        unsigned char r, g, b;
+        Color(): r(0), g(0), b(0){}
+        Color(unsigned char r, unsigned char g, unsigned char b): r(r), g(g), b(b){}
+
+        bool operator==(const Color obj) const
+        {
+            return (r == obj.r) && (g == obj.g) && (b == obj.b);
+        }
+    };
 
     /// Klasse für Paletten.
     class ArchivItem_Palette : public ArchivItem
@@ -34,9 +46,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p ArchivItem_Palette.
             ArchivItem_Palette(void);
-
-            /// Kopierkonstruktor von @p ArchivItem_Palette.
-            ArchivItem_Palette(const ArchivItem_Palette* item);
 
             /// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.
             ArchivItem_Palette(FILE* file, bool skip = true);
@@ -48,22 +57,32 @@ namespace libsiedler2
             int write(FILE* file, bool skip = true) const;
 
             /// setzt einen Farbwert am entsprechenden Index.
-            void set(unsigned char index, unsigned char r, unsigned char g, unsigned char b);
+            void set(unsigned char index, Color clr);
 
             /// liefert einen Farbwert am entsprechenden Index.
-            void get(unsigned char index, unsigned char* r, unsigned char* g, unsigned char* b) const;
+            void get(unsigned char index, unsigned char& r, unsigned char& g, unsigned char& b) const
+            {
+                const Color& clr = (*this)[index];
+                r = clr.r;
+                g = clr.g;
+                b = clr.b;
+            }
 
             /// liefert einen Index zum entsprechenden RGB-Wert.
-            unsigned char lookup(unsigned char r, unsigned char g, unsigned char b) const;
+            unsigned char lookup(const Color clr) const;
+            unsigned char lookup(unsigned char r, unsigned char g, unsigned char b) const
+            {
+                return lookup(Color(r, g, b));
+            }
 
             /// Index-Operator von @p ArchivItem_Palette.
-            const unsigned char* const operator[](int index);
+            const Color& operator[](int index) const;
 
             /// kopiert die Palette in einen Puffer (als RGBA)
-            void copy(unsigned char* buffer) const;
+            void copy(unsigned char* buffer, size_t bufSize) const;
 
         protected:
-            unsigned char colors[256][3];
+            boost::array<Color, 256> colors;
     };
 }
 

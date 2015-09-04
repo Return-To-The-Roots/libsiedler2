@@ -20,6 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Ini.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -40,32 +44,27 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadINI(const char* file, ArchivInfo* items)
+int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
 {
-    FILE* ini;
-
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    ini = fopen(file, "rb");
+    boost::scoped_ptr<FILE> ini(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(ini == NULL)
+    if(!ini)
         return 2;
 
-    while(!feof(ini))
+    while(!feof(ini.get()))
     {
         ArchivItem_Ini item;
 
-        if(item.load(ini) != 0)
+        if(item.load(ini.get()) != 0)
             return 3;
 
-        items->pushC(&item);
+        items.pushC(item);
     }
-
-    // Datei schliessen
-    fclose(ini);
 
     return 0;
 }

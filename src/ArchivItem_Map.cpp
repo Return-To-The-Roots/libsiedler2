@@ -21,6 +21,10 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Map.h"
+#include "ArchivItem_Map_Header.h"
+#include "ArchivItem_Raw.h"
+#include "types.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -59,7 +63,7 @@ libsiedler2::ArchivItem_Map::ArchivItem_Map(void) : ArchivItem(), ArchivInfo()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Map::ArchivItem_Map(const ArchivItem_Map* item) : ArchivItem(item), ArchivInfo(item)
+libsiedler2::ArchivItem_Map::ArchivItem_Map(const ArchivItem_Map& item) : ArchivItem(item), ArchivInfo(item)
 {
 }
 
@@ -105,10 +109,12 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
     if(file == NULL)
         return 1;
 
-    ArchivItem_Map_Header* header = dynamic_cast<ArchivItem_Map_Header*>((*allocator)(BOBTYPE_MAP_HEADER, 0, NULL));
+    ArchivItem_Map_Header* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
 
-    if(header->load(file) != 0)
+    if(header->load(file) != 0){
+        delete header;
         return 2;
+    }
 
     set(0, header);
 
@@ -117,9 +123,11 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
         return 0;
 
     // unbekannte Daten einlesen
-    ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>((*allocator)(BOBTYPE_RAW, 0, NULL));
-    if(layer->load(file, 2296) != 0)
+    ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
+    if(layer->load(file, 2296) != 0){
+        delete layer;
         return 3;
+    }
     set(1, layer);
 
     unsigned short width, height;
@@ -153,9 +161,11 @@ int libsiedler2::ArchivItem_Map::loadHelper(FILE* file, bool only_header )
         // 6 Unbekannte Daten überspringen
         fseek(file, 6 - seek, SEEK_CUR);
 
-        ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>((*allocator)(BOBTYPE_RAW, 0, NULL));
-        if(layer->load(file, header->getWidth() * header->getHeight()) != 0)
+        ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
+        if(layer->load(file, header->getWidth() * header->getHeight()) != 0){
+            delete layer;
             return 6;
+        }
         set(i + 2, layer);
     }
 

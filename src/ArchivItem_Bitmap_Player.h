@@ -23,6 +23,7 @@
 
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -32,9 +33,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p baseArchivItem_Bitmap_Player.
             baseArchivItem_Bitmap_Player(void);
-
-            /// Kopierkonstruktor von @p baseArchivItem_Bitmap_Player.
-            baseArchivItem_Bitmap_Player(const baseArchivItem_Bitmap_Player* item);
 
             /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
             baseArchivItem_Bitmap_Player(FILE* file, const ArchivItem_Palette* palette);
@@ -63,7 +61,7 @@ namespace libsiedler2
             int print(unsigned char* buffer,
                       unsigned short buffer_width,
                       unsigned short buffer_height,
-                      int buffer_format,
+                      TEXTURFORMAT buffer_format,
                       const ArchivItem_Palette* palette,
                       unsigned char color,
                       unsigned short to_x = 0,
@@ -80,13 +78,12 @@ namespace libsiedler2
                        const unsigned char* buffer,
                        unsigned short buffer_width,
                        unsigned short buffer_height,
-                       int buffer_format,
+                       TEXTURFORMAT buffer_format,
                        const ArchivItem_Palette* palette,
                        unsigned char color);
 
         protected:
-            unsigned char* tex_pdata; ///< Die Spielerfarbedaten.
-            unsigned int tex_plength; ///< Länge der Spielerfarbendaten.
+            std::vector<unsigned char> tex_pdata; ///< Die Spielerfarbedaten.
     };
 
     /// Klasse für Player-Bitmaps.
@@ -97,7 +94,7 @@ namespace libsiedler2
             ArchivItem_Bitmap_Player(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Player() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap_Player.
-            ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player* item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Player(item) {}
+            ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Player(item) {}
     };
 }
 

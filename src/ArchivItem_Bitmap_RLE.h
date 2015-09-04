@@ -34,7 +34,7 @@ namespace libsiedler2
             baseArchivItem_Bitmap_RLE(void);
 
             /// Kopierkonstruktor von @p baseArchivItem_Bitmap_RLE.
-            baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE* item);
+            baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item);
 
             /// Konstruktor von @p baseArchivItem_Bitmap_RLE mit Laden der Bilddaten aus einer Datei.
             baseArchivItem_Bitmap_RLE(FILE* file, const ArchivItem_Palette* palette);
@@ -57,7 +57,7 @@ namespace libsiedler2
             ArchivItem_Bitmap_RLE(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_RLE() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap_RLE.
-            ArchivItem_Bitmap_RLE(const ArchivItem_Bitmap_RLE* item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item) {}
+            ArchivItem_Bitmap_RLE(const ArchivItem_Bitmap_RLE& item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item) {}
     };
 }
 

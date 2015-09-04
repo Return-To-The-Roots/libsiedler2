@@ -23,6 +23,8 @@
 
 #include "ArchivItem.h"
 #include "ArchivItem_Palette.h"
+#include "types.h"
+#include <vector>
 
 namespace libsiedler2
 {
@@ -34,7 +36,7 @@ namespace libsiedler2
             baseArchivItem_Bitmap(void);
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap.
-            baseArchivItem_Bitmap(const baseArchivItem_Bitmap* item);
+            baseArchivItem_Bitmap(const baseArchivItem_Bitmap& item);
 
             /// virtueller Destruktor von @p ArchivItem_Bitmap.
             virtual ~baseArchivItem_Bitmap(void);
@@ -56,7 +58,7 @@ namespace libsiedler2
             unsigned int getLength(void) const;
 
             /// liefert den Textur-Datenblock.
-            const unsigned char* getTexData(void) const;
+            const std::vector<unsigned char>& getTexData(void) const;
 
             /// liefert den X-Nullpunkt.
             short getNx(void) const;
@@ -98,7 +100,7 @@ namespace libsiedler2
             void setPalette(const ArchivItem_Palette* palette);
 
             /// setzt das Format des Bildes.
-            void setFormat(int format) { this->format = format; }
+            void setFormat(TEXTURFORMAT format) { this->format = format; }
 
             virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
@@ -106,7 +108,7 @@ namespace libsiedler2
             virtual int print(unsigned char* buffer,
                               unsigned short buffer_width,
                               unsigned short buffer_height,
-                              int buffer_format,
+                              TEXTURFORMAT buffer_format,
                               const ArchivItem_Palette* palette,
                               unsigned short to_x = 0,
                               unsigned short to_y = 0,
@@ -121,7 +123,7 @@ namespace libsiedler2
                                const unsigned char* buffer,
                                unsigned short buffer_width,
                                unsigned short buffer_height,
-                               int buffer_format,
+                               TEXTURFORMAT buffer_format,
                                const ArchivItem_Palette* palette);
 
             /// liefert die nächste Quadratzahl zu einer Zahl.
@@ -140,12 +142,10 @@ namespace libsiedler2
             unsigned short tex_height;  ///< Höhe der Textur.
 
             unsigned short tex_bpp;     ///< Bytebreite der Textur pro Pixel.
-
-            unsigned int tex_length;    ///< Länge der Texturdaten.
-            unsigned char* tex_data;    ///< Die Texturdaten.
+            std::vector<unsigned char> tex_data;    ///< Die Texturdaten.
 
             const ArchivItem_Palette* palette; ///< Die Palette.
-            int format; ///< Das Texturformat.
+            TEXTURFORMAT format; ///< Das Texturformat.
     };
 
     /// Basisklasse für Bitmapitems.

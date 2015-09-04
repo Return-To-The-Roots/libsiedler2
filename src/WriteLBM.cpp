@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "prototypen.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -40,9 +41,9 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteLBM(const char* file, const ArchivInfo* items)
+int libsiedler2::loader::WriteLBM(const std::string& file, const ArchivInfo& items)
 {
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     /// @todo LBM schreiben.

@@ -22,6 +22,7 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include <string>
 
 namespace libsiedler2
 {
@@ -31,8 +32,6 @@ namespace libsiedler2
         public:
             /// Konstruktor von @p ArchivItem_Map_Header.
             ArchivItem_Map_Header(void);
-            /// Kopierkonstruktor von @p ArchivItem_Map_Header.
-            ArchivItem_Map_Header(const ArchivItem_Map_Header* item);
             /// Destruktor von @p ArchivItem_Map_Header.
             ~ArchivItem_Map_Header(void);
 
@@ -41,8 +40,8 @@ namespace libsiedler2
             /// schreibt den Mapheader in eine Datei.
             int write(FILE* file) const;
 
-            const char* getName(void) const;
-            void setName(const char* name);
+            const std::string& getName(void) const;
+            void setName(const std::string& name);
 
             unsigned short getWidth(void) const;
             void setWidth(unsigned short width);
@@ -56,16 +55,16 @@ namespace libsiedler2
             unsigned char getPlayer(void) const;
             void setPlayer(unsigned char player);
 
-            const char* getAuthor(void) const;
-            void setAuthor(const char* author);
+            const std::string& getAuthor(void) const;
+            void setAuthor(const std::string& author);
 
         private:
-            char name[21];
+            std::string name;
             unsigned short width;
             unsigned short height;
             unsigned char gfxset;
             unsigned char player;
-            char author[21];
+            std::string author;
     };
 }
 

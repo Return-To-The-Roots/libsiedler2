@@ -20,6 +20,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Map.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -40,29 +45,26 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadMAP(const char* file, ArchivInfo* items, bool only_header)
+int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, bool only_header)
 {
-    FILE* map;
-
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    map = fopen(file, "rb");
+    boost::scoped_ptr<FILE> map(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(map == NULL)
+    if(!map)
         return 2;
 
-    ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>((*allocator)(BOBTYPE_MAP, 0, NULL));
-    if(item->load(map, only_header) != 0)
+    ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP));
+    if(item->load(map.get(), only_header) != 0){
+        delete item;
         return 3;
+    }
 
-    // Datei schliessen
-    fclose(map);
-
-    items->alloc(1);
-    items->set(0, item);
+    items.clear();
+    items.push(item);
 
     return 0;
 }

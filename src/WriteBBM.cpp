@@ -20,6 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -40,72 +46,68 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteBBM(const char* file, const ArchivInfo* items)
+int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& items)
 {
-    FILE* bbm;
     char header[5] = "FORM", pbm[5] = "PBM ", cmap[5] = "CMAP";
     unsigned long count = 0;
     unsigned int length = 0;
 
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Anzahl Paletten in ArchivInfo suchen
-    for(unsigned long i = 0; i < items->getCount(); ++i)
+    for(unsigned long i = 0; i < items.size(); ++i)
     {
-        if(!items->get(i))
+        if(!items.get(i))
             continue;
-        if(items->get(i)->getBobType() == BOBTYPE_PALETTE)
+        if(items.get(i)->getBobType() == BOBTYPE_PALETTE)
             ++count;
     }
 
     // Datei zum schreiben öffnen
-    bbm = fopen(file, "wb");
+    boost::scoped_ptr<FILE> bbm(fopen(file.c_str(), "wb"));
 
     // hat das geklappt?
-    if(bbm == NULL)
+    if(!bbm)
         return 2;
 
     // Header schreiben
-    if(libendian::le_write_c(header, 4, bbm) != 4)
+    if(libendian::le_write_c(header, 4, bbm.get()) != 4)
         return 3;
 
     // Länge schreiben
     length = 4 + count * (256 * 3 + 8);
-    if(libendian::le_write_ui(length, bbm) != 0)
+    if(libendian::le_write_ui(length, bbm.get()) != 0)
         return 4;
 
     // Typ schreiben
-    if(libendian::le_write_c(pbm, 4, bbm) != 4)
+    if(libendian::le_write_c(pbm, 4, bbm.get()) != 4)
         return 5;
 
-    for(unsigned long i = 0; i < items->getCount(); ++i)
+    for(unsigned long i = 0; i < items.size(); ++i)
     {
-        ArchivItem_Palette* palette = (ArchivItem_Palette*)items->get(i);
+        ArchivItem_Palette* palette = (ArchivItem_Palette*)items.get(i);
         if(palette->getBobType() == BOBTYPE_PALETTE)
         {
             // Chunk schreiben
-            if(libendian::be_write_c(cmap, 4, bbm) != 4)
+            if(libendian::be_write_c(cmap, 4, bbm.get()) != 4)
                 return 6;
 
             // Länge schreiben
             length = 256 * 3;
-            if(libendian::be_write_ui(length, bbm) != 0)
+            if(libendian::be_write_ui(length, bbm.get()) != 0)
                 return 7;
 
             // Farbpalette zuweisen
-            unsigned char colors[256][3];
+            Color colors[256];
             for(unsigned int k = 0; k < 256; ++k)
-                palette->get(k, &colors[k][0], &colors[k][1], &colors[k][2]);
+                colors[k] = (*palette)[k];
 
             // Farbpalette schreiben
-            if(libendian::le_write_uc(colors[0], 256 * 3, bbm) != 256 * 3)
+            if(libendian::le_write_uc(&colors[0].r, sizeof(colors), bbm.get()) != sizeof(colors))
                 return 8;
         }
     }
-
-    // Datei schliessen
-    fclose(bbm);
 
     // alles ok
     return 0;

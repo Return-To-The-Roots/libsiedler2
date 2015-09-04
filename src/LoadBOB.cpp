@@ -20,6 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Bob.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -40,16 +46,16 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadBOB(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items)
+int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
     FILE* bob;
     unsigned int header;
 
-    if(file == NULL || palette == NULL || items == NULL)
+    if(file.empty() || palette == NULL)
         return 1;
 
     // Datei zum lesen öffnen
-    bob = fopen(file, "rb");
+    bob = fopen(file.c_str(), "rb");
 
     // hat das geklappt?
     if(bob == NULL)
@@ -63,18 +69,20 @@ int libsiedler2::loader::LoadBOB(const char* file, const ArchivItem_Palette* pal
     if(header != 0xF601F501)
         return 4;
 
-    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>((*allocator)(BOBTYPE_BOB, 0, NULL));
+    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
 
-    const char* name = strrchr(file, '/');
-    if(name)
-        item->setName(name + 1);
+    size_t nameIdx = file.find_last_of('/');
+    if(nameIdx != std::string::npos)
+        item->setName(file.substr(nameIdx + 1));
 
-    if(item->load(bob, palette) != 0)
+    if(item->load(bob, palette) != 0){
+        delete item;
         return 5;
+    }
 
     // Item alloziieren und zuweisen
-    items->alloc(1);
-    items->set(0, item);
+    items.clear();
+    items.push(item);
 
     fclose(bob);
 

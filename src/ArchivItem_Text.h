@@ -22,6 +22,7 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include <string>
 
 namespace libsiedler2
 {
@@ -35,9 +36,6 @@ namespace libsiedler2
             /// Destruktor von @p ArchivItem_Text.
             ~ArchivItem_Text(void);
 
-            /// Kopierkonstruktor von @p ArchivItem_Text.
-            ArchivItem_Text(const ArchivItem_Text* item);
-
             /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
             ArchivItem_Text(FILE* file, bool conversion = true, unsigned int length = 0);
 
@@ -48,17 +46,13 @@ namespace libsiedler2
             int write(FILE* file, bool conversion = true) const;
 
             // liefert den Text.
-            const char* getText(void) const;
-
-            // liefert die Länge.
-            unsigned int getLength(void) const;
+            const std::string& getText(void) const;
 
             // setzt den Text.
-            void setText(const char* text, bool conversion = true, unsigned int length = 0);
+            void setText(const std::string& text, bool conversion = true);
 
         private:
-            char* text;          ///< Der Textspeicher.
-            unsigned int length; ///< Die Länge des Textes.
+            std::string text;          ///< Der Textspeicher.
     };
 }
 

@@ -21,6 +21,9 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Font.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -73,7 +76,7 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font(void) : ArchivItem(), ArchivInfo()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font* item) : ArchivItem( item ), ArchivInfo( item ), dx(item->dx), dy(item->dy)
+libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font& item) : ArchivItem( item ), ArchivInfo( item ), dx(item.dx), dy(item.dy)
 {
 }
 
@@ -107,18 +110,21 @@ int libsiedler2::ArchivItem_Font::load(FILE* file, const ArchivItem_Palette* pal
     // Buchstaben einlesen
     for(unsigned long i = 32; i < 256; ++i)
     {
-        short bobtype;
+        short bobtype_s;
 
         // bobtype des Items einlesen
-        if(libendian::le_read_s(&bobtype, file) != 0)
+        if(libendian::le_read_s(&bobtype_s, file) != 0)
             return 4;
+        BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
 
-        if(bobtype == 0x0000)
+        if(bobtype == BOBTYPE_NONE)
             continue;
 
         // Daten von Item auswerten
-        if(loader::LoadType(bobtype, file, palette, getP(i)) != 0)
+        ArchivItem* item;
+        if(loader::LoadType(bobtype, file, palette, item) != 0)
             return 5;
+        set(i, item);
     }
 
     return 0;
@@ -153,7 +159,7 @@ int libsiedler2::ArchivItem_Font::write(FILE* file, const ArchivItem_Palette* pa
     for(unsigned long i = 32; i < 256; ++i)
     {
         const ArchivItem* item = get(i);
-        short bobtype = 0;
+        BOBTYPES bobtype = BOBTYPE_NONE;
 
         if(item)
             bobtype = item->getBobType();
@@ -166,7 +172,7 @@ int libsiedler2::ArchivItem_Font::write(FILE* file, const ArchivItem_Palette* pa
             continue;
 
         // Daten von Item auswerten
-        if(loader::WriteType(bobtype, file, palette, item) != 0)
+        if(loader::WriteType(bobtype, file, palette, *item) != 0)
             return 5;
     }
 

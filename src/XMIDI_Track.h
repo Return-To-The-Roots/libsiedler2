@@ -22,6 +22,7 @@
 #pragma once
 
 #include "MIDI_Track.h"
+#include <vector>
 
 class XMIDI_Track
 {
@@ -33,8 +34,7 @@ class XMIDI_Track
 
             unsigned char  data[2];
 
-            unsigned int   len;
-            unsigned char*  buffer;
+            std::vector<unsigned char>  buffer;
             int            duration;
             MIDI_Event*     next_note;
             unsigned int   note_time;

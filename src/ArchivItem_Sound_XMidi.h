@@ -34,7 +34,7 @@ namespace libsiedler2
             baseArchivItem_Sound_XMidi(void);
 
             /// Kopierkonstruktor von @p baseArchivItem_Sound_XMidi.
-            baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi* item);
+            baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item);
 
             /// Destruktor von @p baseArchivItem_Sound_XMidi.
             ~baseArchivItem_Sound_XMidi(void);
@@ -58,7 +58,7 @@ namespace libsiedler2
             ArchivItem_Sound_XMidi(void) : baseArchivItem_Sound_XMidi() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Sound_XMidi.
-            ArchivItem_Sound_XMidi(const ArchivItem_Sound_XMidi* item) : baseArchivItem_Sound_XMidi(item) {}
+            ArchivItem_Sound_XMidi(const ArchivItem_Sound_XMidi& item) : baseArchivItem_Sound_XMidi(item) {}
     };
 }
 

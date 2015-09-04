@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "prototypen.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -41,9 +42,9 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteDATIDX(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items)
+int libsiedler2::loader::WriteDATIDX(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
-    if(file == NULL || palette == NULL || items == NULL)
+    if(file.empty() || palette == NULL)
         return 1;
 
     /// @todo DAT und IDX schreiben.

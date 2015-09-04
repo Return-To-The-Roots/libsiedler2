@@ -21,6 +21,9 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Ini.h"
+#include "ArchivItem_Text.h"
+#include "types.h"
+#include <cstring>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -55,7 +58,7 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(void) : ArchivItem(), ArchivInfo()
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const char* name) : ArchivItem(), ArchivInfo()
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(), ArchivInfo()
 {
     setName(name);
     setBobType(BOBTYPE_INI);
@@ -69,7 +72,7 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const char* name) : ArchivItem(), Ar
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini* info) : ArchivItem( info ), ArchivInfo( info )
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : ArchivItem( info ), ArchivInfo( info )
 {
 }
 
@@ -136,7 +139,7 @@ int libsiedler2::ArchivItem_Ini::load(FILE* file)
         if(name.length() == 0 || value.length() == 0)
             continue;
 
-        ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( (*allocator)(BOBTYPE_TEXT, 0, NULL) );
+        ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT) );
         item->setText(value.c_str());
         item->setName(name.c_str());
 
@@ -166,7 +169,7 @@ int libsiedler2::ArchivItem_Ini::write(FILE* file) const
     if(fputs(section.c_str(), file) < 0)
         return 2;
 
-    for(unsigned long i = 0; i < getCount(); ++i)
+    for(unsigned long i = 0; i < size(); ++i)
     {
         const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(get(i));
 
@@ -190,11 +193,56 @@ int libsiedler2::ArchivItem_Ini::write(FILE* file) const
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Ini::addValue(const char* name, const char* value)
+void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
-    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( (*allocator)(BOBTYPE_TEXT, 0, NULL) );
+    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT) );
     item->setText(value);
     item->setName(name);
 
     push(item);
+}
+
+std::string libsiedler2::ArchivItem_Ini::getValue(const std::string& name) const
+{
+    const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(find(name));
+    if(item)
+    {
+        return item->getText();
+    }
+    return "";
+}
+
+void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::string& value)
+{
+    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
+    if(item)
+    {
+        // setText überschreibt Namen, daher nochmals setzen
+        item->setText(value);
+        item->setName(name);
+    }
+    else
+    {
+        // nicht gefunden, also hinzufügen
+        addValue(name, value);
+    }
+}
+
+void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, int value)
+{
+    char temp[512];
+    snprintf(temp, 256, "%d", value);
+
+    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
+    if(item)
+    {
+        // setText überschreibt Namen, daher nochmals setzen
+        item->setText(temp);
+        item->setName(name);
+    }
+    else
+    {
+        // nicht gefunden, also hinzufügen
+        addValue(name, temp);
+    }
 }

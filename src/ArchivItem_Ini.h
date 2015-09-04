@@ -22,7 +22,7 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include "ArchivItem_Text.h"
+#include "ArchivInfo.h"
 #include <cstdlib>
 
 namespace libsiedler2
@@ -36,10 +36,10 @@ namespace libsiedler2
             ArchivItem_Ini(void);
 
             /// Konstruktor von @p ArchivItem_Ini.
-            ArchivItem_Ini(const char* name);
+            ArchivItem_Ini(const std::string& name);
 
             /// Kopierkonstruktor von @p ArchivItem_Ini.
-            ArchivItem_Ini(const ArchivItem_Ini* item);
+            ArchivItem_Ini(const ArchivItem_Ini& item);
 
             /// lädt die INI-Daten aus einer Datei.
             int load(FILE* file);
@@ -48,60 +48,19 @@ namespace libsiedler2
             int write(FILE* file) const;
 
             /// liest einen Wert aus der Ini
-            inline const char* getValue(const char* name) const
-            {
-                const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(find(name));
-                if(item)
-                {
-                    if(item->getText())
-                        return item->getText();
-                }
-                return "";
-            }
+            std::string getValue(const std::string& name) const;
 
-            inline int getValueI(const char* name) const
+            inline int getValueI(const std::string& name) const
             {
-                return atoi(getValue(name));
+                return atoi(getValue(name).c_str());
             }
 
             /// fügt einen Eintrag hinzu.
-            void addValue(const char* name, const char* value);
+            void addValue(const std::string& name, const std::string& value);
 
             /// schreibt einen Wert in die Ini
-            inline void setValue(const char* name, const char* value)
-            {
-                ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
-                if(item)
-                {
-                    // setText überschreibt Namen, daher nochmals setzen
-                    item->setText(value);
-                    item->setName(name);
-                }
-                else
-                {
-                    // nicht gefunden, also hinzufügen
-                    addValue(name, value);
-                }
-            }
-
-            inline void setValue(const char* name, int value)
-            {
-                char temp[512];
-                snprintf(temp, 256, "%d", value);
-
-                ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
-                if(item)
-                {
-                    // setText überschreibt Namen, daher nochmals setzen
-                    item->setText(temp);
-                    item->setName(name);
-                }
-                else
-                {
-                    // nicht gefunden, also hinzufügen
-                    addValue(name, temp);
-                }
-            }
+            void setValue(const std::string& name, const std::string& value);
+            void setValue(const std::string& name, int value);
     };
 
 }

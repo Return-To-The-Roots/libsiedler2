@@ -21,8 +21,9 @@
 
 #pragma once
 
+#include "enumTypes.h"
 #include <cstdio>
-#include <cstring>
+#include <string>
 
 namespace libsiedler2
 {
@@ -33,32 +34,29 @@ namespace libsiedler2
             /// Konstruktor von @p ArchivItem.
             ArchivItem();
 
-            /// Kopierkonstruktor von @p ArchivItem.
-            ArchivItem(const ArchivItem* item);
-
             /// virtueller Destruktor von @p ArchivItem.
             virtual ~ArchivItem();
 
             /// setzt den Bobtype des Items.
-            inline void setBobType(unsigned short bobtype)
+            inline void setBobType(BOBTYPES bobtype)
             {
                 this->bobtype = bobtype;
             }
 
             /// liefert den Bobtype des Items.
-            inline unsigned short getBobType(void) const
+            inline BOBTYPES getBobType(void) const
             {
                 return bobtype;
             }
 
             /// setzt den Namen des Items.
-            inline void setName(const char* name)
+            inline void setName(const std::string& name)
             {
-                strncpy(this->name, name, 63);
+                this->name = name;
             }
 
             /// liefert den Namen des Items.
-            inline const char* getName(void) const
+            inline std::string getName(void) const
             {
                 return name;
             }
@@ -70,8 +68,8 @@ namespace libsiedler2
             virtual int write(FILE* file) const;
 
         protected:
-            unsigned short bobtype; ///< Bobtype des Elements.
-            char name[64];          ///< Name des Elements.
+            BOBTYPES bobtype; ///< Bobtype des Elements.
+            std::string name; ///< Name des Elements.
     };
 }
 

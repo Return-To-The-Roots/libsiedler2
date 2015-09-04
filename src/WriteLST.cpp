@@ -20,6 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include <libendian.h>
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -41,61 +45,56 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteLST(const char* file, const ArchivItem_Palette* palette, const ArchivInfo* items)
+int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
-    FILE* lst;
     short header = 0x204E;
-    unsigned int count = items->getCount();
+    unsigned int count = items.size();
 
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum schreiben öffnen
-    lst = fopen(file, "wb");
+    boost::scoped_ptr<FILE> lst(fopen(file.c_str(), "wb"));
 
     // hat das geklappt?
-    if(lst == NULL)
+    if(!lst)
         return 2;
 
     // Header schreiben
-    if(libendian::be_write_s(header, lst) != 0)
+    if(libendian::be_write_s(header, lst.get()) != 0)
         return 3;
 
     // Anzahl schreiben
-    if(libendian::le_write_ui(count, lst) != 0)
+    if(libendian::le_write_ui(count, lst.get()) != 0)
         return 5;
 
     // items schreiben
     for(unsigned int i = 0; i < count; ++i)
     {
         unsigned short used = 0x0100;
-        unsigned short bobtype;
 
-        const ArchivItem* item = items->get(i);
+        const ArchivItem* item = items.get(i);
 
         if(item == NULL)
             used = 0x0000;
 
         // use-Flag schreiben
-        if(libendian::be_write_us(used, lst) != 0)
+        if(libendian::be_write_us(used, lst.get()) != 0)
             return 6;
 
         if(!item)
             continue;
 
-        bobtype = item->getBobType();
+        BOBTYPES bobtype = item->getBobType();
 
         // bobtype des Items schreiben
-        if(libendian::le_write_us(bobtype, lst) != 0)
+        if(libendian::le_write_us(bobtype, lst.get()) != 0)
             return 7;
 
         // Daten von Item schreiben
-        if(WriteType(bobtype, lst, palette, item) != 0)
+        if(WriteType(bobtype, lst.get(), palette, *item) != 0)
             return 8;
     }
-
-    // Datei schliessen
-    fclose(lst);
 
     // alles ok
     return 0;

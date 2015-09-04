@@ -21,6 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Shadow.h"
+#include <libendian.h>
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -65,7 +67,7 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(void) : 
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow* item) : baseArchivItem_Bitmap((baseArchivItem_Bitmap*)item)
+libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item) : baseArchivItem_Bitmap(item)
 {
     setBobType(BOBTYPE_BITMAP_SHADOW);
 }
@@ -109,8 +111,6 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow(void)
  */
 int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem_Palette* palette)
 {
-    unsigned char* data = NULL;
-
     if(file == NULL)
         return 1;
     if(palette == NULL)
@@ -146,11 +146,11 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem
     if(libendian::le_read_ui(&length, file) != 0)
         return 6;
 
+    std::vector<unsigned char> data(length);
     // Daten einlesen
     if(length != 0)
     {
-        data = new unsigned char[length];
-        if(libendian::le_read_uc(data, length, file) != (int)length)
+        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
             return 7;
     }
 
@@ -159,10 +159,9 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem
 
     unsigned char gray = palette->lookup(255, 255, 255);
 
-    if(length != 0 && data)
+    if(length != 0)
     {
-        unsigned char* image = &data[height * 2];
-        unsigned int position = 0;
+        unsigned int position = height * 2;
 
         // Einlesen
         for(unsigned short y = 0; y < height; ++y)
@@ -173,12 +172,12 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem
             while(x < width)
             {
                 // graue Pixel setzen
-                unsigned char count = image[position++];
+                unsigned char count = data[position++];
                 for(unsigned char i = 0; i < count; ++i, ++x)
                     tex_setPixel(x, y, gray, palette);
 
                 // transparente Pixel setzen
-                count = image[position++];
+                count = data[position++];
                 for(unsigned char i = 0; i < count; ++i, ++x)
                     tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
             }
@@ -190,10 +189,8 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem
         // FF überspringen
         ++position;
 
-        if(position != length - (height * 2) )
+        if(position != length )
             return 8;
-
-        delete[] data;
     }
 
     return 0;
@@ -212,8 +209,6 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(FILE* file, const ArchivItem
  */
 int libsiedler2::baseArchivItem_Bitmap_Shadow::write(FILE* file, const ArchivItem_Palette* palette) const
 {
-    unsigned char* data = NULL;
-
     if(file == NULL)
         return 1;
     if(palette == NULL)
@@ -251,12 +246,11 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(FILE* file, const ArchivIte
         return 8;
 
     // maximale größe von RLE: width*height*2
-    data = new unsigned char[height * 4 + width * height * 2];
-    memset(data, 0, width * height * 2);
+    std::vector<unsigned char> data(height * 4 + width * height * 2);
 
     // Startadressen
     unsigned char* image = &data[height * 2];
-    unsigned short* starts = (unsigned short*)&data[0];
+    unsigned short* const starts = (unsigned short*)&data[0];
 
     // Schattendaten kodieren
     unsigned short position = 0;
@@ -307,13 +301,11 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(FILE* file, const ArchivIte
     // Daten schreiben
     for(unsigned int i = 0; i < height; ++i)
     {
-        if(libendian::le_write_us(((unsigned short*)data)[i], file) != 0)
+        if(libendian::le_write_us(starts[i], file) != 0)
             return 10;
     }
     if(libendian::le_write_uc(&data[height * 2], length - (height * 2), file) != (int)(length - (height * 2)))
         return 11;
-
-    delete[] data;
 
     return 0;
 }

@@ -21,35 +21,31 @@
 
 #pragma once
 
+#include <vector>
+
 class XMIDI_Track;
 
 class MIDI_Track
 {
     public:
         MIDI_Track();
-        MIDI_Track(const MIDI_Track* item);
         ~MIDI_Track();
-        void copy(const MIDI_Track* item);
 
-        void allocXMid(unsigned int length);
-        int readXMid(FILE* file);
+        int readXMid(FILE* file, size_t length);
         void clearXMid();
 
-        void allocMid(unsigned int length);
-        int readMid(FILE* file);
+        int readMid(FILE* file, size_t length);
         void clearMid();
 
         int XMid2Mid();
-        unsigned char* getMid(bool withheader = false) const;
+        const unsigned char* getMid(bool withheader = false) const;
         unsigned int getMidLength(bool withheader = false) const;
 
         friend class XMIDI_Track;
 
     protected:
-        unsigned int xmid_length;
-        unsigned char* xmid_data;
-        unsigned int mid_length;
-        unsigned char* mid_data;
+        std::vector<unsigned char> xmid_data;
+        std::vector<unsigned char> mid_data;
 };
 
 #endif // !MIDI_TRACK_H_INCLUDED

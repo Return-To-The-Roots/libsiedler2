@@ -20,6 +20,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivItem_Bitmap.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include "types.h"
+#include <libendian.h>
+#include <boost/scoped_ptr.hpp>
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include <vector>
+#include <cmath>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -80,7 +90,7 @@ static inline void LoadBMP_ReadLine(FILE* bmp,
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivItem** palette)
+int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, ArchivItem** palette)
 {
     struct BMHD
     {
@@ -104,57 +114,60 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
         int clrused; // 36
         int clrimp; // 40
     } bmih ;
+
+    image = NULL;
+    if(palette)
+        *palette = NULL;
+
     bool bottomup = false;
 
-    FILE* bmp;
-
-    if(file == NULL || image == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    bmp = fopen(file, "rb");
+    boost::scoped_ptr<FILE> bmp(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(bmp == NULL)
+    if(!bmp)
         return 2;
 
     // Bitmap-Header einlesen
-    if(libendian::le_read_us(&bmhd.header, bmp) != 0)
+    if(libendian::le_read_us(&bmhd.header, bmp.get()) != 0)
         return 3;
-    if(libendian::le_read_ui(&bmhd.size, bmp) != 0)
+    if(libendian::le_read_ui(&bmhd.size, bmp.get()) != 0)
         return 3;
-    if(libendian::le_read_ui(&bmhd.reserved, bmp) != 0)
+    if(libendian::le_read_ui(&bmhd.reserved, bmp.get()) != 0)
         return 3;
-    if(libendian::le_read_ui(&bmhd.offset, bmp) != 0)
+    if(libendian::le_read_ui(&bmhd.offset, bmp.get()) != 0)
         return 3;
 
     if(bmhd.header != 0x4D42)
         return 4;
 
     // Bitmap-Info-Header einlesen
-    //if(libendian::le_read_c((char*)&bmih, 40, bmp) != 40)
+    //if(libendian::le_read_c((char*)&bmih, 40, bmp.get()) != 40)
     //  return 5;
-    if(libendian::le_read_ui(&bmih.length, bmp) != 0)
+    if(libendian::le_read_ui(&bmih.length, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.width, bmp) != 0)
+    if(libendian::le_read_i(&bmih.width, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.height, bmp) != 0)
+    if(libendian::le_read_i(&bmih.height, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_s(&bmih.planes, bmp) != 0)
+    if(libendian::le_read_s(&bmih.planes, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_s(&bmih.bbp, bmp) != 0)
+    if(libendian::le_read_s(&bmih.bbp, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_ui(&bmih.compression, bmp) != 0)
+    if(libendian::le_read_ui(&bmih.compression, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_ui(&bmih.size, bmp) != 0)
+    if(libendian::le_read_ui(&bmih.size, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.xppm, bmp) != 0)
+    if(libendian::le_read_i(&bmih.xppm, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.yppm, bmp) != 0)
+    if(libendian::le_read_i(&bmih.yppm, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.clrused, bmp) != 0)
+    if(libendian::le_read_i(&bmih.clrused, bmp.get()) != 0)
         return 5;
-    if(libendian::le_read_i(&bmih.clrimp, bmp) != 0)
+    if(libendian::le_read_i(&bmih.clrimp, bmp.get()) != 0)
         return 5;
 
     if(bmih.height > 0)
@@ -166,7 +179,7 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
     if(bmih.planes != 1)
         return 6;
 
-    baseArchivItem_Bitmap* bitmap = dynamic_cast<baseArchivItem_Bitmap*>((*allocator)(BOBTYPE_BITMAP_RAW, 0, NULL));
+    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setName(file);
 
     switch(bmih.bbp)
@@ -182,7 +195,6 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
         default:
         {
             fprintf(stderr, "unknown bitmap depth: %d ", bmih.bbp);
-            delete bitmap;
             return 7;
         } break;
     }
@@ -190,40 +202,38 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
     // keine Kompression
     if(bmih.compression != 0)
     {
-        delete bitmap;
         return 8;
     }
 
     // Einträge in der Farbtabelle
     if(bmih.clrused == 0)
-        bmih.clrused = (int)pow(2.0, bmih.bbp);
+        bmih.clrused = (int)pow(2, bmih.bbp);
 
     //items->alloc(2);
 
     if(bmih.bbp == 8)
     {
         if(palette)
-            *palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
-        //ArchivItem_Palette *palette = (ArchivItem_Palette*)(*allocator)(BOBTYPE_PALETTE, 0, NULL);
+            *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
+        //ArchivItem_Palette *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, NULL);
         //items->set(0, palette);
 
         // Farbpalette lesen
         unsigned char colors[256][4];
-        if(libendian::le_read_uc(colors[0], bmih.clrused * 4, bmp) != bmih.clrused * 4)
+        if(libendian::le_read_uc(colors[0], bmih.clrused * 4, bmp.get()) != bmih.clrused * 4){
             return 10;
+        }
 
         // Farbpalette zuweisen
         if(palette)
         {
+            ArchivItem_Palette* pal = dynamic_cast<ArchivItem_Palette*>(*palette);
             for(int i = 0; i < bmih.clrused; ++i)
-                dynamic_cast<ArchivItem_Palette*>(*palette)->set(i, colors[i][2], colors[i][1], colors[i][0]);
+                pal->set(i, Color(colors[i][2], colors[i][1], colors[i][0]));
 
-            bitmap->setPalette(dynamic_cast<ArchivItem_Palette*>(*palette));
+            bitmap->setPalette(pal);
         }
     }
-
-    // Bitmap zuweisen
-    *image = bitmap;
 
     // Bitmapdaten setzen
     bitmap->setWidth(bmih.width);
@@ -233,29 +243,26 @@ int libsiedler2::loader::LoadBMP(const char* file, ArchivItem** image, ArchivIte
 
     unsigned char bbp = (bmih.bbp / 8);
     unsigned int size = bmih.width * bmih.height * bbp;
-    unsigned char* buffer = new unsigned char[bmih.width * bbp];
-    memset(buffer, 0, bmih.width * (bmih.bbp / 8));
+    std::vector<unsigned char> buffer(bmih.width * bbp);
 
     // Bitmap Pixel einlesen
     if(bottomup)
     {
         // Bottom-Up, "von unten nach oben"
         for(int y = bmih.height - 1; y >= 0; --y)
-            LoadBMP_ReadLine(bmp, y, bmih.size, size, bmih.width, bbp, bitmap, buffer);
+            LoadBMP_ReadLine(bmp.get(), y, bmih.size, size, bmih.width, bbp, bitmap.get(), &buffer.front());
     }
     else
     {
         // Top-Down, "von oben nach unten"
         for(int y = 0; y < bmih.height; ++y)
-            LoadBMP_ReadLine(bmp, y, bmih.size, size, bmih.width, bbp, bitmap, buffer);
+            LoadBMP_ReadLine(bmp.get(), y, bmih.size, size, bmih.width, bbp, bitmap.get(), &buffer.front());
     }
-    if(ftell(bmp) % 4 > 0)
-        fseek(bmp, 4 - (ftell(bmp) % 4), SEEK_CUR);
+    if(ftell(bmp.get()) % 4 > 0)
+        fseek(bmp.get(), 4 - (ftell(bmp.get()) % 4), SEEK_CUR);
 
-    delete[] buffer;
-
-    // Datei schliessen
-    fclose(bmp);
+    // Bitmap zuweisen
+    image = bitmap.release();
 
     // alles ok
     return 0;

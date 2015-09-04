@@ -21,6 +21,8 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Raw.h"
+#include "types.h"
+#include <libendian.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -45,32 +47,9 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(void)
-    : ArchivItem(),
-      data(NULL)
+    : ArchivItem()
 {
     setBobType(BOBTYPE_RAW);
-
-    clear();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p baseArchivItem_Raw.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const baseArchivItem_Raw* item)
-    : ArchivItem(item),
-      data(NULL)
-{
-    setBobType(BOBTYPE_RAW);
-
-    alloc(item->length);
-
-    if(item->length > 0)
-        memcpy(data, item->data, item->length);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -80,9 +59,7 @@ libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const baseArchivItem_Raw* it
  *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw(void)
-{
-    clear();
-}
+{}
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -108,11 +85,11 @@ int libsiedler2::baseArchivItem_Raw::load(FILE* file, unsigned int length)
             return 2;
     }
 
-    alloc(length);
+    data.resize(length);
 
     if(length > 0)
     {
-        if(libendian::le_read_uc(data, length, file) != (int)length)
+        if(libendian::le_read_uc(&data.front(), length, file) != (int)length)
             return 3;
     }
 
@@ -137,13 +114,13 @@ int libsiedler2::baseArchivItem_Raw::write(FILE* file, bool with_length) const
 
     if(with_length)
     {
-        if(libendian::le_write_ui(length, file) != 0)
+        if(libendian::le_write_ui(data.size(), file) != 0)
             return 2;
     }
 
-    if(length > 0)
+    if(data.size() > 0)
     {
-        if(libendian::le_write_uc(data, length, file) != (int)length)
+        if(libendian::le_write_uc(&data.front(), data.size(), file) != (int)data.size())
             return 3;
     }
 
@@ -158,7 +135,7 @@ int libsiedler2::baseArchivItem_Raw::write(FILE* file, bool with_length) const
  */
 unsigned int libsiedler2::baseArchivItem_Raw::getLength(void) const
 {
-    return length;
+    return data.size();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -167,7 +144,7 @@ unsigned int libsiedler2::baseArchivItem_Raw::getLength(void) const
  *
  *  @author FloSoft
  */
-const unsigned char* libsiedler2::baseArchivItem_Raw::getData(void) const
+const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData(void) const
 {
     return data;
 }
@@ -178,31 +155,8 @@ const unsigned char* libsiedler2::baseArchivItem_Raw::getData(void) const
  *
  *  @author FloSoft
  */
-unsigned char* libsiedler2::baseArchivItem_Raw::getData(void)
+std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData(void)
 {
-    return data;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  erzeugt den Datenblock.
- *
- *  @param[in] length Die Länge des gewünschten Datenblocks.
- *
- *  @author FloSoft
- */
-unsigned char* libsiedler2::baseArchivItem_Raw::alloc(unsigned int length)
-{
-    clear();
-
-    this->length = length;
-
-    if(length > 0)
-    {
-        data = new unsigned char[length];
-        memset(data, 0, length);
-    }
-
     return data;
 }
 
@@ -214,6 +168,5 @@ unsigned char* libsiedler2::baseArchivItem_Raw::alloc(unsigned int length)
  */
 void libsiedler2::baseArchivItem_Raw::clear(void)
 {
-    delete[] data;
-    length = 0;
+    data.clear();
 }

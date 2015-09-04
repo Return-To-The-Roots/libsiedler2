@@ -20,6 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include <libendian.h>
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -42,51 +46,43 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadDATIDX(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items)
+int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
-    size_t length = strlen(file) + 1;
-    FILE* idx, *dat;
-    char* datfile = new char[length];
-    char* idxfile = new char[length];
+    std::string datfile = file;
+    std::string idxfile = file;
     unsigned int count;
 
-    memcpy(idxfile, file, length);
-    memcpy(datfile, file, length);
+    idxfile[idxfile.size() - 3] = 'I';
+    idxfile[idxfile.size() - 2] = 'D';
+    idxfile[idxfile.size() - 1] = 'X';
 
-    idxfile[length - 2] = 'X';
-    idxfile[length - 3] = 'D';
-    idxfile[length - 4] = 'I';
-
-    datfile[length - 2] = 'T';
-    datfile[length - 3] = 'A';
-    datfile[length - 4] = 'D';
+    datfile[datfile.size() - 3] = 'D';
+    datfile[datfile.size() - 2] = 'A';
+    datfile[datfile.size() - 1] = 'T';
 
     // Datei zum lesen öffnen
-    dat = fopen(datfile, "rb");
+    boost::scoped_ptr<FILE> dat(fopen(datfile.c_str(), "rb"));
 
     // hat das geklappt?
-    if(dat == NULL)
+    if(!dat)
         return 2;
 
     // IDX-Datei zum lesen öffnen
-    idx = fopen(idxfile, "rb");
+     boost::scoped_ptr<FILE> idx(fopen(idxfile.c_str(), "rb"));
 
     // hat das geklappt?
-    if(idx == NULL)
+    if(!idx)
         return 3;
 
-    delete[] datfile;
-    delete[] idxfile;
-
     // Anzahl einlesen
-    if(libendian::le_read_ui(&count, idx) != 0)
+    if(libendian::le_read_ui(&count, idx.get()) != 0)
         return 5;
 
     // Platz für items anlegen
-    items->alloc(count);
+    items.alloc(count);
 
     // items einlesen
     for(unsigned int i = 0; i < count; ++i)
@@ -94,45 +90,44 @@ int libsiedler2::loader::LoadDATIDX(const char* file, const ArchivItem_Palette* 
         char name[17];
         unsigned int offset;
         short idxbobtype;
-        short bobtype;
+        short bobtype_s;
 
         // Name einlesen
-        if(libendian::le_read_c(name, 16, idx) != 16)
+        if(libendian::le_read_c(name, 16, idx.get()) != 16)
             return 6;
 
         // Offset einlesen
-        if(libendian::le_read_ui(&offset, idx) != 0)
+        if(libendian::le_read_ui(&offset, idx.get()) != 0)
             return 7;
 
         // Unbekannte Daten überspringen
-        fseek(idx, 6, SEEK_CUR);
+        fseek(idx.get(), 6, SEEK_CUR);
 
         // BobType einlesen
-        if(libendian::le_read_s(&idxbobtype, idx) != 0)
+        if(libendian::le_read_s(&idxbobtype, idx.get()) != 0)
             return 8;
 
         // Zum Offset springen
-        fseek(dat, offset, SEEK_SET);
+        fseek(dat.get(), offset, SEEK_SET);
 
         // BobType einlesen
-        if(libendian::le_read_s(&bobtype, dat) != 0)
+        if(libendian::le_read_s(&bobtype_s, dat.get()) != 0)
             return 9;
 
-        if(idxbobtype != bobtype)
+        if(idxbobtype != bobtype_s)
             continue;
+        BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
 
         // Daten von Item auswerten
-        if(LoadType(bobtype, dat, palette, items->getP(i)) != 0)
+        ArchivItem* item;
+        if(LoadType(bobtype, dat.get(), palette, item) != 0)
             return 10;
 
         // Name setzen
-        ArchivItem* item = items->get(i);
         if(item)
             item->setName(name);
+        items.set(i, item);
     }
-
-    fclose(idx);
-    fclose(dat);
 
     return 0;
 }

@@ -20,6 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "main.h"
+#include "ArchivInfo.h"
+#include "prototypen.h"
+#include <libendian.h>
+#include <boost/scoped_ptr.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -42,30 +46,28 @@ static char THIS_FILE[] = __FILE__;
  *  @author FloSoft
  *  @author OLiver
  */
-int libsiedler2::loader::LoadLST(const char* file, const ArchivItem_Palette* palette, ArchivInfo* items)
+int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
-    FILE* lst;
     unsigned short header;
     unsigned int count;
 
-    if(file == NULL || items == NULL)
+    if(file.empty())
         return 1;
 
     // Datei zum lesen öffnen
-    lst = fopen(file, "rb");
+    boost::scoped_ptr<FILE> lst(fopen(file.c_str(), "rb"));
 
     // hat das geklappt?
-    if(lst == NULL)
+    if(!lst)
         return 2;
 
     // Header einlesen
-    if(libendian::be_read_us(&header, lst) != 0)
+    if(libendian::be_read_us(&header, lst.get()) != 0)
         return 3;
 
     // ist es eine GER/ENG-File? (Header 0xE7FD)
     if(header == 0xE7FD)
     {
-        fclose(lst);
         return LoadTXT(file, items);
     }
 
@@ -74,42 +76,41 @@ int libsiedler2::loader::LoadLST(const char* file, const ArchivItem_Palette* pal
         return 4;
 
     // Anzahl einlesen
-    if(libendian::le_read_ui(&count, lst) != 0)
+    if(libendian::le_read_ui(&count, lst.get()) != 0)
         return 5;
 
-    // Platz für items anlegen
-    items->alloc(count);
+    items.clear();
 
     // items einlesen
     for(unsigned int i = 0; i < count; ++i)
     {
         short used;
-        short bobtype;
+        short bobtype_s;
 
         // use-Flag einlesen
-        if(libendian::be_read_s(&used, lst) != 0)
+        if(libendian::be_read_s(&used, lst.get()) != 0)
             return 6;
 
         // ist das Item benutzt?
         if(used != 0x0100)
         {
             //fprintf(stderr, "unused %04X\n", used);
+            items.push(NULL);
             continue;
         }
 
         // bobtype des Items einlesen
-        if(libendian::le_read_s(&bobtype, lst) != 0)
+        if(libendian::le_read_s(&bobtype_s, lst.get()) != 0)
             return 7;
-
+        BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
         //fprintf(stderr, "bobtype %d\n", bobtype);
 
         // Daten von Item auswerten
-        if(LoadType(bobtype, lst, palette, items->getP(i)) != 0)
+        ArchivItem* item;
+        if(LoadType(bobtype, lst.get(), palette, item) != 0)
             return 8;
+        items.push(item);
     }
-
-    // Datei schliessen
-    fclose(lst);
 
     // alles ok
     return 0;

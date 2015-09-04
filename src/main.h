@@ -27,36 +27,41 @@
 
 #ifdef _WIN32
 #   define _CRTDBG_MAP_ALLOC
-#   include <windows.h>
 #   if defined _DEBUG && defined _MSC_VER
 #       include <crtdbg.h>
 #   endif // _DEBUG
-#   define strlwr _strlwr
-#else
-#   include <unistd.h>
-#   include "strlwr.h"
 #endif // !_WIN32
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cmath>
-
-#include <string>
-#include <sstream>
-#include <algorithm>
-
-#ifdef _WIN32
-#   define class class __declspec(dllexport)
-#ifndef __CYGWIN__
+#if _MSC_VER < 1900
 #   define snprintf _snprintf
 #endif
-#endif
 
-#include "libsiedler2.h"
-#include "libendian.h"
+#include <cstdio>
 
-extern libsiedler2::TEXTURFORMAT texturformat;
-extern libsiedler2::allocatorType allocator;
+namespace libsiedler2{
+    inline size_t getFileLength(FILE* f)
+    {
+        fseek(f, 0, SEEK_END);
+        size_t length = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        return length;
+    }
+
+    template<typename T>
+    struct Deleter {
+        void operator()(T *p)
+        {
+            delete p;
+        }
+    };
+} // namespace libsiedler2
+
+namespace boost{
+    // support boost::scoped_ptr
+    inline void checked_delete(FILE* x)
+    {
+        fclose(x);
+    }
+} // namespace boost
 
 #endif // MAIN_H_INCLUDED
