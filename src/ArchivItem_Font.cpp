@@ -155,7 +155,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
             bobtype = item->getBobType();
 
         // bobtype des Items schreiben
-        fs << bobtype;
+        fs << (int32_t)bobtype;
 
         if(item == NULL)
             continue;
