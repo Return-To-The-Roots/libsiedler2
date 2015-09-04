@@ -159,6 +159,8 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const Ar
             item->setBobType(bobtype);
     }catch(std::runtime_error){
         return 999;
+        default: 
+            return 15;
     }
 
     return 0;
