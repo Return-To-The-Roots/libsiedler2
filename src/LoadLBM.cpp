@@ -175,7 +175,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                 {
                     case 0: // unkomprimiert
                     {
-                        if(length != width * height)
+                        if(length != static_cast<unsigned>(width * height))
                             return 222;
                         for(int y = 0; y<height; ++y)
                             for(int x = 0; x<width; ++x)
