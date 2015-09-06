@@ -23,6 +23,7 @@
 #include <EndianStream.h>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -63,7 +64,13 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     datfile[datfile.size() - 1] = 'T';
 
     // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile(datfile);
+    boost::iostreams::mapped_file_source mmapFile;
+    try{
+        mmapFile.open(datfile);
+    }catch(std::exception e){
+        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
+        return 2;
+    }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
     libendian::EndianIStream<false, MMStream& > dat(mmapStream);
@@ -73,7 +80,13 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
         return 2;
 
     // IDX-Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFileIdx(idxfile);
+    boost::iostreams::mapped_file_source mmapFileIdx;
+    try{
+        mmapFileIdx.open(idxfile);
+    }catch(std::exception e){
+        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
+        return 2;
+    }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStreamIdx(mmapFileIdx);
     libendian::EndianIStream<false, MMStream& > idx(mmapStreamIdx);

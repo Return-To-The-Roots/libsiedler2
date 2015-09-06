@@ -30,6 +30,7 @@
 #include <boost/iostreams/stream.hpp>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -126,7 +127,13 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
         return 1;
 
     // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile(file);
+    boost::iostreams::mapped_file_source mmapFile;
+    try{
+        mmapFile.open(file);
+    }catch(std::exception e){
+        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
+        return 2;
+    }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
     libendian::EndianIStream<false, MMStream& > bmp(mmapStream);

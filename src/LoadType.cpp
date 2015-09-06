@@ -156,6 +156,7 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const Ar
         if(item != NULL)
             item->setBobType(bobtype);
     }catch(std::runtime_error){
+        // Mostly error on reading (e.g. unexpected end of file)
         return 999;
     }
 

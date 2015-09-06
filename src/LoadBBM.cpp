@@ -26,7 +26,7 @@
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <sstream>
-#include <cstring>
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -57,7 +57,13 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
         return 1;
 
     // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile(file);
+    boost::iostreams::mapped_file_source mmapFile;
+    try{
+        mmapFile.open(file);
+    }catch(std::exception e){
+        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
+        return 2;
+    }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
     libendian::EndianIStream<true, MMStream& > fs(mmapStream);

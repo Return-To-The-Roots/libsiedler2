@@ -22,6 +22,7 @@
 #include "archives.h"
 #include "prototypen.h"
 #include <algorithm>
+#include <stdexcept>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -285,35 +286,40 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
 
     int ret = 254;
 
-    // Datei laden
-    if(extension == "act")
-        ret = loader::LoadACT(file, items);
-    else if(extension == "bbm")
-        ret = loader::LoadBBM(file, items);
-    else if(extension == "bmp")
-    {
-        items.clear();
-        ArchivItem *bmp, *palette;
-        ret = loader::LoadBMP(file, bmp, &palette);
-        items.push(bmp);
-        items.push(palette);
+    try{
+        // Datei laden
+        if(extension == "act")
+            ret = loader::LoadACT(file, items);
+        else if(extension == "bbm")
+            ret = loader::LoadBBM(file, items);
+        else if(extension == "bmp")
+        {
+            items.clear();
+            ArchivItem *bmp, *palette;
+            ret = loader::LoadBMP(file, bmp, &palette);
+            items.push(bmp);
+            items.push(palette);
+        }
+        else if(extension == "bob")
+            ret = loader::LoadBOB(file, palette, items);
+        else if(extension == "dat" || extension == "idx")
+            ret = loader::LoadDATIDX(file, palette, items);
+        else if(extension == "lbm")
+            ret = loader::LoadLBM(file, items);
+        else if(extension == "lst")
+            ret = loader::LoadLST(file, palette, items);
+        else if(extension == "tlst")
+            ret = loader::LoadTLST(file, items);
+        else if(extension == "swd" || extension == "wld")
+            ret = loader::LoadMAP(file, items);
+        else if(extension == "ger" || extension == "eng")
+            ret = loader::LoadTXT(file, items);
+        else if(extension == "ini")
+            ret = loader::LoadINI(file, items);
+    }catch(std::runtime_error){
+        // Mostly error on reading (e.g. unexpected end of file)
+        return 999;
     }
-    else if(extension == "bob")
-        ret = loader::LoadBOB(file, palette, items);
-    else if(extension == "dat" || extension == "idx")
-        ret = loader::LoadDATIDX(file, palette, items);
-    else if(extension == "lbm")
-        ret = loader::LoadLBM(file, items);
-    else if(extension == "lst")
-        ret = loader::LoadLST(file, palette, items);
-    else if(extension == "tlst")
-        ret = loader::LoadTLST(file, items);
-    else if(extension == "swd" || extension == "wld")
-        ret = loader::LoadMAP(file, items);
-    else if(extension == "ger" || extension == "eng")
-        ret = loader::LoadTXT(file, items);
-    else if(extension == "ini")
-        ret = loader::LoadINI(file, items);
 
     return ret;
 }
@@ -347,27 +353,33 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
 
     int ret = 0;
 
-    // Datei schreiben
-    if(extension == "act")
-        ret = loader::WriteACT(file, items);
-    else if(extension == "bbm")
-        ret = loader::WriteBBM(file, items);
-    else if(extension == "bmp")
-        ret = loader::WriteBMP(file, palette, items);
-    /*else if(strncmp(endung, "bob", 3)==0)
-        ret = loader::WriteBOB(file, palette, items);*/
-    /*else if(strncmp(endung, "dat", 3)==0 || strncmp(endung, "idx", 3)==0)
-        ret = loader::WriteDATIDX(file, palette, items);*/
-    /*else if(strncmp(endung, "lbm", 3)==0)
-        ret = loader::WriteLBM(file, items);*/
-    else if(extension == "lst")
-        ret = loader::WriteLST(file, palette, items);
-    /*else if(strncmp(endung, "swd", 3)==0 || strncmp(endung, "wld", 3)==0)
-        ret = loader::WriteMAP(file, items);*/
-    else if(extension == "ger" || extension == "eng")
-        ret = loader::WriteTXT(file, items, false);
-    else if(extension == "ini")
-        ret = loader::WriteINI(file, items);
+    try{
+        // Datei schreiben
+        if(extension == "act")
+            ret = loader::WriteACT(file, items);
+        else if(extension == "bbm")
+            ret = loader::WriteBBM(file, items);
+        else if(extension == "bmp")
+            ret = loader::WriteBMP(file, palette, items);
+        /*else if(strncmp(endung, "bob", 3)==0)
+            ret = loader::WriteBOB(file, palette, items);*/
+        /*else if(strncmp(endung, "dat", 3)==0 || strncmp(endung, "idx", 3)==0)
+            ret = loader::WriteDATIDX(file, palette, items);*/
+        /*else if(strncmp(endung, "lbm", 3)==0)
+            ret = loader::WriteLBM(file, items);*/
+        else if(extension == "lst")
+            ret = loader::WriteLST(file, palette, items);
+        /*else if(strncmp(endung, "swd", 3)==0 || strncmp(endung, "wld", 3)==0)
+            ret = loader::WriteMAP(file, items);*/
+        else if(extension == "ger" || extension == "eng")
+            ret = loader::WriteTXT(file, items, false);
+        else if(extension == "ini")
+            ret = loader::WriteINI(file, items);
+    }catch(std::runtime_error)
+    {
+        // Mostly error on write to file
+        return 999;
+    }
 
     return ret;
 }
