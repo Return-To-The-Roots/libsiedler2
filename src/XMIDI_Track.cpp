@@ -24,7 +24,7 @@
 #include "GammaTable.h"
 #include <boost/endian/conversion.hpp>
 #include <algorithm>
-#include <cstring>
+#include <iterator>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -37,6 +37,14 @@ static char THIS_FILE[] = __FILE__;
 static const int PATCH_VOL_PAN_BIAS = 5;
 static GammaTable<unsigned char> VolumeCurve(128);
 
+/*XMIDI_Track::first_state::first_state()
+{
+    std::fill(patch.begin(), patch.end(), NULL);
+    std::fill(bank.begin(), bank.end(), NULL);
+    std::fill(pan.begin(), pan.end(), NULL);
+    std::fill(vol.begin(), vol.end(), NULL);
+}*/
+
 XMIDI_Track::XMIDI_Track(MIDI_Track* track) : track(track)
 {
     position = 0;
@@ -44,7 +52,7 @@ XMIDI_Track::XMIDI_Track(MIDI_Track* track) : track(track)
     events = NULL;
     event_count = 0,
 
-    memset(bank127, 0, sizeof(bank127));
+    std::fill(bank127.begin(), bank127.end(), false);
 }
 
 XMIDI_Track::~XMIDI_Track()
@@ -84,7 +92,6 @@ int XMIDI_Track::ConvertTrackToList()
     position = 0;
 
     first_state fs;
-    memset(&fs, 0, sizeof(first_state));
 
     while (!end && position < track->xmid_data.size())
     {
@@ -185,7 +192,7 @@ int XMIDI_Track::GetVLQ2(unsigned int& quant)
     return i;
 }
 
-int XMIDI_Track::PutVLQ(unsigned int value, bool write, unsigned int pos /*= 0*/)
+void XMIDI_Track::PutVLQ(unsigned int value)
 {
     int buffer;
     int i = 1;
@@ -197,16 +204,11 @@ int XMIDI_Track::PutVLQ(unsigned int value, bool write, unsigned int pos /*= 0*/
         i++;
     }
 
-    if (!write)
-        return i;
-
     for (int j = 0; j < i; j++)
     {
-        track->mid_data[pos++] = buffer & 0xFF;
+        track->mid_data.push_back(buffer & 0xFF);
         buffer >>= 8;
     }
-
-    return i;
 }
 
 int XMIDI_Track::ConvertNote(const int time, const unsigned char status, const int size)
@@ -335,9 +337,7 @@ int XMIDI_Track::ConvertSystemMessage(const int time, const unsigned char status
     if (!len)
         return i;
 
-    current->buffer.resize(len);
-
-    std::copy(track->xmid_data.begin() + position, track->xmid_data.begin() + position + len, current->buffer.begin());
+    std::copy(track->xmid_data.begin() + position, track->xmid_data.begin() + position + len, std::back_inserter(current->buffer));
 
     return i + len;
 }
@@ -347,7 +347,6 @@ void XMIDI_Track::CreateNewEvent(int time)
     if (!events)
     {
         events = current = new MIDI_Event;
-        memset(events, 0, sizeof(MIDI_Event));
         if (time > 0)
             current->time = time;
         event_count++;
@@ -357,7 +356,6 @@ void XMIDI_Track::CreateNewEvent(int time)
     if (time < 0 || events->time > time)
     {
         MIDI_Event* event = new MIDI_Event;
-        memset(event, 0, sizeof(MIDI_Event));
         event->next = events;
         events = current = event;
         event_count++;
@@ -372,7 +370,6 @@ void XMIDI_Track::CreateNewEvent(int time)
         if (current->next->time > time)
         {
             MIDI_Event* event = new MIDI_Event;
-            memset(event, 0, sizeof(MIDI_Event));
 
             event->next = current->next;
             current->next = event;
@@ -386,7 +383,6 @@ void XMIDI_Track::CreateNewEvent(int time)
     }
 
     current->next = new MIDI_Event;
-    memset(current->next, 0, sizeof(MIDI_Event));
     current = current->next;
     current->time = time;
 
@@ -394,95 +390,28 @@ void XMIDI_Track::CreateNewEvent(int time)
 }
 
 
-unsigned int XMIDI_Track::ConvertListToMTrk()
+void XMIDI_Track::ConvertListToMTrk()
 {
     int time = 0;
     int lasttime = 0;
-    MIDI_Event* event;
-    unsigned int delta;
     unsigned char last_status = 0;
-    unsigned int j;
 
     track->clearMid();
-    unsigned int mid_length = 8;
 
-    // Größe des Tracks ermitteln
-    for (event = events; event; event = event->next)
-    {
-        if (event->status == 0xFF && event->data[0] == 0x2f)
-        {
-            lasttime = event->time;
-            break;
-        }
-
-        delta = (event->time - time);
-        time = event->time;
-
-        mid_length += PutVLQ(delta, false);
-
-        if ((event->status != last_status) || (event->status >= 0xF0))
-            mid_length++;
-
-        last_status = event->status;
-
-        switch (event->status >> 4)
-        {
-                // 2 bytes data
-                // Note off, Note on, Aftertouch, Controller and Pitch Wheel
-            case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
-                mid_length += 2;
-                break;
-
-                // 1 bytes data
-                // Program Change and Channel Pressure
-            case 0xC: case 0xD:
-                mid_length++;
-                break;
-
-                // Variable length
-                // SysEx
-            case 0xF:
-                if (event->status == 0xFF)
-                    mid_length++;
-
-                mid_length += PutVLQ(event->buffer.size(), false);
-
-                for (j = 0; j < event->buffer.size(); j++)
-                    mid_length++;
-                break;
-        }
-    }
-
-    // Write out end of stream marker
-    if (lasttime > time)
-        mid_length += PutVLQ(lasttime - time, false);
-    else
-        mid_length += PutVLQ(0, false);
-
-    mid_length += 2;
-
-    mid_length += PutVLQ(0, false);
-
-
-    // Speicher anlegen
-    track->mid_data.resize(mid_length);
-
-    // nun Stream in die das Array schreiben
-    unsigned int i = 14;
-    time = 0;
-    lasttime = 0;
-    delta = 0;
-    last_status = 0;
+    // Dummy header
+    std::fill_n(std::back_inserter(track->mid_data), 14, 0);
 
     // Header schreiben
-    memcpy(&track->mid_data[i], "MTrk", 4);
-    i += 4;
+    track->mid_data.push_back('M');
+    track->mid_data.push_back('T');
+    track->mid_data.push_back('r');
+    track->mid_data.push_back('k');
 
-    unsigned int length = boost::endian::big_to_native(mid_length - 8);
-    memcpy(&track->mid_data[i], (unsigned char*)&length, 4);
-    i += 4;
+    // Placeholder for length
+    unsigned lenPos = track->mid_data.size();
+    std::fill_n(std::back_inserter(track->mid_data), 4, 0);
 
-    for (event = events; event; event = event->next)
+    for (MIDI_Event* event = events; event; event = event->next)
     {
         if (event->status == 0xFF && event->data[0] == 0x2f)
         {
@@ -490,13 +419,13 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
             break;
         }
 
-        delta = (event->time - time);
+        unsigned delta = (event->time - time);
         time = event->time;
 
-        i += PutVLQ(delta, true, i);
+        PutVLQ(delta);
 
         if ((event->status != last_status) || (event->status >= 0xF0))
-            track->mid_data[i++] = event->status;
+            track->mid_data.push_back(event->status);
 
         last_status = event->status;
 
@@ -505,42 +434,44 @@ unsigned int XMIDI_Track::ConvertListToMTrk()
                 // 2 bytes data
                 // Note off, Note on, Aftertouch, Controller and Pitch Wheel
             case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
-                track->mid_data[i++] = event->data[0];
-                track->mid_data[i++] = event->data[1];
+                track->mid_data.push_back(event->data[0]);
+                track->mid_data.push_back(event->data[1]);
                 break;
 
                 // 1 bytes data
                 // Program Change and Channel Pressure
             case 0xC: case 0xD:
-                track->mid_data[i++] = event->data[0];
+                track->mid_data.push_back(event->data[0]);
                 break;
 
                 // Variable length
                 // SysEx
             case 0xF:
                 if (event->status == 0xFF)
-                    track->mid_data[i++] = event->data[0];
+                    track->mid_data.push_back(event->data[0]);
 
-                i += PutVLQ(event->buffer.size(), true, i);
+                PutVLQ(event->buffer.size());
 
-                for (j = 0; j < event->buffer.size(); j++)
-                    track->mid_data[i++] = event->buffer[j];
+                for (unsigned j = 0; j < event->buffer.size(); j++)
+                    track->mid_data.push_back(event->buffer[j]);
                 break;
         }
     }
 
     // Write out end of stream marker
     if (lasttime > time)
-        i += PutVLQ(lasttime - time, true, i);
+        PutVLQ(lasttime - time);
     else
-        i += PutVLQ(0, true, i);
+        PutVLQ(0);
 
-    track->mid_data[i++] = 0xFF;
-    track->mid_data[i++] = 0x2F;
+    track->mid_data.push_back(0xFF);
+    track->mid_data.push_back(0x2F);
 
-    i += PutVLQ(0, true, i);
+    PutVLQ(0);
 
-    return i;
+    // Write length
+    uint32_t length = track->mid_data.size() - 8;
+    *reinterpret_cast<uint32_t*>(&track->mid_data[lenPos]) = boost::endian::big_to_native(length);
 }
 
 void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
@@ -559,7 +490,6 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
         // Copy Patch Change Event
         temp = patch;
         patch = new MIDI_Event;
-        memset(patch, 0, sizeof(MIDI_Event));
         patch->time = temp->time;
         patch->status = (unsigned char)(channel | (MIDI_STATUS_PROG_CHANGE << 4));
         patch->data[0] = temp->data[0];
@@ -571,7 +501,6 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
 
         temp = vol;
         vol = new MIDI_Event;
-        memset(vol, 0, sizeof(MIDI_Event));
         vol->status = (unsigned char)(channel | (MIDI_STATUS_CONTROLLER << 4));
         vol->data[0] = 7;
 
@@ -589,7 +518,6 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
         temp = bank;
 
         bank = new MIDI_Event;
-        memset(bank, 0, sizeof(MIDI_Event));
         bank->status = (unsigned char)(channel | (MIDI_STATUS_CONTROLLER << 4));
 
         if (!temp)
@@ -604,7 +532,6 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
 
         temp = pan;
         pan = new MIDI_Event;
-        memset(pan, 0, sizeof(MIDI_Event));
         pan->status = (unsigned char)(channel | (MIDI_STATUS_CONTROLLER << 4));
         pan->data[0] = 10;
 

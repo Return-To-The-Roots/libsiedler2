@@ -110,45 +110,27 @@ int libsiedler2::baseArchivItem_Sound_XMidi::load(std::istream& file, unsigned i
     }
     else if(strncmp(subheader, "XDIR", 4) == 0)
     {
-        long xdir_length = length;
-        while(!!fs && fs.getPosition() - position < xdir_length)
-        {
-            // Chunk-Typ einlesen
-            fs >> chunk;
+        fs >> subheader;
+        if(strncmp(subheader, "INFO", 4) != 0)
+            return 4;
+        // Länge einlesen
+        fs >> length;
+        // Bei ungerader Zahl aufrunden
+        if(length & 1)
+            ++length;
+        if(length != sizeof(tracks))
+            return 8;
 
-            switch(chunk)
-            {
-                case 0x494E464F: // "INFO"
-                {
-                    // Länge einlesen
-                   fs >> length;
+        libendian::LittleEndianIStreamRef fsLE(file);
+        fsLE >> tracks;
 
-                    // Bei ungerader Zahl aufrunden
-                    if(length & 1)
-                        ++length;
-
-                    if(length != 2)
-                        return 8;
-
-                    fs >> tracks;
-                } break;
-                case 0x43415420: // "CAT "
-                {
-                    // Länge einlesen
-                    fs >> length;
-
-                    // Bei ungerader Zahl aufrunden
-                    if(length & 1)
-                        ++length;
-
-                    // Typ einlesen
-                    fs >> subheader;
-
-                    if(strncmp(subheader, "XMID", 4) != 0)
-                        return 12;
-                } break;
-            }
-        }
+        fs >> subheader;
+        if(strncmp(subheader, "CAT ", 4) != 0)
+            return 5;
+        fs.ignore(4);
+        fs >> subheader;
+        if(strncmp(subheader, "XMID", 4) != 0)
+            return 12;
     }
     else
         return 13;
@@ -228,13 +210,13 @@ int libsiedler2::baseArchivItem_Sound_XMidi::write(std::ostream& file) const
     fs << length;
 
     // Typ schreiben
-    fs << 0;
+    fs << uint16_t(0);
 
     // Tracksanzahl schreiben
     fs << tracks;
 
     // PPQS schreiben
-    fs << 96;
+    fs << uint16_t(96);
 
     for(unsigned short i = 0; i < tracks; ++i)
     {

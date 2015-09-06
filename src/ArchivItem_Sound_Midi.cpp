@@ -167,13 +167,13 @@ int libsiedler2::baseArchivItem_Sound_Midi::write(std::ostream& file) const
     fs << length;
 
     // Typ schreiben
-    fs << 0;
+    fs << uint16_t(0);
 
     // Tracksanzahl schreiben
     fs << tracks;
 
     // PPQS schreiben
-    fs << 96;
+    fs << uint16_t(96);
 
     for(unsigned short i = 0; i < tracks; ++i)
     {

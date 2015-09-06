@@ -62,7 +62,7 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const Ar
 
                 baseArchivItem_Sound* nitem = baseArchivItem_Sound::findSubType(file);
                 if(!nitem || nitem->load(file, length) != 0){
-                    delete item;
+                    delete nitem;
                     return 5;
                 }
                 item = nitem;

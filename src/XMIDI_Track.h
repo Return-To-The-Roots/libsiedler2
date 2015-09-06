@@ -21,6 +21,7 @@
 
 #include "MIDI_Track.h"
 #include <vector>
+#include <boost/array.hpp>
 
 class XMIDI_Track
 {
@@ -30,21 +31,25 @@ class XMIDI_Track
             int            time;
             unsigned char  status;
 
-            unsigned char  data[2];
+            boost::array<unsigned char, 2>  data;
 
             std::vector<unsigned char>  buffer;
             int            duration;
             MIDI_Event*     next_note;
             unsigned int   note_time;
             MIDI_Event*     next;
+            MIDI_Event(): time(0), status(0), data(), duration(0), next_note(NULL), note_time(0), next(NULL)
+            {}
         };
 
         struct first_state          // Status,   Data[0]
         {
-            MIDI_Event* patch[16];  // 0xC
-            MIDI_Event* bank[16];   // 0xB,      0
-            MIDI_Event* pan[16];    // 0xB,      7
-            MIDI_Event* vol[16];    // 0xB,      10
+            boost::array<MIDI_Event*, 16> patch;  // 0xC
+            boost::array<MIDI_Event*, 16> bank;   // 0xB,      0
+            boost::array<MIDI_Event*, 16> pan;    // 0xB,      7
+            boost::array<MIDI_Event*, 16> vol;    // 0xB,      10
+            first_state(): patch(), bank(), pan(), vol()
+            {}
         };
 
     public:
@@ -55,7 +60,7 @@ class XMIDI_Track
 
     private:
         int ConvertTrackToList();
-        unsigned int ConvertListToMTrk();
+        void ConvertListToMTrk();
 
         void ApplyFirstState(first_state& fs, int chan_mask);
 
@@ -65,7 +70,7 @@ class XMIDI_Track
 
         int GetVLQ(unsigned int& quant);
         int GetVLQ2(unsigned int& quant);
-        int PutVLQ(unsigned int value, bool write, unsigned int pos = 0);
+        void PutVLQ(unsigned int value);
 
         void CreateNewEvent(int time);
 
@@ -88,7 +93,7 @@ class XMIDI_Track
             MIDI_STATUS_SYSEX       = 0xF
         };
 
-        bool bank127[16];
+        boost::array<bool, 16> bank127;
 };
 
 #endif // XMIDIFILE_H_

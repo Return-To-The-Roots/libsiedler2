@@ -83,7 +83,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         BOBTYPES bobtype = item->getBobType();
 
         // bobtype des Items schreiben
-        lst << (int32_t)bobtype;
+        lst << (int16_t)bobtype;
 
         // Daten von Item schreiben
         if(WriteType(bobtype, lst.getStream(), palette, *item) != 0)
