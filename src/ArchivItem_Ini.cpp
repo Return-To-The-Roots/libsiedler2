@@ -21,7 +21,7 @@
 #include "ArchivItem_Ini.h"
 #include "ArchivItem_Text.h"
 #include "types.h"
-#include <cstring>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <stdexcept>
 
@@ -164,7 +164,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    std::string section = "[" + std::string(getName()) + "]\n";
+    std::string section = "[" + getName() + "]\n";
 
     file << section;
 
@@ -172,7 +172,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
     {
         const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(get(i));
 
-        std::string entry = std::string(item->getName()) + "=" + std::string(item->getText()) + "\n";
+        std::string entry = item->getName() + "=" + item->getText() + "\n";
 
         file << entry;
     }
@@ -228,8 +228,7 @@ void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::s
 
 void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, int value)
 {
-    char temp[512];
-    snprintf(temp, 256, "%d", value);
+    std::string temp = boost::lexical_cast<std::string>(value);
 
     ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
     if(item)
