@@ -69,18 +69,6 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font(void) : ArchivItem(), ArchivInfo()
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Kopierkonstruktor von @p ArchivItem_Font.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::ArchivItem_Font::ArchivItem_Font(const ArchivItem_Font& item) : ArchivItem( item ), ArchivInfo( item ), dx(item.dx), dy(item.dy)
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
  *  lädt die Fontdaten aus einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei

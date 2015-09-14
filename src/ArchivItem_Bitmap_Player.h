@@ -39,7 +39,7 @@ namespace libsiedler2
             ~baseArchivItem_Bitmap_Player(void);
 
             /// lädt die Bilddaten aus einer Datei.
-            virtual int load(std::istream& file, const ArchivItem_Palette* palette);
+            virtual int load(std::istream& file, const ArchivItem_Palette* palette) override;
 
             /// lädt die Bilddaten aus einem Puffer.
             int load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette);
@@ -48,12 +48,12 @@ namespace libsiedler2
             virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             /// alloziert Bildspeicher für die gewünschte Größe.
-            void tex_alloc(void);
+            void tex_alloc(void) override;
 
             /// räumt den Bildspeicher auf.
-            void tex_clear(void);
+            void tex_clear(void) override;
 
-            void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
+            void getVisibleArea(int& vx, int& vy, int& vw, int& vh) override;
 
             /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
             int print(unsigned char* buffer,

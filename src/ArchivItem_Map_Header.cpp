@@ -87,14 +87,14 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     fs >> id;
 
     // und prüfen
-    if(memcmp(id, VALID_ID, 10))
+    if(memcmp(id, VALID_ID, 10) != 0)
         return 3;
 
     // Name einlesen
     char name[24];
     fs >> name;
     OemToAnsi(name, name);
-    this->name = name;
+    this->name_ = name;
 
     // GFX-Set einlesen
     fs >> gfxset;
@@ -106,7 +106,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     char author[20];
     fs >> author;
     OemToAnsi(author, author);
-    this->author = author;
+    this->author_ = author;
 
     long old = fs.getPosition();
     fs.setPosition(2348);
@@ -148,7 +148,7 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
  */
 const std::string& libsiedler2::ArchivItem_Map_Header::getName(void) const
 {
-    return name;
+    return name_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -161,7 +161,7 @@ const std::string& libsiedler2::ArchivItem_Map_Header::getName(void) const
  */
 void libsiedler2::ArchivItem_Map_Header::setName(const std::string& name)
 {
-    this->name = name;
+    this->name_ = name;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -268,7 +268,7 @@ void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
  */
 const std::string& libsiedler2::ArchivItem_Map_Header::getAuthor(void) const
 {
-    return author;
+    return author_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -281,5 +281,5 @@ const std::string& libsiedler2::ArchivItem_Map_Header::getAuthor(void) const
  */
 void libsiedler2::ArchivItem_Map_Header::setAuthor(const std::string& author)
 {
-    this->author = author;
+    this->author_ = author;
 }

@@ -31,9 +31,6 @@ namespace libsiedler2
             /// Konstruktor von @p ArchivItem_Sound.
             baseArchivItem_Sound(void);
 
-            /// Kopierkonstruktor von @p ArchivItem_Sound.
-            baseArchivItem_Sound(const baseArchivItem_Sound& item);
-
             /// virtueller Destruktor von @p ArchivItem_Sound.
             virtual ~baseArchivItem_Sound(void);
 
@@ -52,7 +49,7 @@ namespace libsiedler2
             static baseArchivItem_Sound* findSubType(std::istream& file);
 
         protected:
-            SOUNDTYPES type;
+            SOUNDTYPES type_;
     };
 
     /// Basisklasse für Sounditems.

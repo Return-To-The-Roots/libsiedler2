@@ -51,7 +51,7 @@ int libsiedler2::loader::WriteMAP(const std::string& file, const ArchivInfo& ite
     if(nr == -1)
     {
         // Palette in ArchivInfo suchen, erste Palette wird geschrieben
-        for(unsigned long i = 0; i < items.size(); ++i)
+        for(size_t i = 0; i < items.size(); ++i)
         {
             if(!items.get(i))
                 continue;

@@ -59,7 +59,10 @@ int MIDI_Track::readMid(std::istream& file, size_t length)
 
     mid_data.resize(length + 14);
     // MIDI Header setzen
-    memcpy(&mid_data.front(), "MThd", 4);
+    mid_data[0] = 'M';
+    mid_data[1] = 'T';
+    mid_data[2] = 'h';
+    mid_data[3] = 'd';
     mid_data[7] = 0x06; // block length (bytes 3-7)
     *reinterpret_cast<unsigned short*>(&mid_data[8]) = 0x0000; // type (MIDI 0)
     *reinterpret_cast<unsigned short*>(&mid_data[10]) = 0x0100; // trackanzahl (1)

@@ -50,7 +50,7 @@ namespace libsiedler2
             void setText(const std::string& text, bool conversion = true);
 
         private:
-            std::string text;          ///< Der Textspeicher.
+            std::string text_;          ///< Der Textspeicher.
     };
 }
 

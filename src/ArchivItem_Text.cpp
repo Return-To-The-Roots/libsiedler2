@@ -145,9 +145,9 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
         }
     }
 
-    this->text = &text.front();
+    this->text_ = &text.front();
     // Text setzen
-    setName(this->text);
+    setName(this->text_);
 
     // Alles OK
     return 0;
@@ -170,24 +170,24 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
         return 1;
 
     // Wenn Länge 0, nix schreiben, ist ja kein Fehler!
-    if(text.size() == 0)
+    if(text_.size() == 0)
         return 0;
 
-    unsigned int length = text.size();
+    unsigned int length = text_.size();
     std::vector<char> text(length * 2 + 1);
 
 
     for(unsigned int i = 0, j = 0; i < length; ++i)
     {
-        if(this->text[i] == '\n')
+        if(this->text_[i] == '\n')
         {
             text[j++] = '@';
             text[j++] = '@';
         }
-        else if(this->text[i] == '\r')
+        else if(this->text_[i] == '\r')
             continue;
         else
-            text[j++] = this->text[i];
+            text[j++] = this->text_[i];
     }
 
     //memcpy(text, this->text, length);
@@ -213,7 +213,7 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
  */
 const std::string& libsiedler2::ArchivItem_Text::getText(void) const
 {
-    return text;
+    return text_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -232,11 +232,11 @@ void libsiedler2::ArchivItem_Text::setText(const std::string& text, bool convers
     if(conversion){
         std::vector<char> tmp(text.size() + 1);
         AnsiToOem(text.data(), &tmp.front());
-        this->text = &tmp.front();
+        this->text_ = &tmp.front();
     }else
-        this->text = text;
+        this->text_ = text;
 
     // Name setzen
     if(getName().empty())
-        setName(this->text);
+        setName(this->text_);
 }

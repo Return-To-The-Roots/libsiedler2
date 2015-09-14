@@ -452,8 +452,7 @@ void XMIDI_Track::ConvertListToMTrk()
 
                 PutVLQ(event->buffer.size());
 
-                for (unsigned j = 0; j < event->buffer.size(); j++)
-                    track->mid_data.push_back(event->buffer[j]);
+                std::copy(event->buffer.begin(), event->buffer.end(), std::back_inserter(track->mid_data));
                 break;
         }
     }

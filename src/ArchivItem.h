@@ -38,25 +38,25 @@ namespace libsiedler2
             /// setzt den Bobtype des Items.
             inline void setBobType(BOBTYPES bobtype)
             {
-                this->bobtype = bobtype;
+                this->bobtype_ = bobtype;
             }
 
             /// liefert den Bobtype des Items.
             inline BOBTYPES getBobType(void) const
             {
-                return bobtype;
+                return bobtype_;
             }
 
             /// setzt den Namen des Items.
             inline void setName(const std::string& name)
             {
-                this->name = name;
+                this->name_ = name;
             }
 
             /// liefert den Namen des Items.
             inline std::string getName(void) const
             {
-                return name;
+                return name_;
             }
 
             /// lädt die Daten aus einer Datei.
@@ -66,8 +66,8 @@ namespace libsiedler2
             virtual int write(std::ostream& file) const;
 
         protected:
-            BOBTYPES bobtype; ///< Bobtype des Elements.
-            std::string name; ///< Name des Elements.
+            BOBTYPES bobtype_; ///< Bobtype des Elements.
+            std::string name_; ///< Name des Elements.
     };
 }
 

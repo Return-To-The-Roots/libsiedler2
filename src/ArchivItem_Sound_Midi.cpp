@@ -31,8 +31,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+namespace libsiedler2{
+
 ///////////////////////////////////////////////////////////////////////////////
-/** @class libsiedler2::baseArchivItem_Sound_Midi
+/** @class baseArchivItem_Sound_Midi
  *
  *  Basisklasse für MIDI-Sounds.
  *
@@ -45,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(void) : baseArchivItem_Sound()
+baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(void) : baseArchivItem_Sound()
 {
     setType(SOUNDTYPE_MIDI);
 
@@ -60,12 +62,10 @@ libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(void) : baseAr
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item) : baseArchivItem_Sound( item )
+baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item) : baseArchivItem_Sound( item )
 {
     tracks = item.tracks;
-
-    for(unsigned int i = 0; i < 256; ++i)
-        tracklist[i] = item.tracklist[i];
+    tracklist = item.tracklist;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,11 +74,23 @@ libsiedler2::baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArch
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Midi::~baseArchivItem_Sound_Midi(void)
+baseArchivItem_Sound_Midi::~baseArchivItem_Sound_Midi(void)
 {
 }
 
-int libsiedler2::baseArchivItem_Sound_Midi::load(std::istream& file, unsigned int length)
+baseArchivItem_Sound_Midi& baseArchivItem_Sound_Midi::operator=(const baseArchivItem_Sound_Midi& item)
+{
+    if(this == &item)
+        return *this;
+
+    baseArchivItem_Sound::operator=(item);
+    tracks = item.tracks;
+    tracklist = item.tracklist;
+
+    return *this;
+}
+
+int baseArchivItem_Sound_Midi::load(std::istream& file, unsigned int length)
 {
     if(!file || length == 0)
         return 1;
@@ -145,7 +157,7 @@ int libsiedler2::baseArchivItem_Sound_Midi::load(std::istream& file, unsigned in
     return 0;
 }
 
-int libsiedler2::baseArchivItem_Sound_Midi::write(std::ostream& file) const
+int baseArchivItem_Sound_Midi::write(std::ostream& file) const
 {
     if(!file)
         return 1;
@@ -182,3 +194,5 @@ int libsiedler2::baseArchivItem_Sound_Midi::write(std::ostream& file) const
 
     return 0;
 }
+
+} // namespace libsiedler2

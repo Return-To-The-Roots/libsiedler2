@@ -54,7 +54,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
         return 1;
 
     // Anzahl Paletten in ArchivInfo suchen
-    for(unsigned long i = 0; i < items.size(); ++i)
+    for(size_t i = 0; i < items.size(); ++i)
     {
         if(!items.get(i))
             continue;
@@ -79,7 +79,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
     // Typ schreiben
     bbm << pbm;
 
-    for(unsigned long i = 0; i < items.size(); ++i)
+    for(size_t i = 0; i < items.size(); ++i)
     {
         ArchivItem_Palette* palette = (ArchivItem_Palette*)items.get(i);
         if(palette->getBobType() == BOBTYPE_PALETTE)

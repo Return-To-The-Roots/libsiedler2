@@ -108,12 +108,12 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         else
             size += 10;
 
-        std::vector<int> starts(count);
+        std::vector<unsigned> starts(count);
 
         // Starts einlesen
         for(unsigned short x = 0; x < count; ++x)
         {
-            int s;
+            uint32_t s;
             fs >> s;
 
             if(s != 0)
@@ -121,8 +121,8 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         }
 
         // Daten einlesen, zwecks Längenbestimmung
-        unsigned int pos = fs.getPosition();
-        unsigned int rest = size - pos;
+        size_t pos = fs.getPosition();
+        size_t rest = size - pos;
         std::vector<char> buffer(rest + 1);
         buffer.resize(rest);
         fs >> buffer;
@@ -130,7 +130,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
 
         for(unsigned short x = 0; x < count; ++x)
         {
-            int i = starts[x];
+            unsigned i = starts[x];
 
             if(i != 0)
             {
@@ -139,6 +139,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
 
                 // einlesen
                 ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
+                assert(i >= pos);
                 item->load(fs.getStream(), conversion, (unsigned int)strlen(&buffer[i - pos]));
 
                 items.push(item);

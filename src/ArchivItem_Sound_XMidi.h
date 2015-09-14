@@ -21,6 +21,7 @@
 
 #include "ArchivItem_Sound.h"
 #include "MIDI_Track.h"
+#include <boost/array.hpp>
 
 namespace libsiedler2
 {
@@ -37,6 +38,8 @@ namespace libsiedler2
             /// Destruktor von @p baseArchivItem_Sound_XMidi.
             ~baseArchivItem_Sound_XMidi(void);
 
+            baseArchivItem_Sound_XMidi& operator=(const baseArchivItem_Sound_XMidi& item);
+
             int load(std::istream& file, unsigned int length);
             int write(std::ostream& file) const;
 
@@ -45,7 +48,7 @@ namespace libsiedler2
 
         protected:
             unsigned short tracks;
-            MIDI_Track tracklist[256];
+            boost::array<MIDI_Track, 256> tracklist;
     };
 
     /// Klasse für XMIDI-Sounds.

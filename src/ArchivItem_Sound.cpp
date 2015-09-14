@@ -54,19 +54,6 @@ libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound(void) : ArchivItem()
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Kopierkonstruktor von @p ArchivItem_Sound.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound(const baseArchivItem_Sound& item) : ArchivItem( item )
-{
-    setBobType(BOBTYPE_SOUND);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
  *  virtueller Destruktor von @p ArchivItem_Sound.
  *
  *  @author FloSoft
@@ -85,7 +72,7 @@ libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound(void)
  */
 void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
 {
-    this->type = type;
+    this->type_ = type;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -98,7 +85,7 @@ void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
  */
 libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType(void) const
 {
-    return type;
+    return type_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -84,7 +84,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     if(nr == -1)
     {
         // Bitmap in ArchivInfo suchen, erstes Bitmap wird geschrieben
-        for(unsigned long i = 0; i < items.size(); ++i)
+        for(size_t i = 0; i < items.size(); ++i)
         {
             if(!items.get(i))
                 continue;

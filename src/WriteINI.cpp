@@ -52,7 +52,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
     if (!ini)
         return 2;
 
-    for(unsigned long i = 0; i < items.size(); ++i)
+    for(size_t i = 0; i < items.size(); ++i)
     {
         const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
 

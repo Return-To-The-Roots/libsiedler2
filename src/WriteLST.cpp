@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
     short header = 0x4E20;
-    unsigned int count = items.size();
+    uint32_t count = items.size();
 
     if(file.empty())
         return 1;

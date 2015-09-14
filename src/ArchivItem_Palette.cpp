@@ -166,7 +166,7 @@ void libsiedler2::ArchivItem_Palette::set(unsigned char index, Color clr)
  *
  *  @author FloSoft
  */
-unsigned char libsiedler2::ArchivItem_Palette::lookup(const Color clr) const
+unsigned char libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
 {
     for(unsigned short i = 0; i < 256; ++i)
     {

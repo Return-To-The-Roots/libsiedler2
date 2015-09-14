@@ -129,8 +129,8 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned in
             0, 0, 0, 0 // data-size
         };
 
-        unsigned int size = length + sizeof(header) - 8;
-        unsigned int flength = length;
+        uint32_t size = length + sizeof(header) - 8;
+        uint32_t flength = length;
 
         boost::endian::native_to_little_inplace(size);
         boost::endian::native_to_little_inplace(flength);

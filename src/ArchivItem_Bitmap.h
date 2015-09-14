@@ -39,6 +39,8 @@ namespace libsiedler2
             /// virtueller Destruktor von @p ArchivItem_Bitmap.
             virtual ~baseArchivItem_Bitmap(void);
 
+            baseArchivItem_Bitmap& operator=(const baseArchivItem_Bitmap& item);
+
             /// setzt einen Pixel auf einen bestimmten Wert.
             virtual void tex_setPixel(unsigned short x, unsigned short y, unsigned char color, const ArchivItem_Palette* palette);
             virtual void tex_setPixel(unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
@@ -68,7 +70,7 @@ namespace libsiedler2
             unsigned short getHeight(void) const;
 
             /// gibt Palette zurück
-            const ArchivItem_Palette* getPalette() const { return palette; }
+            const ArchivItem_Palette* getPalette() const { return palette_; }
 
             /// setzt den X-Nullpunkt.
             void setNx(short nx);
@@ -83,16 +85,16 @@ namespace libsiedler2
             void setHeight(unsigned short height);
 
             /// alloziert Bildspeicher für die gewünschte Größe.
-            void tex_alloc(void);
+            virtual void tex_alloc(void);
 
             /// räumt den Bildspeicher auf.
-            void tex_clear(void);
+            virtual void tex_clear(void);
 
             /// setzt die Grundpalette des Bildes.
             void setPalette(const ArchivItem_Palette* palette);
 
             /// setzt das Format des Bildes.
-            void setFormat(TEXTURFORMAT format) { this->format = format; }
+            void setFormat(TEXTURFORMAT format) { this->format_ = format; }
 
             virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
@@ -122,20 +124,20 @@ namespace libsiedler2
             static unsigned short tex_pow2(unsigned short n);
 
         protected:
-            unsigned short width;       ///< Breite des Bildes.
-            unsigned short height;      ///< Höhe des Bildes.
+            unsigned short width_;       ///< Breite des Bildes.
+            unsigned short height_;      ///< Höhe des Bildes.
 
-            short nx;                   ///< X-Nullpunkt.
-            short ny;                   ///< Y-Nullpunkt.
+            short nx_;                   ///< X-Nullpunkt.
+            short ny_;                   ///< Y-Nullpunkt.
 
-            unsigned short tex_width;   ///< Breite der Textur.
-            unsigned short tex_height;  ///< Höhe der Textur.
+            unsigned short tex_width_;   ///< Breite der Textur.
+            unsigned short tex_height_;  ///< Höhe der Textur.
 
-            unsigned short tex_bpp;     ///< Bytebreite der Textur pro Pixel.
-            std::vector<unsigned char> tex_data;    ///< Die Texturdaten.
+            unsigned short tex_bpp_;     ///< Bytebreite der Textur pro Pixel.
+            std::vector<unsigned char> tex_data_;    ///< Die Texturdaten.
 
-            const ArchivItem_Palette* palette; ///< Die Palette.
-            TEXTURFORMAT format; ///< Das Texturformat.
+            const ArchivItem_Palette* palette_; ///< Die Palette.
+            TEXTURFORMAT format_; ///< Das Texturformat.
     };
 
     /// Basisklasse für Bitmapitems.

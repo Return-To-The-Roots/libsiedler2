@@ -57,12 +57,12 @@ namespace libsiedler2
             void setAuthor(const std::string& author);
 
         private:
-            std::string name;
+            std::string name_;
             unsigned short width;
             unsigned short height;
             unsigned char gfxset;
             unsigned char player;
-            std::string author;
+            std::string author_;
     };
 }
 

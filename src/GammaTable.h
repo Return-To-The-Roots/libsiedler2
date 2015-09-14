@@ -18,17 +18,13 @@
 #define GAMMATABLE_H_
 
 #include <math.h>
+#include <vector>
 
 template <typename T> class GammaTable
 {
     private:
-        unsigned int size;
-        float        sizef;
-        T*            table;
+        std::vector<T> table;
         float        gamma;
-
-        // ctor
-        GammaTable() { }
 
     public:
         inline const float& get_gamma ()
@@ -36,22 +32,22 @@ template <typename T> class GammaTable
 
         inline void set_gamma (float g)
         {
-            if (g < 0.001f) g = 0.001f;
-            if (g == gamma) return;
+            if (g < 0.001f)
+                g = 0.001f;
+            if (g == gamma)
+                return;
             gamma = g;
 
-            for (unsigned int i = 0; i < size; i++)
-                table[i] = (T) (pow (i / sizef, 1 / gamma) * sizef);
+            float sizef = table.size() - 1.f;
+            for (unsigned int i = 0; i < table.size(); i++)
+                table[i] = (T) (pow(i / sizef, 1 / gamma) * sizef);
         }
 
-        GammaTable (unsigned int s, float g = 1) : sizef(-1), gamma(-1)
+        GammaTable (unsigned int s, float g = 1) : gamma(-1)
         {
-            sizef += size = s > 2 ? s : 2;
-            table = new T [size];
+            table.resize(s > 2 ? s : 2);
             set_gamma(g);
         }
-
-        ~GammaTable () { delete [] table; }
 
         inline const T& operator [] (const T& i) const
         { return table[i]; }

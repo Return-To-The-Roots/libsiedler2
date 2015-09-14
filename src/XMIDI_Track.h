@@ -79,7 +79,7 @@ class XMIDI_Track
         MIDI_Event* events;
         unsigned int event_count;
         MIDI_Event* current;
-        unsigned int position;
+        size_t position;
 
         enum
         {

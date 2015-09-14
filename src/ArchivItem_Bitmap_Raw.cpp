@@ -113,7 +113,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     if(!file)
         return 1;
     if(palette == NULL)
-        palette = this->palette;
+        palette = this->palette_;
     if(palette == NULL)
         return 2;
 
@@ -131,28 +131,28 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     fs >> data;
 
     // Nullpunkt X einlesen
-    fs >> nx;
+    fs >> nx_;
 
     // Nullpunkt Y einlesen
-    fs >> ny;
+    fs >> ny_;
 
     // Breite einlesen
-    fs >> width;
+    fs >> width_;
 
     // Höhe einlesen
-    fs >> height;
+    fs >> height_;
 
     // Speicher anlegen
     tex_alloc();
 
     if(length != 0)
     {
-        for(unsigned short y = 0; y < height; ++y)
+        for(unsigned short y = 0; y < height_; ++y)
         {
-            for(unsigned short x = 0; x < width; ++x)
+            for(unsigned short x = 0; x < width_; ++x)
             {
                 // Pixel setzen
-                tex_setPixel(x, y, data[y * width + x], palette);
+                tex_setPixel(x, y, data[y * width_ + x], palette);
             }
         }
     }
@@ -179,11 +179,11 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     if(!file)
         return 1;
     if(palette == NULL)
-        palette = this->palette;
+        palette = this->palette_;
     if(palette == NULL)
         return 2;
 
-    if(width == 0 || height == 0)
+    if(width_ == 0 || height_ == 0)
         return 2;
 
     libendian::LittleEndianOStreamRef fs(file);
@@ -192,12 +192,12 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     fs.write(unknown, sizeof(unknown));
 
     // Länge schreiben
-    unsigned int length = width * height;
+    unsigned int length = width_ * height_;
     fs << length;
 
-    for(unsigned short y = 0; y < height; ++y)
+    for(unsigned short y = 0; y < height_; ++y)
     {
-        for(unsigned short x = 0; x < width; ++x)
+        for(unsigned short x = 0; x < width_; ++x)
         {
             // Pixel holen und schreiben
             fs << tex_getPixel(x, y, palette);
@@ -205,16 +205,16 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     }
 
     // Nullpunkt X schreiben
-    fs << nx;
+    fs << nx_;
 
     // Nullpunkt Y schreiben
-    fs << ny;
+    fs << ny_;
 
     // Breite schreiben
-    fs << width;
+    fs << width_;
 
     // Höhe schreiben
-    fs << height;
+    fs << height_;
 
     // Unbekannte Daten schreiben
     unsigned char unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};

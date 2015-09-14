@@ -60,7 +60,7 @@ static char THIS_FILE[] = __FILE__;
  */
 libsiedler2::ArchivItem::ArchivItem(void)
 {
-    bobtype = BOBTYPE_NONE;
+    bobtype_ = BOBTYPE_NONE;
     setName("untitled");
 }
 

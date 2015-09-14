@@ -32,7 +32,7 @@ namespace libsiedler2
         Color(): r(0), g(0), b(0){}
         Color(unsigned char r, unsigned char g, unsigned char b): r(r), g(g), b(b){}
 
-        bool operator==(const Color obj) const
+        bool operator==(const Color& obj) const
         {
             return (r == obj.r) && (g == obj.g) && (b == obj.b);
         }
@@ -67,7 +67,7 @@ namespace libsiedler2
             }
 
             /// liefert einen Index zum entsprechenden RGB-Wert.
-            unsigned char lookup(const Color clr) const;
+            unsigned char lookup(const Color& clr) const;
             unsigned char lookup(unsigned char r, unsigned char g, unsigned char b) const
             {
                 return lookup(Color(r, g, b));

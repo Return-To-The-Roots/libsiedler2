@@ -168,7 +168,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
 
     file << section;
 
-    for(unsigned long i = 0; i < size(); ++i)
+    for(size_t i = 0; i < size(); ++i)
     {
         const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(get(i));
 
