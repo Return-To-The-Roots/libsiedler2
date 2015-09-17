@@ -26,6 +26,7 @@
 #include <EndianStream.h>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <boost/filesystem.hpp>
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,9 +80,9 @@ int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palet
 
     ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
 
-    size_t nameIdx = file.find_last_of('/');
-    if(nameIdx != std::string::npos)
-        item->setName(file.substr(nameIdx + 1));
+    boost::filesystem::path filePath(file);
+    if(filePath.has_filename())
+        item->setName(filePath.filename().string());
 
     if(item->load(bob.getStream(), palette) != 0){
         delete item;

@@ -25,6 +25,7 @@
 #include <EndianStream.h>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <boost/filesystem.hpp>
 #include <sstream>
 #include <iostream>
 
@@ -109,11 +110,11 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
             ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
             items.push(palette);
 
-            size_t namePos = file.find_last_of('/');
-            if(namePos != std::string::npos)
+            boost::filesystem::path filePath(file);
+            if(filePath.has_filename())
             {
                 std::stringstream rName;
-                rName << file.substr(namePos+1) << "(" << i << ")";
+                rName << filePath.filename().string() << "(" << i << ")";
                 palette->setName(rName.str());
             }
 
