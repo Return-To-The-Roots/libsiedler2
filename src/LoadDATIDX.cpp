@@ -23,6 +23,7 @@
 #include <EndianStream.h>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <boost/filesystem.hpp>
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,17 +52,10 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     if(file.empty())
         return 1;
 
-    std::string datfile = file;
-    std::string idxfile = file;
+    boost::filesystem::path filePath = file;
+    std::string datfile = filePath.replace_extension("DAT").string();
+    std::string idxfile = filePath.replace_extension("IDX").string();;
     unsigned int count;
-
-    idxfile[idxfile.size() - 3] = 'I';
-    idxfile[idxfile.size() - 2] = 'D';
-    idxfile[idxfile.size() - 1] = 'X';
-
-    datfile[datfile.size() - 3] = 'D';
-    datfile[datfile.size() - 2] = 'A';
-    datfile[datfile.size() - 1] = 'T';
 
     // Datei zum lesen öffnen
     boost::iostreams::mapped_file_source mmapFile;

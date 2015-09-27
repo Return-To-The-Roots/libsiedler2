@@ -34,7 +34,7 @@ template <typename T> class GammaTable
         {
             if (g < 0.001f)
                 g = 0.001f;
-            if (g == gamma)
+            if (g == gamma) //-V550
                 return;
             gamma = g;
 
