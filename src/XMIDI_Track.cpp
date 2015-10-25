@@ -65,8 +65,6 @@ XMIDI_Track::~XMIDI_Track()
         while((current = next))
         {
             next = current->next;
-            /*if ((current->status >> 4) == 0xF)
-                delete[] (current->buffer);*/
             delete current;
         }
     }
