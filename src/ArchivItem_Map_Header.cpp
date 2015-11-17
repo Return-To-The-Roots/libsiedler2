@@ -49,7 +49,7 @@ static char THIS_FILE[] = __FILE__;
  */
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(void)
     : ArchivItem(),
-      width(0), height(0), gfxset(0), player(0)
+      width(0), height(0), gfxset(0), player(0), hasExtraWord_(false)
 {
     setBobType(BOBTYPE_MAP_HEADER);
 }
@@ -108,16 +108,34 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     OemToAnsi(author, author);
     this->author_ = author;
 
-    long old = fs.getPosition();
-    fs.setPosition(2348);
+    fs.ignore(7*2*sizeof(uint16_t)); // HQPos: 7 * X+Y
+
+    char isInvalid;
+    fs >> isInvalid; // This should be checked, but it seems some editors wrongly leave it set
+
+    fs.ignore(7*sizeof(uint8_t)); // Player faces/race * 7
+    fs.ignore(250*9); // Water and land masses, 250 structs with 9 bytes size: Type ID (1 byte): 0 = unused, 1 = land, 2 = water; X/Y (2 bytes each), Total mass (4 bytes)
+
+    uint16_t headerSig;
+    fs >> headerSig;
+    if(headerSig == 0) // On the map "Das Dreieck" there are 2 extra bytes here. This is a bug in the map!
+    {
+        fs >> headerSig;
+        hasExtraWord_ = true;
+    }else
+        hasExtraWord_ = false;
+    if(headerSig != 0x2711)
+        return 4;
+
+    uint32_t unknown; // Might be switch for short or long header blocks in WORLD#.DAT files
+    fs >> unknown;
+    assert(unknown == 0);
 
     // Breite einlesen
     fs >> width;
 
     // Höhe einlesen
     fs >> height;
-
-    fs.setPosition(old);
 
     return 0;
 }

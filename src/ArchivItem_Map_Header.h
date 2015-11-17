@@ -56,6 +56,8 @@ namespace libsiedler2
             const std::string& getAuthor(void) const;
             void setAuthor(const std::string& author);
 
+            bool hasExtraWord() const { return hasExtraWord_; }
+
         private:
             std::string name_;
             unsigned short width;
@@ -63,6 +65,7 @@ namespace libsiedler2
             unsigned char gfxset;
             unsigned char player;
             std::string author_;
+            bool hasExtraWord_;
     };
 }
 

@@ -102,49 +102,42 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     set(0, header);
 
     // nur der Header?
-    if(only_header)
+    if(only_header && false)
         return 0;
 
-    // unbekannte Daten einlesen
-    ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
-    if(layer->load(file, 2296) != 0){
-        delete layer;
-        return 3;
-    }
-    set(1, layer);
+    set(1, NULL); // Used to be unknown data. But is NOT a layer like the others TODO: Remove
+
+    struct BlockHeader{
+        uint16_t id; // Must be 0x2710
+        uint32_t unknown; // Always 0
+        uint16_t w, h;
+        uint16_t multiplier; // Not sure, always 1
+        uint32_t blockLength;
+    };
+
+    const unsigned short w = header->getWidth();
+    const unsigned short h = header->getHeight();
 
     libendian::LittleEndianIStreamRef fs(file);
-    unsigned short width, height;
     for(unsigned int i = 0; i < 14; ++i)
     {
-        // 6 Unbekannte Daten überspringen
-        fs.ignore(6);
-
-        // ggf paar bytes weiterspringen
-        int seek = -4;
-        do
+        BlockHeader bHeader;
+        fs >> bHeader.id >> bHeader.unknown >> bHeader.w >> bHeader.h >> bHeader.multiplier >> bHeader.blockLength;
+        if(bHeader.id != 0x2710 || bHeader.unknown != 0 || bHeader.w != w || bHeader.h != h || bHeader.blockLength != w*h)
         {
-            seek += 2;
-            fs >> width;
+            assert(false);
+            return 5;
         }
-        while(width == 0);
+        assert(bHeader.multiplier == 1);
 
-        // ggf paar bytes weiterspringen
-        do
+        if(i == 0 && header->hasExtraWord())
         {
-            seek += 2;
-            fs >> height;
+            // Work around for map file bug: There are 2 extra bytes inbetween the header which would actually belong to the first block
+            fs.setPositionRel(-2);
         }
-        while(height == 0);
-
-        header->setWidth(width);
-        header->setHeight(height);
-
-        // 6 Unbekannte Daten überspringen
-        fs.ignore(6 - seek);
 
         ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
-        if(layer->load(file, header->getWidth() * header->getHeight()) != 0){
+        if(layer->load(file, bHeader.blockLength) != 0){
             delete layer;
             return 6;
         }
