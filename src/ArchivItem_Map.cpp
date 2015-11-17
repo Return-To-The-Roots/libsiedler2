@@ -102,7 +102,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     set(0, header);
 
     // nur der Header?
-    if(only_header && false)
+    if(only_header)
         return 0;
 
     set(1, NULL); // Used to be unknown data. But is NOT a layer like the others TODO: Remove
