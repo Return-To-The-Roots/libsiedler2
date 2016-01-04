@@ -123,7 +123,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     {
         BlockHeader bHeader;
         fs >> bHeader.id >> bHeader.unknown >> bHeader.w >> bHeader.h >> bHeader.multiplier >> bHeader.blockLength;
-        if(bHeader.id != 0x2710 || bHeader.unknown != 0 || bHeader.w != w || bHeader.h != h || bHeader.blockLength != w*h)
+        if(bHeader.id != 0x2710 || bHeader.unknown != 0 || bHeader.w != w || bHeader.h != h || bHeader.blockLength != static_cast<unsigned>(w)*static_cast<unsigned>(h))
         {
             assert(false);
             return 5;
