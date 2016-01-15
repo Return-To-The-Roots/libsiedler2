@@ -50,7 +50,7 @@ namespace libsiedler2
             }
 
             const std::vector<unsigned char>& getData() { return data; }
-            unsigned int getLength() { return data.size(); }
+            unsigned int getLength() { return static_cast<unsigned>(data.size()); }
 
         protected:
             std::vector<unsigned char> data;

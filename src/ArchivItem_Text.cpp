@@ -173,7 +173,8 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
     if(text_.size() == 0)
         return 0;
 
-    unsigned int length = text_.size();
+    assert(text_.size() < std::numeric_limits<unsigned>::max());
+    unsigned int length = static_cast<unsigned>(text_.size());
     std::vector<char> text(length * 2 + 1);
 
 

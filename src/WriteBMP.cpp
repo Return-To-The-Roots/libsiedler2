@@ -96,7 +96,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
                 case BOBTYPE_BITMAP_SHADOW:
                 case BOBTYPE_BITMAP_RAW:
                 {
-                    nr = i;
+                    nr = static_cast<long>(i);
                 } break;
                 default:
                     nr = -1;

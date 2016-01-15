@@ -95,7 +95,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
 
         std::vector<int> starts(count);
 
-        unsigned int size = count * 4;
+        uint32_t size = count * 4;
         for(unsigned long i = 0; i < count; ++i)
         {
             const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(i));
@@ -105,7 +105,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
                 if(item->getText().size() != 0)
                 {
                     starts[i] = size;
-                    size += item->getText().size() + 1;
+                    size += static_cast<uint32_t>(item->getText().size()) + 1;
                 }
             }
         }

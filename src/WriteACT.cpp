@@ -59,7 +59,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& ite
                 continue;
             if(items.get(i)->getBobType() == BOBTYPE_PALETTE)
             {
-                nr = i;
+                nr = static_cast<long>(i);
                 break;
             }
 

@@ -74,6 +74,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         return 2;
 
     size_t length = getIStreamSize(fs.getStream());
+    assert(length < std::numeric_limits<unsigned>::max());
 
     // Header einlesen
     fs >> header;
@@ -104,7 +105,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         fs >> size;
 
         if(size == 0)
-            size = length;
+            size = static_cast<unsigned>(length);
         else
             size += 10;
 

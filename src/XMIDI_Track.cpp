@@ -124,7 +124,7 @@ int XMIDI_Track::ConvertTrackToList()
             case MIDI_STATUS_SYSEX:
                 if (status == 0xFF)
                 {
-                    unsigned int pos = position;
+                    size_t pos = position;
                     unsigned int data = track->xmid_data[position++];
 
                     if (data == 0x2F)
@@ -406,7 +406,7 @@ void XMIDI_Track::ConvertListToMTrk()
     track->mid_data.push_back('k');
 
     // Placeholder for length
-    unsigned lenPos = track->mid_data.size();
+    size_t lenPos = track->mid_data.size();
     std::fill_n(std::back_inserter(track->mid_data), 4, 0);
 
     for (MIDI_Event* event = events; event; event = event->next)
@@ -448,7 +448,7 @@ void XMIDI_Track::ConvertListToMTrk()
                 if (event->status == 0xFF)
                     track->mid_data.push_back(event->data[0]);
 
-                PutVLQ(event->buffer.size());
+                PutVLQ(static_cast<unsigned>(event->buffer.size()));
 
                 std::copy(event->buffer.begin(), event->buffer.end(), std::back_inserter(track->mid_data));
                 break;
@@ -467,7 +467,7 @@ void XMIDI_Track::ConvertListToMTrk()
     PutVLQ(0);
 
     // Write length
-    uint32_t length = track->mid_data.size() - 8;
+    uint32_t length = static_cast<uint32_t>(track->mid_data.size() - 8);
     *reinterpret_cast<uint32_t*>(&track->mid_data[lenPos]) = boost::endian::big_to_native(length);
 }
 

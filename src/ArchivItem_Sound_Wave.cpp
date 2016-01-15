@@ -168,7 +168,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
     libendian::LittleEndianOStreamRef fs(file);
 
     const unsigned char* start = &data.front();
-    unsigned int length = data.size();
+    unsigned int length = static_cast<unsigned>(data.size());
     if(stripheader)
     {
         start = &data[44];

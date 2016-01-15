@@ -110,8 +110,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
     if(with_length)
     {
         // Convert to unsigned first
-        unsigned length = data.size();
-        fs << length;
+        fs << static_cast<uint32_t>(data.size());
     }
 
     fs << data;

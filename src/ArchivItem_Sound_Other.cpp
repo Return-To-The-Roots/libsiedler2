@@ -98,8 +98,7 @@ int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
         return 1;
 
     libendian::LittleEndianOStreamRef fs(file);
-    unsigned length = data.size(); // Convert to unsigned
-    fs << length << data;
+    fs << static_cast<uint32_t>(data.size()) << data;
 
     return 0;
 }

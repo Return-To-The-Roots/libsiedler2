@@ -22,6 +22,7 @@
 #include "prototypen.h"
 #include <fstream>
 #include <EndianStream.h>
+#include <limits>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
@@ -46,7 +47,8 @@ static char THIS_FILE[] = __FILE__;
 int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
     short header = 0x4E20;
-    uint32_t count = items.size();
+    assert(items.size() < std::numeric_limits<uint32_t>::max());
+    uint32_t count = static_cast<uint32_t>(items.size());
 
     if(file.empty())
         return 1;
