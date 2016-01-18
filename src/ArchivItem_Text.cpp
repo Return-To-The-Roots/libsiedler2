@@ -24,6 +24,7 @@
 #include <fstream>
 #include <EndianStream.h>
 #include <vector>
+#include <limits>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines

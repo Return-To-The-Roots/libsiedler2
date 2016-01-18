@@ -23,6 +23,7 @@
 #include <fstream>
 #include <EndianStream.h>
 #include <cstring>
+#include <limits>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Makros / Defines
