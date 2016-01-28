@@ -24,13 +24,8 @@
 #include <boost/scoped_array.hpp>
 #include <vector>
 
-///////////////////////////////////////////////////////////////////////////////
-// Makros / Defines
-#if defined _WIN32 && defined _DEBUG && defined _MSC_VER
-#define new new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+// Include last!
+#include "DebugNew.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap_Player
