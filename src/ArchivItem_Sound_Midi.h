@@ -48,7 +48,7 @@ namespace libsiedler2
 
         protected:
             unsigned short tracks;
-            boost::array<MIDI_Track, 256> tracklist;
+            boost::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
     };
 
     /// Klasse für MIDI-Sounds.

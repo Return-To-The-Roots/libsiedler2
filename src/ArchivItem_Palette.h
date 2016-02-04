@@ -80,7 +80,7 @@ namespace libsiedler2
             void copy(unsigned char* buffer, size_t bufSize) const;
 
         protected:
-            boost::array<Color, 256> colors;
+            boost::array<Color, 256> colors; //-V730_NOINIT
     };
 }
 
