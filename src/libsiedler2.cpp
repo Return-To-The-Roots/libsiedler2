@@ -311,7 +311,7 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadTXT(file, items);
         else if(extension == "ini")
             ret = loader::LoadINI(file, items);
-    }catch(std::runtime_error){
+    }catch(std::runtime_error&){
         // Mostly error on reading (e.g. unexpected end of file)
         return 999;
     }
@@ -370,7 +370,7 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteTXT(file, items, false);
         else if(extension == "ini")
             ret = loader::WriteINI(file, items);
-    }catch(std::runtime_error)
+    }catch(std::runtime_error&)
     {
         // Mostly error on write to file
         return 999;

@@ -102,7 +102,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
 
     set(1, NULL); // Used to be unknown data. But is NOT a layer like the others TODO: Remove
 
-    struct BlockHeader{
+    struct BlockHeader{ //-V802
         uint16_t id; // Must be 0x2710
         uint32_t unknown; // Always 0
         uint16_t w, h;

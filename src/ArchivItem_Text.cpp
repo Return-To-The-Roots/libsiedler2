@@ -130,7 +130,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
         text[length - 1] = 0;
 
     if(conversion)
-        OemToAnsi(&text.front(), &text.front());
+        OemToAnsi(&text.front(), &text.front()); //-V742
 
     for(unsigned int i = 0; i < length; ++i)
     {
@@ -191,7 +191,7 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
 
     // ggf umwandeln
     if(conversion)
-        AnsiToOem(&text.front(), &text.front());
+        AnsiToOem(&text.front(), &text.front()); //-V742
 
     // Schreiben
     if(!file.write(&text.front(), length + 1))
@@ -228,7 +228,7 @@ void libsiedler2::ArchivItem_Text::setText(const std::string& text, bool convers
 {
     if(conversion){
         std::vector<char> tmp(text.size() + 1);
-        AnsiToOem(text.data(), &tmp.front());
+        AnsiToOem(text.data(), &tmp.front()); //-V742
         this->text_ = &tmp.front();
     }else
         this->text_ = text;

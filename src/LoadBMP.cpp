@@ -125,7 +125,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     boost::iostreams::mapped_file_source mmapFile;
     try{
         mmapFile.open(file);
-    }catch(std::exception e){
+    }catch(std::exception& e){
         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
         return 2;
     }

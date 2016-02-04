@@ -56,7 +56,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
     boost::iostreams::mapped_file_source mmapFile;
     try{
         mmapFile.open(file);
-    }catch(std::exception e){
+    }catch(std::exception& e){
         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
         return 2;
     }

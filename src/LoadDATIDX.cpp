@@ -56,7 +56,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     boost::iostreams::mapped_file_source mmapFile;
     try{
         mmapFile.open(datfile);
-    }catch(std::exception e){
+    }catch(std::exception& e){
         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
         return 2;
     }
@@ -72,7 +72,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     boost::iostreams::mapped_file_source mmapFileIdx;
     try{
         mmapFileIdx.open(idxfile);
-    }catch(std::exception e){
+    }catch(std::exception& e){
         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
         return 2;
     }

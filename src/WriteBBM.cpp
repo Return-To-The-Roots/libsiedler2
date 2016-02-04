@@ -42,7 +42,7 @@
 int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& items)
 {
     char header[4] = {'F', 'O', 'R', 'M'}, pbm[4] = {'P', 'B', 'M', ' '}, cmap[4] = {'C', 'M', 'A', 'P'};
-    unsigned long count = 0;
+    unsigned count = 0;
     unsigned int length = 0;
 
     if(file.empty())

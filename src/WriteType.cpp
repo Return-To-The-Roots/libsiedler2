@@ -113,7 +113,7 @@ int libsiedler2::loader::WriteType(BOBTYPES bobtype, std::ostream& file, const A
             default:
                 return 0;
         }
-    }catch(std::runtime_error){
+    }catch(std::runtime_error&){
         return 999;
     }
     return 0;
