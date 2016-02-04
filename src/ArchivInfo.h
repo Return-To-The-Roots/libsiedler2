@@ -124,6 +124,11 @@ namespace libsiedler2
                 return data.size();
             }
 
+            bool empty() const
+            {
+                return data.empty();
+            }
+
             /// Index-Operator von @p ArchivInfo.
             inline const ArchivItem* operator[](size_t index) const
             {
