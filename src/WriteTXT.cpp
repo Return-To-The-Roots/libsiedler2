@@ -45,7 +45,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
     if(file.empty())
         return 1;
 
-    if(items.size() == 0)
+    if(items.empty())
         return 2;
 
     for(size_t i = 0; i < items.size(); ++i)

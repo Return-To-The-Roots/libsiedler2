@@ -166,7 +166,7 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
         return 1;
 
     // Wenn Länge 0, nix schreiben, ist ja kein Fehler!
-    if(text_.size() == 0)
+    if(text_.empty())
         return 0;
 
     assert(text_.size() < std::numeric_limits<unsigned>::max());

@@ -257,7 +257,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
         }
     }
 
-    if(items.size() == 0 || !lbm.isEOF())
+    if(items.empty() || !lbm.isEOF())
         return 25;
 
     return 0;

@@ -128,7 +128,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
         }
     }
 
-    if(items.size() == 0 || !fs.isEOF())
+    if(items.empty() || !fs.isEOF())
         return 14;
 
     // alles ok
