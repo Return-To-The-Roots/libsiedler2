@@ -117,7 +117,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         unsigned char ny;
         fs >> ny;
 
-        baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+        ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
         image->setNx(16);
         image->setNy(ny);
 
@@ -188,7 +188,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
         if(!used[links[i]])
         {
-            baseArchivItem_Bitmap_Player* image = dynamic_cast<baseArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+            ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
 
             image->setNx(16);
             image->setNy(ny[links[i]]);

@@ -70,7 +70,7 @@ int libsiedler2::loader::WriteType(BOBTYPES bobtype, std::ostream& file, const A
             } break;
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
             {
-                const baseArchivItem_Bitmap_Player& i = dynamic_cast<const baseArchivItem_Bitmap_Player&>(item);
+                const ArchivItem_Bitmap_Player& i = dynamic_cast<const ArchivItem_Bitmap_Player&>(item);
 
                 if(i.write(file, palette) != 0)
                     return 5;

@@ -41,10 +41,10 @@ namespace libsiedler2
             ~baseArchivItem_Bitmap_Shadow(void);
 
             /// lädt die Bilddaten aus einer Datei.
-            virtual int load(std::istream& file, const ArchivItem_Palette* palette);
+            int load(std::istream& file, const ArchivItem_Palette* palette) override;
 
             /// schreibt die Bilddaten in eine Datei.
-            virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const;
+            int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
     };
 
     /// Klasse für Shadow-Bitmaps.
@@ -52,10 +52,10 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Bitmap_Shadow.
-            ArchivItem_Bitmap_Shadow(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Shadow() {}
+            ArchivItem_Bitmap_Shadow(void) {}
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap_Shadow.
-            ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item) {}
+            ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item) : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item) {}
     };
 }
 

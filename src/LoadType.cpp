@@ -20,6 +20,7 @@
 #include "main.h"
 #include "prototypen.h"
 #include "archives.h"
+#include "types.h"
 #include <fstream>
 #include <EndianStream.h>
 #include <stdexcept>
@@ -82,7 +83,7 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const Ar
             } break;
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
             {
-                baseArchivItem_Bitmap_Player* nitem = dynamic_cast<baseArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+                ArchivItem_Bitmap_Player* nitem = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
                 if(nitem->load(file, palette) != 0){
                     delete nitem;
                     return 8;

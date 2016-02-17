@@ -59,12 +59,6 @@ namespace libsiedler2
                 return name_;
             }
 
-            /// lädt die Daten aus einer Datei.
-            virtual int load(std::istream& file);
-
-            /// schreibt die Daten in eine Datei.
-            virtual int write(std::ostream& file) const;
-
         protected:
             BOBTYPES bobtype_; ///< Bobtype des Elements.
             std::string name_; ///< Name des Elements.

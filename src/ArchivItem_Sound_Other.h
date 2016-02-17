@@ -35,10 +35,10 @@ namespace libsiedler2
             virtual ~baseArchivItem_Sound_Other(void);
 
             /// lädt die Daten aus einer Datei.
-            int load(std::istream& file, unsigned int length);
+            int load(std::istream& file, unsigned int length) override;
 
             /// schreibt die Daten in eine Datei.
-            int write(std::ostream& file) const;
+            int write(std::ostream& file) const override;
 
             /// räumt den Soundspeicher auf.
             void clear(void);
