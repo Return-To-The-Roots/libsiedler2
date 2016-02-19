@@ -17,13 +17,13 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "main.h"
+#include "main.h" // IWYU pragma: keep
 #include "ArchivItem_BitmapBase.h"
 #include "ArchivItem_Palette.h"
 #include "types.h"
 
 // Include last!
-#include "DebugNew.h"
+#include "DebugNew.h" // IWYU pragma: keep
 
 namespace libsiedler2{
 ///////////////////////////////////////////////////////////////////////////////

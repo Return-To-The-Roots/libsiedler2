@@ -17,7 +17,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "main.h"
+#include "main.h" // IWYU pragma: keep
 #include "MIDI_Track.h"
 #include "XMIDI_Track.h"
 #include <fstream>
@@ -26,7 +26,7 @@
 #include <limits>
 
 // Include last!
-#include "DebugNew.h"
+#include "DebugNew.h" // IWYU pragma: keep
 
 MIDI_Track::MIDI_Track()
 {}
