@@ -24,6 +24,7 @@
 #include "ArchivInfo.h"
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
@@ -184,6 +185,10 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadTXT(file, items);
         else if(extension == "ini")
             ret = loader::LoadINI(file, items);
+        else if(extension == "ogg")
+            ret = loader::LoadSND(file, items);
+        else
+            std::cerr << "Unsupported extension: " << extension << std::endl;
     }catch(std::runtime_error&){
         // Mostly error on reading (e.g. unexpected end of file)
         return 999;
@@ -243,6 +248,8 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteTXT(file, items, false);
         else if(extension == "ini")
             ret = loader::WriteINI(file, items);
+        else
+            std::cerr << "Unsupported extension: " << extension << std::endl;
     }catch(std::runtime_error&)
     {
         // Mostly error on write to file
