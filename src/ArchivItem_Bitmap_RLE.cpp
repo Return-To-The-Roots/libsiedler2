@@ -19,8 +19,9 @@
 // Header
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_RLE.h"
+#include "ArchivItem_Palette.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <vector>
 
 // Include last!

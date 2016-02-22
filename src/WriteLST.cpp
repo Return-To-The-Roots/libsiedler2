@@ -21,7 +21,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <limits>
 
 // Include last!

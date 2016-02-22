@@ -19,7 +19,7 @@
 // Header
 #include "main.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
-#include "types.h"
+#include "libsiedler2.h"
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep

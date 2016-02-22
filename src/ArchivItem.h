@@ -20,7 +20,6 @@
 #pragma once
 
 #include "enumTypes.h"
-#include <cstdio>
 #include <string>
 
 namespace libsiedler2

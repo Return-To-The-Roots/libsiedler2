@@ -21,9 +21,9 @@
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Map_Header.h"
 #include "ArchivItem_Raw.h"
-#include "types.h"
+#include "libsiedler2.h"
+#include "EndianStream.h"
 #include <fstream>
-#include <EndianStream.h>
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep

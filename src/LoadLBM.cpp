@@ -22,8 +22,8 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "types.h"
-#include <EndianStream.h>
+#include "libsiedler2.h"
+#include "EndianStream.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>

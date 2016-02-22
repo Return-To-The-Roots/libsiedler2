@@ -20,9 +20,8 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Map_Header.h"
 #include "oem.h"
-#include "types.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <cstring>
 
 // Include last!

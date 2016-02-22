@@ -19,8 +19,9 @@
 // Header
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Wave.h"
+#include <boost/endian/conversion.hpp>
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <cstring>
 
 // Include last!

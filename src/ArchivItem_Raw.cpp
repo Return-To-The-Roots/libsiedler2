@@ -19,9 +19,8 @@
 // Header
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Raw.h"
-#include "types.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep

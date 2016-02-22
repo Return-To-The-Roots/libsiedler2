@@ -19,7 +19,9 @@
 
 #pragma once
 
+#include <string>
 #include <sstream>
+#include <vector>
 
 inline std::vector<std::string> explode(std::string const& line, const char delim, const unsigned int max = 0xFFFFFFFF)
 {

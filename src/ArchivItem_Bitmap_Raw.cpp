@@ -20,7 +20,7 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Raw.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <vector>
 
 // Include last!

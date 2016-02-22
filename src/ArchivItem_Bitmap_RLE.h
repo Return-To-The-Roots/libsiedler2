@@ -20,7 +20,11 @@
 #pragma once
 
 #include "ArchivItem_Bitmap.h"
-#include "ArchivItem_Palette.h"
+#include "ArchivItem_BitmapBase.h"
+
+#include <iosfwd>
+
+namespace libsiedler2 { class ArchivItem_Palette; }
 
 namespace libsiedler2
 {

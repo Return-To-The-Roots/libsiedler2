@@ -20,10 +20,11 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Ini.h"
 #include "ArchivItem_Text.h"
-#include "types.h"
+#include "libsiedler2.h"
 #include <boost/lexical_cast.hpp>
-#include <iostream>
 #include <stdexcept>
+#include <cstddef>
+#include <sstream>
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep

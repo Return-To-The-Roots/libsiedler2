@@ -21,7 +21,7 @@
 #include "ArchivItem_Map.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "types.h"
+#include "libsiedler2.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <iostream>

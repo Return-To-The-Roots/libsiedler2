@@ -19,9 +19,9 @@
 // Header
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Sound.h"
-#include "types.h"
+#include "libsiedler2.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <cstring>
 
 // Include last!

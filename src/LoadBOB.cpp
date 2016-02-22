@@ -19,11 +19,10 @@
 // Header
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Bob.h"
-#include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "types.h"
-#include <EndianStream.h>
+#include "libsiedler2.h"
+#include "EndianStream.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem.hpp>

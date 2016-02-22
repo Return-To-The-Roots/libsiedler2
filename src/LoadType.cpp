@@ -19,10 +19,19 @@
 // Header
 #include "main.h" // IWYU pragma: keep
 #include "prototypen.h"
-#include "archives.h"
-#include "types.h"
+#include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Bitmap_RLE.h"
+#include "ArchivItem_Bitmap_Raw.h"
+#include "ArchivItem_Bitmap_Shadow.h"
+#include "ArchivItem_Bob.h"
+#include "ArchivItem_Font.h"
+#include "ArchivItem_Map.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivItem_Sound.h"
+#include "ArchivItem_Text.h"
+#include "libsiedler2.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <stdexcept>
 
 // Include last!

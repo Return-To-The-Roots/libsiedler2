@@ -23,9 +23,7 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "types.h"
-#include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <vector>
 #include <cstring>
 

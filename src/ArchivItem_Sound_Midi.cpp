@@ -20,7 +20,7 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Midi.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <cstring>
 
 // Include last!

@@ -21,6 +21,7 @@
 
 #include "ArchivItem.h"
 #include "ArchivInfo.h"
+#include <iosfwd>
 
 namespace libsiedler2
 {

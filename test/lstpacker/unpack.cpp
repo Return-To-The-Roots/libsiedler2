@@ -17,41 +17,40 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
+
+#include "ArchivInfo.h"
+#include "ArchivItem_Sound.h"
+#include "ArchivItem_Sound_Wave.h"
+#include "ArchivItem_Font.h"
+#include "ArchivItem_Bob.h"
+#include "ArchivItem_BitmapBase.h"
+#include "libsiedler2.h"
+#include <boost/filesystem.hpp>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <windows.h>
-
-#define snprintf _snprintf
-
-#include "../../src/libsiedler2.h"
 
 using namespace std;
 using namespace libsiedler2;
-using namespace loader;
 
 void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette)
 {
-    CreateDirectoryA(directory.c_str(), NULL);
+    boost::filesystem::create_directories(directory);
 
-    for(unsigned int i = 0; i < lst.getCount(); ++i)
+    for(unsigned int i = 0; i < lst.size(); ++i)
     {
         const ArchivItem* item = lst.get(i);
 
+        if(!item)
+            continue;
+
         bool changed = false;
         stringstream newfile;
-        newfile << directory << "\\" << i << ".";
+        newfile << directory << "/" << i << ".";
 
-        if(!item)
-        {
-            /*newfile << "empty";
 
-            FILE *n = fopen(newfile.str().c_str(), "wb");
-            if(n)
-                fclose(n);*/
-            continue;
-        }
         switch(item->getBobType())
         {
             case BOBTYPE_SOUND: // WAVs, MIDIs
@@ -77,10 +76,9 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                         cout << "extracting " << newfile.str() << ": ";
 
                         const ArchivItem_Sound_Wave* wave = dynamic_cast<const ArchivItem_Sound_Wave*>(item);
-                        FILE* fwave = fopen(newfile.str().c_str(), "wb");
+                        std::ofstream fwave(newfile.str().c_str(), ios::binary);
                         if(fwave && wave && wave->write(fwave, false) == 0)
                         {
-                            fclose(fwave);
                             cout << "done" << endl;
                         }
                         else
@@ -108,12 +106,12 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             case BOBTYPE_PALETTE: // Palette
             {
                 ArchivInfo items;
-                items.pushC(item);
+                items.pushC(*item);
                 newfile << "bbm";
 
                 cout << "extracting " << newfile.str() << ": ";
 
-                if(WriteBBM(newfile.str().c_str(), &items) != 0)
+                if(Write(newfile.str().c_str(), items) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
@@ -121,7 +119,7 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             case BOBTYPE_BOB: // Bobfiles
             {
                 const ArchivItem_Bob* bob = dynamic_cast<const ArchivItem_Bob*>(item);
-                unpack(directory, bob, palette);
+                unpack(directory, *bob, palette);
             } break;
             case BOBTYPE_MAP: // Mapfiles
             {
@@ -161,15 +159,15 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             }
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
-                const ArchivItem_Bitmap* bitmap = dynamic_cast<const ArchivItem_Bitmap*>(item);
                 ArchivInfo items;
+                const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
                 items.pushC(bitmap);
-                newfile << "nx" << bitmap->getNx() << ".ny" << bitmap->getNy() << ".";
-                newfile << "bmp";
+                newfile << "nx" << bitmap.getNx() << ".ny" << bitmap.getNy();
+                newfile << ".bmp";
 
                 cout << "extracting " << newfile.str() << ": ";
 
-                if(WriteBMP(newfile.str().c_str(), palette, &items) != 0)
+                if(Write(newfile.str(), items, palette) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;

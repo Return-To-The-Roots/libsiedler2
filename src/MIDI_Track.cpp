@@ -21,7 +21,6 @@
 #include "MIDI_Track.h"
 #include "XMIDI_Track.h"
 #include <fstream>
-#include <EndianStream.h>
 #include <cstring>
 #include <limits>
 

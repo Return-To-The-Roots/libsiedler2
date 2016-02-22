@@ -21,7 +21,6 @@
 #include "ArchivItem_Map.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "types.h"
 #include <fstream>
 
 // Include last!

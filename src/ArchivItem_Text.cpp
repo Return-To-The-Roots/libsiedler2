@@ -20,9 +20,7 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Text.h"
 #include "oem.h"
-#include "types.h"
 #include <fstream>
-#include <EndianStream.h>
 #include <vector>
 #include <limits>
 

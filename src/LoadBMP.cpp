@@ -20,11 +20,9 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
-#include "ArchivInfo.h"
 #include "prototypen.h"
-#include "types.h"
-#include <fstream>
-#include <EndianStream.h>
+#include "libsiedler2.h"
+#include "EndianStream.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
