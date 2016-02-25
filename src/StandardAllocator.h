@@ -22,6 +22,7 @@
 
 namespace libsiedler2
 {
+    class ArchivItem;
 
     class StandardAllocator: public IAllocator{
     public:

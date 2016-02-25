@@ -23,7 +23,6 @@
 #include "libsiedler2.h"
 #include <boost/lexical_cast.hpp>
 #include <stdexcept>
-#include <cstddef>
 #include <sstream>
 
 // Include last!

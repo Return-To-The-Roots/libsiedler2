@@ -20,7 +20,6 @@
 #pragma once
 
 #include "enumTypes.h"
-#include "IAllocator.h"
 #include <string>
 
 namespace libsiedler2
@@ -28,6 +27,7 @@ namespace libsiedler2
     // Fwd decl
     class ArchivInfo;
     class ArchivItem_Palette;
+    class IAllocator;
 
     /// Setzt das verwendete Texturausgabeformat.
     TEXTURFORMAT setTextureFormat(TEXTURFORMAT format);

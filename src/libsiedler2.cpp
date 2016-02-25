@@ -63,6 +63,8 @@ namespace libsiedler2{
  *
  *  @author FloSoft
  */
+class ArchivItem;
+
 static TEXTURFORMAT texturformat;
 
 ///////////////////////////////////////////////////////////////////////////////
