@@ -20,6 +20,7 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
 #include "libsiedler2.h"
+#include "IAllocator.h"
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep

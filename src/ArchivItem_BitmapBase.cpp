@@ -21,6 +21,7 @@
 #include "ArchivItem_BitmapBase.h"
 #include "ArchivItem_Palette.h"
 #include "libsiedler2.h"
+#include "IAllocator.h"
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep

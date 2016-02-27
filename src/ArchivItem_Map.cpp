@@ -22,6 +22,7 @@
 #include "ArchivItem_Map_Header.h"
 #include "ArchivItem_Raw.h"
 #include "libsiedler2.h"
+#include "IAllocator.h"
 #include "EndianStream.h"
 #include <fstream>
 

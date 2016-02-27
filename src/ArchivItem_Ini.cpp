@@ -21,6 +21,7 @@
 #include "ArchivItem_Ini.h"
 #include "ArchivItem_Text.h"
 #include "libsiedler2.h"
+#include "IAllocator.h"
 #include <boost/lexical_cast.hpp>
 #include <stdexcept>
 #include <sstream>

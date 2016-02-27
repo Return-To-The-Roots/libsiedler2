@@ -21,6 +21,7 @@
 #include "ArchivItem_Bob.h"
 #include "ArchivItem_Bitmap_Player.h"
 #include "libsiedler2.h"
+#include "IAllocator.h"
 #include <fstream>
 #include "EndianStream.h"
 

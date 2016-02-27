@@ -30,6 +30,7 @@
 #include "ArchivItem_Sound.h"
 #include "ArchivItem_Text.h"
 #include "libsiedler2.h"
+#include "IAllocator.h"
 #include <fstream>
 #include "EndianStream.h"
 #include <stdexcept>
