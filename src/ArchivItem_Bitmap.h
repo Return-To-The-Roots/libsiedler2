@@ -20,6 +20,9 @@
 #pragma once
 
 #include "ArchivItem_BitmapBase.h"
+#include "enumTypes.h"
+
+namespace libsiedler2 { class ArchivItem_Palette; }
 
 namespace libsiedler2
 {

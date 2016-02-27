@@ -21,6 +21,8 @@
 
 #include "ArchivItem.h"
 #include <boost/array.hpp>
+#include <cstddef>
+#include <iosfwd>
 
 namespace libsiedler2
 {

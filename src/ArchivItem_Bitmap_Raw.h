@@ -23,6 +23,8 @@
 
 namespace libsiedler2
 {
+    class ArchivItem_Palette;
+
     /// Basisklasse für Raw-Bitmaps.
     class baseArchivItem_Bitmap_Raw : public virtual baseArchivItem_Bitmap
     {

@@ -17,22 +17,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
+#include "util.h"
+#include "ArchivInfo.h"
+#include "ArchivItem_Palette.h"
+#include "libsiedler2.h"
+
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <algorithm>
 #include <vector>
-#include <windows.h>
-
-#include "util.h"
-
-#define snprintf _snprintf
-
-#include "../../src/libsiedler2.h"
+#include <cstdio>
 
 using namespace std;
 using namespace libsiedler2;
-using namespace loader;
 
 void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette);
 void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, ArchivInfo* lst = NULL);
@@ -41,33 +38,21 @@ int main(int argc, char* argv[])
 {
     if(argc < 2)
     {
-        stringstream msg;
-
-        msg << "Usage: " << endl;
-        msg << "pack:   " << argv[0] << " directory" << endl;
-        msg << "unpack: " << argv[0] << " file.lst"  << endl;
-
-        cerr << msg.str();
-
-        MessageBoxA(NULL, msg.str().c_str(), "Usage", MB_OK | MB_ICONSTOP);
+        cerr << "Usage: " << endl;
+        cerr << "pack:   " << argv[0] << " directory" << endl;
+        cerr << "unpack: " << argv[0] << " file.lst"  << endl;
 
         return 1;
     }
 
     ArchivInfo lst, bbm;
 
-    if(LoadBBM("GFX/PALETTE/PAL5.BBM", &bbm) != 0)
+    if(Load("GFX/PALETTE/PAL5.BBM", bbm) != 0)
     {
-        if(LoadBBM("pal5.act", &bbm) != 0)
+        if(Load("pal5.act", bbm) != 0)
         {
-            stringstream msg;
-
-            msg << "Fatal Error: " << endl;
-            msg << "GFX/PALETTE/PAL5.BBM nor pal5.act was not found or cannot be opened" << endl;
-
-            cerr << msg.str();
-
-            MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK | MB_ICONSTOP);
+            cerr << "Fatal Error: " << endl;
+            cerr << "GFX/PALETTE/PAL5.BBM nor pal5.act was not found or cannot be opened" << endl;
 
             return 2;
         }
@@ -75,9 +60,9 @@ int main(int argc, char* argv[])
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-    int format = FORMAT_RGBA;
+    TEXTURFORMAT format = FORMAT_RGBA;
 
-    setTextureFormat((TEXTURFORMAT)format);
+    setTextureFormat(format);
 
     FILE* f = fopen(argv[1], "rb");
     if(f)
@@ -94,23 +79,15 @@ int main(int argc, char* argv[])
 
         cerr << "Unpacking file " << argv[1] << " to " << directory << endl;
 
-        if(Load(argv[1], &lst, palette) != 0)
+        if(Load(argv[1], lst, palette) != 0)
         {
-            stringstream msg;
-
-            msg << "Fatal Error: " << endl;
-            msg << argv[1] << " was not found or cannot be opened" << endl;
-
-            cerr << msg.str();
-
-            MessageBoxA(NULL, msg.str().c_str(), "Fatal Error", MB_OK | MB_ICONSTOP);
+            cerr << "Fatal Error: " << endl;
+            cerr << argv[1] << " was not found or cannot be opened" << endl;;
 
             return 3;
         }
 
         unpack(directory, lst, palette);
-
-        //argv[1][directory.size()] = '\0';
     }
     else
     {

@@ -17,7 +17,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "main.h"
+#include "main.h" // IWYU pragma: keep
 #include "XMIDI_Track.h"
 
 #include "MIDI_Track.h"
@@ -27,7 +27,7 @@
 #include <iterator>
 
 // Include last!
-#include "DebugNew.h"
+#include "DebugNew.h" // IWYU pragma: keep
 
 static const int PATCH_VOL_PAN_BIAS = 5;
 static GammaTable<unsigned char> VolumeCurve(128);

@@ -17,15 +17,16 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "main.h"
+#include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Bob.h"
 #include "ArchivItem_Bitmap_Player.h"
-#include "types.h"
+#include "libsiedler2.h"
+#include "IAllocator.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 
 // Include last!
-#include "DebugNew.h"
+#include "DebugNew.h" // IWYU pragma: keep
 
 ///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bob

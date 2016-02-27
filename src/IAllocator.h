@@ -15,25 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-
-#ifndef types_h__
-#define types_h__
+#ifndef IALLOCATOR_H_INCLUDED
+#define IALLOCATOR_H_INCLUDED
 
 #include "enumTypes.h"
-#include <string>
 
 namespace libsiedler2
 {
-    /// Setzt das verwendete Texturausgabeformat.
-    TEXTURFORMAT setTextureFormat(TEXTURFORMAT format);
-
-    /// liefert das verwendete Texturausgabeformat.
-    TEXTURFORMAT getTextureFormat(void);
-
-    // Fwd decl
     class ArchivItem;
-    class ArchivInfo;
-    class ArchivItem_Palette;
 
     /**
      *  @brief Abstract ArchivItem factory
@@ -45,22 +34,6 @@ namespace libsiedler2
         virtual ArchivItem* clone(const ArchivItem& item) const = 0;
     };
 
-    class StandardAllocator: public IAllocator{
-    public:
-        virtual ArchivItem* create(BOBTYPES type, SOUNDTYPES subtype = SOUNDTYPE_NONE) const;
-        virtual ArchivItem* clone(const ArchivItem& item) const;
-    };
-
-    const IAllocator& getAllocator();
-
-    /// Setzt den Item-Allocator.
-    void setAllocator(IAllocator* newAllocator);
-
-    /// Lädt die Datei im Format ihrer Endung.
-    int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
-
-    /// Schreibt die Datei im Format ihrer Endung.
-    int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
 }
 
-#endif // types_h__
+#endif //IALLOCATOR_H_INCLUDED

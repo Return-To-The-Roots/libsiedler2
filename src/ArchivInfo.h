@@ -21,6 +21,8 @@
 
 #include "ArchivItem.h"
 #include <vector>
+#include <cstddef>
+#include <string>
 
 namespace libsiedler2
 {

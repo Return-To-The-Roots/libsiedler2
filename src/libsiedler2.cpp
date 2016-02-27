@@ -17,15 +17,17 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "main.h"
-#include "types.h"
-#include "archives.h"
+#include "main.h" // IWYU pragma: keep
+#include "libsiedler2.h"
+#include "StandardAllocator.h"
 #include "prototypen.h"
+#include "ArchivInfo.h"
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 
 // Include last!
-#include "DebugNew.h"
+#include "DebugNew.h" // IWYU pragma: keep
 
 ///////////////////////////////////////////////////////////////////////////////
 /** @mainpage libsiedler2
@@ -54,14 +56,6 @@
 namespace libsiedler2{
 
 ///////////////////////////////////////////////////////////////////////////////
-/** @namespace libsiedler2::loader
- *
- *  Enthält alle Lade und Schreibfunktionen der einzelnen Dateitypen.
- *
- *  @author FloSoft
- */
-
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Das gewählte Texturformat.
  *
@@ -69,7 +63,17 @@ namespace libsiedler2{
  *
  *  @author FloSoft
  */
-TEXTURFORMAT texturformat;
+class ArchivItem;
+
+static TEXTURFORMAT texturformat;
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+ *  Der gesetzte Item-Allokator.
+ *
+ *  @author FloSoft
+ */
+static IAllocator* allocator = new StandardAllocator();
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
@@ -107,13 +111,7 @@ TEXTURFORMAT getTextureFormat(void)
     return texturformat;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Der gesetzte Item-Allokator.
- *
- *  @author FloSoft
- */
-IAllocator* allocator = new StandardAllocator();
+
 const IAllocator& getAllocator()
 {
     return *allocator;
@@ -131,128 +129,6 @@ void setAllocator(IAllocator* newAllocator)
 {
     delete allocator;
     allocator = newAllocator;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Der Standard-Item-Allocator.
- *
- *  @param[in] type    Der Typ des Items
- *  @param[in] subtype Der Subtyp des Items
- *
- *  @author FloSoft
- */
-ArchivItem* StandardAllocator::create(BOBTYPES type, SOUNDTYPES subtype) const
-{
-    switch(type)
-    {
-        case BOBTYPE_SOUND: // WAVs, MIDIs
-        {
-            switch(subtype)
-            {
-                case SOUNDTYPE_NONE:
-                    return NULL;
-                case SOUNDTYPE_MIDI: // MIDI
-                    return new ArchivItem_Sound_Midi();
-                case SOUNDTYPE_WAVE: // WAV
-                    return new ArchivItem_Sound_Wave();
-                case SOUNDTYPE_XMIDI: // XMIDI
-                    return new ArchivItem_Sound_XMidi();
-                case SOUNDTYPE_OTHER: // Andere
-                    return new ArchivItem_Sound_Other();
-            }
-            break;
-        }
-        case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
-            return new ArchivItem_Bitmap_RLE();
-        case BOBTYPE_FONT: // Font
-            return new ArchivItem_Font();
-        case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
-            return new ArchivItem_Bitmap_Player();
-        case BOBTYPE_PALETTE: // Palette
-            return new ArchivItem_Palette();
-        case BOBTYPE_BOB: // Bobfiles
-            return new ArchivItem_Bob();
-        case BOBTYPE_BITMAP_SHADOW: // Schatten
-            return new ArchivItem_Bitmap_Shadow();
-        case BOBTYPE_MAP: // Mapfiles
-            return new ArchivItem_Map();
-        case BOBTYPE_TEXT: // Text
-            return new ArchivItem_Text();
-        case BOBTYPE_RAW: // Raw-Item
-            return new ArchivItem_Raw();
-        case BOBTYPE_MAP_HEADER: // Mapheader-Item
-            return new ArchivItem_Map_Header();
-        case BOBTYPE_INI: // INI-Datei-Item
-            return new ArchivItem_Ini();
-        case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-            return new ArchivItem_Bitmap_Raw();
-        default:
-            return NULL;
-    }
-    return NULL;
-}
-
-/**
- *  Der Standard-Item-Allocator.
- *
- *  @param[in] item    Das zu kopierende Item
- *
- *  @author FloSoft
- */
-ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
-{
-    BOBTYPES type = static_cast<BOBTYPES>(item.getBobType());
-
-    switch(type)
-    {
-        case BOBTYPE_SOUND: // WAVs, MIDIs
-        {
-            SOUNDTYPES subtype = static_cast<SOUNDTYPES>(dynamic_cast<const ArchivItem_Sound&>(item).getType());
-
-            switch(subtype)
-            {
-                case SOUNDTYPE_NONE:
-                    return NULL;
-                case SOUNDTYPE_MIDI: // MIDI
-                    return new ArchivItem_Sound_Midi( dynamic_cast<const ArchivItem_Sound_Midi&>(item) );
-                case SOUNDTYPE_WAVE: // WAV
-                    return new ArchivItem_Sound_Wave( dynamic_cast<const ArchivItem_Sound_Wave&>(item) );
-                case SOUNDTYPE_XMIDI: // XMIDI
-                    return new ArchivItem_Sound_XMidi( dynamic_cast<const ArchivItem_Sound_XMidi&>(item) );
-                case SOUNDTYPE_OTHER: // Andere
-                    return new ArchivItem_Sound_Other( dynamic_cast<const ArchivItem_Sound_Other&>(item) );
-            }
-            break;
-        }
-        case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
-            return new ArchivItem_Bitmap_RLE( dynamic_cast<const ArchivItem_Bitmap_RLE&>(item) );
-        case BOBTYPE_FONT: // Font
-            return new ArchivItem_Font( dynamic_cast<const ArchivItem_Font&>(item) );
-        case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
-            return new ArchivItem_Bitmap_Player( dynamic_cast<const ArchivItem_Bitmap_Player&>(item) );
-        case BOBTYPE_PALETTE: // Palette
-            return new ArchivItem_Palette( dynamic_cast<const ArchivItem_Palette&>(item) );
-        case BOBTYPE_BOB: // Bobfiles
-            return new ArchivItem_Bob( dynamic_cast<const ArchivItem_Bob&>(item) );
-        case BOBTYPE_BITMAP_SHADOW: // Schatten
-            return new ArchivItem_Bitmap_Shadow( dynamic_cast<const ArchivItem_Bitmap_Shadow&>(item) );
-        case BOBTYPE_MAP: // Mapfiles
-            return new ArchivItem_Map( dynamic_cast<const ArchivItem_Map&>(item) );
-        case BOBTYPE_TEXT: // Text
-            return new ArchivItem_Text( dynamic_cast<const ArchivItem_Text&>(item) );
-        case BOBTYPE_RAW: // Raw-Item
-            return new ArchivItem_Raw( dynamic_cast<const ArchivItem_Raw&>(item) );
-        case BOBTYPE_MAP_HEADER: // Mapheader-Item
-            return new ArchivItem_Map_Header( dynamic_cast<const ArchivItem_Map_Header&>(item) );
-        case BOBTYPE_INI: // INI-Datei-Item
-            return new ArchivItem_Ini( dynamic_cast<const ArchivItem_Ini&>(item) );
-        case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-            return new ArchivItem_Bitmap_Raw( dynamic_cast<const ArchivItem_Bitmap_Raw&>(item) );
-        default:
-            return NULL;
-    }
-    return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -311,6 +187,10 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadTXT(file, items);
         else if(extension == "ini")
             ret = loader::LoadINI(file, items);
+        else if(extension == "ogg")
+            ret = loader::LoadSND(file, items);
+        else
+            std::cerr << "Unsupported extension: " << extension << std::endl;
     }catch(std::runtime_error&){
         // Mostly error on reading (e.g. unexpected end of file)
         return 999;
@@ -370,6 +250,8 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteTXT(file, items, false);
         else if(extension == "ini")
             ret = loader::WriteINI(file, items);
+        else
+            std::cerr << "Unsupported extension: " << extension << std::endl;
     }catch(std::runtime_error&)
     {
         // Mostly error on write to file

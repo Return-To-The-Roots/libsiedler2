@@ -17,15 +17,14 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "main.h"
+#include "main.h" // IWYU pragma: keep
 #include "ArchivItem_Palette.h"
-#include "types.h"
 #include <fstream>
-#include <EndianStream.h>
+#include "EndianStream.h"
 #include <stdexcept>
 
 // Include last!
-#include "DebugNew.h"
+#include "DebugNew.h" // IWYU pragma: keep
 
 ///////////////////////////////////////////////////////////////////////////////
 /** @var TRANSPARENT_INDEX

@@ -19,6 +19,9 @@
 #define ARCHIVITEM_BITMAPBASE_H_INCLUDED
 
 #include "ArchivItem.h"
+#include "enumTypes.h"
+
+#include <iosfwd>
 #include <vector>
 
 namespace libsiedler2

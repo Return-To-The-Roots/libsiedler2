@@ -17,13 +17,21 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "main.h"
+#include "main.h" // IWYU pragma: keep
 #include "prototypen.h"
-#include "archives.h"
+#include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Bitmap_RLE.h"
+#include "ArchivItem_Bitmap_Raw.h"
+#include "ArchivItem_Bitmap_Shadow.h"
+#include "ArchivItem_Bob.h"
+#include "ArchivItem_Font.h"
+#include "ArchivItem_Map.h"
+#include "ArchivItem_Palette.h"
+#include "ArchivItem_Sound.h"
 #include <stdexcept>
 
 // Include last!
-#include "DebugNew.h"
+#include "DebugNew.h" // IWYU pragma: keep
 
 ///////////////////////////////////////////////////////////////////////////////
 /**

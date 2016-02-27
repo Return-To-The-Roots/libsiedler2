@@ -20,9 +20,11 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include <vector>
+#include <iosfwd>
+
+namespace libsiedler2 { class ArchivItem_Palette; }
 
 namespace libsiedler2
 {

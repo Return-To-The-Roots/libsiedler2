@@ -19,8 +19,30 @@
 
 #pragma once
 
-#include "archives.h"
-#include "prototypen.h"
-#include "types.h"
+#include "enumTypes.h"
+#include <string>
+
+namespace libsiedler2
+{
+    // Fwd decl
+    class ArchivInfo;
+    class ArchivItem_Palette;
+    class IAllocator;
+
+    /// Setzt das verwendete Texturausgabeformat.
+    TEXTURFORMAT setTextureFormat(TEXTURFORMAT format);
+    /// liefert das verwendete Texturausgabeformat.
+    TEXTURFORMAT getTextureFormat(void);
+
+
+    const IAllocator& getAllocator();
+    /// Setzt den Item-Allocator.
+    void setAllocator(IAllocator* newAllocator);
+
+    /// Lädt die Datei im Format ihrer Endung.
+    int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+    /// Schreibt die Datei im Format ihrer Endung.
+    int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+}
 
 #endif // !LIBSIEDLER2_H_INCLUDED

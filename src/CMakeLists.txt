@@ -1,6 +1,5 @@
 
-INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libendian/src")
-FIND_PACKAGE(Boost 1.55.0 REQUIRED)
+FIND_PACKAGE(Boost 1.55.0 COMPONENTS filesystem iostreams system REQUIRED)
 
 IF (MSVC)
 	ADD_DEFINITIONS(/WX) # warning = error
@@ -9,11 +8,12 @@ IF (MSVC)
 	ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
 ENDIF()
 
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/../../libendian/src")
+INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
 
-FILE(GLOB SRC_FILES *.cpp *.h)
+FILE(GLOB SRC_FILES *.cpp *.h *.hpp)
 ADD_LIBRARY(siedler2 STATIC ${SRC_FILES})
 
-TARGET_LINK_LIBRARIES(siedler2 endian ${Boost_Libraries})
+TARGET_LINK_LIBRARIES(siedler2 endian ${Boost_LIBRARIES})
 
 #################################################################################

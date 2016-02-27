@@ -17,36 +17,36 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include <stdio.h>
-#include <windows.h>
-
-#define snprintf _snprintf
-
-#include "../../src/libsiedler2.h"
+#include "libsiedler2.h"
+#include "ArchivInfo.h"
+#include "ArchivItem_Font.h"
+#include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Palette.h"
+#include <cstdio>
+#include <vector>
 
 using namespace libsiedler2;
-using namespace loader;
 
 int main(int argc, char* argv[])
 {
     ArchivInfo lst, bbm;
 
-    LoadBBM("GFX/PALETTE/PAL5.BBM", &bbm);
+    Load("GFX/PALETTE/PAL5.BBM", bbm);
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-    int format = FORMAT_PALETTED;
+    TEXTURFORMAT format = FORMAT_PALETTED;
 
-    setTextureFormat((TEXTURFORMAT)format);
+    setTextureFormat(format);
 
-    LoadDATIDX("DATA/RESOURCE.DAT", palette, &lst);
+    Load("DATA/RESOURCE.DAT", lst, palette);
 
     ArchivInfo to;
     for(unsigned int i = 0; i < 4; ++i)
     {
         if(lst.get(i)->getBobType() == BOBTYPE_FONT)
         {
-            ArchivItem_Font* font = (ArchivItem_Font*)lst.get(i);
+            ArchivItem_Font& font = dynamic_cast<ArchivItem_Font&>(*lst.get(i));
 
             // copy small font only
             if(i == 2)
@@ -57,13 +57,13 @@ int main(int argc, char* argv[])
 
             ArchivItem_Font out;
 
-            out.alloc(font->getCount());
-            out.setDx(font->getDx() + 2);
-            out.setDy(font->getDy() + 2);
+            out.alloc(font.size());
+            out.setDx(font.getDx() + 2);
+            out.setDy(font.getDy() + 2);
 
-            for(unsigned int j = 0; j < font->getCount(); ++j)
+            for(unsigned int j = 0; j < font.size(); ++j)
             {
-                ArchivItem_Bitmap_Player* c = dynamic_cast<ArchivItem_Bitmap_Player*>(font->get(j));
+                ArchivItem_Bitmap_Player* c = dynamic_cast<ArchivItem_Bitmap_Player*>(font.get(j));
                 ArchivItem_Bitmap_Player o;
 
                 if(c == NULL)
@@ -71,35 +71,32 @@ int main(int argc, char* argv[])
 
                 unsigned short w = c->getWidth() + 1, h = c->getHeight() + 1;
 
-                unsigned char* buffer = new unsigned char[w * h];
-                memset(buffer, TRANSPARENT_INDEX, w * h);
+                std::vector<unsigned char> buffer(w * h, TRANSPARENT_INDEX);
 
                 unsigned char color = 1;
-                c->print(buffer, w, h, format, palette, color);
-                c->print(buffer, w, h, format, palette, color, 2 );
-                c->print(buffer, w, h, format, palette, color, 0, 2);
-                c->print(buffer, w, h, format, palette, color, 2, 2 );
+                c->print(&buffer.front(), w, h, format, palette, color);
+                c->print(&buffer.front(), w, h, format, palette, color, 2 );
+                c->print(&buffer.front(), w, h, format, palette, color, 0, 2);
+                c->print(&buffer.front(), w, h, format, palette, color, 2, 2 );
 
                 for(unsigned short z = 0; z < w * h; ++z)
                 {
                     if(buffer[z] >= color && buffer[z] <= color + 3)
                         buffer[z] = 0;
                 }
-                c->print(buffer, w, h, format, palette, color, 1, 1);
+                c->print(&buffer.front(), w, h, format, palette, color, 1, 1);
 
-                o.create(w, h, buffer, w, h, format, palette, color);
+                o.create(w, h, &buffer.front(), w, h, format, palette, color);
 
-                out.setC(j, &o);
-
-                delete[] buffer;
+                out.setC(j, o);
             }
 
-            to.pushC(&out);
+            to.pushC(out);
         }
     }
     char file[512];
     snprintf(file, 512, "outline_fonts.lst");
-    WriteLST(file, palette, &to);
+    Write(file, to, palette);
 
     getchar();
     return 0;
