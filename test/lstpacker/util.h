@@ -29,7 +29,7 @@ inline std::vector<std::string> explode(std::string const& line, const char deli
     std::vector<std::string> result;
     std::string token;
 
-    unsigned int len = 0;
+    size_t len = 0;
     while(std::getline(in, token, delim) && result.size() < max - 1)
     {
         len += token.size() + 1;

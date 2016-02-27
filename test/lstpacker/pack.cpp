@@ -26,6 +26,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Bitmap.h"
 #include "libsiedler2.h"
+#include "IAllocator.h"
 
 #include <boost/filesystem.hpp>
 #include <iostream>
