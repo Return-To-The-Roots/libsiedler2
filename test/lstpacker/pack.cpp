@@ -80,6 +80,16 @@ bool stringCompare( const fileentry& left, const fileentry& right )
     return false;
 }
 
+std::string hexToInt(const std::string& hexStr)
+{
+    std::istringstream sIn(hexStr);
+    unsigned tmp;
+    sIn >> std::hex >> tmp;
+    std::ostringstream sOut;
+    sOut << tmp;
+    return sOut.str();
+}
+
 void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, ArchivInfo* lst)
 {
     ArchivInfo tlst;
@@ -92,7 +102,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
     cerr << "Reading directory: ";
     for(bfs::directory_iterator it = bfs::directory_iterator(directory); it != bfs::directory_iterator(); ++it)
     {
-        if(!bfs::is_regular_file(it->status()))
+        if(!bfs::is_regular_file(it->status()) && !bfs::is_directory(it->status()))
             continue;
 
         bfs::path curPath = it->path();
@@ -101,11 +111,13 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
         fileentry file;
 
         string whole_file = curPath.filename().string();
-        string whole_path = curPath.string();
+        file.path = curPath.string();
 
         transform ( whole_file.begin(), whole_file.end(), whole_file.begin(), ::tolower );
 
         vector<string> wf = explode(whole_file, '.');
+        if(wf.back() == "db") // do not add "Thumbs.db"
+            continue;
 
         for(vector<string>::iterator it = wf.begin(); it != wf.end(); ++it)
         {
@@ -120,29 +132,28 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                 file.nx = atoi(it->substr(2).c_str());
             else if(it->substr(0, 2) == "ny" || it->substr(0, 2) == "dy")
                 file.ny = atoi(it->substr(2).c_str());
+            else if(it->substr(0, 2) == "u+" || it->substr(0, 2) == "0x") // Allow unicode file names (e.g. U+1234)
+                file.file += (file.file.empty() ? "" : ".") + hexToInt(it->substr(2));
 
             else
                 file.file += (file.file.empty() ? "" : ".") + *it;
         }
 
-        if((wf.back()) == "fon")
+        if(wf.back() == "fon")
             file.type = "font";
-        else if((wf.back()) == "bmp")
+        else if(wf.back() == "fonx")
+            file.type = "fontX";
+        else if(wf.back() == "bmp")
             file.type = "bitmap";
-        else if((wf.back()) == "bbm" || (wf.back()) == "act")
+        else if(wf.back() == "bbm" || wf.back() == "act")
         {
             file.bobtype = BOBTYPE_PALETTE;
             file.type = "palette";
         }
-        else if((wf.back()) == "empty")
+        else if(wf.back() == "empty")
             file.type = "empty";
 
-
-        if((wf.back()) != "db") // do not add "Thumbs.db"
-        {
-            file.path = whole_path;
-            files.push_back(file);
-        }
+        files.push_back(file);
     }
 
     cerr << "done" << endl;
@@ -157,10 +168,9 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
         string whole_path = it->path;
 
         // read file number, to set the index correctly
-        std::string filename = whole_path.substr(whole_path.find_last_of("/\\") + 1);
         std::stringstream nrs;
         int nr = -1;
-        nrs << filename;
+        nrs << it->file;
         if(! (nrs >> nr) )
             nr = -1;
 
@@ -171,9 +181,10 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
             cout << " to " << nr;
         std::cout << ": ";
 
-        if(it->type == "font")
+        if(it->type == "font" || it->type == "fontX")
         {
             ArchivItem_Font font;
+            font.isUnicode = (it->type == "fontX");
             font.setDx(it->nx & 0xFF);
             font.setDy(it->ny & 0xFF);
             pack(whole_path, "", palette, &font);
@@ -207,15 +218,8 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                 ArchivItem_BitmapBase* i = dynamic_cast<ArchivItem_BitmapBase*>(neu);
                 ArchivItem_BitmapBase* n = i;
 
-                switch(it->bobtype)
-                {
-                    case BOBTYPE_BITMAP_RLE:
-                    case BOBTYPE_BITMAP_PLAYER:
-                    case BOBTYPE_BITMAP_SHADOW:
-                    {
-                        n = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(it->bobtype));
-                    } break;
-                }
+                if(it->bobtype != i->getBobType())
+                    n = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(it->bobtype));
 
                 n->setName(whole_path);
                 n->setNx(it->nx);
@@ -224,7 +228,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                 if(n != i)
                 {
                     memset(buffer, 0, 1000 * 1000 * 4);
-                    if(it->bobtype == BOBTYPE_BITMAP_PLAYER)
+                    if(i->getBobType() == BOBTYPE_BITMAP_PLAYER)
                         dynamic_cast<ArchivItem_Bitmap_Player*>(i)->print(buffer, 1000, 1000, FORMAT_RGBA, palette, 128);
                     else
                         dynamic_cast<ArchivItem_Bitmap*>(i)->print(buffer, 1000, 1000, FORMAT_RGBA, palette);
@@ -259,10 +263,9 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
     }
     delete[] buffer;
 
-    cout << "Writing data to " << file << ": ";
-
     if(lst == &tlst) // only write to lstfile if the caller does not want the ArchivInfo back
     {
+        cout << "Writing data to " << file << ": ";
         if(Write(file, *lst, palette) != 0)
             cout << "failed" << endl;
         else

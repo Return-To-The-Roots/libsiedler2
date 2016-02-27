@@ -31,7 +31,7 @@
 using namespace std;
 using namespace libsiedler2;
 
-void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette);
+void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette, const std::string& fileNameHexPrefix = "");
 void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, ArchivInfo* lst = NULL);
 
 int main(int argc, char* argv[])

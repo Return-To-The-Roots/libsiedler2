@@ -31,11 +31,12 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 using namespace libsiedler2;
 
-void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette)
+void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette, const std::string& fileNameHexPrefix = "")
 {
     boost::filesystem::create_directories(directory);
 
@@ -48,7 +49,10 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
 
         bool changed = false;
         stringstream newfile;
-        newfile << directory << "/" << i << ".";
+        newfile << directory << "/" << fileNameHexPrefix;
+        if(!fileNameHexPrefix.empty())
+            newfile << std::hex << std::setfill('0') << std::setw(4);
+        newfile << i << std::dec << ".";
 
 
         switch(item->getBobType())
@@ -99,9 +103,12 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                 const ArchivItem_Font* font = dynamic_cast<const ArchivItem_Font*>(item);
 
                 newfile << "dx" << (short)font->getDx() << ".dy" << (short)font->getDy() << ".";
-                newfile << "fon";
+                if(font->isUnicode)
+                    newfile << "fonX";
+                else
+                    newfile << "fon";
 
-                unpack(newfile.str(), *font, palette);
+                unpack(newfile.str(), *font, palette, font->isUnicode ? "U+" : "");
             } break;
             case BOBTYPE_PALETTE: // Palette
             {
