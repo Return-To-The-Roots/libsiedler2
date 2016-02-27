@@ -65,9 +65,10 @@ namespace libsiedler2
                 this->dy = dy;
             }
 
+            bool isUnicode;
         protected:
-            unsigned char dx; ///< X-Buchstabenabstand.
-            unsigned char dy; ///< Y-Buchstabenabstand.
+            unsigned char dx; /// X-Buchstabenabstand.
+            unsigned char dy; /// Y-Buchstabenabstand.
     };
 
 }

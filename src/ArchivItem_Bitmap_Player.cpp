@@ -367,7 +367,8 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
         }
     }
 
-    unsigned int length = position + height_ * 2;
+    image.resize(position);
+    unsigned int length = position + height_ * sizeof(unsigned short);
 
     // Länge schreiben
     fs << length;

@@ -154,9 +154,12 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const Ar
                 }
                 item = nitem;
             } break;
-            default:
+            case BOBTYPE_NONE:
                 item = NULL;
                 break;
+            default:
+                item = NULL;
+                return 42;
         }
 
         if(item != NULL)

@@ -64,7 +64,10 @@ ArchivInfo::ArchivInfo(void)
 ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(info.data)
 {
     for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
-        *it = getAllocator().clone(**it);
+    {
+        if(*it)
+            *it = getAllocator().clone(**it);
+    }
 }
 
 ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
@@ -73,7 +76,7 @@ ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
     clear();
     data.reserve(info.size());
     for(std::vector<ArchivItem*>::const_iterator it = info.data.begin(); it != info.data.end(); ++it)
-        data.push_back(getAllocator().clone(**it));
+        data.push_back(*it ? getAllocator().clone(**it) : NULL);
     return *this;
 }
 

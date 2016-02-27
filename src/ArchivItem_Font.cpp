@@ -22,6 +22,7 @@
 #include "prototypen.h"
 #include <fstream>
 #include "EndianStream.h"
+#include <sstream>
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
@@ -81,11 +82,19 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
     // Spacing einlesen
     fs >> dx >> dy;
 
+    isUnicode = (dx == 255 && dy == 255);
+    uint32_t numChars;
+    if(isUnicode)
+    {
+        fs >> numChars >> dx >> dy;
+    } else
+        numChars = 256;
+
     // Speicher für Buchstaben alloziieren
-    alloc(256);
+    alloc(numChars);
 
     // Buchstaben einlesen
-    for(unsigned long i = 32; i < 256; ++i)
+    for(unsigned long i = 32; i < numChars; ++i)
     {
         short bobtype_s;
 
@@ -100,6 +109,9 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
         ArchivItem* item;
         if(loader::LoadType(bobtype, file, palette, item) != 0)
             return 5;
+        std::stringstream name;
+        name << "U+" << std::hex << i;
+        item->setName(name.str());
         set(i, item);
     }
 
@@ -122,13 +134,18 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     if(!file || palette == NULL)
         return 1;
 
+    if(size() > 256 && !isUnicode)
+        throw std::runtime_error("Trying to save a non-unicode font with more than 256 glyphs");
+
     libendian::LittleEndianOStreamRef fs(file);
     
+    if(isUnicode)
+        fs << static_cast<uint16_t>(0xFFFF) << static_cast<uint32_t>(size());
     // Spacing schreiben
     fs << dx << dy;
 
     // Buchstaben schreiben
-    for(unsigned long i = 32; i < 256; ++i)
+    for(unsigned long i = 32; i < size(); ++i)
     {
         const ArchivItem* item = get(i);
         BOBTYPES bobtype = BOBTYPE_NONE;
