@@ -19,33 +19,34 @@
 
 #pragma once
 
-#include "ArchivItem_Bitmap.h"
-#include "ArchivItem_Palette.h"
+#include "ArchivItem_BitmapBase.h"
 #include <vector>
 
 namespace libsiedler2
 {
     /// Basisklasse für Player-Bitmaps.
-    class baseArchivItem_Bitmap_Player : public virtual baseArchivItem_Bitmap
+    class ArchivItem_Bitmap_Player : public virtual ArchivItem_BitmapBase
     {
         public:
             /// Konstruktor von @p baseArchivItem_Bitmap_Player.
-            baseArchivItem_Bitmap_Player(void);
+            ArchivItem_Bitmap_Player(void);
+
+            ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& other): ArchivItem_BitmapBase(other), tex_pdata(other.tex_pdata) {}
 
             /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
-            baseArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette);
+            ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_Player.
-            ~baseArchivItem_Bitmap_Player(void);
+            ~ArchivItem_Bitmap_Player(void);
 
             /// lädt die Bilddaten aus einer Datei.
-            virtual int load(std::istream& file, const ArchivItem_Palette* palette) override;
+            int load(std::istream& file, const ArchivItem_Palette* palette) override;
 
             /// lädt die Bilddaten aus einem Puffer.
             int load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette);
 
             /// schreibt die Bilddaten in eine Datei.
-            virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const;
+            int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
 
             /// alloziert Bildspeicher für die gewünschte Größe.
             void tex_alloc(void) override;
@@ -84,16 +85,6 @@ namespace libsiedler2
             std::vector<unsigned char> tex_pdata; ///< Die Spielerfarbedaten.
     };
 
-    /// Klasse für Player-Bitmaps.
-    class ArchivItem_Bitmap_Player : public baseArchivItem_Bitmap_Player, public ArchivItem_Bitmap
-    {
-        public:
-            /// Konstruktor von @p ArchivItem_Bitmap_Player.
-            ArchivItem_Bitmap_Player(void) : baseArchivItem_Bitmap(), baseArchivItem_Bitmap_Player() {}
-
-            /// Kopierkonstruktor von @p ArchivItem_Bitmap_Player.
-            ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& item) : baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Player(item) {}
-    };
 }
 
 #endif // !ARCHIVITEM_BITMAP_PLAYER_H_INCLUDED

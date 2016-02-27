@@ -19,6 +19,7 @@
 // Header
 #include "main.h"
 #include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Palette.h"
 #include <fstream>
 #include <EndianStream.h>
 #include <boost/scoped_array.hpp>
@@ -28,7 +29,7 @@
 #include "DebugNew.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-/** @class libsiedler2::baseArchivItem_Bitmap_Player
+/** @class libsiedler2::ArchivItem_Bitmap_Player
  *
  *  Basisklasse für Player-Bitmaps.
  *
@@ -44,7 +45,7 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** @var libsiedler2::baseArchivItem_Bitmap_Player::tex_pdata
+/** @var libsiedler2::ArchivItem_Bitmap_Player::tex_pdata
  *
  *  Die Spielerfarbedaten.
  *
@@ -52,7 +53,7 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-/** @var libsiedler2::baseArchivItem_Bitmap_Player::tex_plength
+/** @var libsiedler2::ArchivItem_Bitmap_Player::tex_plength
  *
  *  Länge der Spielerfarbendaten.
  *
@@ -61,18 +62,18 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Konstruktor von @p baseArchivItem_Bitmap_Player.
+ *  Konstruktor von @p ArchivItem_Bitmap_Player.
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(void) : baseArchivItem_Bitmap()
+libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(void)
 {
     setBobType(BOBTYPE_BITMAP_PLAYER);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus
+ *  Konstruktor von @p ArchivItem_Bitmap_Player mit Laden der Bilddaten aus
  *  einer Datei.
  *
  *  @param[in] file    Dateihandle der Datei
@@ -80,7 +81,7 @@ libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(void) : 
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
+libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem_BitmapBase()
 {
     setBobType(BOBTYPE_BITMAP_PLAYER);
 
@@ -89,11 +90,11 @@ libsiedler2::baseArchivItem_Bitmap_Player::baseArchivItem_Bitmap_Player(std::ist
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Destruktor von @p baseArchivItem_Bitmap_Player.
+ *  Destruktor von @p ArchivItem_Bitmap_Player.
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Player::~baseArchivItem_Bitmap_Player(void)
+libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player(void)
 {
     tex_clear();
 
@@ -112,7 +113,7 @@ libsiedler2::baseArchivItem_Bitmap_Player::~baseArchivItem_Bitmap_Player(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette* palette)
+int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette* palette)
 {
     if(!file)
         return 1;
@@ -177,7 +178,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(std::istream& file, const Ar
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
+int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
 {
     this->width_ = width;
     this->height_ = height;
@@ -263,7 +264,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::load(unsigned short width, unsign
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette* palette) const
+int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
     if(!file)
         return 1;
@@ -383,11 +384,11 @@ int libsiedler2::baseArchivItem_Bitmap_Player::write(std::ostream& file, const A
  *
  *  @author FloSoft
  */
-void libsiedler2::baseArchivItem_Bitmap_Player::tex_alloc(void)
+void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc(void)
 {
     tex_clear();
 
-    baseArchivItem_Bitmap::tex_alloc();
+    ArchivItem_BitmapBase::tex_alloc();
 
     tex_pdata.resize(tex_width_ * tex_height_, TRANSPARENT_INDEX);
 }
@@ -398,9 +399,9 @@ void libsiedler2::baseArchivItem_Bitmap_Player::tex_alloc(void)
  *
  *  @author FloSoft
  */
-void libsiedler2::baseArchivItem_Bitmap_Player::tex_clear(void)
+void libsiedler2::ArchivItem_Bitmap_Player::tex_clear(void)
 {
-    baseArchivItem_Bitmap::tex_clear();
+    ArchivItem_BitmapBase::tex_clear();
 
     tex_pdata.clear();
 }
@@ -430,7 +431,7 @@ void libsiedler2::baseArchivItem_Bitmap_Player::tex_clear(void)
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::create(unsigned short width,
+int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
         unsigned short height,
         const unsigned char* buffer,
         unsigned short buffer_width,
@@ -509,7 +510,7 @@ int libsiedler2::baseArchivItem_Bitmap_Player::create(unsigned short width,
     return 0;
 }
 
-void libsiedler2::baseArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
+void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
 {
     int x, y, lx, ly;
 
@@ -650,7 +651,7 @@ void libsiedler2::baseArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy,
  *
  *  @author FloSoft
  */
-int libsiedler2::baseArchivItem_Bitmap_Player::print(unsigned char* buffer,
+int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
         unsigned short buffer_width,
         unsigned short buffer_height,
         TEXTURFORMAT buffer_format,

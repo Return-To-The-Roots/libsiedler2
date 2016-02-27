@@ -35,11 +35,11 @@ namespace libsiedler2
             ~baseArchivItem_Sound_Wave(void);
 
             /// lädt die Wave-Daten aus einer Datei.
-            int load(std::istream& file, unsigned int length);
+            int load(std::istream& file, unsigned int length) override;
 
             /// schreibt die Wave-Daten in eine Datei.
-            int write(std::ostream& file) const { return write(file, false); }
-            int write(std::ostream& file, bool stripheader = false) const;
+            int write(std::ostream& file) const override { return write(file, false); }
+            int write(std::ostream& file, bool stripheader) const;
 
             /// räumt den Soundspeicher auf.
             void clear(void);

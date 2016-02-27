@@ -40,8 +40,8 @@ namespace libsiedler2
 
             baseArchivItem_Sound_XMidi& operator=(const baseArchivItem_Sound_XMidi& item);
 
-            int load(std::istream& file, unsigned int length);
-            int write(std::ostream& file) const;
+            int load(std::istream& file, unsigned int length) override;
+            int write(std::ostream& file) const override;
 
             MIDI_Track* getTrack(unsigned short track) { if(track < tracks) return &tracklist[track]; return NULL; }
             unsigned short getTrackCount() const { return tracks; }

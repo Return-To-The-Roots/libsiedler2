@@ -19,125 +19,39 @@
 
 #pragma once
 
-#include "ArchivItem.h"
-#include "ArchivItem_Palette.h"
-#include "types.h"
-#include <vector>
+#include "ArchivItem_BitmapBase.h"
 
 namespace libsiedler2
 {
-    /// Basis-Basisklasse für Bitmapitems.
-    class baseArchivItem_Bitmap : public ArchivItem
+    /**
+     * Base class for regular bitmaps (single bitmaps, no player colored ones)
+     */
+    class baseArchivItem_Bitmap : public virtual ArchivItem_BitmapBase
     {
         public:
-            /// Konstruktor von @p ArchivItem_Bitmap.
-            baseArchivItem_Bitmap(void);
-
-            /// Kopierkonstruktor von @p ArchivItem_Bitmap.
-            baseArchivItem_Bitmap(const baseArchivItem_Bitmap& item);
-
-            /// virtueller Destruktor von @p ArchivItem_Bitmap.
-            virtual ~baseArchivItem_Bitmap(void);
-
-            baseArchivItem_Bitmap& operator=(const baseArchivItem_Bitmap& item);
-
-            /// setzt einen Pixel auf einen bestimmten Wert.
-            virtual void tex_setPixel(unsigned short x, unsigned short y, unsigned char color, const ArchivItem_Palette* palette);
-            virtual void tex_setPixel(unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
-
-            /// liefert einen Pixel an einem bestimmten Punkt.
-            unsigned char tex_getPixel(unsigned short x, unsigned short y, const ArchivItem_Palette* palette) const;
-
-            /// lädt die Bilddaten aus einer Datei.
-            virtual int load(std::istream& file, const ArchivItem_Palette* palette) = 0;
-
-            /// schreibt die Bilddaten in eine Datei.
-            virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const = 0;
-
-            /// liefert den Textur-Datenblock.
-            const std::vector<unsigned char>& getTexData(void) const;
-
-            /// liefert den X-Nullpunkt.
-            short getNx(void) const;
-
-            /// liefert den Y-Nullpunkt.
-            short getNy(void) const;
-
-            /// liefert die Breite des Bildes.
-            unsigned short getWidth(void) const;
-
-            /// liefert die Höhe des Bildes.
-            unsigned short getHeight(void) const;
-
-            /// gibt Palette zurück
-            const ArchivItem_Palette* getPalette() const { return palette_; }
-
-            /// setzt den X-Nullpunkt.
-            void setNx(short nx);
-
-            /// setzt den Y-Nullpunkt.
-            void setNy(short ny);
-
-            /// setzt die Breite des Bildes.
-            void setWidth(unsigned short width);
-
-            /// setzt die Höhe des Bildes.
-            void setHeight(unsigned short height);
-
-            /// alloziert Bildspeicher für die gewünschte Größe.
-            virtual void tex_alloc(void);
-
-            /// räumt den Bildspeicher auf.
-            virtual void tex_clear(void);
-
-            /// setzt die Grundpalette des Bildes.
-            void setPalette(const ArchivItem_Palette* palette);
-
-            /// setzt das Format des Bildes.
-            void setFormat(TEXTURFORMAT format) { this->format_ = format; }
-
-            virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
             /// schreibt das Bitmap in einen Puffer.
-            virtual int print(unsigned char* buffer,
-                              unsigned short buffer_width,
-                              unsigned short buffer_height,
-                              TEXTURFORMAT buffer_format,
-                              const ArchivItem_Palette* palette,
-                              unsigned short to_x = 0,
-                              unsigned short to_y = 0,
-                              unsigned short from_x = 0,
-                              unsigned short from_y = 0,
-                              unsigned short from_w = 0,
-                              unsigned short from_h = 0) const;
+            int print(unsigned char* buffer,
+                      unsigned short buffer_width,
+                      unsigned short buffer_height,
+                      TEXTURFORMAT buffer_format,
+                      const ArchivItem_Palette* palette,
+                      unsigned short to_x = 0,
+                      unsigned short to_y = 0,
+                      unsigned short from_x = 0,
+                      unsigned short from_y = 0,
+                      unsigned short from_w = 0,
+                      unsigned short from_h = 0) const;
 
             /// erzeugt ein Bitmap aus einem Puffer.
-            virtual int create(unsigned short width,
-                               unsigned short height,
-                               const unsigned char* buffer,
-                               unsigned short buffer_width,
-                               unsigned short buffer_height,
-                               TEXTURFORMAT buffer_format,
-                               const ArchivItem_Palette* palette);
+            int create(unsigned short width,
+                       unsigned short height,
+                       const unsigned char* buffer,
+                       unsigned short buffer_width,
+                       unsigned short buffer_height,
+                       TEXTURFORMAT buffer_format,
+                       const ArchivItem_Palette* palette);
 
-            /// liefert die nächste Quadratzahl zu einer Zahl.
-            static unsigned short tex_pow2(unsigned short n);
-
-        protected:
-            unsigned short width_;       ///< Breite des Bildes.
-            unsigned short height_;      ///< Höhe des Bildes.
-
-            short nx_;                   ///< X-Nullpunkt.
-            short ny_;                   ///< Y-Nullpunkt.
-
-            unsigned short tex_width_;   ///< Breite der Textur.
-            unsigned short tex_height_;  ///< Höhe der Textur.
-
-            unsigned short tex_bpp_;     ///< Bytebreite der Textur pro Pixel.
-            std::vector<unsigned char> tex_data_;    ///< Die Texturdaten.
-
-            const ArchivItem_Palette* palette_; ///< Die Palette.
-            TEXTURFORMAT format_; ///< Das Texturformat.
     };
 
     /// Basisklasse für Bitmapitems.

@@ -83,37 +83,6 @@ libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType(void) const
     return type_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  lädt die Sound-Daten aus einer Datei.
- *
- *  @param[in] file    Dateihandle der Datei
- *  @param[in] length  Länge der Daten
- *
- *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
- */
-int libsiedler2::baseArchivItem_Sound::load(std::istream& file, unsigned int length)
-{
-    return 254;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  schreibt die Sound-Daten in eine Datei.
- *
- *  @param[in] file    Dateihandle der Datei
- *
- *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
- */
-int libsiedler2::baseArchivItem_Sound::write(std::ostream& file) const
-{
-    return 254;
-}
-
 libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubType(std::istream& file)
 {
     libendian::LittleEndianIStreamRef fs(file);

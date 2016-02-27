@@ -106,7 +106,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     if(nr == -1)
         return 2;
 
-    const baseArchivItem_Bitmap* bitmap = dynamic_cast<const baseArchivItem_Bitmap*>(items.get(nr));
+    const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(nr));
 
     // Datei zum schreiben öffnen
     libendian::LittleEndianOFStream fs(file);
@@ -164,10 +164,10 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     /// @todo: bug im print?!?
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        if(dynamic_cast<const baseArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette, 128) != 0)
+        if(dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette, 128) != 0)
             return 7;
     }
-    else if(bitmap->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
+    else if(dynamic_cast<const ArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
         return 7;
 
     unsigned char placeholder[80];
