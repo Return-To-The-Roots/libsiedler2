@@ -38,7 +38,7 @@ namespace libsiedler2
                       unsigned short buffer_width,
                       unsigned short buffer_height,
                       TEXTURFORMAT buffer_format,
-                      const ArchivItem_Palette* palette,
+                      const ArchivItem_Palette* palette = NULL,
                       unsigned short to_x = 0,
                       unsigned short to_y = 0,
                       unsigned short from_x = 0,
@@ -53,7 +53,7 @@ namespace libsiedler2
                        unsigned short buffer_width,
                        unsigned short buffer_height,
                        TEXTURFORMAT buffer_format,
-                       const ArchivItem_Palette* palette);
+                       const ArchivItem_Palette* palette = NULL);
 
     };
 
