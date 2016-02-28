@@ -159,13 +159,12 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 
     std::vector<unsigned char> buffer(bmih.width * bmih.height * 4 + 1);
 
-    /// @todo: bug im print?!?
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
         if(dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette, 128) != 0)
             return 7;
     }
-    else if(dynamic_cast<const ArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
+    else if(dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
         return 7;
 
     unsigned char placeholder[80];
