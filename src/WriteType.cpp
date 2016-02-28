@@ -29,6 +29,7 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivItem_Sound.h"
 #include <stdexcept>
+#include <ostream>
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
