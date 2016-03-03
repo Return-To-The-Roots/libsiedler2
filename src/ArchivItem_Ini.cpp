@@ -90,9 +90,9 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
     std::string section;
     std::getline(file, section);
 
-    size_t lr = section.find("\r");
+    size_t lr = section.find('\r');
     if (lr != std::string::npos) section.erase(lr, 1);
-    size_t ln = section.find("\n");
+    size_t ln = section.find('\n');
     if (ln != std::string::npos) section.erase(ln, 1);
 
     if(!section.empty())
@@ -119,14 +119,14 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
         std::string entry;
         if(!std::getline(file, entry))
             break;
-        lr = entry.find("\r");
+        lr = entry.find('\015');
         if (lr != std::string::npos) entry.erase(lr, 1);
-        ln = section.find("\n");
+        ln = section.find('\n');
         if (ln != std::string::npos) entry.erase(ln, 1);
         if(entry.empty())
             break;
 
-        size_t pos = entry.find("=");
+        size_t pos = entry.find('=');
         if(pos == std::string::npos)
             throw std::runtime_error("Invalid value");
         std::string name = entry.substr(0, pos);
