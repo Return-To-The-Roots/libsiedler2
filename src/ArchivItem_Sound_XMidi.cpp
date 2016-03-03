@@ -42,7 +42,7 @@ namespace libsiedler2{
  *
  *  @author FloSoft
  */
-baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(void) : baseArchivItem_Sound()
+baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound()
 {
     setType(SOUNDTYPE_XMIDI);
 
@@ -69,7 +69,7 @@ baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Soun
  *
  *  @author FloSoft
  */
-baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi(void)
+baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi()
 {
 }
 

@@ -55,7 +55,7 @@ class XMIDI_Track
 
     public:
         XMIDI_Track(MIDI_Track* track);
-        ~XMIDI_Track(void);
+        ~XMIDI_Track();
 
         int Convert();
 

@@ -49,7 +49,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(void)
+libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE()
 {
     setBobType(BOBTYPE_BITMAP_RLE);
 }
@@ -89,7 +89,7 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(std::istream& 
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE(void)
+libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE()
 {
 }
 

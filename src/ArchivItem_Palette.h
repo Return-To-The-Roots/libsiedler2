@@ -45,7 +45,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Palette.
-            ArchivItem_Palette(void);
+            ArchivItem_Palette();
 
             /// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.
             ArchivItem_Palette(std::istream& file, bool skip = true);

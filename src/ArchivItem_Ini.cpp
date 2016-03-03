@@ -43,7 +43,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(void) : ArchivItem(), ArchivInfo()
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(), ArchivInfo()
 {
     setBobType(BOBTYPE_INI);
 }

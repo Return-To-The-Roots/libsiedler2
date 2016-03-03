@@ -29,10 +29,10 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p baseArchivItem_Sound_Wave.
-            baseArchivItem_Sound_Wave(void);
+            baseArchivItem_Sound_Wave();
 
             /// Destruktor von @p baseArchivItem_Sound_Wave.
-            ~baseArchivItem_Sound_Wave(void) override;
+            ~baseArchivItem_Sound_Wave() override;
 
             /// lädt die Wave-Daten aus einer Datei.
             int load(std::istream& file, unsigned int length) override;
@@ -42,7 +42,7 @@ namespace libsiedler2
             int write(std::ostream& file, bool stripheader) const;
 
             /// räumt den Soundspeicher auf.
-            void clear(void);
+            void clear();
 
             void setData(const std::vector<unsigned char>& data)
             {
@@ -61,7 +61,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Sound_Wave.
-            ArchivItem_Sound_Wave(void) : baseArchivItem_Sound_Wave() {}
+            ArchivItem_Sound_Wave() : baseArchivItem_Sound_Wave() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Sound_Wave.
             ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound_Wave(item) {}

@@ -105,7 +105,7 @@ TEXTURFORMAT setTextureFormat(TEXTURFORMAT format)
  *
  *  @author FloSoft
  */
-TEXTURFORMAT getTextureFormat(void)
+TEXTURFORMAT getTextureFormat()
 {
     // Aktuelles zurückliefern
     return texturformat;

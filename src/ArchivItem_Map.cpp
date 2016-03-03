@@ -43,7 +43,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Map::ArchivItem_Map(void) : ArchivItem(), ArchivInfo()
+libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
 {
     setBobType(BOBTYPE_MAP);
 
@@ -68,7 +68,7 @@ libsiedler2::ArchivItem_Map::ArchivItem_Map(const ArchivItem_Map& item) : Archiv
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Map::~ArchivItem_Map(void)
+libsiedler2::ArchivItem_Map::~ArchivItem_Map()
 {
 }
 

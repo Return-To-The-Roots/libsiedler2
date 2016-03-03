@@ -48,7 +48,7 @@ namespace libsiedler2 { class ArchivItem_Palette; }
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(void)
+libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw()
 {
     setBobType(BOBTYPE_BITMAP_RAW);
 }
@@ -88,7 +88,7 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(std::istream& 
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw(void)
+libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw()
 {
 }
 

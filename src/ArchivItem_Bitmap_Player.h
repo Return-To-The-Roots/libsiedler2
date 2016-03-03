@@ -34,7 +34,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p baseArchivItem_Bitmap_Player.
-            ArchivItem_Bitmap_Player(void);
+            ArchivItem_Bitmap_Player();
 
             ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& other): ArchivItem_BitmapBase(other), tex_pdata(other.tex_pdata) {}
 
@@ -42,7 +42,7 @@ namespace libsiedler2
             ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_Player.
-            ~ArchivItem_Bitmap_Player(void) override;
+            ~ArchivItem_Bitmap_Player() override;
 
             /// lädt die Bilddaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette) override;
@@ -54,10 +54,10 @@ namespace libsiedler2
             int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
 
             /// alloziert Bildspeicher für die gewünschte Größe.
-            void tex_alloc(void) override;
+            void tex_alloc() override;
 
             /// räumt den Bildspeicher auf.
-            void tex_clear(void) override;
+            void tex_clear() override;
 
             void getVisibleArea(int& vx, int& vy, int& vw, int& vh) override;
 

@@ -30,31 +30,31 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Map_Header.
-            ArchivItem_Map_Header(void);
+            ArchivItem_Map_Header();
             /// Destruktor von @p ArchivItem_Map_Header.
-            ~ArchivItem_Map_Header(void) override;
+            ~ArchivItem_Map_Header() override;
 
             /// lädt den Mapheader aus einer Datei.
             int load(std::istream& file);
             /// schreibt den Mapheader in eine Datei.
             int write(std::ostream& file) const;
 
-            const std::string& getName(void) const;
+            const std::string& getName() const;
             void setName(const std::string& name);
 
-            unsigned short getWidth(void) const;
+            unsigned short getWidth() const;
             void setWidth(unsigned short width);
 
-            unsigned short getHeight(void) const;
+            unsigned short getHeight() const;
             void setHeight(unsigned short height);
 
-            unsigned char getGfxSet(void) const;
+            unsigned char getGfxSet() const;
             void setGfxSet(unsigned char gfxset);
 
-            unsigned char getPlayer(void) const;
+            unsigned char getPlayer() const;
             void setPlayer(unsigned char player);
 
-            const std::string& getAuthor(void) const;
+            const std::string& getAuthor() const;
             void setAuthor(const std::string& author);
 
             bool hasExtraWord() const { return hasExtraWord_; }

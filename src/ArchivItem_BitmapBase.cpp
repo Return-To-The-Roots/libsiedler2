@@ -35,7 +35,7 @@ namespace libsiedler2{
  *  @author FloSoft
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase(void) : ArchivItem()
+ArchivItem_BitmapBase::ArchivItem_BitmapBase() : ArchivItem()
 {
     width_ = 0;
     height_ = 0;
@@ -86,7 +86,7 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
  *
  *  @author FloSoft
  */
-ArchivItem_BitmapBase::~ArchivItem_BitmapBase(void)
+ArchivItem_BitmapBase::~ArchivItem_BitmapBase()
 {
     tex_clear();
 
@@ -273,7 +273,7 @@ unsigned char ArchivItem_BitmapBase::tex_getPixel(unsigned short x,
  *
  *  @author FloSoft
  */
-void ArchivItem_BitmapBase::tex_alloc(void)
+void ArchivItem_BitmapBase::tex_alloc()
 {
     tex_clear();
 
@@ -308,7 +308,7 @@ void ArchivItem_BitmapBase::tex_alloc(void)
  *
  *  @author FloSoft
  */
-void ArchivItem_BitmapBase::tex_clear(void)
+void ArchivItem_BitmapBase::tex_clear()
 {
     tex_width_ = 0;
     tex_height_ = 0;
@@ -347,7 +347,7 @@ unsigned short ArchivItem_BitmapBase::tex_pow2(unsigned short n)
  *
  *  @author FloSoft
  */
-const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData(void) const
+const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData() const
 {
     return tex_data_;
 }
@@ -360,7 +360,7 @@ const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData(void) const
  *
  *  @author FloSoft
  */
-short ArchivItem_BitmapBase::getNx(void) const
+short ArchivItem_BitmapBase::getNx() const
 {
     return nx_;
 }
@@ -373,7 +373,7 @@ short ArchivItem_BitmapBase::getNx(void) const
  *
  *  @author FloSoft
  */
-short ArchivItem_BitmapBase::getNy(void) const
+short ArchivItem_BitmapBase::getNy() const
 {
     return ny_;
 }
@@ -386,7 +386,7 @@ short ArchivItem_BitmapBase::getNy(void) const
  *
  *  @author FloSoft
  */
-unsigned short ArchivItem_BitmapBase::getWidth(void) const
+unsigned short ArchivItem_BitmapBase::getWidth() const
 {
     return width_;
 }
@@ -399,7 +399,7 @@ unsigned short ArchivItem_BitmapBase::getWidth(void) const
  *
  *  @author FloSoft
  */
-unsigned short ArchivItem_BitmapBase::getHeight(void) const
+unsigned short ArchivItem_BitmapBase::getHeight() const
 {
     return height_;
 }

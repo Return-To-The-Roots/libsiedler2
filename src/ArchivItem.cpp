@@ -53,7 +53,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem::ArchivItem(void)
+libsiedler2::ArchivItem::ArchivItem()
 {
     bobtype_ = BOBTYPE_NONE;
     setName("untitled");
@@ -65,6 +65,6 @@ libsiedler2::ArchivItem::ArchivItem(void)
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem::~ArchivItem(void)
+libsiedler2::ArchivItem::~ArchivItem()
 {
 }

@@ -41,7 +41,7 @@ namespace libsiedler2
             }
 
             /// liefert den Bobtype des Items.
-            inline BOBTYPES getBobType(void) const
+            inline BOBTYPES getBobType() const
             {
                 return bobtype_;
             }
@@ -53,7 +53,7 @@ namespace libsiedler2
             }
 
             /// liefert den Namen des Items.
-            inline std::string getName(void) const
+            inline std::string getName() const
             {
                 return name_;
             }

@@ -206,7 +206,7 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
  *
  *  @author FloSoft
  */
-const std::string& libsiedler2::ArchivItem_Text::getText(void) const
+const std::string& libsiedler2::ArchivItem_Text::getText() const
 {
     return text_;
 }

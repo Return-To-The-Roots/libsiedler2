@@ -30,16 +30,16 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Sound.
-            baseArchivItem_Sound(void);
+            baseArchivItem_Sound();
 
             /// virtueller Destruktor von @p ArchivItem_Sound.
-            ~baseArchivItem_Sound(void) override;
+            ~baseArchivItem_Sound() override;
 
             /// setzt den Typ des Sounds.
             void setType(SOUNDTYPES type);
 
             /// liefert den Typ des Sounds.
-            SOUNDTYPES getType(void) const;
+            SOUNDTYPES getType() const;
 
             /// lädt die Sound-Daten aus einer Datei.
             virtual int load(std::istream& file, unsigned int length) = 0;

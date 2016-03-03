@@ -39,7 +39,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(void)
+libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
     : ArchivItem()
 {
     setBobType(BOBTYPE_RAW);
@@ -51,7 +51,7 @@ libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(void)
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw(void)
+libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
 {}
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
  *
  *  @author FloSoft
  */
-const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData(void) const
+const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData() const
 {
     return data;
 }
@@ -129,7 +129,7 @@ const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData(void)
  *
  *  @author FloSoft
  */
-std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData(void)
+std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData()
 {
     return data;
 }
@@ -140,7 +140,7 @@ std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData(void)
  *
  *  @author FloSoft
  */
-void libsiedler2::baseArchivItem_Raw::clear(void)
+void libsiedler2::baseArchivItem_Raw::clear()
 {
     data.clear();
 }

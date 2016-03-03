@@ -41,7 +41,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(void)
+libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
     : ArchivItem(),
       width(0), height(0), gfxset(0), player(0), hasExtraWord_(false)
 {
@@ -54,7 +54,7 @@ libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header(void)
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header(void)
+libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header()
 {
 }
 
@@ -158,7 +158,7 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
  *
  *  @author FloSoft
  */
-const std::string& libsiedler2::ArchivItem_Map_Header::getName(void) const
+const std::string& libsiedler2::ArchivItem_Map_Header::getName() const
 {
     return name_;
 }
@@ -182,7 +182,7 @@ void libsiedler2::ArchivItem_Map_Header::setName(const std::string& name)
  *
  *  @author FloSoft
  */
-unsigned short libsiedler2::ArchivItem_Map_Header::getWidth(void) const
+unsigned short libsiedler2::ArchivItem_Map_Header::getWidth() const
 {
     return width;
 }
@@ -206,7 +206,7 @@ void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
  *
  *  @author FloSoft
  */
-unsigned short libsiedler2::ArchivItem_Map_Header::getHeight(void) const
+unsigned short libsiedler2::ArchivItem_Map_Header::getHeight() const
 {
     return height;
 }
@@ -230,7 +230,7 @@ void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
  *
  *  @author FloSoft
  */
-unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet(void) const
+unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet() const
 {
     return gfxset;
 }
@@ -254,7 +254,7 @@ void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
  *
  *  @author FloSoft
  */
-unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer(void) const
+unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer() const
 {
     return player;
 }
@@ -278,7 +278,7 @@ void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
  *
  *  @author FloSoft
  */
-const std::string& libsiedler2::ArchivItem_Map_Header::getAuthor(void) const
+const std::string& libsiedler2::ArchivItem_Map_Header::getAuthor() const
 {
     return author_;
 }

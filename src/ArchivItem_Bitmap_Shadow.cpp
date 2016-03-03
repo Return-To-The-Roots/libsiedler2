@@ -49,7 +49,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(void)
+libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow()
 {
     setBobType(BOBTYPE_BITMAP_SHADOW);
 }
@@ -89,7 +89,7 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(std::ist
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow(void)
+libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow()
 {
 }
 

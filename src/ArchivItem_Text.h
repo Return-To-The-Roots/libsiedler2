@@ -29,10 +29,10 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Text.
-            ArchivItem_Text(void);
+            ArchivItem_Text();
 
             /// Destruktor von @p ArchivItem_Text.
-            ~ArchivItem_Text(void) override;
+            ~ArchivItem_Text() override;
 
             /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
             ArchivItem_Text(std::istream& file, bool conversion = true, unsigned int length = 0);
@@ -44,7 +44,7 @@ namespace libsiedler2
             int write(std::ostream& file, bool conversion = true) const;
 
             // liefert den Text.
-            const std::string& getText(void) const;
+            const std::string& getText() const;
 
             // setzt den Text.
             void setText(const std::string& text, bool conversion = true);

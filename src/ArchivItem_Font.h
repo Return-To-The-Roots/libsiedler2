@@ -33,7 +33,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Font.
-            ArchivItem_Font(void);
+            ArchivItem_Font();
 
             /// lädt die Fontdaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette);
@@ -42,13 +42,13 @@ namespace libsiedler2
             int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             /// liefert den X-Buchstabenabstand.
-            inline unsigned char getDx(void) const
+            inline unsigned char getDx() const
             {
                 return dx;
             }
 
             /// liefert den Y-Buchstabenabstand.
-            inline unsigned char getDy(void) const
+            inline unsigned char getDy() const
             {
                 return dy;
             }

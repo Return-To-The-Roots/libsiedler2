@@ -31,13 +31,13 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivInfo.
-            ArchivInfo(void);
+            ArchivInfo();
 
             /// Kopierkonstruktor von @p ArchivInfo.
             ArchivInfo(const ArchivInfo& info);
 
             /// Destruktor von @p ArchivInfo, räumt automatisch auf.
-            virtual ~ArchivInfo(void);
+            virtual ~ArchivInfo();
 
             /// erstellt den Datensatz in einer bestimmten Größe.
             void alloc(size_t count);
@@ -53,7 +53,7 @@ namespace libsiedler2
             }
 
             /// gibt die angelegten Daten wieder frei.
-            void clear(void);
+            void clear();
 
             /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
             /// Transfers ownership!

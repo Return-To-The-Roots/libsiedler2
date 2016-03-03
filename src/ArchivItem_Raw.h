@@ -30,9 +30,9 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p baseArchivItem_Raw.
-            baseArchivItem_Raw(void);
+            baseArchivItem_Raw();
             /// Destruktor von @p baseArchivItem_Raw.
-            ~baseArchivItem_Raw(void) override;
+            ~baseArchivItem_Raw() override;
 
             /// lädt die Rawdaten aus einer Datei.
             int load(std::istream& file, unsigned int length = 0xFFFFFFFF);
@@ -40,12 +40,12 @@ namespace libsiedler2
             int write(std::ostream& file, bool with_length) const;
 
             /// liefert die Daten zurück (ro).
-            const std::vector<unsigned char>& getData(void) const;
+            const std::vector<unsigned char>& getData() const;
             /// liefert die Daten zurück (rw).
-            std::vector<unsigned char>& getData(void);
+            std::vector<unsigned char>& getData();
 
             /// löscht den Datenblock.
-            void clear(void);
+            void clear();
 
         private:
             std::vector<unsigned char> data; ///< Die Daten.
@@ -56,7 +56,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p baseArchivItem_Raw.
-            ArchivItem_Raw(void) : baseArchivItem_Raw() {}
+            ArchivItem_Raw() : baseArchivItem_Raw() {}
             /// Kopierkonstruktor von @p baseArchivItem_Raw.
             ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
     };

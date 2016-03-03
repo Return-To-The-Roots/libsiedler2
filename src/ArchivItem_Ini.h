@@ -33,7 +33,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Ini.
-            ArchivItem_Ini(void);
+            ArchivItem_Ini();
 
             /// Konstruktor von @p ArchivItem_Ini.
             ArchivItem_Ini(const std::string& name);

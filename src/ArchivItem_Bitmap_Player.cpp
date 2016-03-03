@@ -66,7 +66,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(void)
+libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
 {
     setBobType(BOBTYPE_BITMAP_PLAYER);
 }
@@ -94,7 +94,7 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(std::istream& fi
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player(void)
+libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player()
 {
     tex_clear();
 
@@ -385,7 +385,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc(void)
+void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc()
 {
     tex_clear();
 
@@ -400,7 +400,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc(void)
  *
  *  @author FloSoft
  */
-void libsiedler2::ArchivItem_Bitmap_Player::tex_clear(void)
+void libsiedler2::ArchivItem_Bitmap_Player::tex_clear()
 {
     ArchivItem_BitmapBase::tex_clear();
 

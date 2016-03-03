@@ -49,7 +49,7 @@ namespace libsiedler2{
  *
  *  @author FloSoft
  */
-ArchivInfo::ArchivInfo(void)
+ArchivInfo::ArchivInfo()
 {
 }
 
@@ -86,7 +86,7 @@ ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
  *
  *  @author FloSoft
  */
-ArchivInfo::~ArchivInfo(void)
+ArchivInfo::~ArchivInfo()
 {
     clear();
 }
@@ -112,7 +112,7 @@ void ArchivInfo::alloc(size_t count)
  *
  *  @author FloSoft
  */
-void ArchivInfo::clear(void)
+void ArchivInfo::clear()
 {
     
     for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)

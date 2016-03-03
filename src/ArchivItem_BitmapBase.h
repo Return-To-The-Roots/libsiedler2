@@ -55,19 +55,19 @@ namespace libsiedler2
         virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const = 0;
 
         /// liefert den Textur-Datenblock.
-        const std::vector<unsigned char>& getTexData(void) const;
+        const std::vector<unsigned char>& getTexData() const;
 
         /// liefert den X-Nullpunkt.
-        short getNx(void) const;
+        short getNx() const;
 
         /// liefert den Y-Nullpunkt.
-        short getNy(void) const;
+        short getNy() const;
 
         /// liefert die Breite des Bildes.
-        unsigned short getWidth(void) const;
+        unsigned short getWidth() const;
 
         /// liefert die Höhe des Bildes.
-        unsigned short getHeight(void) const;
+        unsigned short getHeight() const;
 
         /// gibt Palette zurück
         const ArchivItem_Palette* getPalette() const { return palette_; }
@@ -85,10 +85,10 @@ namespace libsiedler2
         void setHeight(unsigned short height);
 
         /// alloziert Bildspeicher für die gewünschte Größe.
-        virtual void tex_alloc(void);
+        virtual void tex_alloc();
 
         /// räumt den Bildspeicher auf.
-        virtual void tex_clear(void);
+        virtual void tex_clear();
 
         /// setzt die Grundpalette des Bildes.
         void setPalette(const ArchivItem_Palette* palette);

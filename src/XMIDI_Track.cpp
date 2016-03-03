@@ -65,7 +65,7 @@ XMIDI_Track::~XMIDI_Track()
     }
 }
 
-int XMIDI_Track::Convert(void)
+int XMIDI_Track::Convert()
 {
     ConvertTrackToList();
     ConvertListToMTrk();

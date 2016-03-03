@@ -41,7 +41,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound(void) : ArchivItem()
+libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound() : ArchivItem()
 {
     setBobType(BOBTYPE_SOUND);
     setType(SOUNDTYPE_NONE);
@@ -53,7 +53,7 @@ libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound(void) : ArchivItem()
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound(void)
+libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
 {
 }
 
@@ -78,7 +78,7 @@ void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
  *
  *  @author FloSoft
  */
-libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType(void) const
+libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType() const
 {
     return type_;
 }

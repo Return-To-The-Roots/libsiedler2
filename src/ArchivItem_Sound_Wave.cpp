@@ -41,7 +41,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(void) : baseArchivItem_Sound()
+libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave() : baseArchivItem_Sound()
 {
     setType(SOUNDTYPE_WAVE);
 }
@@ -52,7 +52,7 @@ libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave(void) : baseAr
  *
  *  @author FloSoft
  */
-libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave(void)
+libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
 {}
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
  *
  *  @author FloSoft
  */
-void libsiedler2::baseArchivItem_Sound_Wave::clear(void)
+void libsiedler2::baseArchivItem_Sound_Wave::clear()
 {
     data.clear();
 }

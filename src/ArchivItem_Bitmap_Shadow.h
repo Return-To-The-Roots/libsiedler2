@@ -33,7 +33,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p baseArchivItem_Bitmap_Shadow.
-            baseArchivItem_Bitmap_Shadow(void);
+            baseArchivItem_Bitmap_Shadow();
 
             /// Kopierkonstruktor von @p baseArchivItem_Bitmap_Shadow.
             baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item);
@@ -42,7 +42,7 @@ namespace libsiedler2
             baseArchivItem_Bitmap_Shadow(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_Shadow.
-            ~baseArchivItem_Bitmap_Shadow(void) override;
+            ~baseArchivItem_Bitmap_Shadow() override;
 
             /// lädt die Bilddaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette) override;
@@ -56,7 +56,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Bitmap_Shadow.
-            ArchivItem_Bitmap_Shadow(void) {}
+            ArchivItem_Bitmap_Shadow() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap_Shadow.
             ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item) : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item) {}

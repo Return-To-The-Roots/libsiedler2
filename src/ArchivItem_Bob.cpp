@@ -42,7 +42,7 @@
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob(void) : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
 {
     setBobType(BOBTYPE_BOB);
 }
@@ -70,7 +70,7 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem
  *
  *  @author FloSoft
  */
-libsiedler2::ArchivItem_Bob::~ArchivItem_Bob(void)
+libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
 {}
 
 ///////////////////////////////////////////////////////////////////////////////

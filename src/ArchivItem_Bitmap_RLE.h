@@ -33,7 +33,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p baseArchivItem_Bitmap_RLE.
-            baseArchivItem_Bitmap_RLE(void);
+            baseArchivItem_Bitmap_RLE();
 
             /// Kopierkonstruktor von @p baseArchivItem_Bitmap_RLE.
             baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item);
@@ -42,7 +42,7 @@ namespace libsiedler2
             baseArchivItem_Bitmap_RLE(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_RLE.
-            ~baseArchivItem_Bitmap_RLE(void) override;
+            ~baseArchivItem_Bitmap_RLE() override;
 
             /// lädt die Bilddaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette) override;
@@ -56,7 +56,7 @@ namespace libsiedler2
     {
         public:
             /// Konstruktor von @p ArchivItem_Bitmap_RLE.
-            ArchivItem_Bitmap_RLE(void) {}
+            ArchivItem_Bitmap_RLE() {}
 
             /// Kopierkonstruktor von @p ArchivItem_Bitmap_RLE.
             ArchivItem_Bitmap_RLE(const ArchivItem_Bitmap_RLE& item) : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item) {}
