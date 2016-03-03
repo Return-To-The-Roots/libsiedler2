@@ -33,7 +33,7 @@ namespace libsiedler2
             baseArchivItem_Sound(void);
 
             /// virtueller Destruktor von @p ArchivItem_Sound.
-            virtual ~baseArchivItem_Sound(void);
+            ~baseArchivItem_Sound(void) override;
 
             /// setzt den Typ des Sounds.
             void setType(SOUNDTYPES type);

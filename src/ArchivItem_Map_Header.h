@@ -32,7 +32,7 @@ namespace libsiedler2
             /// Konstruktor von @p ArchivItem_Map_Header.
             ArchivItem_Map_Header(void);
             /// Destruktor von @p ArchivItem_Map_Header.
-            ~ArchivItem_Map_Header(void);
+            ~ArchivItem_Map_Header(void) override;
 
             /// lädt den Mapheader aus einer Datei.
             int load(std::istream& file);

@@ -39,7 +39,7 @@ namespace libsiedler2
             baseArchivItem_Bitmap_Raw(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_Raw.
-            ~baseArchivItem_Bitmap_Raw(void);
+            ~baseArchivItem_Bitmap_Raw(void) override;
 
             /// lädt die Bilddaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette) override;

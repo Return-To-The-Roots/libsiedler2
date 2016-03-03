@@ -34,7 +34,7 @@ namespace libsiedler2
             /// Kopierkonstruktor von @p ArchivItem_Map.
             ArchivItem_Map(const ArchivItem_Map& item);
             /// Destruktor von @p ArchivItem_Map.
-            ~ArchivItem_Map(void);
+            ~ArchivItem_Map(void) override;
 
             /// lädt die Mapdaten aus einer Datei.
             virtual int load(std::istream& file, bool only_header);

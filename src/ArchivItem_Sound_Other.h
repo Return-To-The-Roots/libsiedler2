@@ -32,7 +32,7 @@ namespace libsiedler2
             baseArchivItem_Sound_Other(void);
 
             /// Destruktor von @p baseArchivItem_Sound_Other.
-            virtual ~baseArchivItem_Sound_Other(void);
+            ~baseArchivItem_Sound_Other(void) override;
 
             /// lädt die Daten aus einer Datei.
             int load(std::istream& file, unsigned int length) override;

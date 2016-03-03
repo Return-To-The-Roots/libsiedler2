@@ -32,7 +32,7 @@ namespace libsiedler2
             baseArchivItem_Sound_Wave(void);
 
             /// Destruktor von @p baseArchivItem_Sound_Wave.
-            ~baseArchivItem_Sound_Wave(void);
+            ~baseArchivItem_Sound_Wave(void) override;
 
             /// lädt die Wave-Daten aus einer Datei.
             int load(std::istream& file, unsigned int length) override;

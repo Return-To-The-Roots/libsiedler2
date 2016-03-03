@@ -42,7 +42,7 @@ namespace libsiedler2
             ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p baseArchivItem_Bitmap_Player.
-            ~ArchivItem_Bitmap_Player(void);
+            ~ArchivItem_Bitmap_Player(void) override;
 
             /// lädt die Bilddaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette) override;

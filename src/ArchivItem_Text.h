@@ -32,7 +32,7 @@ namespace libsiedler2
             ArchivItem_Text(void);
 
             /// Destruktor von @p ArchivItem_Text.
-            ~ArchivItem_Text(void);
+            ~ArchivItem_Text(void) override;
 
             /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
             ArchivItem_Text(std::istream& file, bool conversion = true, unsigned int length = 0);

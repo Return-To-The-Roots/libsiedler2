@@ -37,7 +37,7 @@ namespace libsiedler2
     public:
         ArchivItem_BitmapBase();
         ArchivItem_BitmapBase(const ArchivItem_BitmapBase&);
-        virtual ~ArchivItem_BitmapBase();
+        ~ArchivItem_BitmapBase() override;
 
         ArchivItem_BitmapBase& operator=(const ArchivItem_BitmapBase& item);
 

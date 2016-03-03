@@ -32,7 +32,7 @@ namespace libsiedler2
             /// Konstruktor von @p baseArchivItem_Raw.
             baseArchivItem_Raw(void);
             /// Destruktor von @p baseArchivItem_Raw.
-            ~baseArchivItem_Raw(void);
+            ~baseArchivItem_Raw(void) override;
 
             /// lädt die Rawdaten aus einer Datei.
             int load(std::istream& file, unsigned int length = 0xFFFFFFFF);

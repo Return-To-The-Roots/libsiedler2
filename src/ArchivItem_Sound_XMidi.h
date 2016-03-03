@@ -36,7 +36,7 @@ namespace libsiedler2
             baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item);
 
             /// Destruktor von @p baseArchivItem_Sound_XMidi.
-            ~baseArchivItem_Sound_XMidi(void);
+            ~baseArchivItem_Sound_XMidi(void) override;
 
             baseArchivItem_Sound_XMidi& operator=(const baseArchivItem_Sound_XMidi& item);
 

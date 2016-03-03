@@ -39,7 +39,7 @@ namespace libsiedler2
             ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette);
 
             /// Destruktor von @p ArchivItem_Bob.
-            ~ArchivItem_Bob(void);
+            ~ArchivItem_Bob(void) override;
 
             /// lädt die Bobdaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette);
