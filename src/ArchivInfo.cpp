@@ -21,6 +21,7 @@
 #include "ArchivInfo.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include <stdexcept>
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
@@ -129,6 +130,14 @@ void ArchivInfo::clear()
  *
  *  @author FloSoft
  */
+
+void ArchivInfo::set(size_t index, ArchivItem* item)
+{
+   if(index >= size())
+       throw std::range_error("Index out of range");
+   delete data[index];
+   data[index] = item;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /**

@@ -29,6 +29,7 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <iostream>
+#include <stdexcept>
 
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
@@ -154,8 +155,9 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 
                 // Daten von Item auswerten
                 palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
+                if(palette->load(lbm.getStream(), false) != 0)
+                    return 18;
                 items.set(1, palette);
-                palette->load(lbm.getStream(), false);
             } break;
             case 0x424F4459: // "BODY"
             {

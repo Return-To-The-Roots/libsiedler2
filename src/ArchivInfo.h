@@ -57,14 +57,7 @@ namespace libsiedler2
 
             /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
             /// Transfers ownership!
-            inline void set(size_t index, ArchivItem* item)
-            {
-               if(index < size()){
-                   delete data[index];
-                   data[index] = item;
-               }else
-                   delete item;
-            }
+            void set(size_t index, ArchivItem* item);
 
             /// kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
             void setC(size_t index, const ArchivItem& item);
@@ -149,7 +142,7 @@ namespace libsiedler2
             /// Kopierfunktion von @p ArchivInfo.
             void copy(size_t to, size_t from, size_t count, const ArchivInfo& source);
 
-        protected:
+        private:
             std::vector<ArchivItem*> data;   ///< die Elemente.
     };
 }

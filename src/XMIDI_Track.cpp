@@ -32,13 +32,6 @@
 static const int PATCH_VOL_PAN_BIAS = 5;
 static GammaTable<unsigned char> VolumeCurve(128);
 
-/*XMIDI_Track::first_state::first_state()
-{
-    std::fill(patch.begin(), patch.end(), NULL);
-    std::fill(bank.begin(), bank.end(), NULL);
-    std::fill(pan.begin(), pan.end(), NULL);
-    std::fill(vol.begin(), vol.end(), NULL);
-}*/
 
 XMIDI_Track::XMIDI_Track(MIDI_Track* track) : track(track)
 {
@@ -248,22 +241,21 @@ int XMIDI_Track::ConvertNote(const int time, const unsigned char status, const i
 int XMIDI_Track::ConvertEvent(const int time, const unsigned char status, const int size, first_state& fs)
 {
     //   Uint32 delta=0;
-    int data;
-
-    data = track->xmid_data[position++];
-
+    int data = track->xmid_data[position++];
+    MidiStatus curStatus = MidiStatus(status >> 4);
+    unsigned char statValue = status & 0xF;
     // Bank changes are handled here
-    if ((status >> 4) == 0xB && data == 0)
+    if(curStatus == MIDI_STATUS_CONTROLLER && data == 0)
     {
-        data = track->xmid_data[position++];
-
-        bank127[status & 0xF] = false;
+        // Skip byte
+        position++;
+        bank127[statValue] = false;
 
         return 2;
     }
 
     // Disable patch changes on Track 10 is doing a conversion
-    else if ((status >> 4) == 0xC && (status & 0xF) == 9)
+    else if (curStatus == MIDI_STATUS_PROG_CHANGE && statValue == 9)
     {
         return size;
     }
@@ -274,26 +266,26 @@ int XMIDI_Track::ConvertEvent(const int time, const unsigned char status, const 
     current->data[0] = data;
 
     // Check for patch change, and update fs if req
-    if ((status >> 4) == 0xC)
+    if (curStatus == MIDI_STATUS_PROG_CHANGE)
     {
-        if (!fs.patch[status & 0xF] || fs.patch[status & 0xF]->time > time)
-            fs.patch[status & 0xF] = current;
+        if (!fs.patch[statValue] || fs.patch[statValue]->time > time)
+            fs.patch[statValue] = current;
     }
 
     // Controllers
-    else if ((status >> 4) == 0xB)
+    else if (curStatus == MIDI_STATUS_CONTROLLER)
     {
         // Volume
         if (current->data[0] == 7)
         {
-            if (!fs.vol[status & 0xF] || fs.vol[status & 0xF]->time > time)
-                fs.vol[status & 0xF] = current;
+            if (!fs.vol[statValue] || fs.vol[statValue]->time > time)
+                fs.vol[statValue] = current;
         }
         // Pan
         else if (current->data[0] == 10)
         {
-            if (!fs.pan[status & 0xF] || fs.pan[status & 0xF]->time > time)
-                fs.pan[status & 0xF] = current;
+            if (!fs.pan[statValue] || fs.pan[statValue]->time > time)
+                fs.pan[statValue] = current;
         }
     }
 
@@ -303,7 +295,7 @@ int XMIDI_Track::ConvertEvent(const int time, const unsigned char status, const 
     current->data[1] = track->xmid_data[position++];
 
     // Volume modify the volume controller, only if converting
-    if ((current->status >> 4) == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
+    if (curStatus == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
         current->data[1] = VolumeCurve[current->data[1]];
 
     return 2;

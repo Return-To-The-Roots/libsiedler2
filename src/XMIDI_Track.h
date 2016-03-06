@@ -82,7 +82,7 @@ class XMIDI_Track
         MIDI_Event* current;
         size_t position;
 
-        enum
+        enum MidiStatus
         {
             MIDI_STATUS_NOTE_OFF    = 0x8,
             MIDI_STATUS_NOTE_ON     = 0x9,
