@@ -34,7 +34,7 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteLBM(const std::string& file, const ArchivInfo& items)
+int libsiedler2::loader::WriteLBM(const std::string& file, const ArchivInfo&  /*items*/)
 {
     if(file.empty())
         return 1;

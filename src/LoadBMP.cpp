@@ -43,8 +43,6 @@
 template<class T_FStream>
 static inline void LoadBMP_ReadLine(T_FStream& bmp,
                                     unsigned short y,
-                                    unsigned int bmih_size,
-                                    unsigned int size,
                                     unsigned int width,
                                     unsigned char bbp,
                                     libsiedler2::baseArchivItem_Bitmap& bitmap,
@@ -226,7 +224,6 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     bitmap->tex_alloc();
 
     unsigned char bbp = (bmih.bbp / 8);
-    unsigned int size = bmih.width * bmih.height * bbp;
     std::vector<unsigned char> buffer(bmih.width * bbp);
 
     // Bitmap Pixel einlesen
@@ -234,13 +231,13 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     {
         // Bottom-Up, "von unten nach oben"
         for(int y = bmih.height - 1; y >= 0; --y)
-            LoadBMP_ReadLine(bmp, y, bmih.size, size, bmih.width, bbp, *bitmap, buffer);
+            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, *bitmap, buffer);
     }
     else
     {
         // Top-Down, "von oben nach unten"
         for(int y = 0; y < bmih.height; ++y)
-            LoadBMP_ReadLine(bmp, y, bmih.size, size, bmih.width, bbp, *bitmap, buffer);
+            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, *bitmap, buffer);
     }
 
     // Bitmap zuweisen

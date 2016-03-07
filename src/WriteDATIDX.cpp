@@ -35,7 +35,7 @@
  *
  *  @author FloSoft
  */
-int libsiedler2::loader::WriteDATIDX(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
+int libsiedler2::loader::WriteDATIDX(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo&  /*items*/)
 {
     if(file.empty() || palette == NULL)
         return 1;
