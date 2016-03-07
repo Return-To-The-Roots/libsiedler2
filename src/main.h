@@ -37,7 +37,7 @@
 #        include <crtdbg.h>
 #    endif // _WIN32 && _DEBUG
 #else
-#    include <assert.h>
+#    include <cassert>
 #endif // !_WIN32
 
 #include <cstdio>

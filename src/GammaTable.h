@@ -17,7 +17,7 @@
 #ifndef GAMMATABLE_H_
 #define GAMMATABLE_H_
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 
 template <typename T> class GammaTable
