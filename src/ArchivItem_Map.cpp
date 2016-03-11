@@ -119,12 +119,30 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     {
         BlockHeader bHeader;
         fs >> bHeader.id >> bHeader.unknown >> bHeader.w >> bHeader.h >> bHeader.multiplier >> bHeader.blockLength;
-        if(bHeader.id != 0x2710 || bHeader.unknown != 0 || bHeader.w != w || bHeader.h != h || bHeader.blockLength != static_cast<unsigned>(w)*static_cast<unsigned>(h))
+        // Header id must match
+        if(bHeader.id != 0x2710 || bHeader.unknown != 0)
+        {
+            assert(false);
+            return 3;
+        }
+        // Blocksize must match extents
+        if(bHeader.blockLength != static_cast<unsigned>(w)*static_cast<unsigned>(h))
+        {
+            assert(false);
+            return 4;
+        }
+        // Multiplier of 0 means unused block and implies no data
+        if(bHeader.multiplier == 0)
+        {
+            assert(bHeader.blockLength == 0);
+            continue;
+        }
+        // If there is data, size must match
+        if(bHeader.w != w || bHeader.h != h)
         {
             assert(false);
             return 5;
         }
-        assert(bHeader.multiplier == 1);
 
         if(i == 0 && header->hasExtraWord())
         {
