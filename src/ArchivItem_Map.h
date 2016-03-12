@@ -28,18 +28,26 @@ namespace libsiedler2
     /// Klasse für eine Mapfile.
     class ArchivItem_Map : public ArchivItem, public ArchivInfo
     {
-        public:
-            /// Konstruktor von @p ArchivItem_Map.
-            ArchivItem_Map();
-            /// Kopierkonstruktor von @p ArchivItem_Map.
-            ArchivItem_Map(const ArchivItem_Map& item);
-            /// Destruktor von @p ArchivItem_Map.
-            ~ArchivItem_Map() override;
+    public:
+        struct ExtraAnimalInfo
+        {
+            uint8_t id;
+            uint16_t x, y;
+        };
 
-            /// lädt die Mapdaten aus einer Datei.
-            virtual int load(std::istream& file, bool only_header);
-            /// schreibt die Mapdaten in eine Datei.
-            virtual int write(std::ostream& file) const;
+        /// Konstruktor von @p ArchivItem_Map.
+        ArchivItem_Map();
+        /// Kopierkonstruktor von @p ArchivItem_Map.
+        ArchivItem_Map(const ArchivItem_Map& item);
+        /// Destruktor von @p ArchivItem_Map.
+        ~ArchivItem_Map() override;
+
+        /// lädt die Mapdaten aus einer Datei.
+        virtual int load(std::istream& file, bool only_header);
+        /// schreibt die Mapdaten in eine Datei.
+        virtual int write(std::ostream& file) const;
+
+        std::vector<ExtraAnimalInfo> extraInfo;
     };
 }
 

@@ -35,6 +35,8 @@
  *  @author FloSoft
  */
 
+const char VALID_ID[10] = { 'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0' };
+
 ///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p ArchivItem_Map_Header.
@@ -73,7 +75,6 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     if(!file)
         return 1;
 
-    const char VALID_ID[10] = {'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0'};
     char id[10];
 
     libendian::LittleEndianIStreamRef fs(file);
@@ -149,7 +150,52 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    return 256;
+    libendian::LittleEndianOStreamRef fs(file);
+    // Signatur
+    fs << VALID_ID;
+
+    // Name einlesen
+    char name[24];
+    std::string tmpName = name_.substr(0, 23);
+    AnsiToOem(tmpName.c_str(), name);
+    name[tmpName.length()] = '\0';
+    fs << name;
+
+    // GFX-Set einlesen
+    fs << gfxset;
+
+    // Spielerzahl einlesen
+    fs << player;
+
+    // Autor einlesen
+    char author[20];
+    tmpName = author_.substr(0, 19);
+    AnsiToOem(tmpName.c_str(), author);
+    name[tmpName.length()] = '\0';
+    fs << author;
+
+    std::vector<uint16_t> hqPos(7 * 2);
+    fs << hqPos; // HQPos: 7 * X+Y
+
+    uint8_t isInvalid = 0;
+    fs << isInvalid; // This should be checked, but it seems some editors wrongly leave it set
+
+    std::vector<uint8_t> playerFaces(7);
+    fs << playerFaces;
+    // Water and land masses, 250 structs with 9 bytes size: Type ID (1 byte): 0 = unused, 1 = land, 2 = water; X/Y (2 bytes each), Total mass (4 bytes)
+    std::vector<uint8_t> waterLandMasses(250 * 9);
+    fs << waterLandMasses;
+
+    // Header sig
+    fs << uint16_t(0x2711) << uint32_t(0);
+
+    // Breite einlesen
+    fs << width;
+
+    // Höhe einlesen
+    fs << height;
+
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

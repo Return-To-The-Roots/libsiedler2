@@ -244,8 +244,8 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteLBM(file, items);*/
         else if(extension == "lst")
             ret = loader::WriteLST(file, palette, items);
-        /*else if(strncmp(endung, "swd", 3)==0 || strncmp(endung, "wld", 3)==0)
-            ret = loader::WriteMAP(file, items);*/
+        else if(extension == "swd" || extension == "wld")
+            ret = loader::WriteMAP(file, items);
         else if(extension == "ger" || extension == "eng")
             ret = loader::WriteTXT(file, items, false);
         else if(extension == "ini")

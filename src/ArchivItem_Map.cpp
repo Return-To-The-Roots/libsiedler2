@@ -156,6 +156,18 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         set(i + 1, layer);
     }
 
+    extraInfo.clear();
+
+    while(true)
+    {
+        ExtraAnimalInfo info;
+        fs >> info.id;
+        if(info.id == 0xFF)
+            break;
+        fs >> info.x >> info.y;
+        extraInfo.push_back(info);
+    }
+
     return 0;
 }
 
@@ -174,7 +186,35 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    /// @todo Schreiben der Mapdaten.
+    const ArchivItem_Map_Header* header = dynamic_cast<const ArchivItem_Map_Header*>(get(0));
 
-    return 256;
+    if(!header)
+        return 2;
+    if(header->write(file) != 0)
+        return 3;
+
+    libendian::LittleEndianOStreamRef fs(file);
+    for(unsigned int i = 0; i < 14; ++i)
+    {
+        const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i + 1));
+        fs << uint16_t(0x2710) << uint32_t(0);
+        if(layer)
+        {
+            fs << uint16_t(header->getWidth()) << uint16_t(header->getHeight()) << uint16_t(1);
+            assert(layer->getData().size() == header->getWidth() * header->getHeight());
+            if(layer->write(file, true) != 0)
+                return 4 + i;
+        } else
+        {
+            fs << uint16_t(0) << uint16_t(0) << uint16_t(0) << uint32_t(0);
+        }
+    }
+
+    for(std::vector<ExtraAnimalInfo>::const_iterator it = extraInfo.begin(); it != extraInfo.end(); ++it)
+    {
+        fs << it->id << it->x << it->y;
+    }
+    fs << uint8_t(0xFF);
+
+    return 0;
 }
