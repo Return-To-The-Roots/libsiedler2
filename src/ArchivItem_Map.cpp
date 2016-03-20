@@ -52,18 +52,6 @@ libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
 
 ///////////////////////////////////////////////////////////////////////////////
 /**
- *  Kopierkonstruktor von @p ArchivItem_Map.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
-libsiedler2::ArchivItem_Map::ArchivItem_Map(const ArchivItem_Map& item) : ArchivItem(item), ArchivInfo(item)
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/**
  *  Destruktor von @p ArchivItem_Map.
  *
  *  @author FloSoft
