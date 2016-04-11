@@ -44,24 +44,10 @@ namespace libsiedler2{
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivInfo.
- *
- *  @author FloSoft
- */
 ArchivInfo::ArchivInfo()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p ArchivInfo.
- *
- *  @param[in] info Quellitem
- *
- *  @author FloSoft
- */
 ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(info.data)
 {
     for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
@@ -224,17 +210,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @param[in] index Index des zu liefernden Eintrags
  *
  *  @return Bei Erfolg ArchivItem, ansonsten NULL
- *
- *  @author FloSoft
- */
-
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Zuweisungsoperator von @p ArchivInfo.
- *
- *  @param[in] info Quellitem
- *
- *  @return Referenz auf this
  *
  *  @author FloSoft
  */

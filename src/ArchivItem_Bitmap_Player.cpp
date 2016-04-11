@@ -60,12 +60,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Bitmap_Player.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
 {
     setBobType(BOBTYPE_BITMAP_PLAYER);
@@ -88,12 +82,6 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(std::istream& fi
     load(file, palette);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p ArchivItem_Bitmap_Player.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player()
 {
     tex_clear();

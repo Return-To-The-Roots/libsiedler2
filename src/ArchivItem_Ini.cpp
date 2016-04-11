@@ -37,37 +37,17 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Ini.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(), ArchivInfo()
 {
     setBobType(BOBTYPE_INI);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Ini.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(), ArchivInfo()
 {
     setName(name);
     setBobType(BOBTYPE_INI);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p ArchivItem_Ini.
- *
- *  @param[in] info Quellitem
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : ArchivItem( info ), ArchivInfo( info )
 {
 }

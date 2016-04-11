@@ -36,12 +36,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Font.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
 {
     setBobType(BOBTYPE_BOB);
@@ -64,12 +58,6 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem
     load(file, palette);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p ArchivItem_Bob.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
 {}
 

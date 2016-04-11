@@ -42,25 +42,11 @@ namespace libsiedler2 { class ArchivItem_Palette; }
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p baseArchivItem_Bitmap_Raw.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw()
 {
     setBobType(BOBTYPE_BITMAP_RAW);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p baseArchivItem_Bitmap_Raw.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item) : baseArchivItem_Bitmap(item)
 {
     setBobType(BOBTYPE_BITMAP_RAW);
@@ -82,12 +68,6 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(std::istream& 
     load(file, palette);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p baseArchivItem_Bitmap_Raw.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw()
 {
 }

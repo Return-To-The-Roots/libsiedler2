@@ -28,10 +28,8 @@ namespace libsiedler2
     class ArchivItem_Text : public ArchivItem
     {
         public:
-            /// Konstruktor von @p ArchivItem_Text.
             ArchivItem_Text();
 
-            /// Destruktor von @p ArchivItem_Text.
             ~ArchivItem_Text() override;
 
             /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.

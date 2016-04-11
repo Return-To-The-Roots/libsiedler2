@@ -51,12 +51,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Font.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(), ArchivInfo(), dx(0), dy(0)
 {
     setBobType(BOBTYPE_FONT);

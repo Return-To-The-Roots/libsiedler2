@@ -44,7 +44,6 @@ namespace libsiedler2
     class ArchivItem_Palette : public ArchivItem
     {
         public:
-            /// Konstruktor von @p ArchivItem_Palette.
             ArchivItem_Palette();
 
             /// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.

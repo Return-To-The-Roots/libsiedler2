@@ -52,14 +52,6 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase() : ArchivItem()
     format_ = FORMAT_UNKNOWN;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p ArchivItem_BitmapBase.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem( item )
 {
     width_ = item.width_;
@@ -80,12 +72,6 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
     setFormat(item.format_);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  virtueller Destruktor von @p ArchivItem_BitmapBase.
- *
- *  @author FloSoft
- */
 ArchivItem_BitmapBase::~ArchivItem_BitmapBase()
 {
     tex_clear();

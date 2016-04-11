@@ -47,24 +47,12 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem::ArchivItem()
 {
     bobtype_ = BOBTYPE_NONE;
     setName("untitled");
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  virtueller Destruktor von @p ArchivItem.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem::~ArchivItem()
 {
 }

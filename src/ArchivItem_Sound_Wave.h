@@ -28,10 +28,8 @@ namespace libsiedler2
     class baseArchivItem_Sound_Wave : public virtual baseArchivItem_Sound
     {
         public:
-            /// Konstruktor von @p baseArchivItem_Sound_Wave.
             baseArchivItem_Sound_Wave();
 
-            /// Destruktor von @p baseArchivItem_Sound_Wave.
             ~baseArchivItem_Sound_Wave() override;
 
             /// lädt die Wave-Daten aus einer Datei.
@@ -60,10 +58,8 @@ namespace libsiedler2
     class ArchivItem_Sound_Wave : public virtual baseArchivItem_Sound_Wave, public ArchivItem_Sound
     {
         public:
-            /// Konstruktor von @p ArchivItem_Sound_Wave.
             ArchivItem_Sound_Wave() : baseArchivItem_Sound_Wave() {}
 
-            /// Kopierkonstruktor von @p ArchivItem_Sound_Wave.
             ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound_Wave(item) {}
     };
 }

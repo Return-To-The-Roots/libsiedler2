@@ -29,9 +29,7 @@ namespace libsiedler2
     class ArchivItem_Map_Header : public ArchivItem
     {
         public:
-            /// Konstruktor von @p ArchivItem_Map_Header.
             ArchivItem_Map_Header();
-            /// Destruktor von @p ArchivItem_Map_Header.
             ~ArchivItem_Map_Header() override;
 
             /// lädt den Mapheader aus einer Datei.

@@ -32,7 +32,6 @@ namespace libsiedler2
     class ArchivItem_Font : public ArchivItem, public ArchivInfo
     {
         public:
-            /// Konstruktor von @p ArchivItem_Font.
             ArchivItem_Font();
 
             /// lädt die Fontdaten aus einer Datei.

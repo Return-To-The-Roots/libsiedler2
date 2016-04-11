@@ -30,10 +30,8 @@ namespace libsiedler2
     class ArchivInfo
     {
         public:
-            /// Konstruktor von @p ArchivInfo.
             ArchivInfo();
 
-            /// Kopierkonstruktor von @p ArchivInfo.
             ArchivInfo(const ArchivInfo& info);
 
             /// Destruktor von @p ArchivInfo, räumt automatisch auf.
@@ -124,19 +122,16 @@ namespace libsiedler2
                 return data.empty();
             }
 
-            /// Index-Operator von @p ArchivInfo.
             inline const ArchivItem* operator[](size_t index) const
             {
                 return get(index);
             }
 
-            /// Index-Operator von @p ArchivInfo.
             inline ArchivItem* operator[](size_t index)
             {
                 return get(index);
             }
 
-            /// Zuweisungsoperator von @p ArchivInfo.
             ArchivInfo& operator=(const ArchivInfo& info);
 
             /// Kopierfunktion von @p ArchivInfo.

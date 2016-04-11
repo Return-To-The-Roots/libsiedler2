@@ -29,10 +29,7 @@ namespace libsiedler2
     class baseArchivItem_Sound : public ArchivItem
     {
         public:
-            /// Konstruktor von @p ArchivItem_Sound.
             baseArchivItem_Sound();
-
-            /// virtueller Destruktor von @p ArchivItem_Sound.
             ~baseArchivItem_Sound() override;
 
             /// setzt den Typ des Sounds.

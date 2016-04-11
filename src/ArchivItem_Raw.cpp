@@ -33,24 +33,12 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p baseArchivItem_Raw.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
     : ArchivItem()
 {
     setBobType(BOBTYPE_RAW);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p baseArchivItem_Raw.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
 {}
 

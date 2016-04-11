@@ -35,23 +35,11 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p baseArchivItem_Sound_Wave.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave() : baseArchivItem_Sound()
 {
     setType(SOUNDTYPE_WAVE);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p baseArchivItem_Sound_Wave.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
 {}
 

@@ -28,10 +28,8 @@ namespace libsiedler2
     class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
     {
         public:
-            /// Konstruktor von @p baseArchivItem_Sound_Other.
             baseArchivItem_Sound_Other();
 
-            /// Destruktor von @p baseArchivItem_Sound_Other.
             ~baseArchivItem_Sound_Other() override;
 
             /// lädt die Daten aus einer Datei.
@@ -54,10 +52,8 @@ namespace libsiedler2
     class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
     {
         public:
-            /// Konstruktor von @p ArchivItem_Sound_Other.
             ArchivItem_Sound_Other() : baseArchivItem_Sound_Other() {}
 
-            /// Kopierkonstruktor von @p ArchivItem_Sound_Other.
             ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound_Other(item) {}
     };
 }

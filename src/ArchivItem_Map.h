@@ -36,9 +36,7 @@ namespace libsiedler2
             uint16_t x, y;
         };
 
-        /// Konstruktor von @p ArchivItem_Map.
         ArchivItem_Map();
-        /// Destruktor von @p ArchivItem_Map.
         ~ArchivItem_Map() override;
 
         /// lädt die Mapdaten aus einer Datei.

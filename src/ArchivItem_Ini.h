@@ -32,13 +32,10 @@ namespace libsiedler2
     class ArchivItem_Ini : public ArchivItem, public ArchivInfo
     {
         public:
-            /// Konstruktor von @p ArchivItem_Ini.
             ArchivItem_Ini();
 
-            /// Konstruktor von @p ArchivItem_Ini.
             ArchivItem_Ini(const std::string& name);
 
-            /// Kopierkonstruktor von @p ArchivItem_Ini.
             ArchivItem_Ini(const ArchivItem_Ini& item);
 
             /// lädt die INI-Daten aus einer Datei.

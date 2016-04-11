@@ -29,13 +29,10 @@ namespace libsiedler2
     class baseArchivItem_Sound_Midi : public virtual baseArchivItem_Sound
     {
         public:
-            /// Konstruktor von @p baseArchivItem_Sound_Midi.
             baseArchivItem_Sound_Midi();
 
-            /// Kopierkonstruktor von @p baseArchivItem_Sound_Midi.
             baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item);
 
-            /// Destruktor von @p baseArchivItem_Sound_Midi.
             ~baseArchivItem_Sound_Midi() override;
 
             baseArchivItem_Sound_Midi& operator=(const baseArchivItem_Sound_Midi& item);
@@ -55,10 +52,8 @@ namespace libsiedler2
     class ArchivItem_Sound_Midi : public virtual baseArchivItem_Sound_Midi, public ArchivItem_Sound
     {
         public:
-            /// Konstruktor von @p ArchivItem_Sound_Midi.
             ArchivItem_Sound_Midi() : baseArchivItem_Sound_Midi() {}
 
-            /// Kopierkonstruktor von @p ArchivItem_Sound_Midi.
             ArchivItem_Sound_Midi(const ArchivItem_Sound_Midi& item) : baseArchivItem_Sound_Midi(item) {}
     };
 }

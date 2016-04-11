@@ -51,23 +51,11 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Text.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem()
 {
     setBobType(BOBTYPE_TEXT);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p ArchivItem_Text.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Text::~ArchivItem_Text()
 {}
 

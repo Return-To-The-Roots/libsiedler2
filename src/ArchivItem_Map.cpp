@@ -37,12 +37,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Map.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
 {
     setBobType(BOBTYPE_MAP);
@@ -50,12 +44,6 @@ libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
     alloc(16);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p ArchivItem_Map.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Map::~ArchivItem_Map()
 {
 }

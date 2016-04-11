@@ -36,12 +36,6 @@ namespace libsiedler2{
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p baseArchivItem_Sound_XMidi.
- *
- *  @author FloSoft
- */
 baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound()
 {
     setType(SOUNDTYPE_XMIDI);
@@ -49,26 +43,12 @@ baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound(
     tracks = 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p ArchivItem_Sound_XMidi.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
 baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound( item )
 {
     tracks = item.tracks;
     tracklist = item.tracklist;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p ArchivItem_Sound_XMidi.
- *
- *  @author FloSoft
- */
 baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi()
 {
 }

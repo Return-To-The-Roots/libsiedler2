@@ -43,25 +43,11 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p baseArchivItem_Bitmap_RLE.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE()
 {
     setBobType(BOBTYPE_BITMAP_RLE);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p baseArchivItem_Bitmap_RLE.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item) : baseArchivItem_Bitmap(item)
 {
     setBobType(BOBTYPE_BITMAP_RLE);
@@ -83,12 +69,6 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(std::istream& 
     load(file, palette);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p baseArchivItem_Bitmap_RLE.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE()
 {
 }

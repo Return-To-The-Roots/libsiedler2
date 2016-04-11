@@ -28,10 +28,8 @@ namespace libsiedler2
     class ArchivItem
     {
         public:
-            /// Konstruktor von @p ArchivItem.
             ArchivItem();
 
-            /// virtueller Destruktor von @p ArchivItem.
             virtual ~ArchivItem();
 
             /// setzt den Bobtype des Items.

@@ -35,24 +35,12 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Sound.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound() : ArchivItem()
 {
     setBobType(BOBTYPE_SOUND);
     setType(SOUNDTYPE_NONE);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  virtueller Destruktor von @p ArchivItem_Sound.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
 {
 }

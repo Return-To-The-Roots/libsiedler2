@@ -29,9 +29,7 @@ namespace libsiedler2
     class baseArchivItem_Raw : public ArchivItem
     {
         public:
-            /// Konstruktor von @p baseArchivItem_Raw.
             baseArchivItem_Raw();
-            /// Destruktor von @p baseArchivItem_Raw.
             ~baseArchivItem_Raw() override;
 
             /// lädt die Rawdaten aus einer Datei.
@@ -55,9 +53,7 @@ namespace libsiedler2
     class ArchivItem_Raw : public virtual baseArchivItem_Raw
     {
         public:
-            /// Konstruktor von @p baseArchivItem_Raw.
             ArchivItem_Raw() : baseArchivItem_Raw() {}
-            /// Kopierkonstruktor von @p baseArchivItem_Raw.
             ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
     };
 }

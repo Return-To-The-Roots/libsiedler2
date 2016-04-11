@@ -37,12 +37,6 @@
 
 const char VALID_ID[10] = { 'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0' };
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Map_Header.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
     : ArchivItem(),
       width(0), height(0), gfxset(0), player(0), hasExtraWord_(false)
@@ -50,12 +44,6 @@ libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
     setBobType(BOBTYPE_MAP_HEADER);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p ArchivItem_Map_Header.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header()
 {
 }

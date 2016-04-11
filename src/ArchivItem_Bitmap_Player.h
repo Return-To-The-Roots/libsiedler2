@@ -33,7 +33,6 @@ namespace libsiedler2
     class ArchivItem_Bitmap_Player : public virtual ArchivItem_BitmapBase
     {
         public:
-            /// Konstruktor von @p baseArchivItem_Bitmap_Player.
             ArchivItem_Bitmap_Player();
 
             ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& other): ArchivItem_BitmapBase(other), tex_pdata(other.tex_pdata) {}
@@ -41,7 +40,6 @@ namespace libsiedler2
             /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
             ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette);
 
-            /// Destruktor von @p baseArchivItem_Bitmap_Player.
             ~ArchivItem_Bitmap_Player() override;
 
             ArchivItem_Bitmap_Player& operator=(const ArchivItem_Bitmap_Player& other);

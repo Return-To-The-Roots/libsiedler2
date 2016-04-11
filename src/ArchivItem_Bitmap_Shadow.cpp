@@ -43,25 +43,11 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p baseArchivItem_Bitmap_Shadow.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow()
 {
     setBobType(BOBTYPE_BITMAP_SHADOW);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Kopierkonstruktor von @p baseArchivItem_Bitmap_Shadow.
- *
- *  @param[in] item Quellitem
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item) : baseArchivItem_Bitmap(item)
 {
     setBobType(BOBTYPE_BITMAP_SHADOW);
@@ -83,12 +69,6 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(std::ist
     load(file, palette);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Destruktor von @p baseArchivItem_Bitmap_Shadow.
- *
- *  @author FloSoft
- */
 libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow()
 {
 }

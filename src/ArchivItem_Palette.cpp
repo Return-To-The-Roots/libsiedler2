@@ -42,12 +42,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- *  Konstruktor von @p ArchivItem_Palette.
- *
- *  @author FloSoft
- */
 libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
 {
     setBobType(BOBTYPE_PALETTE);
