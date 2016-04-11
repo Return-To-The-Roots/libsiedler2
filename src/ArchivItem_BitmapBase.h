@@ -102,20 +102,20 @@ namespace libsiedler2
         static unsigned short tex_pow2(unsigned short n);
 
     protected:
-        unsigned short width_;       ///< Breite des Bildes.
-        unsigned short height_;      ///< Höhe des Bildes.
+        unsigned short width_;       /// Breite des Bildes.
+        unsigned short height_;      /// Höhe des Bildes.
 
-        short nx_;                   ///< X-Nullpunkt.
-        short ny_;                   ///< Y-Nullpunkt.
+        short nx_;                   /// X-Nullpunkt.
+        short ny_;                   /// Y-Nullpunkt.
 
-        unsigned short tex_width_;   ///< Breite der Textur.
-        unsigned short tex_height_;  ///< Höhe der Textur.
+        unsigned short tex_width_;   /// Breite der Textur.
+        unsigned short tex_height_;  /// Höhe der Textur.
 
-        unsigned short tex_bpp_;     ///< Bytebreite der Textur pro Pixel.
-        std::vector<unsigned char> tex_data_;    ///< Die Texturdaten.
+        unsigned short tex_bpp_;     /// Bytebreite der Textur pro Pixel.
+        std::vector<unsigned char> tex_data_;    /// Die Texturdaten.
 
-        const ArchivItem_Palette* palette_; ///< Die Palette.
-        TEXTURFORMAT format_; ///< Das Texturformat.
+        const ArchivItem_Palette* palette_; /// Die Palette.
+        TEXTURFORMAT format_; /// Das Texturformat.
     };
 
 } // namespace libsiedler2

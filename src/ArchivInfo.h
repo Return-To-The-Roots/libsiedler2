@@ -143,7 +143,7 @@ namespace libsiedler2
             void copy(size_t to, size_t from, size_t count, const ArchivInfo& source);
 
         private:
-            std::vector<ArchivItem*> data;   ///< die Elemente.
+            std::vector<ArchivItem*> data;   /// die Elemente.
     };
 }
 

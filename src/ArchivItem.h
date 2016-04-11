@@ -59,8 +59,8 @@ namespace libsiedler2
             }
 
         protected:
-            BOBTYPES bobtype_; ///< Bobtype des Elements.
-            std::string name_; ///< Name des Elements.
+            BOBTYPES bobtype_; /// Bobtype des Elements.
+            std::string name_; /// Name des Elements.
     };
 }
 

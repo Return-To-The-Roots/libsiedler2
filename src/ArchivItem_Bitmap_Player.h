@@ -89,7 +89,7 @@ namespace libsiedler2
                        unsigned char color);
 
         protected:
-            std::vector<unsigned char> tex_pdata; ///< Die Spielerfarbedaten.
+            std::vector<unsigned char> tex_pdata; /// Die Spielerfarbedaten.
     };
 
 }

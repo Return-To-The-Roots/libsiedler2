@@ -48,7 +48,7 @@ namespace libsiedler2
             void clear();
 
         private:
-            std::vector<unsigned char> data; ///< Die Daten.
+            std::vector<unsigned char> data; /// Die Daten.
     };
 
     /// Klasse für Rawdaten.
