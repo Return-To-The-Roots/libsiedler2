@@ -41,14 +41,13 @@
 namespace libsiedler2
 {
 
-    ///////////////////////////////////////////////////////////////////////////////
     /**
      *  Der Standard-Item-Allocator.
      *
      *  @param[in] type    Der Typ des Items
      *  @param[in] subtype Der Subtyp des Items
      *
-         */
+     */
     ArchivItem* StandardAllocator::create(BOBTYPES type, SOUNDTYPES subtype) const
     {
         switch(type)
@@ -105,7 +104,7 @@ namespace libsiedler2
      *
      *  @param[in] item    Das zu kopierende Item
      *
-         */
+     */
     ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
     {
         BOBTYPES type = static_cast<BOBTYPES>(item.getBobType());

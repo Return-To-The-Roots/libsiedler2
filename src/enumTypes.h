@@ -25,7 +25,7 @@ namespace libsiedler2
      *
      *  Enthält alle unterstützten Texturformate als Aufzählungswerte.
      *
-         */
+     */
     enum TEXTURFORMAT
     {
         FORMAT_UNKNOWN = 0,
@@ -38,7 +38,7 @@ namespace libsiedler2
      *
      *  Enthält alle unterstützten Bobtypes als Aufzählungswerte.
      *
-         */
+     */
     enum BOBTYPES
     {
         BOBTYPE_NONE = 0,
