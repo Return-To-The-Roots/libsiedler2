@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap_RLE
  *
  *  Basisklasse für RLE-Bitmaps.
@@ -33,7 +32,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_RLE
  *
  *  Klasse für RLE-Bitmaps.
@@ -51,7 +49,6 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArch
     setBobType(BOBTYPE_BITMAP_RLE);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p baseArchivItem_Bitmap_Raw mit Laden der Bilddaten aus
  *  einer Datei.
@@ -71,7 +68,6 @@ libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Bilddaten aus einer Datei.
  *
@@ -160,7 +156,6 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Bilddaten in eine Datei.
  *

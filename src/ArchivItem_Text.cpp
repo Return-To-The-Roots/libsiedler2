@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Text
  *
  *  Klasse für Texte.
@@ -33,7 +32,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem_Text::text
  *
  *  Der Textspeicher.
@@ -41,7 +39,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem_Text::length
  *
  *  Die Länge des Textes.
@@ -57,7 +54,6 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem()
 libsiedler2::ArchivItem_Text::~ArchivItem_Text()
 {}
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p ArchivItem_Text mit Laden des Textes aus
  *  einer Datei.
@@ -75,7 +71,6 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversio
     load(file, conversion, length);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liest den Text aus einer Datei.
  *
@@ -133,7 +128,6 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt dem Text in eine Datei.
  *
@@ -184,7 +178,6 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Text.
  *
@@ -197,7 +190,6 @@ const std::string& libsiedler2::ArchivItem_Text::getText() const
     return text_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den Text.
  *

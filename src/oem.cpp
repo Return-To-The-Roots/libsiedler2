@@ -24,7 +24,6 @@
 
 #ifndef _WIN32
 
-///////////////////////////////////////////////////////////////////////////////
 /** @name AnsiToOem
  *
  *  Wandelt einen String vom ANSI ins OEM Format um.
@@ -77,7 +76,6 @@ char* AnsiToOem(const char* from, char* to, unsigned int length)
     return to;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /** @name OemToAnsi
  *
  *  Wandelt einen String vom OEM ins ANSI Format um.

@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt eine GER/ENG-File aus einem ArchivInfo.
  *

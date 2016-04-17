@@ -27,7 +27,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Map
  *
  *  Klasse für eine Mapfile.
@@ -46,7 +45,6 @@ libsiedler2::ArchivItem_Map::~ArchivItem_Map()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Mapdaten aus einer Datei.
  *
@@ -145,7 +143,6 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Mapdaten in eine Datei.
  *

@@ -23,7 +23,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Raw
  *
  *  Basisklasse für Rawdaten.
@@ -40,7 +39,6 @@ libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
 libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
 {}
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Rawdaten aus einer Datei.
  *
@@ -70,7 +68,6 @@ int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned int lengt
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Rawdaten in eine Datei.
  *
@@ -98,7 +95,6 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Daten zurück (ro).
  *
@@ -109,7 +105,6 @@ const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData() con
     return data;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Daten zurück (rw).
  *
@@ -120,7 +115,6 @@ std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData()
     return data;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  löscht den Datenblock.
  *

@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt eine Sounddatei in ein ArchivInfo. (midi, xmidi, wave)
  *

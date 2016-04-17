@@ -31,7 +31,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt eine BBM-File in ein ArchivInfo.
  *

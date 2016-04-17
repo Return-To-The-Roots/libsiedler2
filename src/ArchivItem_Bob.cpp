@@ -26,7 +26,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bob
  *
  *  Klasse für Bobfiles.
@@ -39,7 +38,6 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good
     setBobType(BOBTYPE_BOB);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten aus
  *  einer Datei.
@@ -59,7 +57,6 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem
 libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
 {}
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Bobdaten aus einer Datei.
  *
@@ -199,7 +196,6 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Bobdaten in eine Datei.
  *

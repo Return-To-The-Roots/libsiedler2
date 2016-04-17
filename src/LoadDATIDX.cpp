@@ -27,7 +27,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt eine DAT/IDX-File in ein ArchivInfo.
  *

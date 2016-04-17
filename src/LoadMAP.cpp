@@ -28,7 +28,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt eine MAP-File in ein ArchivInfo.
  *

@@ -24,7 +24,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 namespace libsiedler2 { class ArchivItem_Palette; }
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw
  *
  *  Basisklasse für Raw-Bitmaps.
@@ -32,7 +31,6 @@ namespace libsiedler2 { class ArchivItem_Palette; }
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_Raw
  *
  *  Klasse für Raw-Bitmaps.
@@ -50,7 +48,6 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArch
     setBobType(BOBTYPE_BITMAP_RAW);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p baseArchivItem_Bitmap_Raw mit Laden der Bilddaten aus
  *  einer Datei.
@@ -70,7 +67,6 @@ libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Bilddaten aus einer Datei.
  *
@@ -136,7 +132,6 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Bilddaten in eine Datei.
  *

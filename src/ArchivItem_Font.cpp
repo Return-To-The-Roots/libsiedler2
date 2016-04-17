@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Font
  *
  *  Klasse für Fonts.
@@ -33,7 +32,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem_Font::dx
  *
  *  X-Buchstabenabstand.
@@ -41,7 +39,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem_Font::dy
  *
  *  Y-Buchstabenabstand.
@@ -54,7 +51,6 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(), ArchivInfo(), dx
     setBobType(BOBTYPE_FONT);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Fontdaten aus einer Datei.
  *
@@ -110,7 +106,6 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Fontdaten in eine Datei.
  *
@@ -159,7 +154,6 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den X-Buchstabenabstand.
  *
@@ -168,7 +162,6 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Y-Buchstabenabstand.
  *
@@ -177,7 +170,6 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den X-Buchstabenabstand.
  *
@@ -186,7 +178,6 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den Y-Buchstabenabstand.
  *

@@ -24,7 +24,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var TRANSPARENT_INDEX
  *
  *  Index des Transparenzwertes.
@@ -32,7 +31,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Palette
  *
  *  Klasse für Paletten.
@@ -45,7 +43,6 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
     setBobType(BOBTYPE_PALETTE);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus
  *  einer Datei.
@@ -62,7 +59,6 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(std::istream& file, bool ski
     load(file, skip);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liest die Farbwerte aus einer Datei.
  *
@@ -92,7 +88,6 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Farbwerte in eine Datei
  *
@@ -122,7 +117,6 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt einen Farbwert am entsprechenden Index.
  *
@@ -138,7 +132,6 @@ void libsiedler2::ArchivItem_Palette::set(unsigned char index, Color clr)
     colors[index] = clr;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert einen Index zum entsprechenden RGB-Wert.
  *
@@ -162,7 +155,6 @@ unsigned char libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Index-Operator von @p ArchivItem_Palette.
  *
@@ -180,7 +172,6 @@ const libsiedler2::Color& libsiedler2::ArchivItem_Palette::operator[](int index)
         throw std::out_of_range("index");
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  kopiert die Palette in einen Puffer (als RGBA)
  *

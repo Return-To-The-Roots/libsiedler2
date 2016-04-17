@@ -26,7 +26,6 @@
 
 namespace libsiedler2{
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt das Bitmap in einen Puffer.
  *
@@ -144,7 +143,6 @@ int baseArchivItem_Bitmap::print(unsigned char* buffer,
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  erzeugt ein Bitmap aus einem Puffer.
  *

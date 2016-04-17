@@ -23,7 +23,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Sound_Other
  *
  *  Klasse für Other-Sounds.
@@ -39,7 +38,6 @@ libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other() : baseArch
 libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()
 {}
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Daten aus einer Datei.
  *
@@ -63,7 +61,6 @@ int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, unsigned i
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Daten in eine Datei.
  *
@@ -84,7 +81,6 @@ int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  räumt den Soundspeicher auf.
  *

@@ -27,7 +27,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @mainpage libsiedler2
  *
  *  libsiedler2 ist eine Grafikbibliothek zum einfachen Zugriff auf
@@ -41,7 +40,6 @@
  *
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @namespace libsiedler2
  *
  *  @brief Hauptnamensraum von @p libsiedler2
@@ -53,7 +51,6 @@
 
 namespace libsiedler2{
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Das gewählte Texturformat.
  *
@@ -65,7 +62,6 @@ class ArchivItem;
 
 static TEXTURFORMAT texturformat;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Der gesetzte Item-Allokator.
  *
@@ -73,7 +69,6 @@ static TEXTURFORMAT texturformat;
  */
 static IAllocator* allocator = new StandardAllocator();
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Setzt das verwendete Texturausgabeformat.
  *
@@ -95,7 +90,6 @@ TEXTURFORMAT setTextureFormat(TEXTURFORMAT format)
     return old;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert das verwendete Texturausgabeformat.
  *
@@ -115,7 +109,6 @@ const IAllocator& getAllocator()
     return *allocator;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Setzt den Item-Allocator.
  *
@@ -129,7 +122,6 @@ void setAllocator(IAllocator* newAllocator)
     allocator = newAllocator;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Lädt die Datei im Format ihrer Endung.
  *
@@ -197,7 +189,6 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
     return ret;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Schreibt die Datei im Format ihrer Endung.
  *

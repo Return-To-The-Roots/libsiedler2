@@ -28,7 +28,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt ein ArchivInfo in eine BMP-File.
  *

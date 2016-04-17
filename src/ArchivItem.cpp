@@ -21,7 +21,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem
  *
  *  Basisklasse der Archivelemente.
@@ -29,7 +28,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem::bobtype
  *
  *  Bobtype des Elements.
@@ -37,7 +35,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem::name
  *
  *  Name des Elements.

@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Sound_Wave
  *
  *  Klasse für WAVE-Sounds.
@@ -41,7 +40,6 @@ libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave() : baseArchiv
 libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
 {}
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Wave-Daten aus einer Datei.
  *
@@ -131,7 +129,6 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned in
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Wave-Daten in eine Datei.
  *
@@ -164,7 +161,6 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  räumt den Soundspeicher auf.
  *

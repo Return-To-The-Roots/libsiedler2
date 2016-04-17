@@ -26,7 +26,6 @@
 
 namespace libsiedler2{
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class baseArchivItem_Sound_XMidi
  *
  *  Basisklasse für XMIDI-Sounds.

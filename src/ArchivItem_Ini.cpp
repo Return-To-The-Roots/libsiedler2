@@ -27,7 +27,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Ini
  *
  *  Klasse für INI-Dateien (genauergesagt eine Sektion).
@@ -50,7 +49,6 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : Archiv
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die INI-Daten aus einer Datei.
  *
@@ -123,7 +121,6 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die INI-Daten in eine Datei.
  *
@@ -156,7 +153,6 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  fügt einen Eintrag hinzu.
  *

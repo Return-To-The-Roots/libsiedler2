@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Sound
  *
  *  Basisklasse für Sounditems.
@@ -43,7 +42,6 @@ libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den Typ des Sounds.
  *
@@ -56,7 +54,6 @@ void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
     this->type_ = type;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Typ des Sounds.
  *

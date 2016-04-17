@@ -32,7 +32,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liest eine Bitmapzeile
  *
@@ -69,7 +68,6 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
         bmp.ignore(4 - (width * bbp % 4));
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt eine BMP-File in ein ArchivInfo.
  *

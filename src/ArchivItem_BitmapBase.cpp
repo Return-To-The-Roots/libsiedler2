@@ -25,7 +25,6 @@
 #include "DebugNew.h" // IWYU pragma: keep
 
 namespace libsiedler2{
-///////////////////////////////////////////////////////////////////////////////
 /** @class ArchivItem_BitmapBase
  *
  *  Basis-Basisklasse für Bitmapitems.
@@ -105,7 +104,6 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
     return *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt einen Pixel auf einen bestimmten Wert.
  *
@@ -153,7 +151,6 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt einen Pixel auf einen bestimmten Wert.
  *
@@ -203,7 +200,6 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert einen Pixel an einem bestimmten Punkt.
  *
@@ -251,7 +247,6 @@ unsigned char ArchivItem_BitmapBase::tex_getPixel(unsigned short x,
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
  *
@@ -286,7 +281,6 @@ void ArchivItem_BitmapBase::tex_alloc()
     tex_data_.resize(tex_width_ * tex_height_ * tex_bpp_, clear);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  räumt den Bildspeicher auf.
  *
@@ -302,7 +296,6 @@ void ArchivItem_BitmapBase::tex_clear()
     tex_data_.clear();
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die nächste 2er Potenz von einer Zahl.
  *
@@ -323,7 +316,6 @@ unsigned short ArchivItem_BitmapBase::tex_pow2(unsigned short n)
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Textur-Datenblock.
  *
@@ -336,7 +328,6 @@ const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData() const
     return tex_data_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den X-Nullpunkt.
  *
@@ -349,7 +340,6 @@ short ArchivItem_BitmapBase::getNx() const
     return nx_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Y-Nullpunkt.
  *
@@ -362,7 +352,6 @@ short ArchivItem_BitmapBase::getNy() const
     return ny_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Breite des Bildes.
  *
@@ -375,7 +364,6 @@ unsigned short ArchivItem_BitmapBase::getWidth() const
     return width_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Höhe des Bildes.
  *
@@ -388,7 +376,6 @@ unsigned short ArchivItem_BitmapBase::getHeight() const
     return height_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den X-Nullpunkt.
  *
@@ -401,7 +388,6 @@ void ArchivItem_BitmapBase::setNx(short nx)
     this->nx_ = nx;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den Y-Nullpunkt.
  *
@@ -414,7 +400,6 @@ void ArchivItem_BitmapBase::setNy(short ny)
     this->ny_ = ny;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt die Breite des Bildes.
  *
@@ -427,7 +412,6 @@ void ArchivItem_BitmapBase::setWidth(unsigned short width)
     this->width_ = width;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt die Höhe des Bildes.
  *
@@ -548,7 +532,6 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
     vh = ly + 1 - vy;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt die Grundpalette.
  *

@@ -21,7 +21,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt ein ArchivInfo in eine BOB-File.
  *

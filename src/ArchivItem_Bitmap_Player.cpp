@@ -26,7 +26,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_Player
  *
  *  Basisklasse für Player-Bitmaps.
@@ -34,7 +33,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_Player
  *
  *  Klasse für Player-Bitmaps.
@@ -42,7 +40,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem_Bitmap_Player::tex_pdata
  *
  *  Die Spielerfarbedaten.
@@ -50,7 +47,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var libsiedler2::ArchivItem_Bitmap_Player::tex_plength
  *
  *  Länge der Spielerfarbendaten.
@@ -63,7 +59,6 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
     setBobType(BOBTYPE_BITMAP_PLAYER);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p ArchivItem_Bitmap_Player mit Laden der Bilddaten aus
  *  einer Datei.
@@ -98,7 +93,6 @@ libsiedler2::ArchivItem_Bitmap_Player& libsiedler2::ArchivItem_Bitmap_Player::op
      return *this;
  }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Bilddaten aus einer Datei.
  *
@@ -158,7 +152,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Bilddaten aus einem Puffer.
  *
@@ -247,7 +240,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned s
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Bilddaten in eine Datei.
  *
@@ -375,7 +367,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
  *
@@ -390,7 +381,6 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc()
     tex_pdata.resize(tex_width_ * tex_height_, TRANSPARENT_INDEX);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  räumt den Bildspeicher auf.
  *
@@ -403,7 +393,6 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_clear()
     tex_pdata.clear();
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
  *
@@ -620,7 +609,6 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
 //  fprintf(stderr, "%ix%i -> %ix%i %i,%i-%i,%i\n", tex_width, tex_height, vw, vh, vx, vy, lx, ly);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
  *

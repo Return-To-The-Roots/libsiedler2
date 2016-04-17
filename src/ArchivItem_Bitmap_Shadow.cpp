@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::baseArchivItem_Bitmap_Shadow
  *
  *  Basisklasse für Shadow-Bitmaps.
@@ -33,7 +32,6 @@
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Bitmap_Shadow
  *
  *  Klasse für Shadow-Bitmaps.
@@ -51,7 +49,6 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const ba
     setBobType(BOBTYPE_BITMAP_SHADOW);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Konstruktor von @p baseArchivItem_Bitmap_Raw mit Laden der Bilddaten aus
  *  einer Datei.
@@ -71,7 +68,6 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt die Bilddaten aus einer Datei.
  *
@@ -162,7 +158,6 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt die Bilddaten in eine Datei.
  *

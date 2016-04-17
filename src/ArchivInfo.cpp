@@ -25,7 +25,6 @@
 #include "DebugNew.h" // IWYU pragma: keep
 
 namespace libsiedler2{
-///////////////////////////////////////////////////////////////////////////////
 /** @class ArchivInfo
  *
  *  Klasse für Archivdateien.
@@ -34,7 +33,6 @@ namespace libsiedler2{
  */
 
 
-///////////////////////////////////////////////////////////////////////////////
 /** @var ArchivInfo::data
  *
  *  die Elemente.
@@ -65,7 +63,6 @@ ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
     return *this;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Destruktor von @p ArchivInfo, räumt automatisch auf.
  *
@@ -76,7 +73,6 @@ ArchivInfo::~ArchivInfo()
     clear();
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  erstellt den Datensatz in einer bestimmten Größe.
  *
@@ -91,7 +87,6 @@ void ArchivInfo::alloc(size_t count)
     data.resize(count);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  gibt die angelegten Daten wieder frei.
  *
@@ -105,7 +100,6 @@ void ArchivInfo::clear()
     data.clear();
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
  *
@@ -123,7 +117,6 @@ void ArchivInfo::set(size_t index, ArchivItem* item)
    data[index] = item;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
  *
@@ -137,7 +130,6 @@ void ArchivInfo::setC(size_t index, const ArchivItem& item)
     set(index, getAllocator().clone(item));
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  fügt ein Element hinten an.
  *
@@ -146,7 +138,6 @@ void ArchivInfo::setC(size_t index, const ArchivItem& item)
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  fügt ein Element hinten an und kopiert die Daten von @p item.
  *
@@ -159,7 +150,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
     data.push_back(getAllocator().clone(item));
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Inhalt eines ArchivItems am entsprechenden Index.
  *
@@ -170,7 +160,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Inhalt eines ArchivItems am entsprechenden Index.
  *
@@ -181,7 +170,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Pointer eines ArchivItems am entsprechenden Index.
  *
@@ -192,7 +180,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Größe des Archivs.
  *
@@ -201,7 +188,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Index-Operator von @p ArchivInfo.
  *
@@ -212,7 +198,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @author FloSoft
  */
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  Kopierfunktion von @p ArchivInfo.
  *

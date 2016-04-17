@@ -25,7 +25,6 @@
 // Include last!
 #include "DebugNew.h" // IWYU pragma: keep
 
-///////////////////////////////////////////////////////////////////////////////
 /** @class libsiedler2::ArchivItem_Map_Header
  *
  *  Klasse für einen Mapheader.
@@ -46,7 +45,6 @@ libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  lädt den Mapheader aus einer Datei.
  *
@@ -121,7 +119,6 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  schreibt den Mapheader in eine Datei.
  *
@@ -184,7 +181,6 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Namen der Map.
  *
@@ -195,7 +191,6 @@ const std::string& libsiedler2::ArchivItem_Map_Header::getName() const
     return name_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den Namen der Map.
  *
@@ -208,7 +203,6 @@ void libsiedler2::ArchivItem_Map_Header::setName(const std::string& name)
     this->name_ = name;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Breite der Map.
  *
@@ -219,7 +213,6 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getWidth() const
     return width;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt die Breite der Map.
  *
@@ -232,7 +225,6 @@ void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
     this->width = width;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Höhe der Map.
  *
@@ -243,7 +235,6 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getHeight() const
     return height;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt die Höhe der Map.
  *
@@ -256,7 +247,6 @@ void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
     this->height = height;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert das GfxSet der Map.
  *
@@ -267,7 +257,6 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet() const
     return gfxset;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt das GfxSet der Map.
  *
@@ -280,7 +269,6 @@ void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
     this->gfxset = gfxset;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert die Spielerzahl der Map.
  *
@@ -291,7 +279,6 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer() const
     return player;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt die Spielerzahl der Map.
  *
@@ -304,7 +291,6 @@ void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
     this->player = player;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  liefert den Autor der Map.
  *
@@ -315,7 +301,6 @@ const std::string& libsiedler2::ArchivItem_Map_Header::getAuthor() const
     return author_;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  *  setzt den Autor der Map.
  *
