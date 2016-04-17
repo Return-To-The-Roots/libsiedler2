@@ -28,8 +28,6 @@
 /** @class libsiedler2::ArchivItem_Map_Header
  *
  *  Klasse für einen Mapheader.
- *
- *  @author FloSoft
  */
 
 const char VALID_ID[10] = { 'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0' };
@@ -51,8 +49,6 @@ libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header()
  *  @param[in] file Dateihandle der Datei
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
 {
@@ -125,8 +121,6 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
  *  @param[in] file Dateihandle der Datei
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
 {
@@ -183,8 +177,6 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
 
 /**
  *  liefert den Namen der Map.
- *
- *  @author FloSoft
  */
 const std::string& libsiedler2::ArchivItem_Map_Header::getName() const
 {
@@ -195,8 +187,6 @@ const std::string& libsiedler2::ArchivItem_Map_Header::getName() const
  *  setzt den Namen der Map.
  *
  *  @param[in] name Name der Map
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Map_Header::setName(const std::string& name)
 {
@@ -205,8 +195,6 @@ void libsiedler2::ArchivItem_Map_Header::setName(const std::string& name)
 
 /**
  *  liefert die Breite der Map.
- *
- *  @author FloSoft
  */
 unsigned short libsiedler2::ArchivItem_Map_Header::getWidth() const
 {
@@ -217,8 +205,6 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getWidth() const
  *  setzt die Breite der Map.
  *
  *  @param[in] width Breite der Map
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
 {
@@ -227,8 +213,6 @@ void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
 
 /**
  *  liefert die Höhe der Map.
- *
- *  @author FloSoft
  */
 unsigned short libsiedler2::ArchivItem_Map_Header::getHeight() const
 {
@@ -239,8 +223,6 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getHeight() const
  *  setzt die Höhe der Map.
  *
  *  @param[in] height Höhe der Map
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
 {
@@ -249,8 +231,6 @@ void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
 
 /**
  *  liefert das GfxSet der Map.
- *
- *  @author FloSoft
  */
 unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet() const
 {
@@ -261,8 +241,6 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet() const
  *  setzt das GfxSet der Map.
  *
  *  @param[in] gfxset GfxSet der Map
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
 {
@@ -271,8 +249,6 @@ void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
 
 /**
  *  liefert die Spielerzahl der Map.
- *
- *  @author FloSoft
  */
 unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer() const
 {
@@ -283,8 +259,6 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer() const
  *  setzt die Spielerzahl der Map.
  *
  *  @param[in] player Spielerzahl der Map
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
 {
@@ -293,8 +267,6 @@ void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
 
 /**
  *  liefert den Autor der Map.
- *
- *  @author FloSoft
  */
 const std::string& libsiedler2::ArchivItem_Map_Header::getAuthor() const
 {
@@ -305,8 +277,6 @@ const std::string& libsiedler2::ArchivItem_Map_Header::getAuthor() const
  *  setzt den Autor der Map.
  *
  *  @param[in] author Autor der Map
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Map_Header::setAuthor(const std::string& author)
 {

@@ -28,8 +28,6 @@
 /** @class libsiedler2::baseArchivItem_Sound_Wave
  *
  *  Klasse für WAVE-Sounds.
- *
- *  @author FloSoft
  */
 
 libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave() : baseArchivItem_Sound()
@@ -47,8 +45,6 @@ libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
  *  @param[in] length  Länge der Daten
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned int length)
 {
@@ -136,8 +132,6 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned in
  *  @param[in] stripheader Soll der Wave-Header entfernt werden?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool stripheader) const
 {
@@ -163,8 +157,6 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
 
 /**
  *  räumt den Soundspeicher auf.
- *
- *  @author FloSoft
  */
 void libsiedler2::baseArchivItem_Sound_Wave::clear()
 {

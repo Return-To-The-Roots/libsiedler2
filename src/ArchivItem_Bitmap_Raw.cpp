@@ -27,15 +27,11 @@ namespace libsiedler2 { class ArchivItem_Palette; }
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw
  *
  *  Basisklasse für Raw-Bitmaps.
- *
- *  @author FloSoft
  */
 
 /** @class libsiedler2::ArchivItem_Bitmap_Raw
  *
  *  Klasse für Raw-Bitmaps.
- *
- *  @author FloSoft
  */
 
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw()
@@ -54,8 +50,6 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArch
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
- *
- *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
@@ -74,8 +68,6 @@ libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw()
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const ArchivItem_Palette* palette)
 {
@@ -139,8 +131,6 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {

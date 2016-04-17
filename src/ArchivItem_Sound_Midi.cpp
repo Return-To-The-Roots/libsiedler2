@@ -29,8 +29,6 @@ namespace libsiedler2{
 /** @class baseArchivItem_Sound_Midi
  *
  *  Basisklasse für MIDI-Sounds.
- *
- *  @author FloSoft
  */
 
 baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi() : baseArchivItem_Sound()

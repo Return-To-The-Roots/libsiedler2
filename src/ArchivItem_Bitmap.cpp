@@ -42,8 +42,6 @@ namespace libsiedler2{
  *  @param[in]     from_h        zu kopierende Höhe
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int baseArchivItem_Bitmap::print(unsigned char* buffer,
         unsigned short buffer_width,
@@ -157,8 +155,6 @@ int baseArchivItem_Bitmap::print(unsigned char* buffer,
  *  @param[in]     palette       Grundpalette
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int baseArchivItem_Bitmap::create(unsigned short width,
         unsigned short height,

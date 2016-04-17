@@ -28,15 +28,11 @@
 /** @class libsiedler2::baseArchivItem_Bitmap_Shadow
  *
  *  Basisklasse für Shadow-Bitmaps.
- *
- *  @author FloSoft
  */
 
 /** @class libsiedler2::ArchivItem_Bitmap_Shadow
  *
  *  Klasse für Shadow-Bitmaps.
- *
- *  @author FloSoft
  */
 
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow()
@@ -55,8 +51,6 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const ba
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
- *
- *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
@@ -75,8 +69,6 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow()
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const ArchivItem_Palette* palette)
 {
@@ -165,8 +157,6 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {

@@ -30,8 +30,6 @@
 /** @class libsiedler2::ArchivItem_Map
  *
  *  Klasse für eine Mapfile.
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
@@ -52,8 +50,6 @@ libsiedler2::ArchivItem_Map::~ArchivItem_Map()
  *  @param[in] only_header Soll nur der Header gelesen werden?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
 {
@@ -149,8 +145,6 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
  *  @param[in] file Dateihandle der Datei
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
 {

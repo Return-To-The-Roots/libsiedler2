@@ -28,22 +28,16 @@
 /** @class libsiedler2::ArchivItem_Font
  *
  *  Klasse für Fonts.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem_Font::dx
  *
  *  X-Buchstabenabstand.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem_Font::dy
  *
  *  Y-Buchstabenabstand.
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(), ArchivInfo(), dx(0), dy(0)
@@ -58,8 +52,6 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(), ArchivInfo(), dx
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Palette* palette)
 {
@@ -113,8 +105,6 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
@@ -158,30 +148,22 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
  *  liefert den X-Buchstabenabstand.
  *
  *  @return liefert den X-Buchstabenabstand.
- *
- *  @author FloSoft
  */
 
 /**
  *  liefert den Y-Buchstabenabstand.
  *
  *  @return liefert den Y-Buchstabenabstand.
- *
- *  @author FloSoft
  */
 
 /**
  *  setzt den X-Buchstabenabstand.
  *
  *  @param[in] dx X-Buchstabenabstand
- *
- *  @author FloSoft
  */
 
 /**
  *  setzt den Y-Buchstabenabstand.
  *
  *  @param[in] dy Y-Buchstabenabstand
- *
- *  @author FloSoft
  */

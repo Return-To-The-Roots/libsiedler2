@@ -28,8 +28,6 @@
  *
  *  Wandelt einen String vom ANSI ins OEM Format um.
  *
- *  @author     FloSoft
- *
  *  @param[in]  from   konstanter Quellstring
  *  @param[out] to     Zielstring (ausreichend Speicher muss vorhanden sein)
  *  @param[in]  length Länge des Quellstrings, wenn 0 wird @p strlen(from) verwendet
@@ -79,8 +77,6 @@ char* AnsiToOem(const char* from, char* to, unsigned int length)
 /** @name OemToAnsi
  *
  *  Wandelt einen String vom OEM ins ANSI Format um.
- *
- *  @author     FloSoft
  *
  *  @param[in]  from   konstanter Quellstring
  *  @param[out] to     Zielstring (ausreichend Speicher muss vorhanden sein)

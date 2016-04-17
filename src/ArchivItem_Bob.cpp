@@ -29,8 +29,6 @@
 /** @class libsiedler2::ArchivItem_Bob
  *
  *  Klasse für Bobfiles.
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
@@ -44,8 +42,6 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good
  *
  *  @param[in] file    Dateihandle aus denen die Bob-Daten geladen werden sollen
  *  @param[in] palette Grundpalette
- *
- *  @author FloSoft
  */
 libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
 {
@@ -64,8 +60,6 @@ libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 {
@@ -203,8 +197,6 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Bob::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {

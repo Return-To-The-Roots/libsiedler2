@@ -33,8 +33,6 @@
  *  @param[in] items   ArchivInfo-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {

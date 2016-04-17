@@ -31,8 +31,6 @@
  *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
 {

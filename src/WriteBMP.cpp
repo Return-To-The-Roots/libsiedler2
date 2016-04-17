@@ -40,8 +40,6 @@
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls schreiben.
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items, long nr)
 {

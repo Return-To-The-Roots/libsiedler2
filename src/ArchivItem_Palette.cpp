@@ -27,15 +27,11 @@
 /** @var TRANSPARENT_INDEX
  *
  *  Index des Transparenzwertes.
- *
- *  @author FloSoft
  */
 
 /** @class libsiedler2::ArchivItem_Palette
  *
  *  Klasse für Paletten.
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
@@ -49,8 +45,6 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
  *
  *  @param[in] file Dateihandle aus denen die Farbwerte geladen werden sollen
  *  @param[in] skip Sollen 2 Unbekannte Bytes übersprungen werden (bei LST) oder direkt?
- *
- *  @author FloSoft
  */
 libsiedler2::ArchivItem_Palette::ArchivItem_Palette(std::istream& file, bool skip) : ArchivItem()
 {
@@ -66,8 +60,6 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(std::istream& file, bool ski
  *  @param[in] skip Sollen 2 Unbekannte Bytes übersprungen werden (bei LST) oder direkt?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
 {
@@ -95,8 +87,6 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
  *  @param[in] skip Sollen 2 Unbekannte Bytes geschrieben werden (bei LST) oder direkt?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
 {
@@ -124,8 +114,6 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
  *  @param[in] r     Roter Farbwert
  *  @param[in] g     Grüner Farbwert
  *  @param[in] b     Blauer Farbwert
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Palette::set(unsigned char index, Color clr)
 {
@@ -142,8 +130,6 @@ void libsiedler2::ArchivItem_Palette::set(unsigned char index, Color clr)
  *  @return Farbindex der RGB-Farbe
  *
  *  @bug Keine Fehlererkennung!
- *
- *  @author FloSoft
  */
 unsigned char libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
 {
@@ -161,8 +147,6 @@ unsigned char libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
  *  @param[in] index Index des zu liefernden Eintrags
  *
  *  @return Bei Erfolg einen Pointer auf einen, ansonsten NULL
- *
- *  @author FloSoft
  */
 const libsiedler2::Color& libsiedler2::ArchivItem_Palette::operator[](int index) const
 {
@@ -176,8 +160,6 @@ const libsiedler2::Color& libsiedler2::ArchivItem_Palette::operator[](int index)
  *  kopiert die Palette in einen Puffer (als RGBA)
  *
  *  @param[in,out] buffer Zielpuffer für die Palettendaten (muss 256*4-Byte groß sein)
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Palette::copy(unsigned char* buffer, size_t bufSize) const
 {

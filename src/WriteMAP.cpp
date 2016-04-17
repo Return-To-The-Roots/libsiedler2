@@ -31,8 +31,6 @@
  *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::WriteMAP(const std::string& file, const ArchivInfo& items, long nr)
 {

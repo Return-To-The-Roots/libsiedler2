@@ -40,8 +40,6 @@
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
  *  @bug Keine Erkennung ob Plain-Text oder "Irgendwas".
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, bool conversion)
 {

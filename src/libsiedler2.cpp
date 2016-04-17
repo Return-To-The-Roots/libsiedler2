@@ -35,9 +35,6 @@
  *  Sie kann natürlich auch verschiedene andere Formate lesen und schreiben,
  *  damit man die verschiedenen Formate hin und her konvertieren kann.
  *
- *  @author FloSoft
- *  @author OLiver
- *
  */
 
 /** @namespace libsiedler2
@@ -45,8 +42,6 @@
  *  @brief Hauptnamensraum von @p libsiedler2
  *
  *  Enthält alle Klassen und exportierten Funktionen von @p libsiedler2.
- *
- *  @author FloSoft
  */
 
 namespace libsiedler2{
@@ -55,8 +50,6 @@ namespace libsiedler2{
  *  Das gewählte Texturformat.
  *
  *  @ingroup textureformat
- *
- *  @author FloSoft
  */
 class ArchivItem;
 
@@ -64,8 +57,6 @@ static TEXTURFORMAT texturformat;
 
 /**
  *  Der gesetzte Item-Allokator.
- *
- *  @author FloSoft
  */
 static IAllocator* allocator = new StandardAllocator();
 
@@ -75,8 +66,6 @@ static IAllocator* allocator = new StandardAllocator();
  *  @param[in] format gewünschte Format
  *
  *  @return liefert das vorherige Texturausgabeformat zurück
- *
- *  @author FloSoft
  */
 TEXTURFORMAT setTextureFormat(TEXTURFORMAT format)
 {
@@ -94,8 +83,6 @@ TEXTURFORMAT setTextureFormat(TEXTURFORMAT format)
  *  liefert das verwendete Texturausgabeformat.
  *
  *  @return liefert das Texturausgabeformat zurück
- *
- *  @author FloSoft
  */
 TEXTURFORMAT getTextureFormat()
 {
@@ -113,8 +100,6 @@ const IAllocator& getAllocator()
  *  Setzt den Item-Allocator.
  *
  *  @param[in] new_allocator Der neue Item-Allokator
- *
- *  @author FloSoft
  */
 void setAllocator(IAllocator* newAllocator)
 {
@@ -130,8 +115,6 @@ void setAllocator(IAllocator* newAllocator)
  *  @param[in]  palette Palette, welche benutzt werden soll
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette)
 {
@@ -197,8 +180,6 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
  *  @param[in] palette Palette, welche benutzt werden soll
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette)
 {

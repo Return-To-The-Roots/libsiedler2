@@ -24,22 +24,16 @@
 /** @class libsiedler2::ArchivItem
  *
  *  Basisklasse der Archivelemente.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem::bobtype
  *
  *  Bobtype des Elements.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem::name
  *
  *  Name des Elements.
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem::ArchivItem()

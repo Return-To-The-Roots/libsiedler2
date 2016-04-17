@@ -28,15 +28,11 @@
 /** @class libsiedler2::baseArchivItem_Bitmap_RLE
  *
  *  Basisklasse für RLE-Bitmaps.
- *
- *  @author FloSoft
  */
 
 /** @class libsiedler2::ArchivItem_Bitmap_RLE
  *
  *  Klasse für RLE-Bitmaps.
- *
- *  @author FloSoft
  */
 
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE()
@@ -55,8 +51,6 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArch
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
- *
- *  @author FloSoft
  */
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
@@ -75,8 +69,6 @@ libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE()
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const ArchivItem_Palette* palette)
 {
@@ -166,8 +158,6 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
  *
  *  @bug Bei zu großen Bilddaten gibts einen Überlauf der Zeilenstartadressen,
  *       im Moment wird dann der Zeilenstart auf 0xFFFF gesetzt.
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {

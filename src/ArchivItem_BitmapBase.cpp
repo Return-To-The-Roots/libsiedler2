@@ -28,8 +28,6 @@ namespace libsiedler2{
 /** @class ArchivItem_BitmapBase
  *
  *  Basis-Basisklasse für Bitmapitems.
- *
- *  @author FloSoft
  */
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase() : ArchivItem()
@@ -111,8 +109,6 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
  *  @param[in] y       Y Koordinate des Pixels
  *  @param[in] color   Farbe des Pixels
  *  @param[in] palette Grundpalette
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
         unsigned short y,
@@ -160,8 +156,6 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
  *  @param[in] g Grüner Wert
  *  @param[in] b Blauer Wert
  *  @param[in] a Alpha Wert (bei paletted nur 0xFF/0x00 unterstützt)
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
         unsigned short y,
@@ -210,8 +204,6 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
  *  @return liefert die Farbe des Pixels
  *
  *  @bug Keine Fehlererkennung!
- *
- *  @author FloSoft
  */
 unsigned char ArchivItem_BitmapBase::tex_getPixel(unsigned short x,
         unsigned short y,
@@ -249,8 +241,6 @@ unsigned char ArchivItem_BitmapBase::tex_getPixel(unsigned short x,
 
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::tex_alloc()
 {
@@ -283,8 +273,6 @@ void ArchivItem_BitmapBase::tex_alloc()
 
 /**
  *  räumt den Bildspeicher auf.
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::tex_clear()
 {
@@ -302,8 +290,6 @@ void ArchivItem_BitmapBase::tex_clear()
  *  @param[in] n Zahl zu der die nächste 2er Potenz gesucht werden soll
  *
  *  @return nächste 2er Potenz
- *
- *  @author FloSoft
  */
 unsigned short ArchivItem_BitmapBase::tex_pow2(unsigned short n)
 {
@@ -320,8 +306,6 @@ unsigned short ArchivItem_BitmapBase::tex_pow2(unsigned short n)
  *  liefert den Textur-Datenblock.
  *
  *  @return Der Textur-Datenblock
- *
- *  @author FloSoft
  */
 const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData() const
 {
@@ -332,8 +316,6 @@ const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData() const
  *  liefert den X-Nullpunkt.
  *
  *  @return X-Nullpunkt
- *
- *  @author FloSoft
  */
 short ArchivItem_BitmapBase::getNx() const
 {
@@ -344,8 +326,6 @@ short ArchivItem_BitmapBase::getNx() const
  *  liefert den Y-Nullpunkt.
  *
  *  @return Y-Nullpunkt
- *
- *  @author FloSoft
  */
 short ArchivItem_BitmapBase::getNy() const
 {
@@ -356,8 +336,6 @@ short ArchivItem_BitmapBase::getNy() const
  *  liefert die Breite des Bildes.
  *
  *  @return Breite des Bildes
- *
- *  @author FloSoft
  */
 unsigned short ArchivItem_BitmapBase::getWidth() const
 {
@@ -368,8 +346,6 @@ unsigned short ArchivItem_BitmapBase::getWidth() const
  *  liefert die Höhe des Bildes.
  *
  *  @return Höhe des Bildes
- *
- *  @author FloSoft
  */
 unsigned short ArchivItem_BitmapBase::getHeight() const
 {
@@ -380,8 +356,6 @@ unsigned short ArchivItem_BitmapBase::getHeight() const
  *  setzt den X-Nullpunkt.
  *
  *  @param[in] nx X-Nullpunkt
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::setNx(short nx)
 {
@@ -392,8 +366,6 @@ void ArchivItem_BitmapBase::setNx(short nx)
  *  setzt den Y-Nullpunkt.
  *
  *  @param[in] ny Y-Nullpunkt
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::setNy(short ny)
 {
@@ -404,8 +376,6 @@ void ArchivItem_BitmapBase::setNy(short ny)
  *  setzt die Breite des Bildes.
  *
  *  @param[in] width Breite des Bildes
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::setWidth(unsigned short width)
 {
@@ -416,8 +386,6 @@ void ArchivItem_BitmapBase::setWidth(unsigned short width)
  *  setzt die Höhe des Bildes.
  *
  *  @param[in] height Höhe des Bildes
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::setHeight(unsigned short height)
 {
@@ -536,8 +504,6 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
  *  setzt die Grundpalette.
  *
  *  @param[in] palette Palette die zukünftig verwendet werden soll.
- *
- *  @author FloSoft
  */
 void ArchivItem_BitmapBase::setPalette(const ArchivItem_Palette* palette)
 {

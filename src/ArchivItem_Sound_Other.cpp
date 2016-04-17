@@ -26,8 +26,6 @@
 /** @class libsiedler2::baseArchivItem_Sound_Other
  *
  *  Klasse für Other-Sounds.
- *
- *  @author FloSoft
  */
 
 libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other() : baseArchivItem_Sound()
@@ -45,8 +43,6 @@ libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()
  *  @param[in] length  Länge der Daten
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, unsigned int length)
 {
@@ -67,8 +63,6 @@ int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, unsigned i
  *  @param[in] file        Dateihandle der Datei
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
 {
@@ -83,8 +77,6 @@ int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
 
 /**
  *  räumt den Soundspeicher auf.
- *
- *  @author FloSoft
  */
 void libsiedler2::baseArchivItem_Sound_Other::clear()
 {

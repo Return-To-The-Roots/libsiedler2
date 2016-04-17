@@ -33,8 +33,6 @@
  *  @param[in] conversion Soll ggf. ANSI-Charset in OEM umgewandelt werden?
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& items, bool conversion)
 {

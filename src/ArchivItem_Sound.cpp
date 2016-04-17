@@ -28,8 +28,6 @@
 /** @class libsiedler2::ArchivItem_Sound
  *
  *  Basisklasse für Sounditems.
- *
- *  @author FloSoft
  */
 
 libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound() : ArchivItem()
@@ -46,8 +44,6 @@ libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
  *  setzt den Typ des Sounds.
  *
  *  @param[in] type Der Typ der gesetzt werden soll
- *
- *  @author FloSoft
  */
 void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
 {
@@ -58,8 +54,6 @@ void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
  *  liefert den Typ des Sounds.
  *
  *  @return Der eingestellte Typ
- *
- *  @author FloSoft
  */
 libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType() const
 {

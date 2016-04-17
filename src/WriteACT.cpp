@@ -33,8 +33,6 @@
                        (@p -1 erste Palette die gefunden wird)
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& items, long nr)
 {

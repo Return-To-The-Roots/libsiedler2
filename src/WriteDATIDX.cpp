@@ -29,8 +29,6 @@
  *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::WriteDATIDX(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo&  /*items*/)
 {

@@ -30,8 +30,6 @@
 /** @class libsiedler2::ArchivItem_Ini
  *
  *  Klasse für INI-Dateien (genauergesagt eine Sektion).
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(), ArchivInfo()
@@ -55,8 +53,6 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : Archiv
  *  @param[in] file    Dateihandle der Datei
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Ini::load(std::istream& file)
 {
@@ -127,8 +123,6 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
  *  @param[in] file    Dateihandle der Datei
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
 {
@@ -158,8 +152,6 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
  *
  *  @param[in] name   Variablenname
  *  @param[in] value  Wert
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {

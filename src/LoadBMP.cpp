@@ -34,8 +34,6 @@
 
 /**
  *  liest eine Bitmapzeile
- *
- *  @author OLiver
  */
 template<class T_FStream>
 static inline void LoadBMP_ReadLine(T_FStream& bmp,
@@ -77,8 +75,6 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls einlesen.
- *
- *  @author FloSoft
  */
 int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, ArchivItem** palette)
 {

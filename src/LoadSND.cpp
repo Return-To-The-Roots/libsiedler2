@@ -32,9 +32,6 @@
  *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
- *  @author OLiver
  */
 int libsiedler2::loader::LoadSND(const std::string& file, ArchivInfo& items)
 {

@@ -26,8 +26,6 @@
 /** @class libsiedler2::baseArchivItem_Raw
  *
  *  Basisklasse für Rawdaten.
- *
- *  @author FloSoft
  */
 
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
@@ -46,8 +44,6 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
  *  @param[in] length Länge des Blocks (aus Datei lesen = 0xFFFFFFFF)
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned int length)
 {
@@ -75,8 +71,6 @@ int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned int lengt
  *  @param[in] with_length Soll die Blocklänge mitgeschrieben werden?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length) const
 {
@@ -97,8 +91,6 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
 
 /**
  *  liefert die Daten zurück (ro).
- *
- *  @author FloSoft
  */
 const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData() const
 {
@@ -107,8 +99,6 @@ const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData() con
 
 /**
  *  liefert die Daten zurück (rw).
- *
- *  @author FloSoft
  */
 std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData()
 {
@@ -117,8 +107,6 @@ std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData()
 
 /**
  *  löscht den Datenblock.
- *
- *  @author FloSoft
  */
 void libsiedler2::baseArchivItem_Raw::clear()
 {

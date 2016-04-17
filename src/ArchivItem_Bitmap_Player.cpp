@@ -29,29 +29,21 @@
 /** @class libsiedler2::ArchivItem_Bitmap_Player
  *
  *  Basisklasse für Player-Bitmaps.
- *
- *  @author FloSoft
  */
 
 /** @class libsiedler2::ArchivItem_Bitmap_Player
  *
  *  Klasse für Player-Bitmaps.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem_Bitmap_Player::tex_pdata
  *
  *  Die Spielerfarbedaten.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem_Bitmap_Player::tex_plength
  *
  *  Länge der Spielerfarbendaten.
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
@@ -65,8 +57,6 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
  *
  *  @param[in] file    Dateihandle der Datei
  *  @param[in] palette Grundpalette
- *
- *  @author FloSoft
  */
 libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem_BitmapBase()
 {
@@ -100,8 +90,6 @@ libsiedler2::ArchivItem_Bitmap_Player& libsiedler2::ArchivItem_Bitmap_Player::op
  *  @param[in] palette Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette* palette)
 {
@@ -164,8 +152,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
  *  @param[in] palette  Grundpalette
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
 {
@@ -249,8 +235,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned s
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @todo unkomprimierte Pixel werden nicht geschrieben -> braucht viel Speicherplatz
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
@@ -369,8 +353,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
 
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc()
 {
@@ -383,8 +365,6 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc()
 
 /**
  *  räumt den Bildspeicher auf.
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Bitmap_Player::tex_clear()
 {
@@ -414,8 +394,6 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_clear()
  *  @param[in]     color         Grundfarbindex der benutzt werden soll
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
         unsigned short height,
@@ -633,8 +611,6 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
  *  @param[in]     only_player   bei @p true wird nur die Playerschicht kopiert
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
         unsigned short buffer_width,

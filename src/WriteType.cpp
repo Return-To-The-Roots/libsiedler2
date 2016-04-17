@@ -41,9 +41,6 @@
  *  @param[out] item    ArchivItem-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
- *
- *  @author FloSoft
- *  @author OLiver
  */
 int libsiedler2::loader::WriteType(BOBTYPES bobtype, std::ostream& file, const ArchivItem_Palette* palette, const ArchivItem& item)
 {

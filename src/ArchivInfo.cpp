@@ -28,16 +28,12 @@ namespace libsiedler2{
 /** @class ArchivInfo
  *
  *  Klasse für Archivdateien.
- *
- *  @author FloSoft
  */
 
 
 /** @var ArchivInfo::data
  *
  *  die Elemente.
- *
- *  @author FloSoft
  */
 
 ArchivInfo::ArchivInfo()
@@ -65,8 +61,6 @@ ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
 
 /**
  *  Destruktor von @p ArchivInfo, räumt automatisch auf.
- *
- *  @author FloSoft
  */
 ArchivInfo::~ArchivInfo()
 {
@@ -77,8 +71,6 @@ ArchivInfo::~ArchivInfo()
  *  erstellt den Datensatz in einer bestimmten Größe.
  *
  *  @param[in] count Elementanzahl auf den der Datensatz angelegt werden soll
- *
- *  @author FloSoft
  */
 void ArchivInfo::alloc(size_t count)
 {
@@ -89,8 +81,6 @@ void ArchivInfo::alloc(size_t count)
 
 /**
  *  gibt die angelegten Daten wieder frei.
- *
- *  @author FloSoft
  */
 void ArchivInfo::clear()
 {
@@ -105,8 +95,6 @@ void ArchivInfo::clear()
  *
  *  @param[in] index Index des zu setzenden Eintrags
  *  @param[in] item  Item mit dem zu setzenden Inhalt
- *
- *  @author FloSoft
  */
 
 void ArchivInfo::set(size_t index, ArchivItem* item)
@@ -122,8 +110,6 @@ void ArchivInfo::set(size_t index, ArchivItem* item)
  *
  *  @param[in] index Index des zu setzenden Eintrags
  *  @param[in] item  Item mit dem zu kopierenden Inhalt
- *
- *  @author FloSoft
  */
 void ArchivInfo::setC(size_t index, const ArchivItem& item)
 {
@@ -134,16 +120,12 @@ void ArchivInfo::setC(size_t index, const ArchivItem& item)
  *  fügt ein Element hinten an.
  *
  *  @param[in] item Item mit dem anzufügenden Inhalt
- *
- *  @author FloSoft
  */
 
 /**
  *  fügt ein Element hinten an und kopiert die Daten von @p item.
  *
  *  @param[in] item Item mit dem zu kopierenden Inhalt
- *
- *  @author FloSoft
  */
 void ArchivInfo::pushC(const ArchivItem& item)
 {
@@ -156,8 +138,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @param[in] index Index des zu setzenden Eintrags
  *
  *  @return liefert NULL bei Fehler, ansonsten das entsprechende Item
- *
- *  @author FloSoft
  */
 
 /**
@@ -166,8 +146,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @param[in] index Index des zu setzenden Eintrags
  *
  *  @return liefert NULL bei Fehler, ansonsten das entsprechende Item
- *
- *  @author FloSoft
  */
 
 /**
@@ -176,16 +154,12 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @param[in] index Index des zu setzenden Eintrags
  *
  *  @return liefert NULL bei Fehler, ansonsten das entsprechende Item
- *
- *  @author FloSoft
  */
 
 /**
  *  liefert die Größe des Archivs.
  *
  *  @return liefert die Größe des Archivs.
- *
- *  @author FloSoft
  */
 
 /**
@@ -194,8 +168,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @param[in] index Index des zu liefernden Eintrags
  *
  *  @return Bei Erfolg ArchivItem, ansonsten NULL
- *
- *  @author FloSoft
  */
 
 /**
@@ -205,8 +177,6 @@ void ArchivInfo::pushC(const ArchivItem& item)
  *  @param[in] from   Quellposition
  *  @param[in] count  Anzahl
  *  @param[in] source Quelle
- *
- *  @author FloSoft
  */
 void ArchivInfo::copy(size_t to, size_t from, size_t count, const ArchivInfo& source)
 {

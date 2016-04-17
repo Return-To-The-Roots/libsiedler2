@@ -28,22 +28,16 @@
 /** @class libsiedler2::ArchivItem_Text
  *
  *  Klasse für Texte.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem_Text::text
  *
  *  Der Textspeicher.
- *
- *  @author FloSoft
  */
 
 /** @var libsiedler2::ArchivItem_Text::length
  *
  *  Die Länge des Textes.
- *
- *  @author FloSoft
  */
 
 libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem()
@@ -61,8 +55,6 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
  *  @param[in] file       Dateihandle aus denen die Farbwerte geladen werden sollen
  *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
  *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
- *
- *  @author FloSoft
  */
 libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, unsigned int length) : ArchivItem()
 {
@@ -81,8 +73,6 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversio
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  *
  *  @todo Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsigned int length)
 {
@@ -135,8 +125,6 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
  *  @param[in] conversion Soll ggf. ANSI-Charset in OEM umgewandelt werden?
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @author FloSoft
  */
 int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) const
 {
@@ -182,8 +170,6 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
  *  liefert den Text.
  *
  *  @return liefert einen konstanten Zeiger auf das Textelement, NULL bei leerem Text
- *
- *  @author FloSoft
  */
 const std::string& libsiedler2::ArchivItem_Text::getText() const
 {
@@ -197,8 +183,6 @@ const std::string& libsiedler2::ArchivItem_Text::getText() const
  *                        evtl vorhandener Text gelöscht
  *  @param[in] conversion Soll ggf. ANSI-Charset in OEM umgewandelt werden?
  *  @param[in] length     Länge des Textes, bei @p 0 wird @p strlen verwendet
- *
- *  @author FloSoft
  */
 void libsiedler2::ArchivItem_Text::setText(const std::string& text, bool conversion)
 {
