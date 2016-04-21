@@ -29,9 +29,6 @@
 #include <iostream>
 #include <stdexcept>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  lädt eine LBM-File in ein ArchivInfo.
  *

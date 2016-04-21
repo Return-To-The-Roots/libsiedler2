@@ -22,9 +22,6 @@
 #include "EndianStream.h"
 #include <cstring>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @class libsiedler2::ArchivItem_Map_Header
  *
  *  Klasse für einen Mapheader.

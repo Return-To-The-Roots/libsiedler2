@@ -21,9 +21,6 @@
 #include "EndianStream.h"
 #include <stdexcept>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @var TRANSPARENT_INDEX
  *
  *  Index des Transparenzwertes.

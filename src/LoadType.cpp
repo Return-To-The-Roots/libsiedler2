@@ -33,9 +33,6 @@
 #include "EndianStream.h"
 #include <stdexcept>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
  *

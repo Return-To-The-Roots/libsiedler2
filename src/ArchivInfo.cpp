@@ -21,9 +21,6 @@
 #include "IAllocator.h"
 #include <stdexcept>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 namespace libsiedler2{
 /** @class ArchivInfo
  *

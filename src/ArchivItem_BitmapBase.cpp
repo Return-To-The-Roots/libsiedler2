@@ -21,9 +21,6 @@
 #include "libsiedler2.h"
 #include "IAllocator.h"
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 namespace libsiedler2{
 /** @class ArchivItem_BitmapBase
  *

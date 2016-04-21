@@ -18,9 +18,6 @@
 #include "main.h" // IWYU pragma: keep
 #include "ArchivItem.h"
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @class libsiedler2::ArchivItem
  *
  *  Basisklasse der Archivelemente.

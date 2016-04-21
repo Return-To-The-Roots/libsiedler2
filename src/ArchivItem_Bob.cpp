@@ -23,9 +23,6 @@
 #include <fstream>
 #include "EndianStream.h"
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @class libsiedler2::ArchivItem_Bob
  *
  *  Klasse für Bobfiles.

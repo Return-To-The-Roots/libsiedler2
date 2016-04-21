@@ -22,9 +22,6 @@
 #include "EndianStream.h"
 #include <cstring>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @class libsiedler2::baseArchivItem_Sound_Wave
  *
  *  Klasse für WAVE-Sounds.

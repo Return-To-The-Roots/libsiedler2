@@ -21,9 +21,6 @@
 #include <cstddef>
 #include <vector>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 namespace libsiedler2{
 
 /**

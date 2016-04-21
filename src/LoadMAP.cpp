@@ -25,9 +25,6 @@
 #include <boost/iostreams/stream.hpp>
 #include <iostream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  lädt eine MAP-File in ein ArchivInfo.
  *

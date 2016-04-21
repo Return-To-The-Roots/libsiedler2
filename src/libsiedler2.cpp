@@ -24,9 +24,6 @@
 #include <stdexcept>
 #include <iostream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @mainpage libsiedler2
  *
  *  libsiedler2 ist eine Grafikbibliothek zum einfachen Zugriff auf

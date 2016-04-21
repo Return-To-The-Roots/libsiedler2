@@ -20,9 +20,6 @@
 #include <fstream>
 #include "EndianStream.h"
 #include <vector>
-
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
 namespace libsiedler2 { class ArchivItem_Palette; }
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw
  *

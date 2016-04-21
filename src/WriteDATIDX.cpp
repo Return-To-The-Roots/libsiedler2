@@ -18,9 +18,6 @@
 #include "main.h" // IWYU pragma: keep
 #include "prototypen.h"
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  schreibt ein ArchivInfo in eine DAT/IDX-File.
  *

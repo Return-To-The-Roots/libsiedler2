@@ -24,9 +24,6 @@
 #include <algorithm>
 #include <iterator>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 static const int PATCH_VOL_PAN_BIAS = 5;
 static GammaTable<unsigned char> VolumeCurve(128);
 

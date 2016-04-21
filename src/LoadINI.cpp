@@ -21,9 +21,6 @@
 #include "prototypen.h"
 #include <fstream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  lädt eine INI-File in ein ArchivInfo.
  *

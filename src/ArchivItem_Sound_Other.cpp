@@ -20,9 +20,6 @@
 #include <fstream>
 #include "EndianStream.h"
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @class libsiedler2::baseArchivItem_Sound_Other
  *
  *  Klasse für Other-Sounds.

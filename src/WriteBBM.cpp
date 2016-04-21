@@ -22,9 +22,6 @@
 #include <fstream>
 #include "EndianStream.h"
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  schreibt ein ArchivInfo in eine BBM-File.
  *

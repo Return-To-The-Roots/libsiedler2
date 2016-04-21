@@ -22,9 +22,6 @@
 #include <cstring>
 #include <limits>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 MIDI_Track::MIDI_Track()
 {}
 

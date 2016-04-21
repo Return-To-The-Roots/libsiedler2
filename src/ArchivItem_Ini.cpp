@@ -24,9 +24,6 @@
 #include <stdexcept>
 #include <sstream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @class libsiedler2::ArchivItem_Ini
  *
  *  Klasse für INI-Dateien (genauergesagt eine Sektion).

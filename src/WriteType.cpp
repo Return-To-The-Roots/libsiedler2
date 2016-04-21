@@ -29,9 +29,6 @@
 #include <stdexcept>
 #include <ostream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
  *

@@ -19,9 +19,6 @@
 #include "oem.h"
 #include <cstring>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 #ifndef _WIN32
 
 /** @name AnsiToOem

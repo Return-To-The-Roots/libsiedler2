@@ -35,9 +35,6 @@
 #include "ArchivItem_Sound_XMidi.h"
 #include "ArchivItem_Text.h"
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 namespace libsiedler2
 {
 

@@ -21,9 +21,6 @@
 #include "EndianStream.h"
 #include <cstring>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 namespace libsiedler2{
 
 /** @class baseArchivItem_Sound_XMidi

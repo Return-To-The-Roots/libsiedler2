@@ -23,9 +23,6 @@
 #include <boost/iostreams/stream.hpp>
 #include <iostream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  lädt eine LST-File in ein ArchivInfo.
  *

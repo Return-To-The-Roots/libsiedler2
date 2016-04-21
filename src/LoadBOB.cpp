@@ -27,9 +27,6 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  lädt eine BOB-File in ein ArchivInfo.
  *

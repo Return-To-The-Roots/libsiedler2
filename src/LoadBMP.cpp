@@ -29,9 +29,6 @@
 #include <cmath>
 #include <iostream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /**
  *  liest eine Bitmapzeile
  */

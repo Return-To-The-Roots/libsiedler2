@@ -22,9 +22,6 @@
 #include "EndianStream.h"
 #include <sstream>
 
-// Include last!
-#include "DebugNew.h" // IWYU pragma: keep
-
 /** @class libsiedler2::ArchivItem_Font
  *
  *  Klasse für Fonts.
