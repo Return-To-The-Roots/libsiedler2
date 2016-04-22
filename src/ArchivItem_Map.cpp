@@ -163,7 +163,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
         if(layer)
         {
             fs << uint16_t(header->getWidth()) << uint16_t(header->getHeight()) << uint16_t(1);
-            assert(layer->getData().size() == header->getWidth() * header->getHeight());
+            assert(layer->getData().size() == size_t(header->getWidth()) * size_t(header->getHeight()));
             if(layer->write(file, true) != 0)
                 return 4 + i;
         } else
