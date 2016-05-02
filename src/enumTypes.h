@@ -20,12 +20,7 @@
 
 namespace libsiedler2
 {
-    /**
-     *  @brief Texturformat-Aufzählungstyp.
-     *
-     *  Enthält alle unterstützten Texturformate als Aufzählungswerte.
-     *
-     */
+    /** Supported texture formats */
     enum TEXTURFORMAT
     {
         FORMAT_UNKNOWN = 0,
@@ -33,12 +28,7 @@ namespace libsiedler2
         FORMAT_RGBA = 4
     };
 
-        /**
-     *  @brief Bobtype-Aufzählungstyp.
-     *
-     *  Enthält alle unterstützten Bobtypes als Aufzählungswerte.
-     *
-     */
+     /** Supported bob types */
     enum BOBTYPES
     {
         BOBTYPE_NONE = 0,
