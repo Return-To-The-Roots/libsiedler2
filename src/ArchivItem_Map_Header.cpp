@@ -80,13 +80,12 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     OemToAnsi(author, author);
     this->author_ = author;
 
-    fs.ignore(7*2*sizeof(uint16_t)); // HQPos: 7 * X+Y
+    fs >> playerHQx >> playerHQy;
 
     char isInvalid;
     fs >> isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
-    fs.ignore(7*sizeof(uint8_t)); // Player faces/race * 7
-    fs.ignore(250*9); // Water and land masses, 250 structs with 9 bytes size: Type ID (1 byte): 0 = unused, 1 = land, 2 = water; X/Y (2 bytes each), Total mass (4 bytes)
+    fs >> playerFaces >> areaInfos;
 
     uint16_t headerSig;
     fs >> headerSig;
@@ -132,8 +131,15 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     char name[24];
     std::string tmpName = name_.substr(0, 23);
     AnsiToOem(tmpName.c_str(), name);
-    name[tmpName.length()] = '\0';
+    std::fill(name + tmpName.length(), name + sizeof(name), '\0');
     fs << name;
+    // Actual map name length is only 20 bytes. The width and height is used for unlimited play only to display the size
+    // We use it if the name (including trailing zero) fit into this space, otherwise we overwrite the size with the map name
+    if(tmpName.length() < 20)
+    {
+        fs.setPositionRel(-4);
+        fs << width << height;
+    }
 
     // GFX-Set einlesen
     fs << gfxset;
@@ -145,20 +151,15 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     char author[20];
     tmpName = author_.substr(0, 19);
     AnsiToOem(tmpName.c_str(), author);
-    name[tmpName.length()] = '\0';
+    std::fill(author + tmpName.length(), author + sizeof(author), '\0');
     fs << author;
 
-    std::vector<uint16_t> hqPos(7 * 2);
-    fs << hqPos; // HQPos: 7 * X+Y
+    fs << playerHQx << playerHQy;
 
     uint8_t isInvalid = 0;
     fs << isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
-    std::vector<uint8_t> playerFaces(7);
-    fs << playerFaces;
-    // Water and land masses, 250 structs with 9 bytes size: Type ID (1 byte): 0 = unused, 1 = land, 2 = water; X/Y (2 bytes each), Total mass (4 bytes)
-    std::vector<uint8_t> waterLandMasses(250 * 9);
-    fs << waterLandMasses;
+    fs << playerFaces << areaInfos;
 
     // Header sig
     fs << uint16_t(0x2711) << uint32_t(0);
