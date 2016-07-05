@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    ArchivInfo lst, bbm;
+    ArchivInfo bbm;
 
     if(Load("GFX/PALETTE/PAL5.BBM", bbm) != 0)
     {
@@ -79,6 +79,7 @@ int main(int argc, char* argv[])
 
         cerr << "Unpacking file " << argv[1] << " to " << directory << endl;
 
+        ArchivInfo lst;
         if(Load(argv[1], lst, palette) != 0)
         {
             cerr << "Fatal Error: " << endl;

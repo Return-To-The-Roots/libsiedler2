@@ -23,6 +23,7 @@
 #include "ArchivItem_Sound_Wave.h"
 #include "ArchivItem_Font.h"
 #include "ArchivItem_Bob.h"
+#include "ArchivItem_Text.h"
 #include "ArchivItem_BitmapBase.h"
 #include "libsiedler2.h"
 #include <boost/filesystem.hpp>
@@ -35,6 +36,40 @@
 
 using namespace std;
 using namespace libsiedler2;
+
+void checkTxtExtraction(const string& directory, const ArchivInfo& lst)
+{
+    for(unsigned int i = 0; i < lst.size(); ++i)
+    {
+        const ArchivItem* item = lst.get(i);
+
+        if(!item)
+            continue;
+        if(item->getBobType() != BOBTYPE_TEXT)
+            return;
+    }
+
+    const std::string filePath = directory + ".summary.txt";
+
+    cout << "extracting " << filePath.c_str() << ": ";
+    std::ofstream fTxt(filePath.c_str(), ios::binary);
+
+    for(unsigned int i = 0; i < lst.size(); ++i)
+    {
+        const ArchivItem* item = lst.get(i);
+
+        if(item)
+        {
+            const ArchivItem_Text* txt = dynamic_cast<const ArchivItem_Text*>(item);
+            if(txt->write(fTxt, false) != 0)
+                fTxt << " [error]";
+            else if(!txt->getText().empty())
+                fTxt.seekp(-1, std::ios_base::cur); // Remove NULL terminator
+
+        }
+        fTxt << char('\n');
+    }
+}
 
 void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette, const std::string& fileNameHexPrefix = "")
 {
@@ -133,6 +168,17 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             } break;
             case BOBTYPE_TEXT: // Text
             {
+                newfile << "txt";
+                cout << "extracting " << newfile.str() << ": ";
+
+                const ArchivItem_Text* txt = dynamic_cast<const ArchivItem_Text*>(item);
+                std::ofstream fTxt(newfile.str().c_str(), ios::binary);
+                if(fTxt && txt && txt->write(fTxt, false) == 0)
+                {
+                    cout << "done" << endl;
+                } else
+                    cout << "failed" << endl;
+
             } break;
             case BOBTYPE_RAW: // Raw-Item
             {
@@ -181,4 +227,6 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             } break;
         }
     }
+
+    checkTxtExtraction(directory, lst);
 }
