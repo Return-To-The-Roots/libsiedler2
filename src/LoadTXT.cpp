@@ -129,12 +129,12 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
                 // einlesen
                 ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
                 assert(i >= pos);
-                item->load(fs.getStream(), conversion, (unsigned int)strlen(&buffer[i - pos]));
+                item->load(fs.getStream(), conversion, (unsigned int)strlen(&buffer[i - pos]) + 1);
 
                 items.push(item);
             }
             else
-                items.push(getAllocator().create(BOBTYPE_TEXT));
+                items.push(NULL);
         }
     }
 

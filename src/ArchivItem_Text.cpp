@@ -79,7 +79,9 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
     std::vector<char> text;
     if(length)
     {
-        text.resize(length + 1);
+        // Avoid copy if we need to append NULL terminator
+        text.reserve(length + 1);
+        text.resize(length);
         if(!file.read(&text.front(), length))
             return 2;
     }else
@@ -88,17 +90,20 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
         text.assign(
             std::istreambuf_iterator<char>(file), 
             std::istreambuf_iterator<char>());
-        text.push_back(0);
     }
 
+    // Add NULL terminator if it is missing
+    if(text.empty() || text.back() != 0)
+        text.push_back(0);
+
     /// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
-    if(text[length - 1] == 26)
-        text[length - 1] = 0;
+    if(text.size() >= 2 && text[text.size() - 2] == 26)
+        text[text.size() - 2] = 0;
 
     if(conversion)
         OemToAnsi(&text.front(), &text.front()); //-V742
 
-    for(unsigned int i = 0; i < length; ++i)
+    for(unsigned int i = 0; i + 1 < length; ++i)
     {
         if(text[i] == '@' && text[i + 1] == '@')
         {
@@ -149,8 +154,6 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
         else
             text[j++] = this->text_[i];
     }
-
-    //memcpy(text, this->text, length);
 
     // ggf umwandeln
     if(conversion)
