@@ -34,6 +34,21 @@
  *
  */
 
+namespace {
+    struct Initializer{
+        Initializer()
+        {
+            assert(&libsiedler2::getAllocator() == NULL);
+            libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
+        }
+        ~Initializer()
+        {
+            libsiedler2::setAllocator(NULL);
+        }
+    };
+    static Initializer initializer__;
+}
+
 /** @namespace libsiedler2
  *
  *  @brief Hauptnamensraum von @p libsiedler2
@@ -55,7 +70,7 @@ static TEXTURFORMAT texturformat;
 /**
  *  Der gesetzte Item-Allokator.
  */
-static IAllocator* allocator = new StandardAllocator();
+static IAllocator* allocator = NULL;
 
 /**
  *  Setzt das verwendete Texturausgabeformat.
