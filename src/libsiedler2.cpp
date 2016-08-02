@@ -34,11 +34,28 @@
  *
  */
 
+namespace libsiedler2{
+
+    /**
+     *  Das gewählte Texturformat.
+
+     *
+     *  @ingroup textureformat
+     */
+    static TEXTURFORMAT texturformat;
+
+    /**
+     *  Der gesetzte Item-Allokator.
+     */
+    static IAllocator* allocator = NULL;
+
+}
+
 namespace {
     struct Initializer{
         Initializer()
         {
-            assert(&libsiedler2::getAllocator() == NULL);
+            assert(libsiedler2::allocator == NULL);
             libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
         }
         ~Initializer()
@@ -57,20 +74,6 @@ namespace {
  */
 
 namespace libsiedler2{
-
-/**
- *  Das gewählte Texturformat.
- *
- *  @ingroup textureformat
- */
-class ArchivItem;
-
-static TEXTURFORMAT texturformat;
-
-/**
- *  Der gesetzte Item-Allokator.
- */
-static IAllocator* allocator = NULL;
 
 /**
  *  Setzt das verwendete Texturausgabeformat.
