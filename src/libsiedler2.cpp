@@ -201,15 +201,12 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
     if(file.empty())
         return 1;
 
-    // String kopieren und auf Lower-Case bringen
-    std::string filen(file);
-    std::transform(filen.begin(), filen.end(), filen.begin(), ::tolower);
-
     // Endung holen
-    size_t extPos = filen.find_last_of('.');
+    size_t extPos = file.find_last_of('.');
     if(extPos == std::string::npos)
         return 2;
-    std::string extension = filen.substr(extPos + 1);
+    std::string extension = file.substr(extPos + 1);
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
     int ret = 0;
 

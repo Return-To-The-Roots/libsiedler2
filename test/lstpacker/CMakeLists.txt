@@ -27,7 +27,7 @@ endif(Boost_USE_STATIC_LIBS)
 SET(Boost_ADDITIONAL_VERSIONS "1.61.0" "1.61" "1.60.0" "1.60" "1.59.0" "1.59" "1.58.0" "1.58" "1.57.0" "1.57" "1.56.0" "1.56" "1.55.0" "1.55")
 
 # Require higher version as libsiedler2 because endian functions are not emulated here
-FIND_PACKAGE(Boost 1.58.0 REQUIRED)
+FIND_PACKAGE(Boost 1.58.0 REQUIRED filesystem system)
 
 IF (MSVC)
     ADD_DEFINITIONS(/WX) # warning = error

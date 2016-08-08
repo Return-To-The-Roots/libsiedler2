@@ -112,16 +112,12 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     bmhd.size = 0;
 
     // Bitmap-Header schreiben
-    //if(libendian::le_write_uc((unsigned char*)&bmhd, 14, bmp.get()) != 14)
-    //  return 4;
     fs << bmhd.header;
     fs << bmhd.size;
     fs << bmhd.reserved;
     fs << bmhd.offset;
 
     // Bitmap-Info-Header schreiben
-    //if(libendian::le_write_uc((unsigned char*)&bmih, 40, bmp.get()) != 40)
-    //  return 5;
     fs << bmih.length;
     fs << bmih.width;
     fs << bmih.height;

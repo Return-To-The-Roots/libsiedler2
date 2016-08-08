@@ -15,21 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Siedler II.5 RTTR. If not, see <http://www.gnu.org/licenses/>.
 
-///////////////////////////////////////////////////////////////////////////////
-// Header
-#include "util.h"
 #include "ArchivInfo.h"
 #include "ArchivItem_Palette.h"
 #include "libsiedler2.h"
 
+#include <boost/filesystem.hpp>
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include <vector>
-#include <cstdio>
 
 using namespace std;
 using namespace libsiedler2;
+namespace bfs = boost::filesystem;
 
 void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette, const std::string& fileNameHexPrefix = "");
 void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, ArchivInfo* lst = NULL);
@@ -41,13 +38,31 @@ int main(int argc, char* argv[])
         cerr << "Usage: " << endl;
         cerr << "pack:   " << argv[0] << " directory" << endl;
         cerr << "unpack: " << argv[0] << " file.lst"  << endl;
+        cerr << "Optionally pass a color palette file (bbm/act) to use instead" << endl;
 
+        return 1;
+    }
+
+    bfs::path inputPath(argv[1]);
+    if(!bfs::exists(inputPath))
+    {
+        cerr << "Input file or folder does not exist: " << inputPath;
         return 1;
     }
 
     ArchivInfo bbm;
 
-    if(Load("GFX/PALETTE/PAL5.BBM", bbm) != 0)
+    if(argc == 3)
+    {
+        if(Load(argv[2], bbm) != 0)
+        {
+            cerr << "Error: Could not load given palette: " << argv[2] << endl;
+            cerr << "Retrying with default ones" << endl;
+        }else
+            cout << "Using non-standard color palette: " << argv[2] << endl;
+    }
+
+    if(bbm.empty() && Load("GFX/PALETTE/PAL5.BBM", bbm) != 0)
     {
         if(Load("pal5.act", bbm) != 0)
         {
@@ -64,20 +79,16 @@ int main(int argc, char* argv[])
 
     setTextureFormat(format);
 
-    FILE* f = fopen(argv[1], "rb");
-    if(f)
+    if(bfs::is_regular_file(inputPath))
     {
-        fclose(f);
+        if(!inputPath.has_extension())
+        {
+            cerr << "Input filepath has no extension: " << inputPath;
+            return 1;
+        }
+        std::string outPath = inputPath.stem().string();
 
-        string file(argv[1]);
-        reverse(file.begin(), file.end());
-
-        vector<string> filep =  explode(file, '.', 2);
-
-        string directory = filep.at(1);
-        reverse(directory.begin(), directory.end());
-
-        cerr << "Unpacking file " << argv[1] << " to " << directory << endl;
+        cerr << "Unpacking file " << argv[1] << " to " << outPath << endl;
 
         ArchivInfo lst;
         if(Load(argv[1], lst, palette) != 0)
@@ -88,18 +99,19 @@ int main(int argc, char* argv[])
             return 3;
         }
 
-        unpack(directory, lst, palette);
+        unpack(outPath, lst, palette);
     }
-    else
+    else if(bfs::is_directory(inputPath))
     {
-        string directory(argv[1]);
-        string file(argv[1]);
+        bfs::path outFilepath = inputPath.string() + ".NEW.LST";
 
-        file += ".NEW.LST";
+        cerr << "Packing directory " << inputPath << " to " << outFilepath << endl;
 
-        cerr << "Packing directory " << argv[1] << " to " << file << endl;
-
-        pack(directory, file, palette);
+        pack(inputPath.string(), outFilepath.string(), palette);
+    }else
+    {
+        cerr << "Unknown type. Not a file or folder: " << inputPath;
+        return 1;
     }
 
     cerr << "done" << endl;

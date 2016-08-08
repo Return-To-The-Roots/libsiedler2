@@ -430,19 +430,19 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
     {
         for(unsigned int x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
-            size_t position  = (y2 * buffer_width + x2) * bpp;
-            size_t position2 = (y * width + x) * 1;
+            size_t posBuffer  = (y2 * buffer_width + x2) * bpp;
+            size_t posPlayerTex = (y * width + x) * 1;
             // und Pixel setzen
             switch(buffer_format)
             {
                 case FORMAT_RGBA:
                 {
-                    unsigned char c = palette->lookup(buffer[position + 2], buffer[position + 1], buffer[position + 0]);
-                    if(buffer[position + 3] != 0x00)
+                    unsigned char c = palette->lookup(buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
+                    if(buffer[posBuffer + 3] != 0x00)
                     {
                         if(c >= color && c <= color + 3) // Spielerfarbe
                         {
-                            tex_pdata[position2] = c - color;
+                            tex_pdata[posPlayerTex] = c - color;
                             c = 20;
                         }
 
@@ -453,10 +453,10 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
                 } break;
                 case FORMAT_PALETTED:
                 {
-                    unsigned char c = buffer[position];
+                    unsigned char c = buffer[posBuffer];
                     if(c >= color && c <= color + 3) // Spielerfarbe
                     {
-                        tex_pdata[position2] = c - color;
+                        tex_pdata[posPlayerTex] = c - color;
                         c = 20;
                     }
                     tex_setPixel(x, y, c, palette);
@@ -653,9 +653,9 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
     {
         for(unsigned short x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
-            size_t position = (y2 * buffer_width + x2) * bpp;
-            size_t position2 = (y * tex_width_ + x) * tex_bpp_;
-            size_t position3 = (y * width_ + x) * 1;
+            size_t posBuffer = (y2 * buffer_width + x2) * bpp;
+            size_t posTexture = (y * tex_width_ + x) * tex_bpp_;
+            size_t posPlayerTex = (y * width_ + x) * 1;
             switch(tex_bpp_)
             {
                 case 1: // Textur ist Paletted
@@ -665,36 +665,36 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
                         case 1:
                         {
                             // Ziel ist auch Paletted
-                            if(tex_pdata[position3] != TRANSPARENT_INDEX)
+                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                buffer[position] = tex_pdata[position3] + color;
+                                buffer[posBuffer] = tex_pdata[posPlayerTex] + color;
                             }
-                            if(tex_data_[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                            if(tex_data_[posTexture] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
                             {
                                 if(!only_player)
                                 {
                                     // normale Pixel setzen
-                                    buffer[position] = tex_data_[position2];
+                                    buffer[posBuffer] = tex_data_[posTexture];
                                 }
                             }
                         } break;
                         case 4:
                         {
                             // Ziel ist RGB+A
-                            if(tex_pdata[position3] != TRANSPARENT_INDEX)
+                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                buffer[position + 3] = 0xFF;
-                                palette->get(tex_pdata[position3] + color, buffer[position + 2], buffer[position + 1], buffer[position + 0]);
+                                buffer[posBuffer + 3] = 0xFF;
+                                palette->get(tex_pdata[posPlayerTex] + color, buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
                             }
-                            if(tex_data_[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
+                            if(tex_data_[posTexture] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
                             {
                                 if(!only_player)
                                 {
                                     // normale Pixel setzen
-                                    buffer[position + 3] = 0xFF;
-                                    palette->get(tex_data_[position2], buffer[position + 2], buffer[position + 1], buffer[position + 0]);
+                                    buffer[posBuffer + 3] = 0xFF;
+                                    palette->get(tex_data_[posTexture], buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
                                 }
                             }
                         } break;
@@ -707,38 +707,38 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
                         case 1:
                         {
                             // Ziel ist Paletted
-                            if(tex_pdata[position3] != TRANSPARENT_INDEX)
+                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                buffer[position] = tex_pdata[position3] + color;
+                                buffer[posBuffer] = tex_pdata[posPlayerTex] + color;
                             }
-                            if(tex_data_[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
+                            if(tex_data_[posTexture + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
                             {
                                 if(!only_player)
                                 {
                                     // normale Pixel setzen
-                                    buffer[position] = tex_getPixel(x, y, palette);
+                                    buffer[posBuffer] = tex_getPixel(x, y, palette);
                                 }
                             }
                         } break;
                         case 4:
                         {
                             // Ziel ist auch RGB+A
-                            if(tex_pdata[position3] != TRANSPARENT_INDEX)
+                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                palette->get(tex_pdata[position3] + color, buffer[position + 2], buffer[position + 1], buffer[position + 0]);
-                                buffer[position + 3] = 0xFF; // a
+                                palette->get(tex_pdata[posPlayerTex] + color, buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
+                                buffer[posBuffer + 3] = 0xFF; // a
                             }
-                            if(tex_data_[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
+                            if(tex_data_[posTexture + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
                             {
                                 if(!only_player)
                                 {
                                     // normale Pixel setzen
-                                    buffer[position + 0] = tex_data_[position2 + 0]; // b
-                                    buffer[position + 1] = tex_data_[position2 + 1]; // g
-                                    buffer[position + 2] = tex_data_[position2 + 2]; // r
-                                    buffer[position + 3] = tex_data_[position2 + 3]; // a
+                                    buffer[posBuffer + 0] = tex_data_[posTexture + 0]; // b
+                                    buffer[posBuffer + 1] = tex_data_[posTexture + 1]; // g
+                                    buffer[posBuffer + 2] = tex_data_[posTexture + 2]; // r
+                                    buffer[posBuffer + 3] = tex_data_[posTexture + 3]; // a
                                 }
                             }
                         } break;

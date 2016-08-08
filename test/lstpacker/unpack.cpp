@@ -82,7 +82,7 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
         if(!item)
             continue;
 
-        bool changed = false;
+        bool filenameAdjusted = false;
         stringstream newfile;
         newfile << directory << "/" << fileNameHexPrefix;
         if(!fileNameHexPrefix.empty())
@@ -103,11 +103,11 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                 switch(subtype)
                 {
                     case SOUNDTYPE_NONE:
-                    {
-                    } break;
+                        cerr << "Unsupported sound ignored: " << newfile << endl;
+                        break;
                     case SOUNDTYPE_MIDI: // MIDI
-                    {
-                    } break;
+                        cerr << "Unsupported midi sound ignored: " << newfile << endl;
+                        break;
                     case SOUNDTYPE_WAVE: // WAV
                     {
                         newfile << "wav";
@@ -124,11 +124,11 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                             cout << "failed" << endl;
                     } break;
                     case SOUNDTYPE_XMIDI: // XMIDI
-                    {
-                    } break;
+                        cerr << "Unsupported xmidi sound ignored: " << newfile << endl;
+                        break;
                     case SOUNDTYPE_OTHER: // Andere
-                    {
-                    } break;
+                        cerr << "Unsupported other sound ignored: " << newfile << endl;
+                        break;
                 }
             } break;
             case BOBTYPE_FONT: // Font
@@ -164,8 +164,8 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                 unpack(directory, *bob, palette);
             } break;
             case BOBTYPE_MAP: // Mapfiles
-            {
-            } break;
+                cerr << "MapFile is not supported. Ignored: " << newfile << endl;
+                break;
             case BOBTYPE_TEXT: // Text
             {
                 newfile << "txt";
@@ -181,35 +181,32 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
 
             } break;
             case BOBTYPE_RAW: // Raw-Item
-            {
-            } break;
+                cerr << "Raw item is not supported. Ignored: " << newfile << endl;
+                break;
             case BOBTYPE_MAP_HEADER: // Mapheader-Item
-            {
-            } break;
+                cerr << "Map-header is not supported. Ignored: " << newfile << endl;
+                break;
             case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
-            {
-                if(!changed)
+                if(!filenameAdjusted)
                 {
                     newfile << "rle.";
-                    changed = true;
+                    filenameAdjusted = true;
                 }
-            }
+                //no break
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
-            {
-                if(!changed)
+                if(!filenameAdjusted)
                 {
                     newfile << "player.";
-                    changed = true;
+                    filenameAdjusted = true;
                 }
-            }
+                //no break
             case BOBTYPE_BITMAP_SHADOW: // Schatten
-            {
-                if(!changed)
+                if(!filenameAdjusted)
                 {
                     newfile << "shadow.";
-                    changed = true;
+                    filenameAdjusted = true;
                 }
-            }
+                //no break
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
                 ArchivInfo items;
