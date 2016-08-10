@@ -103,10 +103,10 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                 switch(subtype)
                 {
                     case SOUNDTYPE_NONE:
-                        cerr << "Unsupported sound ignored: " << newfile << endl;
+                        cerr << "Unsupported sound ignored: " << newfile.str() << endl;
                         break;
                     case SOUNDTYPE_MIDI: // MIDI
-                        cerr << "Unsupported midi sound ignored: " << newfile << endl;
+                        cerr << "Unsupported midi sound ignored: " << newfile.str() << endl;
                         break;
                     case SOUNDTYPE_WAVE: // WAV
                     {
@@ -124,10 +124,10 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                             cout << "failed" << endl;
                     } break;
                     case SOUNDTYPE_XMIDI: // XMIDI
-                        cerr << "Unsupported xmidi sound ignored: " << newfile << endl;
+                        cerr << "Unsupported xmidi sound ignored: " << newfile.str() << endl;
                         break;
                     case SOUNDTYPE_OTHER: // Andere
-                        cerr << "Unsupported other sound ignored: " << newfile << endl;
+                        cerr << "Unsupported other sound ignored: " << newfile.str() << endl;
                         break;
                 }
             } break;
@@ -164,7 +164,7 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                 unpack(directory, *bob, palette);
             } break;
             case BOBTYPE_MAP: // Mapfiles
-                cerr << "MapFile is not supported. Ignored: " << newfile << endl;
+                cerr << "MapFile is not supported. Ignored: " << newfile.str() << endl;
                 break;
             case BOBTYPE_TEXT: // Text
             {
@@ -181,10 +181,10 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
 
             } break;
             case BOBTYPE_RAW: // Raw-Item
-                cerr << "Raw item is not supported. Ignored: " << newfile << endl;
+                cerr << "Raw item is not supported. Ignored: " << newfile.str() << endl;
                 break;
             case BOBTYPE_MAP_HEADER: // Mapheader-Item
-                cerr << "Map-header is not supported. Ignored: " << newfile << endl;
+                cerr << "Map-header is not supported. Ignored: " << newfile.str() << endl;
                 break;
             case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
                 if(!filenameAdjusted)
