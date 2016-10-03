@@ -45,7 +45,7 @@ int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palet
     // Datei zum lesen öffnen
     boost::iostreams::mapped_file_source mmapFile;
     try{
-        mmapFile.open(file);
+        mmapFile.open(bfs::path(file));
     }catch(std::exception& e){
         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
         return 2;

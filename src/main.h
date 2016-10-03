@@ -61,4 +61,7 @@ namespace libsiedler2{
     };
 } // namespace libsiedler2
 
+namespace boost{ namespace filesystem{} }
+namespace bfs = boost::filesystem;
+
 #endif // MAIN_H_INCLUDED

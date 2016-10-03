@@ -23,6 +23,7 @@
 #include "IAllocator.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <boost/filesystem/path.hpp> // For UTF8 support
 #include <iostream>
 
 /**
@@ -41,7 +42,7 @@ int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
     // Datei zum lesen öffnen
      boost::iostreams::mapped_file_source mmapFile;
      try{
-         mmapFile.open(file);
+         mmapFile.open(bfs::path(file));
      }catch(std::exception& e){
          std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
          return 2;

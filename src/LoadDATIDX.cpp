@@ -21,7 +21,7 @@
 #include "EndianStream.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp> // For UTF8 support
 #include <iostream>
 
 /**
@@ -38,15 +38,15 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     if(file.empty())
         return 1;
 
-    boost::filesystem::path filePath = file;
-    std::string datfile = filePath.replace_extension("DAT").string();
-    std::string idxfile = filePath.replace_extension("IDX").string();;
+    bfs::path filepath = file;
+    bfs::path datFilepath = filepath.replace_extension("DAT");
+    bfs::path idxFilepath = filepath.replace_extension("IDX");
     unsigned int count;
 
     // Datei zum lesen öffnen
     boost::iostreams::mapped_file_source mmapFile;
     try{
-        mmapFile.open(datfile);
+        mmapFile.open(datFilepath);
     }catch(std::exception& e){
         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
         return 2;
@@ -62,7 +62,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     // IDX-Datei zum lesen öffnen
     boost::iostreams::mapped_file_source mmapFileIdx;
     try{
-        mmapFileIdx.open(idxfile);
+        mmapFileIdx.open(idxFilepath);
     }catch(std::exception& e){
         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
         return 2;
