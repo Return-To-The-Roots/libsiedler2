@@ -26,10 +26,9 @@
  */
 
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<unsigned char>& initialData)
-    : ArchivItem()
+    : ArchivItem(), data(initialData)
 {
     setBobType(BOBTYPE_RAW);
-    data = std::vector<unsigned char>(initialData);
 }
 
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
