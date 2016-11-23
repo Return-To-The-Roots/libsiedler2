@@ -55,6 +55,12 @@ namespace libsiedler2
 
             const std::string& getAuthor() const;
             void setAuthor(const std::string& author);
+        
+            void setPlayerHQx(const int n, unsigned short x);
+            unsigned short getPlayerHQx(const int n) const;
+
+            void setPlayerHQy(const int n, unsigned short y);
+            unsigned short getPlayerHQy(const int n) const;
 
             bool hasExtraWord() const { return hasExtraWord_; }
 
