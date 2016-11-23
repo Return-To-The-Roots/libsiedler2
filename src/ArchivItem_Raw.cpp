@@ -25,6 +25,13 @@
  *  Basisklasse für Rawdaten.
  */
 
+libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<unsigned char>& initialData)
+    : ArchivItem()
+{
+    setBobType(BOBTYPE_RAW);
+    data = std::vector<unsigned char>(initialData);
+}
+
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
     : ArchivItem()
 {

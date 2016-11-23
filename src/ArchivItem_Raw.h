@@ -30,6 +30,7 @@ namespace libsiedler2
     {
         public:
             baseArchivItem_Raw();
+            baseArchivItem_Raw(const std::vector<unsigned char>& initialData);
             ~baseArchivItem_Raw() override;
 
             /// lädt die Rawdaten aus einer Datei.
@@ -54,6 +55,7 @@ namespace libsiedler2
     {
         public:
             ArchivItem_Raw() : baseArchivItem_Raw() {}
+            ArchivItem_Raw(const std::vector<unsigned char>& initialData) : baseArchivItem_Raw(initialData) {}
             ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
     };
 }
