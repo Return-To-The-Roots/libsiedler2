@@ -280,3 +280,29 @@ void libsiedler2::ArchivItem_Map_Header::setAuthor(const std::string& author)
 {
     this->author_ = author;
 }
+
+/**
+ * Sets position of the headquarter for the specified player.
+ *
+ * @param player player number (0-6)
+ * @param x x-coordinate of the headquarter
+ * @param y y-coordinate of the headquarter
+ */
+void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const unsigned int player, const unsigned short x, const unsigned short y)
+{
+    playerHQx[player] = x;
+    playerHQy[player] = y;
+}
+
+/**
+ * Gets position of the headquarter for the specified player.
+ *
+ * @param player player number (0-6)
+ * @param[out] x x-coordinate of the headquarter
+ * @param[out] y y-coordinate of the headquarter
+ */
+void libsiedler2::ArchivItem_Map_Header::getPlayerHQ(const unsigned int player, unsigned short& x, unsigned short& y)
+{
+    x = playerHQx[player];
+    y = playerHQy[player];
+}
