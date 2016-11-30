@@ -56,6 +56,76 @@ namespace libsiedler2
         SOUNDTYPE_OTHER = 4
     };
 
+    /**
+     * Enumeration of animals which can be stored in SWD format. 
+     * For each value there's a hex-value assigned for the animal 
+     * representation in SWD.
+     * @see http://settlers2.net/documentation/world-map-file-format-wldswd/
+     */
+    enum ANIMALS
+    {
+        A_None    = 0x00,
+        A_Rabbit  = 0x01,
+        A_Fox     = 0x02,
+        A_Stag    = 0x03,
+        A_Deer    = 0x04,
+        A_Duck    = 0x05,
+        A_Sheep   = 0x06,
+        A_Deer2   = 0x07,
+        A_Duck2   = 0x08,
+        A_Donkey  = 0x09
+    };
+    
+    /**
+     * Enumeration of resource types which can be stored in SWD format.
+     * For each value there's a hex-value assigned for the representation
+     * of the resource in SWD.
+     * @see http://settlers2.net/documentation/world-map-file-format-wldswd/
+     */
+    enum RESOURCES
+    {
+        R_None    = 0x00,
+        R_Water   = 0x21,
+        R_Fish    = 0x87,
+        R_Coal    = 0x40,
+        R_Iron    = 0x48,
+        R_Gold    = 0x50,
+        R_Granite = 0x58
+    };
+    
+    /**
+     * Enumeration for object types stored in SWD. In combination with the
+     * object information it makes a real object (therefore the "info"-comments
+     * in brackets).
+     */
+    enum OBJECT_TYPES
+    {
+        OT_Empty        = 0x00,
+        OT_Stone        = 0x01, // 0x01 - 0x06 (info: 0xCC / 0xCD)
+        OT_TreeOrPalm   = 0x30, // 0x30 - 0x37 (info: 0xC4 / 0xC5)
+        OT_Tree1        = 0x70, // 0x70 - 0x77 (info: 0xC4)
+        OT_Tree2        = 0xB0, // 0xB0 - 0xB7 (info: 0xC4)
+        OT_Palm         = 0xF0, // 0xF0 - 0xF7 (info: 0xC4)
+    };
+    
+    /**
+     * Enumeration for object info stored in SWD.
+     */
+    enum OBJECT_INFO
+    {
+        OI_Empty        = 0x00,
+        OI_Stone        = 0xCC, // 0xCC - 0xCD
+        OI_TreeOrPalm   = 0xC4,
+        OI_Palm         = 0xC5,
+        OI_Headquarter  = 0x80  // used in combination with object
+                                // type 0x00-0x06 for player number
+    };
+    
+    /**
+     * Hex value to combine with texture values to enable harbor placement.
+     */
+    const unsigned char ENABLE_HARBOR = 0x40;
+    
 } // namspace libsiedler2
 
 #endif // enumTypes_h__
