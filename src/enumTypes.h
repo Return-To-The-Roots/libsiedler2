@@ -95,17 +95,21 @@ namespace libsiedler2
     
     /**
      * Enumeration for object types stored in SWD. In combination with the
-     * object information it makes a real object (therefore the "info"-comments
-     * in brackets).
+     * object information it makes a real object (therefore the "info"-comments).
      */
     enum OBJECT_TYPES
     {
-        OT_Empty        = 0x00,
-        OT_Stone        = 0x01, // 0x01 - 0x06 (info: 0xCC / 0xCD)
-        OT_TreeOrPalm   = 0x30, // 0x30 - 0x37 (info: 0xC4 / 0xC5)
-        OT_Tree1        = 0x70, // 0x70 - 0x77 (info: 0xC4)
-        OT_Tree2        = 0xB0, // 0xB0 - 0xB7 (info: 0xC4)
-        OT_Palm         = 0xF0, // 0xF0 - 0xF7 (info: 0xC4)
+        OT_Empty            = 0x00,
+        OT_Stone_Begin      = 0x01, // info: 0xCC / 0xCD
+        OT_Stone_End        = 0x06,
+        OT_TreeOrPalm_Begin = 0x30, // info: 0xC4 / 0xC5
+        OT_TreeOrPalm_End   = 0x37,
+        OT_Tree1_Begin      = 0x70, // info: 0xC4
+        OT_Tree1_End        = 0x77,
+        OT_Tree2_Begin      = 0xB0, // info: 0xC4
+        OT_Tree2_End        = 0xB7,
+        OT_Palm_Begin       = 0xF0, // info: 0xC4
+        OT_Palm_End         = 0xF7
     };
     
     /**
@@ -113,18 +117,19 @@ namespace libsiedler2
      */
     enum OBJECT_INFO
     {
-        OI_Empty        = 0x00,
-        OI_Stone        = 0xCC, // 0xCC - 0xCD
-        OI_TreeOrPalm   = 0xC4,
-        OI_Palm         = 0xC5,
-        OI_Headquarter  = 0x80  // used in combination with object
-                                // type 0x00-0x06 for player number
+        OI_Empty            = 0x00,
+        OI_Stone1           = 0xCC,
+        OI_Stone2           = 0xCD,
+        OI_TreeOrPalm       = 0xC4,
+        OI_Palm             = 0xC5,
+        OI_HeadquarterMask  = 0x80  // used in combination with object
+                                    // type 0x00-0x06 for player number
     };
     
     /**
      * Hex value to combine with texture values to enable harbor placement.
      */
-    const unsigned char ENABLE_HARBOR = 0x40;
+    const unsigned char HARBOR_MASK = 0x40;
     
 } // namspace libsiedler2
 
