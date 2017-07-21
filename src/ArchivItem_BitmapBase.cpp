@@ -121,7 +121,7 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
 
     if(x < tex_width_ && y < tex_height_)
     {
-        unsigned int position = (y * tex_width_ + x) * tex_bpp_;
+        unsigned position = (y * tex_width_ + x) * tex_bpp_;
         switch(tex_bpp_)
         {
             case 1:
@@ -166,7 +166,7 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
 
     if(x < tex_width_ && y < tex_height_)
     {
-        unsigned int position = (y * tex_width_ + x) * tex_bpp_;
+        unsigned position = (y * tex_width_ + x) * tex_bpp_;
         switch(tex_bpp_)
         {
             case 1:
@@ -215,7 +215,7 @@ unsigned char ArchivItem_BitmapBase::tex_getPixel(unsigned short x,
 
     if(x < tex_width_ && y < tex_height_)
     {
-        unsigned int position = (y * tex_width_ + x) * tex_bpp_;
+        unsigned position = (y * tex_width_ + x) * tex_bpp_;
         switch(tex_bpp_)
         {
             case 1:

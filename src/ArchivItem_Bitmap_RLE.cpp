@@ -196,7 +196,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
     std::vector<unsigned short> starts(height_);
 
     // RLE kodieren
-    unsigned int position = 0;
+    unsigned position = 0;
     for(unsigned short y = 0; y < height_; ++y)
     {
         unsigned short x = 0;
@@ -244,7 +244,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
     }
     image[position++] = 0xFF;
 
-    unsigned int length = position + height_ * 2;
+    unsigned length = position + height_ * 2;
 
     // Länge schreiben
     fs << length;

@@ -34,7 +34,7 @@ namespace libsiedler2
             ~baseArchivItem_Raw() override;
 
             /// lädt die Rawdaten aus einer Datei.
-            int load(std::istream& file, unsigned int length = 0xFFFFFFFF);
+            int load(std::istream& file, unsigned length = 0xFFFFFFFF);
             /// schreibt die Rawdaten in eine Datei.
             int write(std::ostream& file, bool with_length) const;
 

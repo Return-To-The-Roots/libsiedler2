@@ -37,7 +37,7 @@ class MIDI_Track
 
         int XMid2Mid();
         const unsigned char* getMid(bool withheader = false) const;
-        unsigned int getMidLength(bool withheader = false) const;
+        unsigned getMidLength(bool withheader = false) const;
 
         friend class XMIDI_Track;
 

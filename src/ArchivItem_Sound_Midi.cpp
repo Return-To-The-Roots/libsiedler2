@@ -57,17 +57,17 @@ baseArchivItem_Sound_Midi& baseArchivItem_Sound_Midi::operator=(const baseArchiv
     return *this;
 }
 
-int baseArchivItem_Sound_Midi::load(std::istream& file, unsigned int length)
+int baseArchivItem_Sound_Midi::load(std::istream& file, unsigned length)
 {
     if(!file || length == 0)
         return 1;
 
     libendian::BigEndianIStreamRef fs(file);
-    unsigned int item_length = length;
+    unsigned item_length = length;
     long position = fs.getPosition();
 
     char header[4];
-    unsigned int chunk;
+    unsigned chunk;
     unsigned short type = 0;
     unsigned short ppqs = 96;
 
@@ -132,7 +132,7 @@ int baseArchivItem_Sound_Midi::write(std::ostream& file) const
     libendian::BigEndianOStreamRef fs(file);
     libendian::LittleEndianOStreamRef fsLE(file);
 
-    unsigned int length = 0;
+    unsigned length = 0;
     for(unsigned short i = 0; i < tracks; ++i)
         length += tracklist[i].getMidLength(false);
 

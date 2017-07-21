@@ -78,7 +78,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     const unsigned short h = header->getHeight();
 
     libendian::LittleEndianIStreamRef fs(file);
-    for(unsigned int i = 0; i < 14; ++i)
+    for(unsigned i = 0; i < 14; ++i)
     {
         BlockHeader bHeader;
         fs >> bHeader.id >> bHeader.unknown >> bHeader.w >> bHeader.h >> bHeader.multiplier >> bHeader.blockLength;
@@ -156,7 +156,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
         return 3;
 
     libendian::LittleEndianOStreamRef fs(file);
-    for(unsigned int i = 0; i < 14; ++i)
+    for(unsigned i = 0; i < 14; ++i)
     {
         const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i + 1));
         fs << uint16_t(0x2710) << uint32_t(0);

@@ -54,7 +54,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
     lst << count;
 
     // items schreiben
-    for(unsigned int i = 0; i < count; ++i)
+    for(unsigned i = 0; i < count; ++i)
     {
         unsigned short used = 0x0001;
 

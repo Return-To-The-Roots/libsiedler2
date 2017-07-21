@@ -64,7 +64,7 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
     baseArchivItem_Sound* item = NULL;
 
     char header[4];
-    unsigned int length;
+    unsigned length;
 
     // Header einlesen
     fs >> header;

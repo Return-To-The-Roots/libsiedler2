@@ -53,7 +53,7 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
  *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
  *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
  */
-libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, unsigned int length) : ArchivItem()
+libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, unsigned length) : ArchivItem()
 {
     setBobType(BOBTYPE_TEXT);
 
@@ -71,7 +71,7 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversio
  *
  *  @todo Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
  */
-int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsigned int length)
+int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsigned length)
 {
     if(!file)
         return 1;
@@ -103,7 +103,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
     if(conversion)
         OemToAnsi(&text.front(), &text.front()); //-V742
 
-    for(unsigned int i = 0; i + 1 < length; ++i)
+    for(unsigned i = 0; i + 1 < length; ++i)
     {
         if(text[i] == '@' && text[i + 1] == '@')
         {
@@ -138,11 +138,11 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
         return 0;
 
     assert(text_.size() < std::numeric_limits<unsigned>::max());
-    unsigned int length = static_cast<unsigned>(text_.size());
+    unsigned length = static_cast<unsigned>(text_.size());
     std::vector<char> text(length * 2 + 1);
 
 
-    for(unsigned int i = 0, j = 0; i < length; ++i)
+    for(unsigned i = 0, j = 0; i < length; ++i)
     {
         if(this->text_[i] == '\n')
         {

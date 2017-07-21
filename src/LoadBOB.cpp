@@ -37,7 +37,7 @@
  */
 int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
-    unsigned int header;
+    unsigned header;
 
     if(file.empty() || palette == NULL)
         return 1;

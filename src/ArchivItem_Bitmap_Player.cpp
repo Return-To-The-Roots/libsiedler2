@@ -117,7 +117,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
     // Unbekannte Daten überspringen
     fs.ignore(2);
 
-    unsigned int length;
+    unsigned length;
     // Länge einlesen
     fs >> length;
 
@@ -337,7 +337,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
     }
 
     image.resize(position);
-    unsigned int length = position + height_ * sizeof(unsigned short);
+    unsigned length = position + height_ * sizeof(unsigned short);
 
     // Länge schreiben
     fs << length;
@@ -426,9 +426,9 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
             break;
     }
 
-    for(unsigned int y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
+    for(unsigned y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
     {
-        for(unsigned int x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
+        for(unsigned x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
             size_t posBuffer  = (y2 * buffer_width + x2) * bpp;
             size_t posPlayerTex = (y * width + x) * 1;

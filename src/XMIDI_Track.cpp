@@ -64,9 +64,9 @@ int XMIDI_Track::Convert()
 int XMIDI_Track::ConvertTrackToList()
 {
     int            time = 0; // 120th of a second
-    unsigned int   data;
+    unsigned   data;
     int            end = 0;
-    unsigned int   status = 0;
+    unsigned   status = 0;
     int            play_size = 3;
     int            retval = 0;
 
@@ -78,7 +78,7 @@ int XMIDI_Track::ConvertTrackToList()
     {
         GetVLQ2(data);
         time += data;
-        status = (unsigned int)track->xmid_data[position++];
+        status = (unsigned)track->xmid_data[position++];
 
         switch (status >> 4)
         {
@@ -108,7 +108,7 @@ int XMIDI_Track::ConvertTrackToList()
                 if (status == 0xFF)
                 {
                     size_t pos = position;
-                    unsigned int data = track->xmid_data[position++];
+                    unsigned data = track->xmid_data[position++];
 
                     if (data == 0x2F)
                         end = 1;
@@ -133,7 +133,7 @@ int XMIDI_Track::ConvertTrackToList()
     return retval;
 }
 
-int XMIDI_Track::GetVLQ(unsigned int& quant)
+int XMIDI_Track::GetVLQ(unsigned& quant)
 {
     int i;
     quant = 0;
@@ -154,7 +154,7 @@ int XMIDI_Track::GetVLQ(unsigned int& quant)
     return i;
 }
 
-int XMIDI_Track::GetVLQ2(unsigned int& quant)
+int XMIDI_Track::GetVLQ2(unsigned& quant)
 {
     int i;
     quant = 0;
@@ -173,7 +173,7 @@ int XMIDI_Track::GetVLQ2(unsigned int& quant)
     return i;
 }
 
-void XMIDI_Track::PutVLQ(unsigned int value)
+void XMIDI_Track::PutVLQ(unsigned value)
 {
     int buffer;
     int i = 1;
@@ -194,7 +194,7 @@ void XMIDI_Track::PutVLQ(unsigned int value)
 
 int XMIDI_Track::ConvertNote(const int time, const unsigned char status, const int size)
 {
-    unsigned int delta = 0;
+    unsigned delta = 0;
     int data;
 
     data = track->xmid_data[position++];
@@ -310,7 +310,7 @@ int XMIDI_Track::ConvertSystemMessage(const int time, const unsigned char status
         i++;
     }
 
-    unsigned int len;
+    unsigned len;
     i += GetVLQ(len);
 
     current->buffer.clear();

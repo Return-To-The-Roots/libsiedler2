@@ -36,7 +36,7 @@
 template<class T_FStream>
 static inline void LoadBMP_ReadLine(T_FStream& bmp,
                                     unsigned short y,
-                                    unsigned int width,
+                                    unsigned width,
                                     unsigned char bbp,
                                     libsiedler2::baseArchivItem_Bitmap& bitmap,
                                     std::vector<unsigned char>& buffer)
@@ -79,20 +79,20 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     struct BMHD
     {
         unsigned short header; // 2
-        unsigned int size; // 6
-        unsigned int reserved; // 10
-        unsigned int offset; // 14
+        unsigned size; // 6
+        unsigned reserved; // 10
+        unsigned offset; // 14
     } bmhd;
 
     struct BMIH
     {
-        unsigned int length; // 4
+        unsigned length; // 4
         int width; // 8
         int height; // 12
         short planes; // 14
         short bbp; // 16
-        unsigned int compression; // 20
-        unsigned int size; // 24
+        unsigned compression; // 20
+        unsigned size; // 24
         int xppm; // 28
         int yppm; // 32
         int clrused; // 36

@@ -87,7 +87,7 @@ const unsigned char* MIDI_Track::getMid(bool withheader) const
     return &mid_data[14];
 }
 
-unsigned int MIDI_Track::getMidLength(bool withheader) const
+unsigned MIDI_Track::getMidLength(bool withheader) const
 {
     assert(mid_data.size() < std::numeric_limits<unsigned>::max());
     unsigned size = static_cast<unsigned>(mid_data.size());

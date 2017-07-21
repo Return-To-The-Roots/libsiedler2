@@ -81,7 +81,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     fs.ignore(2);
 
     // Länge einlesen
-    unsigned int length;
+    unsigned length;
     fs >> length;
 
     std::vector<unsigned char> data(length);
@@ -147,7 +147,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     fs.write(unknown, sizeof(unknown));
 
     // Länge schreiben
-    unsigned int length = width_ * height_;
+    unsigned length = width_ * height_;
     fs << length;
 
     for(unsigned short y = 0; y < height_; ++y)

@@ -48,7 +48,7 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned int length)
+int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned length)
 {
     if(!file)
         return 1;

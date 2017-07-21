@@ -55,17 +55,17 @@ baseArchivItem_Sound_XMidi& baseArchivItem_Sound_XMidi::operator=(const baseArch
     return *this;
 }
 
-int baseArchivItem_Sound_XMidi::load(std::istream& file, unsigned int length)
+int baseArchivItem_Sound_XMidi::load(std::istream& file, unsigned length)
 {
     if(!file || length == 0)
         return 1;
 
     libendian::BigEndianIStreamRef fs(file);
-    unsigned int item_length = length;
+    unsigned item_length = length;
     long position = fs.getPosition();
 
     char header[4], subheader[4];
-    unsigned int chunk;
+    unsigned chunk;
 
     // Header einlesen
     fs >> header;
@@ -171,7 +171,7 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    unsigned int length = 0;
+    unsigned length = 0;
     for(unsigned short i = 0; i < tracks; ++i)
         length += tracklist[i].getMidLength(false);
     libendian::BigEndianOStreamRef fs(file);

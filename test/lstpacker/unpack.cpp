@@ -39,7 +39,7 @@ using namespace libsiedler2;
 
 void checkTxtExtraction(const string& directory, const ArchivInfo& lst)
 {
-    for(unsigned int i = 0; i < lst.size(); ++i)
+    for(unsigned i = 0; i < lst.size(); ++i)
     {
         const ArchivItem* item = lst.get(i);
 
@@ -54,7 +54,7 @@ void checkTxtExtraction(const string& directory, const ArchivInfo& lst)
     cout << "extracting " << filePath.c_str() << ": ";
     std::ofstream fTxt(filePath.c_str(), ios::binary);
 
-    for(unsigned int i = 0; i < lst.size(); ++i)
+    for(unsigned i = 0; i < lst.size(); ++i)
     {
         const ArchivItem* item = lst.get(i);
 
@@ -75,7 +75,7 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
 {
     boost::filesystem::create_directories(directory);
 
-    for(unsigned int i = 0; i < lst.size(); ++i)
+    for(unsigned i = 0; i < lst.size(); ++i)
     {
         const ArchivItem* item = lst.get(i);
 

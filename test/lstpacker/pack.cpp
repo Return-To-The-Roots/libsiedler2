@@ -192,7 +192,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
             // had the filename a number? then set it to the corresponding item.
             if(nr >= 0)
             {
-                if((unsigned int)nr >= lst->size())
+                if((unsigned)nr >= lst->size())
                     lst->alloc_inc(nr - lst->size() + 1);
                 lst->setC(nr, font);
             }
@@ -253,7 +253,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
             // had the filename a number? then set it to the corresponding item.
             if(nr >= 0)
             {
-                if((unsigned int)nr >= lst->size())
+                if((unsigned)nr >= lst->size())
                     lst->alloc_inc(nr - lst->size() + 1);
                 lst->setC(nr, *neu);
             }

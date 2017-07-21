@@ -54,7 +54,7 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const Ar
             case BOBTYPE_SOUND: // WAVs, MIDIs
             {
                 libendian::LittleEndianIStreamRef fs(file);
-                unsigned int length;
+                unsigned length;
                 fs >> length;
 
                 baseArchivItem_Sound* nitem = baseArchivItem_Sound::findSubType(file);

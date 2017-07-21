@@ -189,9 +189,9 @@ int baseArchivItem_Bitmap::create(unsigned short width,
             break;
     }
 
-    for(unsigned int y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
+    for(unsigned y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
     {
-        for(unsigned int x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
+        for(unsigned x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
             size_t position = (y2 * buffer_width + x2) * bpp;
             // und Pixel setzen

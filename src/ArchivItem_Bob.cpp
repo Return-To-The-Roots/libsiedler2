@@ -74,7 +74,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     fs >> raw_base;
 
     // Einzelner Bilder auslesen ( untere Körper )
-    for(unsigned int i = 0; i < 96; ++i)
+    for(unsigned i = 0; i < 96; ++i)
     {
         unsigned short id;
         fs >> id;
@@ -107,7 +107,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     // erstmal die 6 Farbblöcke fr die 6 Richtungen
     std::vector<unsigned char> raw[6];
 
-    for(unsigned int i = 0; i < 6; ++i)
+    for(unsigned i = 0; i < 6; ++i)
     {
         unsigned short id;
         fs >> id;
@@ -157,7 +157,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
     links.resize(item_count);
 
-    for(unsigned int i = 0; i < item_count; ++i)
+    for(unsigned i = 0; i < item_count; ++i)
     {
         fs >> links[i];
 

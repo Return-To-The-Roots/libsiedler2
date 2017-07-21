@@ -39,11 +39,11 @@ template <typename T> class GammaTable
             gamma = g;
 
             float sizef = table.size() - 1.f;
-            for (unsigned int i = 0; i < table.size(); i++)
+            for (unsigned i = 0; i < table.size(); i++)
                 table[i] = (T) (pow(i / sizef, 1 / gamma) * sizef);
         }
 
-        GammaTable (unsigned int s, float g = 1) : gamma(-1)
+        GammaTable (unsigned s, float g = 1) : gamma(-1)
         {
             table.resize(s > 2 ? s : 2);
             set_gamma(g);

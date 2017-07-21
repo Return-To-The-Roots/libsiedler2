@@ -23,7 +23,7 @@
 #include <sstream>
 #include <vector>
 
-inline std::vector<std::string> explode(std::string const& line, const char delim, const unsigned int max = 0xFFFFFFFF)
+inline std::vector<std::string> explode(std::string const& line, const char delim, const unsigned max = 0xFFFFFFFF)
 {
     std::istringstream in(line);
     std::vector<std::string> result;

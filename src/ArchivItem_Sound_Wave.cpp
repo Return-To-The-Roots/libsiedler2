@@ -43,7 +43,7 @@ libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned int length)
+int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned length)
 {
     if(!file || length == 0)
         return 1;
@@ -138,7 +138,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
     libendian::LittleEndianOStreamRef fs(file);
 
     const unsigned char* start = &data.front();
-    unsigned int length = static_cast<unsigned>(data.size());
+    unsigned length = static_cast<unsigned>(data.size());
     if(stripheader)
     {
         start = &data[44];

@@ -85,7 +85,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     {
         // "archiviert"
         unsigned short count, unknown;
-        unsigned int size;
+        unsigned size;
 
         fs >> count;
 
@@ -130,7 +130,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
                 // einlesen
                 ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
                 assert(i >= pos);
-                item->load(fs.getStream(), conversion, (unsigned int)strlen(&buffer[i - pos]) + 1);
+                item->load(fs.getStream(), conversion, (unsigned)strlen(&buffer[i - pos]) + 1);
 
                 items.push(item);
             }

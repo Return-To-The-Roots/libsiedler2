@@ -39,7 +39,7 @@
 int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
 {
     char header[4], pbm[4], chunk[4];
-    unsigned int i = 0;
+    unsigned i = 0;
 
     if(file.empty())
         return 1;

@@ -33,7 +33,7 @@ namespace libsiedler2
             ~baseArchivItem_Sound_Wave() override;
 
             /// lädt die Wave-Daten aus einer Datei.
-            int load(std::istream& file, unsigned int length) override;
+            int load(std::istream& file, unsigned length) override;
 
             /// schreibt die Wave-Daten in eine Datei.
             int write(std::ostream& file) const override { return write(file, false); }
@@ -48,7 +48,7 @@ namespace libsiedler2
             }
 
             const std::vector<unsigned char>& getData() { return data; }
-            unsigned int getLength() { return static_cast<unsigned>(data.size()); }
+            unsigned getLength() { return static_cast<unsigned>(data.size()); }
 
         protected:
             std::vector<unsigned char> data;

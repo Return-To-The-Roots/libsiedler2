@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     Load("DATA/RESOURCE.DAT", lst, palette);
 
     ArchivInfo to;
-    for(unsigned int i = 0; i < 4; ++i)
+    for(unsigned i = 0; i < 4; ++i)
     {
         if(lst.get(i)->getBobType() == BOBTYPE_FONT)
         {
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
             out.setDx(font.getDx() + 2);
             out.setDy(font.getDy() + 2);
 
-            for(unsigned int j = 0; j < font.size(); ++j)
+            for(unsigned j = 0; j < font.size(); ++j)
             {
                 ArchivItem_Bitmap_Player* c = dynamic_cast<ArchivItem_Bitmap_Player*>(font.get(j));
                 ArchivItem_Bitmap_Player o;

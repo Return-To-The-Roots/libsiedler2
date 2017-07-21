@@ -31,7 +31,7 @@
  *
  *  @return            @p to wird zurückgeliefert
  */
-char* AnsiToOem(const char* from, char* to, unsigned int length)
+char* AnsiToOem(const char* from, char* to, unsigned length)
 {
     /// Konvertiertabelle von ANSI nach OEM, beginnend bei char 128
     static unsigned char ansi2oem_tab[] =
@@ -52,10 +52,10 @@ char* AnsiToOem(const char* from, char* to, unsigned int length)
 
     // wir haben keine Länge erhalten, also ermitteln
     if(length == 0)
-        length = (unsigned int)strlen(from);
+        length = (unsigned)strlen(from);
 
     // und string umwandeln
-    for(unsigned int x = 0; x < length; x++)
+    for(unsigned x = 0; x < length; x++)
     {
         if(from[x])
         {
@@ -81,7 +81,7 @@ char* AnsiToOem(const char* from, char* to, unsigned int length)
  *
  *  @return            @p to wird zurückgeliefert
  */
-char* OemToAnsi(const char* from, char* to, unsigned int length)
+char* OemToAnsi(const char* from, char* to, unsigned length)
 {
     /// Konvertiertabelle von OEM nach ANSI
     static unsigned char ansi2oem_tab[256] =
@@ -110,10 +110,10 @@ char* OemToAnsi(const char* from, char* to, unsigned int length)
 
     // wir haben keine Länge erhalten, also ermitteln
     if(length == 0)
-        length = (unsigned int)strlen(from);
+        length = (unsigned)strlen(from);
 
     // und string umwandeln
-    for(unsigned int x = 0; x < length; ++x)
+    for(unsigned x = 0; x < length; ++x)
     {
         if((unsigned char)from[x] > 128)
         {

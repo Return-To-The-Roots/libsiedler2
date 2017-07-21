@@ -43,20 +43,20 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     struct BMHD
     {
         unsigned short header; // 2
-        unsigned int size; // 6
-        unsigned int reserved; // 10
-        unsigned int offset; // 14
+        unsigned size; // 6
+        unsigned reserved; // 10
+        unsigned offset; // 14
     } bmhd = { 0x4D42, 40, 0, 54 };
 
     struct BMIH
     {
-        unsigned int length; // 4
+        unsigned length; // 4
         int width; // 8
         int height; // 12
         short planes; // 14
         short bbp; // 16
-        unsigned int compression; // 20
-        unsigned int size; // 24
+        unsigned compression; // 20
+        unsigned size; // 24
         int xppm; // 28
         int yppm; // 32
         int clrused; // 36
@@ -125,7 +125,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     fs << bmih.bbp;
     fs << bmih.compression;
 
-    unsigned int bmihsizepos = fs.getPosition();
+    unsigned bmihsizepos = fs.getPosition();
     fs << bmih.size;
     fs << bmih.xppm;
     fs << bmih.yppm;
@@ -191,7 +191,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     if(fs.getPosition() % 4 > 0)
         fs.write(placeholder, 4 - fs.getPosition() % 4);
 
-    unsigned int endsize = fs.getPosition();
+    unsigned endsize = fs.getPosition();
     fs.setPosition(bmihsizepos);
     fs << (endsize - bmihsizepos);
 

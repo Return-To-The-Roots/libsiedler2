@@ -37,7 +37,7 @@ class XMIDI_Track
             std::vector<unsigned char>  buffer;
             int            duration;
             MIDI_Event*     next_note;
-            unsigned int   note_time;
+            unsigned   note_time;
             MIDI_Event*     next;
             MIDI_Event(): time(0), status(0), data(), duration(0), next_note(NULL), note_time(0), next(NULL)
             {}
@@ -69,16 +69,16 @@ class XMIDI_Track
         int ConvertEvent(const int time, const unsigned char status, const int size, first_state& fs);
         int ConvertSystemMessage(const int time, const unsigned char status);
 
-        int GetVLQ(unsigned int& quant);
-        int GetVLQ2(unsigned int& quant);
-        void PutVLQ(unsigned int value);
+        int GetVLQ(unsigned& quant);
+        int GetVLQ2(unsigned& quant);
+        void PutVLQ(unsigned value);
 
         void CreateNewEvent(int time);
 
     private:
         MIDI_Track* track;
         MIDI_Event* events;
-        unsigned int event_count;
+        unsigned event_count;
         MIDI_Event* current;
         size_t position;
 

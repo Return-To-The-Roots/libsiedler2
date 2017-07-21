@@ -36,7 +36,7 @@
 int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
     unsigned short header;
-    unsigned int count;
+    unsigned count;
 
     if(file.empty())
         return 1;
@@ -76,7 +76,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
     items.clear();
 
     // items einlesen
-    for(unsigned int i = 0; i < count; ++i)
+    for(unsigned i = 0; i < count; ++i)
     {
         short used;
         short bobtype_s;

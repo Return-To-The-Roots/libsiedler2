@@ -98,7 +98,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     fs.ignore(2);
 
     // Länge einlesen
-    unsigned int length;
+    unsigned length;
     fs >> length;
 
     std::vector<unsigned char> data(length);
@@ -112,7 +112,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
 
     if(length != 0)
     {
-        unsigned int position = height_ * 2;
+        unsigned position = height_ * 2;
 
         // Einlesen
         for(unsigned short y = 0; y < height_; ++y)
@@ -234,7 +234,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     }
     image[position++] = 0xFF;
 
-    unsigned int length = position + height_ * 2;
+    unsigned length = position + height_ * 2;
 
     // Länge schreiben
     fs << length;
