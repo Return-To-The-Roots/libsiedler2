@@ -21,7 +21,7 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -118,7 +118,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStream<false, MMStream& > bmp(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream& > bmp(mmapStream);
 
     // hat das geklappt?
     if(!bmp)

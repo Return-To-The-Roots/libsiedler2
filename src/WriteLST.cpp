@@ -19,7 +19,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <limits>
 
 /**
@@ -41,7 +41,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         return 1;
 
     // Datei zum schreiben öffnen
-    libendian::LittleEndianOFStream lst(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> lst(file);
 
     // hat das geklappt?
     if(!lst)

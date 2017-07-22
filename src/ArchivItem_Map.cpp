@@ -21,7 +21,8 @@
 #include "ArchivItem_Raw.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <fstream>
 
 /** @class libsiedler2::ArchivItem_Map
@@ -77,7 +78,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     const unsigned short w = header->getWidth();
     const unsigned short h = header->getHeight();
 
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     for(unsigned i = 0; i < 14; ++i)
     {
         BlockHeader bHeader;
@@ -155,7 +156,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     if(header->write(file) != 0)
         return 3;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     for(unsigned i = 0; i < 14; ++i)
     {
         const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i + 1));

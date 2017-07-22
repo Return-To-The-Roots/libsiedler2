@@ -22,7 +22,7 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
@@ -53,7 +53,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStream<true, MMStream& > lbm(mmapStream);
+    libendian::EndianIStreamAdapter<true, MMStream& > lbm(mmapStream);
 
     // hat das geklappt?
     if(!lbm)
@@ -90,7 +90,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     unsigned short compression;
     unsigned chunk;
     // Chunks einlesen
-    while(lbm.readNoExcept(chunk))
+    while(lbm.read(chunk))
     {
         switch(chunk)
         {
@@ -187,7 +187,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                         unsigned short x = 0, y = 0;
 
                         // Solange einlesen, bis Block zuende bzw. Datei zuende ist
-                        while(length > 0 && !lbm.isEOF())
+                        while(length > 0 && !lbm.eof())
                         {
                             // Typ lesen
                             signed char ctype;
@@ -254,7 +254,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
         }
     }
 
-    if(items.empty() || !lbm.isEOF())
+    if(items.empty() || !lbm.eof())
         return 25;
 
     return 0;

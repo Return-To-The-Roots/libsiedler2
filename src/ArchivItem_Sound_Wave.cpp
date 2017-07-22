@@ -19,7 +19,8 @@
 #include "ArchivItem_Sound_Wave.h"
 #include <boost/endian/conversion.hpp>
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <cstring>
 
 /** @class libsiedler2::baseArchivItem_Sound_Wave
@@ -50,7 +51,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned le
 
     char header[4];
     bool prependheader = true;
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
 
     // Header einlesen
     fs >> header;
@@ -135,7 +136,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
     if(!file)
         return 1;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
 
     const unsigned char* start = &data.front();
     unsigned length = static_cast<unsigned>(data.size());

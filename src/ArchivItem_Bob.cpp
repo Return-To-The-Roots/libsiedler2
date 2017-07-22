@@ -21,7 +21,7 @@
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 
 /** @class libsiedler2::ArchivItem_Bob
  *
@@ -64,7 +64,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         return 1;
 
     alloc(96);
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Größe des ersten Farbblocks auslesen
     unsigned short size;
     fs >> size;

@@ -21,7 +21,7 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem.hpp>
@@ -52,7 +52,7 @@ int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palet
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStream<false, MMStream& > bob(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream& > bob(mmapStream);
 
     // hat das geklappt?
     if(!bob)

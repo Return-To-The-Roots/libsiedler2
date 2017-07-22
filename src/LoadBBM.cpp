@@ -21,7 +21,7 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem.hpp>
@@ -54,7 +54,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStream<true, MMStream& > fs(mmapStream);
+    libendian::EndianIStreamAdapter<true, MMStream& > fs(mmapStream);
 
     // hat das geklappt?
     if(!fs)
@@ -79,7 +79,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
         return 7;
 
     // Chunks einlesen
-    while(fs.readNoExcept(chunk, sizeof(chunk)))
+    while(!!(fs >> chunk))
     {
         if(strncmp(chunk, "CMAP", 4) == 0)
         {
@@ -120,7 +120,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
         }
     }
 
-    if(items.empty() || !fs.isEOF())
+    if(items.empty() || !fs.eof())
         return 14;
 
     // alles ok

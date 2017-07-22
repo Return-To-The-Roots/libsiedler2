@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem/path.hpp> // For UTF8 support
@@ -51,7 +51,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStream<false, MMStream& > lst(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream& > lst(mmapStream);
 
     // hat das geklappt?
     if(!lst)

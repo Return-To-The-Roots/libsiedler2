@@ -21,7 +21,8 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianOStreamAdapter.h"
+#include <fstream>
 #include <vector>
 #include <cstring>
 
@@ -99,7 +100,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(nr));
 
     // Datei zum schreiben öffnen
-    libendian::LittleEndianOFStream fs(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> fs(file);
 
     // hat das geklappt?
     if(!fs)

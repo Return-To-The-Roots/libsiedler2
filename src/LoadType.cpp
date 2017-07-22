@@ -30,7 +30,7 @@
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <stdexcept>
 
 /**
@@ -53,7 +53,7 @@ int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const Ar
         {
             case BOBTYPE_SOUND: // WAVs, MIDIs
             {
-                libendian::LittleEndianIStreamRef fs(file);
+                libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
                 unsigned length;
                 fs >> length;
 

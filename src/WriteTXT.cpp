@@ -20,7 +20,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 
 /**
  *  schreibt eine GER/ENG-File aus einem ArchivInfo.
@@ -50,7 +50,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum lesen öffnen
-    libendian::LittleEndianOFStream fs(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> fs(file);
 
     // hat das geklappt?
     if(!fs)

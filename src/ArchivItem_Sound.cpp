@@ -19,7 +19,7 @@
 #include "ArchivItem_Sound.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <cstring>
 
 /** @class libsiedler2::ArchivItem_Sound
@@ -59,7 +59,7 @@ libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType() const
 
 libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubType(std::istream& file)
 {
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     long oldpos = fs.getPosition();
     baseArchivItem_Sound* item = NULL;
 

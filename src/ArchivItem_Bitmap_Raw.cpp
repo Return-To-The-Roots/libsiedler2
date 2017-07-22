@@ -18,7 +18,8 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Raw.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <vector>
 namespace libsiedler2 { class ArchivItem_Palette; }
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw
@@ -76,7 +77,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
         return 2;
 
     tex_clear();
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Unbekannte Daten überspringen
     fs.ignore(2);
 
@@ -141,7 +142,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     if(width_ == 0 || height_ == 0)
         return 2;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     // Unbekannte Daten schreiben
     char unknown[2] = {0x01, 0x00};
     fs.write(unknown, sizeof(unknown));

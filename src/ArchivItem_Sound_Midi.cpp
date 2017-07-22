@@ -18,7 +18,8 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Midi.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <cstring>
 
 namespace libsiedler2{
@@ -62,7 +63,7 @@ int baseArchivItem_Sound_Midi::load(std::istream& file, unsigned length)
     if(!file || length == 0)
         return 1;
 
-    libendian::BigEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<true, std::istream&> fs(file);
     unsigned item_length = length;
     long position = fs.getPosition();
 
@@ -129,8 +130,8 @@ int baseArchivItem_Sound_Midi::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    libendian::BigEndianOStreamRef fs(file);
-    libendian::LittleEndianOStreamRef fsLE(file);
+    libendian::EndianOStreamAdapter<true, std::ostream&> fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fsLE(file);
 
     unsigned length = 0;
     for(unsigned short i = 0; i < tracks; ++i)

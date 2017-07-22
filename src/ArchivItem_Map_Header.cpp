@@ -19,7 +19,8 @@
 #include "ArchivItem_Map_Header.h"
 #include "oem.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <cstring>
 
 /** @class libsiedler2::ArchivItem_Map_Header
@@ -54,7 +55,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
 
     char id[10];
 
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Signatur einlesen
     fs >> id;
 
@@ -123,7 +124,7 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     // Signatur
     fs << VALID_ID;
 

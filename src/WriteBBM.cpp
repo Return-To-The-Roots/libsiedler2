@@ -20,7 +20,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 
 /**
  *  schreibt ein ArchivInfo in eine BBM-File.
@@ -49,7 +49,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum schreiben öffnen
-    libendian::LittleEndianOFStream bbm(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> bbm(file);
 
     // hat das geklappt?
     if(!bbm)
@@ -75,7 +75,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
 
             // Länge schreiben
             length = 256 * 3;
-            libendian::BigEndianOStreamRef fsBE(bbm.getStream());
+            libendian::EndianOStreamAdapter<true, std::ostream&> fsBE(bbm.getStream());
             fsBE << length;
 
             palette->write(bbm.getStream());

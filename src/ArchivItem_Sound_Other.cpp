@@ -18,7 +18,8 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Other.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 
 /** @class libsiedler2::baseArchivItem_Sound_Other
  *
@@ -47,7 +48,7 @@ int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, unsigned l
         return 1;
 
     data.resize(length);
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
 
     fs >> data;
 
@@ -66,7 +67,7 @@ int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     fs << static_cast<uint32_t>(data.size()) << data;
 
     return 0;

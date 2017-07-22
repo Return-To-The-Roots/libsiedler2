@@ -18,7 +18,8 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Raw.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 
 /** @class libsiedler2::baseArchivItem_Raw
  *
@@ -55,7 +56,7 @@ int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned length)
 
     clear();
 
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     if(length == 0xFFFFFFFF)
     {
         fs >> length;
@@ -80,7 +81,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
     if(!file)
         return 1;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     if(with_length)
     {
         // Convert to unsigned first

@@ -18,7 +18,8 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Palette.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <stdexcept>
 
 /** @var TRANSPARENT_INDEX
@@ -63,7 +64,7 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
     if(!file)
         return 1;
 
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     if(skip)
     {
         // Unbekannte 2 Bytes überspringen
@@ -90,7 +91,7 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
     if(!file)
         return 1;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     if(skip)
     {
         short unknown = 0x0100;

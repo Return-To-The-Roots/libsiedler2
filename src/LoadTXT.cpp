@@ -21,7 +21,7 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem/path.hpp> // For UTF8 support
@@ -56,7 +56,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStream<false, MMStream& > fs(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream& > fs(mmapStream);
 
     // hat das geklappt?
     if(!fs)

@@ -19,7 +19,8 @@
 #include "ArchivItem_Font.h"
 #include "prototypen.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <sstream>
 
 /** @class libsiedler2::ArchivItem_Font
@@ -55,7 +56,7 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
     if(!file || palette == NULL)
         return 1;
 
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Spacing einlesen
     fs >> dx >> dy;
 
@@ -111,7 +112,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     if(size() > 256 && !isUnicode)
         throw std::runtime_error("Trying to save a non-unicode font with more than 256 glyphs");
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     
     if(isUnicode)
         fs << static_cast<uint16_t>(0xFFFF) << static_cast<uint32_t>(size());

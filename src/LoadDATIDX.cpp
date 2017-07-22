@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem/path.hpp> // For UTF8 support
@@ -53,7 +53,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStream<false, MMStream& > dat(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream& > dat(mmapStream);
 
     // hat das geklappt?
     if(!dat)
@@ -69,7 +69,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStreamIdx(mmapFileIdx);
-    libendian::EndianIStream<false, MMStream& > idx(mmapStreamIdx);
+    libendian::EndianIStreamAdapter<false, MMStream& > idx(mmapStreamIdx);
 
     // hat das geklappt?
     if(!idx)

@@ -19,7 +19,8 @@
 #include "ArchivItem_Bitmap_Shadow.h"
 #include "ArchivItem_Palette.h"
 #include <fstream>
-#include "libendian/src/EndianStream.h"
+#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <vector>
 
 /** @class libsiedler2::baseArchivItem_Bitmap_Shadow
@@ -78,7 +79,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
 
     tex_clear();
 
-    libendian::LittleEndianIStreamRef fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Nullpunkt X einlesen
     fs >> nx_;
 
@@ -167,7 +168,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     if(width_ == 0 || height_ == 0)
         return 2;
 
-    libendian::LittleEndianOStreamRef fs(file);
+    libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     // Nullpunkt X schreiben
     fs << nx_;
 
