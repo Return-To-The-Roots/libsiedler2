@@ -21,7 +21,7 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <vector>
 #include <cstring>
 

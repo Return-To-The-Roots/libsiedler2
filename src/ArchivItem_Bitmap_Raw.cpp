@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Raw.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <vector>
 namespace libsiedler2 { class ArchivItem_Palette; }
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw

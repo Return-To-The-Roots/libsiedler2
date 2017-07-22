@@ -19,7 +19,7 @@
 #include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Palette.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <vector>
 
 /** @class libsiedler2::baseArchivItem_Bitmap_RLE

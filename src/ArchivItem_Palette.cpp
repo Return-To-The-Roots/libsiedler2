@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Palette.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <stdexcept>
 
 /** @var TRANSPARENT_INDEX

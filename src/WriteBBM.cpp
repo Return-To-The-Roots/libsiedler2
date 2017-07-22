@@ -20,7 +20,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 
 /**
  *  schreibt ein ArchivInfo in eine BBM-File.

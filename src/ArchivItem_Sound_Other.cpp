@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Other.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 
 /** @class libsiedler2::baseArchivItem_Sound_Other
  *

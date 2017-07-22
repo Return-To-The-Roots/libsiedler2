@@ -21,7 +21,7 @@
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 
 /** @class libsiedler2::ArchivItem_Bob
  *

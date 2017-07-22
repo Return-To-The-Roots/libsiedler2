@@ -19,7 +19,7 @@
 #include "ArchivItem_Sound_Wave.h"
 #include <boost/endian/conversion.hpp>
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <cstring>
 
 /** @class libsiedler2::baseArchivItem_Sound_Wave

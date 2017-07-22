@@ -19,7 +19,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Palette.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <vector>
 #include <cstddef>
 

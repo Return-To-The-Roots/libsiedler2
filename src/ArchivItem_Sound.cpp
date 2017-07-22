@@ -19,7 +19,7 @@
 #include "ArchivItem_Sound.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <cstring>
 
 /** @class libsiedler2::ArchivItem_Sound

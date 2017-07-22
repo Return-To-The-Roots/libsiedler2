@@ -19,7 +19,7 @@
 #include "ArchivItem_Font.h"
 #include "prototypen.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <sstream>
 
 /** @class libsiedler2::ArchivItem_Font

@@ -21,7 +21,7 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem.hpp>

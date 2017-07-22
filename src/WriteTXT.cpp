@@ -20,7 +20,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include <fstream>
-#include "EndianStream.h"
+#include "libendian/src/EndianStream.h"
 
 /**
  *  schreibt eine GER/ENG-File aus einem ArchivInfo.
