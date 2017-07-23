@@ -15,24 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
-#include "cmpFiles.h"
-#include "libsiedler2/src/ArchivInfo.h"
-#include "libsiedler2/src/libsiedler2.h"
-#include <boost/filesystem.hpp>
+#pragma once
+
+#ifndef cmpFiles_h__
+#define cmpFiles_h__
+
 #include <boost/test/unit_test.hpp>
+#include <string>
 
-BOOST_AUTO_TEST_SUITE(Palette)
+boost::test_tools::predicate_result testFilesEqual(const std::string& fileToCheck, const std::string& expectedFile);
 
-BOOST_AUTO_TEST_CASE(ReadWritePalette)
-{
-    std::string palPath = "pal5.act";
-    std::string palOutPath = testOutputPath + "/" + palPath;
-    BOOST_REQUIRE(bfs::exists(palPath));
-    libsiedler2::ArchivInfo act;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(palOutPath, act), 0);
-    BOOST_REQUIRE(testFilesEqual(palOutPath, palPath));
-}
-
-BOOST_AUTO_TEST_SUITE_END()
+#endif // cmpFiles_h__
