@@ -100,7 +100,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(nr));
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, std::ofstream> fs(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

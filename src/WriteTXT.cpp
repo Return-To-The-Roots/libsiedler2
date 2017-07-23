@@ -50,7 +50,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum lesen öffnen
-    libendian::EndianOStreamAdapter<false, std::ofstream> fs(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

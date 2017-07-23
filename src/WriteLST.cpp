@@ -41,7 +41,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         return 1;
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, std::ofstream> lst(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> lst(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!lst)

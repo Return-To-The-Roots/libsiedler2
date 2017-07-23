@@ -20,6 +20,7 @@
 #include "StandardAllocator.h"
 #include "prototypen.h"
 #include "ArchivInfo.h"
+#include <boost/filesystem.hpp>
 #include <algorithm>
 #include <stdexcept>
 #include <iostream>
@@ -136,11 +137,10 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
     if(file.empty())
         return 1;
 
-    // Endung holen
-    size_t extPos = file.find_last_of('.');
-    if(extPos == std::string::npos)
+    bfs::path filePath(file);
+    if(!filePath.has_extension())
         return 2;
-    std::string extension = file.substr(extPos + 1);
+    std::string extension = filePath.extension().string().substr(1);
     std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
     int ret = 254;
@@ -201,11 +201,10 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
     if(file.empty())
         return 1;
 
-    // Endung holen
-    size_t extPos = file.find_last_of('.');
-    if(extPos == std::string::npos)
+    bfs::path filePath(file);
+    if(!filePath.has_extension())
         return 2;
-    std::string extension = file.substr(extPos + 1);
+    std::string extension = filePath.extension().string().substr(1);
     std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
     int ret = 0;

@@ -49,7 +49,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, std::ofstream> bbm(file);
+    libendian::EndianOStreamAdapter<false, std::ofstream> bbm(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!bbm)

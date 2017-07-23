@@ -65,7 +65,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& ite
 
     // Farben schreiben
     ArchivItem_Palette* palette = (ArchivItem_Palette*)items.get(nr);
-    if(palette->write(act) != 0)
+    if(palette->write(act, false) != 0)
         return 4;
 
     // alles ok
