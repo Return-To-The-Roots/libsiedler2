@@ -17,6 +17,6 @@ INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
 FILE(GLOB SRC_FILES *.cpp *.h *.hpp)
 ADD_LIBRARY(siedler2 STATIC ${SRC_FILES})
 
-TARGET_LINK_LIBRARIES(siedler2 endian ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(siedler2 ${Boost_LIBRARIES})
 
 #################################################################################

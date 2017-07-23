@@ -1,0 +1,42 @@
+version: 1.0.{build}
+branches:
+  only:
+  - master
+  
+os: Visual Studio 2015
+
+configuration:
+  - Debug
+  - Release
+  
+platform:
+  - Win32
+  - x64
+    
+install:
+  - set BOOST_ROOT=C:\Libraries\boost_1_59_0
+  - set LIB_ENDIAN_DIR=%cd%\libendian
+  - mkdir %LIB_ENDIAN_DIR%
+  - git clone https://github.com/Return-To-The-Roots/libendian.git %LIB_ENDIAN_DIR%
+
+before_build:
+  - mkdir build
+  - cd build
+  - if "%platform%"=="Win32" set CMAKE_GENERATOR=Visual Studio 14 2015
+  - if "%platform%"=="x64" set CMAKE_GENERATOR=Visual Studio 14 2015 Win64
+  - if "%platform%"=="Win32" set BOOST_LIBRARYDIR=%BOOST_ROOT%\lib32-msvc-14.0
+  - if "%platform%"=="x64" set BOOST_LIBRARYDIR=%BOOST_ROOT%\lib64-msvc-14.0
+  - cmake -G "%CMAKE_GENERATOR%" -DRTTR_ENABLE_WERROR=ON -DBOOST_LIBRARYDIR="%BOOST_LIBRARYDIR%" ..\examples
+  - cd ..
+    
+build:
+
+build_script:
+  - echo "Building for %configuration% on %platform%"
+  - msbuild /m /p:Configuration="%configuration%" /p:Platform="%platform%" /v:n build/libSiedler2.sln
+
+test_script:
+  - cd build
+  - set RTTR_DISABLE_ASSERT_BREAKPOINT="1"
+  - ctest --output-on-failure -C %configuration%
+  - cd ..

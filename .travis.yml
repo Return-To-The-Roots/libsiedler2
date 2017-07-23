@@ -1,0 +1,143 @@
+sudo: false
+language: cpp
+dist: trusty
+branches:
+    only:
+        - master
+
+os:
+    - linux
+
+compiler:
+    - clang
+    - g++
+
+env:
+    - BUILD_TYPE=Debug CXX_FLAGS=-std=c++03
+    - BUILD_TYPE=Debug CXX_FLAGS=-std=c++11
+    - BUILD_TYPE=Release CXX_FLAGS=-std=c++03
+    - BUILD_TYPE=Release CXX_FLAGS=-std=c++11
+
+addons:
+    apt:
+        sources:
+            - boost-latest
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-3.9
+        packages:
+            - g++-4.8
+            - clang-3.9
+            - llvm-3.9
+            - cmake
+            - cmake-data
+
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/deps/boost-1.58.0
+    - ${TRAVIS_BUILD_DIR}/deps/libendian
+
+matrix:
+    include:
+        - os: osx
+          compiler: clang
+          install:
+          #                                                             Travis libs are x64 only
+          env: BUILD_TYPE=Debug CXX_FLAGS=-std=c++03 ADDITIONAL_CMAKE_FLAGS="--no-arch=i386" GCOV="gcov"
+    exclude:
+        - compiler: clang
+          env: BUILD_TYPE=Debug CXX_FLAGS=-std=c++03
+        - compiler: clang
+          env: BUILD_TYPE=Release CXX_FLAGS=-std=c++03
+
+install:
+    - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+    - BOOST_VERSION="1.58.0"
+    - export LIB_ENDIAN_DIR="$DEPS_DIR/libendian"
+    - mkdir -p "$LIB_ENDIAN_DIR"
+    - |
+        if [ ! -d "$LIB_ENDIAN_DIR/src" ]; then
+            git clone https://github.com/Return-To-The-Roots/libendian.git "$LIB_ENDIAN_DIR"
+        fi
+        (cd ${LIB_ENDIAN_DIR} && git checkout master && git reset --hard && git pull)
+    # Enable coverage analysis only in debug and for g++
+    - |
+        if [ "$CXX" = "g++" ] && [ "$BUILD_TYPE" = "Debug" ]; then
+            # GCov 4.6 cannot handle the file structure
+            export CXX="g++-4.8"
+            export GCOV="gcov-4.8"
+            
+            # Install newer lcov (1.9 seems to fail: http://gronlier.fr/blog/2015/01/adding-code-coverage-to-your-c-project/)
+            export LCOV_ROOT="$HOME/lcov"
+            mkdir -p "$LCOV_ROOT"
+            wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.11.orig.tar.gz --output-document="$LCOV_ROOT/lcov.tar.gz"
+            tar xf "$LCOV_ROOT/lcov.tar.gz" --strip-components=1 -C $LCOV_ROOT
+            export PATH="$LCOV_ROOT/bin:$PATH"
+            which lcov
+            
+            # Install coveralls tool
+            gem install coveralls-lcov
+            
+            # Enable
+            export RTTR_COVERAGE="1"
+            export ADDITIONAL_CMAKE_FLAGS="${ADDITIONAL_CMAKE_FLAGS} -DRTTR_ENABLE_COVERAGE=ON"
+        else
+            export GCOV="gcov" # Just to have anything valid
+            export RTTR_COVERAGE="0"
+        fi
+    # C++11 requires gcc-4.8 or newer
+    - if [ "$CXX" = "g++" ] && [ "$CXX_FLAGS" = "-std=c++11" ]; then export CXX="g++-4.8"; export CC="gcc-4.8"; fi
+    # Use clang 3.9
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.9"; export CC="clang-3.9"; fi
+    - |
+        if [[ "${BOOST_VERSION}" != "" ]]; then
+          BOOST_DIR=${DEPS_DIR}/boost-${BOOST_VERSION}
+          if [[ -z "$(ls -A ${BOOST_DIR})" ]]; then
+            BOOST_URL="http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//\./_}.tar.gz"
+            mkdir -p ${BOOST_DIR}
+            { travis_retry wget -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${BOOST_DIR}; } || exit 1
+            (cd ${BOOST_DIR} && ./bootstrap.sh && ./b2 install --prefix=.)
+          fi
+          ADDITIONAL_CMAKE_FLAGS+=" -DBOOST_ROOT=${BOOST_DIR}"
+        fi
+
+script:
+    # Information
+    - $CXX --version
+    - $GCOV --version
+    - lcov --version 2>/dev/null || true
+    # Fail if any command failed
+    - set -e
+    - mkdir build && cd build
+    - cmake -DRTTR_ENABLE_WERROR=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" --generator="Unix Makefiles" ${ADDITIONAL_CMAKE_FLAGS} ../examples
+    # Travis uses 2 cores
+    - make -j2
+    # Execute tests
+    - export CTEST_OUTPUT_ON_FAILURE=1
+    - export BOOST_TEST_CATCH_SYSTEM_ERRORS="no"
+    - export RTTR_DISABLE_ASSERT_BREAKPOINT=1
+    - make test
+    # Reset environment
+    - cd ..
+    - set +e
+
+after_success:
+    # Coverage.io
+    - |
+        if [ "$RTTR_COVERAGE" = "1" ]; then
+            bash -c "find . -type f -name '*.gcno' -exec ${GCOV} -lpb {} +" || true
+            files=$(find . -type f -name '*.gcov' -not -path '*/conftest_*.c.gcov')
+            if [ "$files" != "" ]; then
+                bash <(curl -s https://codecov.io/bash) -f "$files"
+            fi
+        fi
+    # Coveralls
+    - |
+        if [ "$RTTR_COVERAGE" = "1" ]; then
+            lcov --gcov-tool $GCOV --directory build --capture --output-file coverage.info --rc lcov_branch_coverage=1 > /dev/null
+            # Remove everything from /usr (unrelated), contrib folder (3rd party data), test code and submodules
+            lcov --gcov-tool $GCOV --remove coverage.info '/usr/*' 'contrib/*' 'src/test/*' 'lib*/src/*' 'mygettext/*' 'version/*' --output-file coverage.info > /dev/null
+            # Debug output
+            lcov --list coverage.info
+            coveralls-lcov coverage.info
+        fi
+
