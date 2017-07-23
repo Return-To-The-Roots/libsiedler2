@@ -197,5 +197,5 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     fs << (endsize - bmihsizepos);
 
     // alles ok
-    return 0;
+    return (!fs) ? 99 : 0;
 }

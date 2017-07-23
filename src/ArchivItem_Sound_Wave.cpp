@@ -120,7 +120,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned le
         fs >> data;
     }
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }
 
 /**
@@ -150,7 +150,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
 
     fs.write(start, length);
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }
 
 /**

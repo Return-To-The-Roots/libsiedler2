@@ -143,7 +143,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
             return 8;
     }
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }
 
 /**
@@ -253,5 +253,5 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
     // Daten schreiben
     fs << starts << image;
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }

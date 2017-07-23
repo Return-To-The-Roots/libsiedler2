@@ -119,7 +119,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     // Unbekannte Daten überspringen
     fs.ignore(8);
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }
 
 /**
@@ -176,5 +176,5 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     unsigned char unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
     fs.write(unknown2, sizeof(unknown2));
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }

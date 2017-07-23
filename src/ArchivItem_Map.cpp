@@ -134,7 +134,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         extraInfo.push_back(info);
     }
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**
@@ -179,5 +179,5 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     }
     fs << uint8_t(0xFF);
 
-    return 0;
+    return (!file) ? 99 : 0;
 }

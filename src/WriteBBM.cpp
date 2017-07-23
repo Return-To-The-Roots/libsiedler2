@@ -83,5 +83,5 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
     }
 
     // alles ok
-    return 0;
+    return (!bbm) ? 99 : 0;
 }

@@ -18,10 +18,11 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Font.h"
 #include "prototypen.h"
-#include <fstream>
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 /** @class libsiedler2::ArchivItem_Font
  *
@@ -93,7 +94,7 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
         set(i, item);
     }
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**
@@ -139,7 +140,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
             return 5;
     }
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**

@@ -43,8 +43,8 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
     {
         const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
 
-        if(item)
-            item->write(ini);
+        if(item && item->write(ini) != 0)
+            return 99;
     }
 
     // alles ok

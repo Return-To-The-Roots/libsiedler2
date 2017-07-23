@@ -109,7 +109,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     // Höhe einlesen
     fs >> height;
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**
@@ -171,7 +171,7 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     // Höhe einlesen
     fs << height;
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**

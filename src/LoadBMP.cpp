@@ -147,6 +147,9 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     bmp >> bmih.clrused;
     bmp >> bmih.clrimp;
 
+    if(!bmp)
+        return 99;
+
     if(bmih.height > 0)
         bottomup = true;
 
@@ -195,7 +198,8 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
 
         // Farbpalette lesen
         unsigned char colors[256][4];
-        bmp.read(colors[0], bmih.clrused * 4);
+        if(!bmp.read(colors[0], bmih.clrused * 4))
+            return 99;
 
         // Farbpalette zuweisen
         if(palette)
@@ -234,6 +238,6 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     image = bitmap.release();
 
     // alles ok
-    return 0;
+    return (!bmp) ? 99 : 0;
 }
 

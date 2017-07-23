@@ -141,7 +141,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
 
     file << "\n";
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**

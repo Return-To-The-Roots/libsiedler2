@@ -113,5 +113,5 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
         }
     }
 
-    return 0;
+    return (!fs) ? 99 : 0;;
 }

@@ -135,7 +135,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
     if(load(width_, height_, data, starts, false, palette) != 0)
         return 9;
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }
 
 /**
@@ -346,7 +346,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
     // Daten schreiben
     fs << starts << image;
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }
 
 /**

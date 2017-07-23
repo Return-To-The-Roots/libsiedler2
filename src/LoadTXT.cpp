@@ -66,7 +66,8 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     assert(length < std::numeric_limits<unsigned>::max());
 
     // Header einlesen
-    fs >> header;
+    if(!(fs >> header))
+        return 99;
 
     items.clear();
 
@@ -87,11 +88,8 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         unsigned short count, unknown;
         unsigned size;
 
-        fs >> count;
-
-        fs >> unknown;
-
-        fs >> size;
+        if(!(fs >> count >> unknown >> size))
+            return 99;
 
         if(size == 0)
             size = static_cast<unsigned>(length);
@@ -140,5 +138,5 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     }
 
     // alles ok
-    return 0;
+    return (!fs) ? 99 : 0;
 }

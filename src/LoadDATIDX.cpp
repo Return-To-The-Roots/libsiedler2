@@ -107,6 +107,9 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
         // BobType einlesen
         dat >> bobtype_s;
 
+        if(!dat)
+            return 99;
+
         if(idxbobtype != bobtype_s)
             continue;
         BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);

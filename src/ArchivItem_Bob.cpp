@@ -184,7 +184,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         fs.ignore(2);
     }
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }
 
 /**

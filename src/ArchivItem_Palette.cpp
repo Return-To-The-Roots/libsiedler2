@@ -75,7 +75,7 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
     fs.read(&colors[0].r, sizeof(colors));
 
     // alles ok
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**
@@ -102,7 +102,7 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
     fs.write(&colors[0].r, sizeof(colors));
 
     // alles ok
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**

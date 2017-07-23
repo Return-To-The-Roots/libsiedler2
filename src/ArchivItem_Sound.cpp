@@ -21,6 +21,7 @@
 #include "IAllocator.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <cstring>
+#include <iostream>
 
 /** @class libsiedler2::ArchivItem_Sound
  *

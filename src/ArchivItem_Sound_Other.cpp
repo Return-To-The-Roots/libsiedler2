@@ -52,7 +52,7 @@ int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, unsigned l
 
     fs >> data;
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**
@@ -70,7 +70,7 @@ int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     fs << static_cast<uint32_t>(data.size()) << data;
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**

@@ -243,5 +243,5 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     // Daten schreiben
     fs << starts << image;
 
-    return 0;
+    return (!fs) ? 99 : 0;
 }

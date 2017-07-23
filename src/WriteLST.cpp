@@ -80,5 +80,5 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
     }
 
     // alles ok
-    return 0;
+    return (!lst) ? 99 : 0;;
 }

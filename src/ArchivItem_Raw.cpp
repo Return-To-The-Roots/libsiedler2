@@ -65,7 +65,7 @@ int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned length)
     data.resize(length);
     fs >> data;
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**
@@ -90,7 +90,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
 
     fs << data;
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 /**

@@ -73,6 +73,9 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
     // Anzahl einlesen
     lst >> count;
 
+    if(!lst)
+        return 99;
+
     items.clear();
 
     // items einlesen

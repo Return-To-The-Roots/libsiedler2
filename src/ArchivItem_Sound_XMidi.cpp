@@ -164,7 +164,7 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, unsigned length)
 
     // auf jeden Fall kompletten Datensatz überspringen
     fs.setPosition(position + item_length);
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
@@ -201,7 +201,7 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
         fs.write(tracklist[i].getMid(false), tracklist[i].getMidLength(false));
     }
 
-    return 0;
+    return (!file) ? 99 : 0;
 }
 
 } // namespace libsiedler2
