@@ -40,6 +40,8 @@
 #    include <cassert>
 #endif // !_WIN32
 
+#include <cstddef>
+
 namespace libsiedler2{
     template<class T_Stream>
     inline size_t getIStreamSize(T_Stream& stream)
