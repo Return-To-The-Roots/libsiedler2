@@ -23,6 +23,7 @@
 #include <boost/array.hpp>
 #include <cstddef>
 #include <iosfwd>
+#include <stdint.h>
 
 namespace libsiedler2
 {

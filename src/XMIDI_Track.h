@@ -19,8 +19,9 @@
 
 #pragma once
 
-#include <vector>
 #include <boost/array.hpp>
+#include <vector>
+#include <stdint.h>
 
 class MIDI_Track;
 

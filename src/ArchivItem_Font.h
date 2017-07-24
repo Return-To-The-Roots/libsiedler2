@@ -22,6 +22,7 @@
 #include "ArchivItem.h"
 #include "ArchivInfo.h"
 #include <iosfwd>
+#include <stdint.h>
 
 namespace libsiedler2 { class ArchivItem_Palette; }
 
@@ -41,25 +42,25 @@ namespace libsiedler2
             int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             /// liefert den X-Buchstabenabstand.
-            inline uint8_t getDx() const
+            uint8_t getDx() const
             {
                 return dx;
             }
 
             /// liefert den Y-Buchstabenabstand.
-            inline uint8_t getDy() const
+            uint8_t getDy() const
             {
                 return dy;
             }
 
             /// setzt den X-Buchstabenabstand.
-            inline void setDx(uint8_t dx)
+            void setDx(uint8_t dx)
             {
                 this->dx = dx;
             }
 
             /// setzt den Y-Buchstabenabstand.
-            inline void setDy(uint8_t dy)
+            void setDy(uint8_t dy)
             {
                 this->dy = dy;
             }

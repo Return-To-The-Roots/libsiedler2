@@ -21,7 +21,6 @@
 
 #include "ArchivItem.h"
 #include "ArchivInfo.h"
-#include <cstdlib>
 #include <iosfwd>
 #include <string>
 
@@ -47,10 +46,7 @@ namespace libsiedler2
             /// liest einen Wert aus der Ini
             std::string getValue(const std::string& name) const;
 
-            inline int getValueI(const std::string& name) const
-            {
-                return atoi(getValue(name).c_str());
-            }
+            int getValueI(const std::string& name) const;
 
             /// fügt einen Eintrag hinzu.
             void addValue(const std::string& name, const std::string& value);

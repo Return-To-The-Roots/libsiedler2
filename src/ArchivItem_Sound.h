@@ -22,6 +22,7 @@
 #include "ArchivItem.h"
 #include "enumTypes.h"
 #include <iosfwd>
+#include <stdint.h>
 
 namespace libsiedler2
 {

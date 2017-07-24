@@ -23,6 +23,7 @@
 #include "ArchivInfo.h"
 #include <vector>
 #include <iosfwd>
+#include <stdint.h>
 
 namespace libsiedler2 { class ArchivItem_Palette; }
 
@@ -45,7 +46,7 @@ namespace libsiedler2
             /// schreibt die Bobdaten in eine Datei.
             int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
-            inline uint16_t getLink(uint32_t idx) {return(links[idx]);};
+            uint16_t getLink(uint32_t idx) {return(links[idx]);};
 
         protected:
             uint16_t good_count; /// Warenanzahl

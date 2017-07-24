@@ -20,6 +20,7 @@
 #pragma once
 
 #ifndef _WIN32
+#include <stdint.h>
 
 /// Wandelt einen String vom ANSI ins OEM Format um.
 char* AnsiToOem(const char* from, char* to, uint32_t length = 0);

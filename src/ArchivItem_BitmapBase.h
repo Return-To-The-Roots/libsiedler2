@@ -23,6 +23,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include <stdint.h>
 
 namespace libsiedler2
 {

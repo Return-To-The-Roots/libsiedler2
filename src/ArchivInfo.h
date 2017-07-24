@@ -23,6 +23,7 @@
 #include <vector>
 #include <cstddef>
 #include <string>
+#include <stdint.h>
 
 namespace libsiedler2
 {
@@ -67,7 +68,7 @@ namespace libsiedler2
             }
 
             /// Adds an element to the end. Transfers ownership!
-            inline void push(ArchivItem* item)
+            void push(ArchivItem* item)
             {
                 data.push_back(item);
             }
@@ -76,19 +77,19 @@ namespace libsiedler2
             void pushC(const ArchivItem& item);
 
             /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
-            inline ArchivItem* get(size_t index)
+            ArchivItem* get(size_t index)
             {
                 return (index < size()) ? data[index] : NULL;
             }
 
             /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
-            inline const ArchivItem* get(size_t index) const
+            const ArchivItem* get(size_t index) const
             {
                 return (index < size()) ? data[index] : NULL;
             }
 
             /// liefert das erste Item mit entsprechenden Namen
-            inline ArchivItem* find(const std::string& name)
+            ArchivItem* find(const std::string& name)
             {
                 for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
                 {
@@ -100,7 +101,7 @@ namespace libsiedler2
             }
 
             /// liefert das erste Item mit entsprechenden Namen
-            inline const ArchivItem* find(const std::string& name) const
+            const ArchivItem* find(const std::string& name) const
             {
                 for(std::vector<ArchivItem*>::const_iterator it = data.begin(); it != data.end(); ++it)
                 {
@@ -112,7 +113,7 @@ namespace libsiedler2
             }
 
             /// liefert die Größe des Archivs.
-            inline size_t size() const
+            size_t size() const
             {
                 return data.size();
             }
@@ -122,12 +123,12 @@ namespace libsiedler2
                 return data.empty();
             }
 
-            inline const ArchivItem* operator[](size_t index) const
+            const ArchivItem* operator[](size_t index) const
             {
                 return get(index);
             }
 
-            inline ArchivItem* operator[](size_t index)
+            ArchivItem* operator[](size_t index)
             {
                 return get(index);
             }

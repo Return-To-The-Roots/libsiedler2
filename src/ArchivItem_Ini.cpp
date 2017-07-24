@@ -163,6 +163,11 @@ std::string libsiedler2::ArchivItem_Ini::getValue(const std::string& name) const
     return "";
 }
 
+int libsiedler2::ArchivItem_Ini::getValueI(const std::string& name) const
+{
+    return boost::lexical_cast<int>(getValue(name));
+}
+
 void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::string& value)
 {
     ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));

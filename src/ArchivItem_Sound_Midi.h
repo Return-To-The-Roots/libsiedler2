@@ -22,6 +22,7 @@
 #include "ArchivItem_Sound.h"
 #include "MIDI_Track.h"
 #include <boost/array.hpp>
+#include <stdint.h>
 
 namespace libsiedler2
 {

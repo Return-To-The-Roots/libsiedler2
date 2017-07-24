@@ -27,10 +27,16 @@ template <typename T> class GammaTable
         float        gamma;
 
     public:
-        inline const float& get_gamma ()
+        GammaTable (unsigned s, float g = 1) : gamma(-1)
+        {
+            table.resize(s > 2 ? s : 2);
+            set_gamma(g);
+        }
+
+        const float& get_gamma ()
         {   return gamma; }
 
-        inline void set_gamma (float g)
+        void set_gamma (float g)
         {
             if (g < 0.001f)
                 g = 0.001f;
@@ -39,17 +45,11 @@ template <typename T> class GammaTable
             gamma = g;
 
             float sizef = table.size() - 1.f;
-            for (uint32_t i = 0; i < table.size(); i++)
+            for (unsigned i = 0; i < table.size(); i++)
                 table[i] = (T) (pow(i / sizef, 1 / gamma) * sizef);
         }
 
-        GammaTable (uint32_t s, float g = 1) : gamma(-1)
-        {
-            table.resize(s > 2 ? s : 2);
-            set_gamma(g);
-        }
-
-        inline const T& operator [] (const T& i) const
+        const T& operator [] (const T& i) const
         { return table[i]; }
 };
 

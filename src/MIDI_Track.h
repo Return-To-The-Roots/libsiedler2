@@ -21,7 +21,7 @@
 
 #include <vector>
 #include <iosfwd>
-
+#include <stdint.h>
 
 class MIDI_Track
 {
