@@ -32,6 +32,8 @@ boost::test_tools::predicate_result testFilesEqual(const std::string& fileToChec
 
     std::ifstream ifs1(fileToCheck, std::ios::binary);
     std::ifstream ifs2(expectedFile, std::ios::binary);
+    ifs1.unsetf(std::ios::skipws);
+    ifs2.unsetf(std::ios::skipws);
 
     size_t pos = 0;
     for(std::istream_iterator<char> b1(ifs1), b2(ifs2), endIt;

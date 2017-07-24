@@ -21,6 +21,8 @@
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
+#include <fstream>
+#include <iostream>
 
 BOOST_AUTO_TEST_SUITE(IniFiles)
 
@@ -32,6 +34,9 @@ BOOST_AUTO_TEST_CASE(ReadWriteIni)
     libsiedler2::ArchivInfo act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, act), 0);
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, act), 0);
+    std::ifstream fs(outPath, std::ios::binary);
+    fs.unsetf(std::ios::skipws);
+    std::copy(std::istream_iterator<char>(fs), std::istream_iterator<char>(), std::ostream_iterator<char>(std::cout));
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 

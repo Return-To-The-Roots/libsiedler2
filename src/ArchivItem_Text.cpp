@@ -161,7 +161,7 @@ std::string libsiedler2::ArchivItem_Text::getFileText(bool convertToOem) const
     std::vector<char> textBuf;
     textBuf.reserve(length * 2 + 1);
 
-    for(uint32_t i = 0, j = 0; i < length; ++i)
+    for(uint32_t i = 0; i < length; ++i)
     {
         if(this->text_[i] == '\n')
         {

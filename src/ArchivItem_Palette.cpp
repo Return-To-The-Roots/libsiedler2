@@ -136,7 +136,7 @@ uint8_t libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
         if(colors[i] == clr)
             return static_cast<uint8_t>(i);
     }
-    return 0;
+    throw std::runtime_error("Color not found in palette!");
 }
 
 /**

@@ -56,7 +56,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
         return 1;
     if(palette == NULL)
         palette = this->palette_;
-    if(palette == NULL)
+    if(palette == NULL && (buffer_format == FORMAT_PALETTED || buffer_format == FORMAT_PALETTED))
         return 2;
 
     if(from_w == 0 || from_x + from_w > tex_width_)

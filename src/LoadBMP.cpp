@@ -16,6 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
+#include "ArchivInfo.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
 #include "prototypen.h"
@@ -53,7 +54,7 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
             } break;
             case 3: // 24 bit
             {
-                if(buffer[x * bbp + 2] == 0xFF && buffer[x * bbp + 1] == 0x00 && buffer[x * bbp + 0] == 0x8F) // transparenz? (color-key "rosa")
+                if(libsiedler2::Color(buffer[x * bbp + 2], buffer[x * bbp + 1], buffer[x * bbp + 0]) == libsiedler2::TRANSPARENT_COLOR) // transparenz? (color-key "rosa")
                     bitmap.tex_setPixel(x, y, 0, 0, 0, 0x00);
                 else
                     bitmap.tex_setPixel(x, y, buffer[x * bbp + 2], buffer[x * bbp + 1], buffer[x * bbp + 0], 0xFF);
@@ -74,7 +75,7 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls einlesen.
  */
-int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, ArchivItem** palette)
+int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 {
     struct BMHD
     {
@@ -98,10 +99,6 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
         int clrused; // 36
         int clrimp; // 40
     } bmih ;
-
-    image = NULL;
-    if(palette)
-        *palette = NULL;
 
     bool bottomup = false;
 
@@ -187,29 +184,18 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     if(bmih.clrused == 0)
         bmih.clrused = (int)pow(2.0, bmih.bbp);
 
-    //items->alloc(2);
-
     if(bmih.bbp == 8)
     {
-        if(palette)
-            *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
-        //ArchivItem_Palette *palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE, NULL);
-        //items->set(0, palette);
-
         // Farbpalette lesen
         uint8_t colors[256][4];
         if(!bmp.read(colors[0], bmih.clrused * 4))
             return 99;
 
-        // Farbpalette zuweisen
-        if(palette)
-        {
-            ArchivItem_Palette* pal = dynamic_cast<ArchivItem_Palette*>(*palette);
+            ArchivItem_Palette* pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
             for(int i = 0; i < bmih.clrused; ++i)
                 pal->set(i, Color(colors[i][2], colors[i][1], colors[i][0]));
 
             bitmap->setPalette(pal);
-        }
     }
 
     // Bitmapdaten setzen
@@ -235,7 +221,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     }
 
     // Bitmap zuweisen
-    image = bitmap.release();
+    image.push(bitmap.release());
 
     // alles ok
     return (!bmp) ? 99 : 0;

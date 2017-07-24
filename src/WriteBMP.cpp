@@ -87,16 +87,14 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(nr));
 
     if(!palette)
-    {
-        for(size_t i = 0; i < items.size(); ++i)
-        {
-            palette = dynamic_cast<const ArchivItem_Palette*>(items.get(i));
-            if(palette)
-                break;
-        }
-    }
+        palette = bitmap->getPalette();
 
-    if(!palette)
+    if(palette)
+    {
+        bmih.clrused = 256;
+        bmih.bbp = 8;
+        bmih.size = bitmap->getWidth() * bitmap->getHeight();
+    }else
     {
         bmih.clrused = 0;
         bmih.bbp = 24;
@@ -111,9 +109,6 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 
     bmih.height = bitmap->getHeight();
     bmih.width = bitmap->getWidth();
-    bmih.size = 0;
-
-    bmhd.size = 0;
 
     // Bitmap-Header schreiben
     fs << bmhd.header;
@@ -129,8 +124,6 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     fs << bmih.planes;
     fs << bmih.bbp;
     fs << bmih.compression;
-
-    uint32_t bmihsizepos = fs.getPosition();
     fs << bmih.size;
     fs << bmih.xppm;
     fs << bmih.yppm;
@@ -146,52 +139,52 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
         colors[i][3] = 0;
         palette->get(i, colors[i][2], colors[i][1], colors[i][0]);
     }
+    colors[TRANSPARENT_INDEX][0] = TRANSPARENT_COLOR.b;
+    colors[TRANSPARENT_INDEX][1] = TRANSPARENT_COLOR.g;
+    colors[TRANSPARENT_INDEX][2] = TRANSPARENT_COLOR.r;
 
     // Farbpalette schreiben
     fs.write(colors[0], bmih.clrused * 4);
 
-    std::vector<uint8_t> buffer(bmih.width * bmih.height * 4);
+    std::vector<uint8_t> buffer(bmih.width * bmih.height * (palette ? 1 : 4), palette ? TRANSPARENT_INDEX : 0);
+    TEXTURFORMAT bufFmt = palette ? FORMAT_PALETTED : FORMAT_RGBA;
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        if(dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette, 128) != 0)
+        if(dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128) != 0)
             return 7;
     }
-    else if(dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
+    else if(dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette) != 0)
         return 7;
 
-    uint8_t placeholder[80];
-    memset(placeholder, 0, 80);
+    unsigned lineAlignOff = (bmih.width * bmih.bbp / 8) % 4;
+    std::vector<uint8_t> lineAlignBytes(lineAlignOff == 0 ? 0 : 4 - lineAlignOff);
 
     // Bottom-Up, "von unten nach oben"
     for(int y = bmih.height - 1; y >= 0; --y)
     {
-        for(int x = 0; x < bmih.width; ++x)
+        unsigned idx = bmih.width * y;
+        if(bmih.bbp == 8)
+            fs.write(&buffer[idx], bmih.width);
+        else
         {
-            switch(bmih.bbp)
+            idx *= 4; // ARGB
+            for(int x = 0; x < bmih.width; ++x, idx += 4)
             {
-                case 8:
+                Color clr;
+                if(buffer[idx + 3] == 0x00)
+                    clr = TRANSPARENT_COLOR;
+                else
                 {
-                    uint8_t color = buffer[x + bmih.width * y];
-                    fs << color;
-                } break;
-                case 24:
-                {
-                    uint8_t r = buffer[4 * (x + bmih.width * y) + 2];
-                    uint8_t g = buffer[4 * (x + bmih.width * y) + 1];
-                    uint8_t b = buffer[4 * (x + bmih.width * y) + 0];
-                    if(buffer[4 * (x + bmih.width * y) + 3] == 0x00)
-                    {
-                        r = 0xff;
-                        g = 0x00;
-                        b = 0x8f;
-                    }
-                    fs << b << g << r;
-                } break;
+                    clr.b = buffer[idx + 0];
+                    clr.g = buffer[idx + 1];
+                    clr.r = buffer[idx + 2];
+                }
+                fs << clr.b << clr.g << clr.r;
             }
         }
-        if((bmih.width * bmih.bbp / 8) % 4 > 0)
-            fs.write(placeholder, 4 - (bmih.width * bmih.bbp / 8) % 4);
+        if(!lineAlignBytes.empty())
+            fs << lineAlignBytes;
     }
 
     uint32_t endsize = fs.getPosition();

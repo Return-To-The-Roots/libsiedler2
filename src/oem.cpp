@@ -57,16 +57,13 @@ char* AnsiToOem(const char* from, char* to, uint32_t length)
     // und string umwandeln
     for(uint32_t x = 0; x < length; x++)
     {
-        if(from[x])
-        {
-            uint8_t C = (uint8_t)from[x];
+        uint8_t C = (uint8_t)from[x];
 
-            // ab char 128 nötig
-            if(C > 128)
-                to[x] = (char)ansi2oem_tab[C & 0x7F];
-            else
-                to[x] = from[x];
-        }
+        // ab char 128 nötig
+        if(C > 128)
+            to[x] = (char)ansi2oem_tab[C & 0x7F];
+        else
+            to[x] = from[x];
     }
     return to;
 }
@@ -117,7 +114,7 @@ char* OemToAnsi(const char* from, char* to, uint32_t length)
     {
         if((uint8_t)from[x] > 128)
         {
-            for(int i = 0; i < 256; ++i)
+            for(int i = 0x83; i < 256; ++i)
             {
                 if((uint8_t)from[x] == ansi2oem_tab[i])
                 {

@@ -40,6 +40,7 @@ namespace libsiedler2
             return (r == obj.r) && (g == obj.g) && (b == obj.b);
         }
     };
+    const Color TRANSPARENT_COLOR(0xff, 0, 0x8f);
 
     /// Klasse für Paletten.
     class ArchivItem_Palette : public ArchivItem

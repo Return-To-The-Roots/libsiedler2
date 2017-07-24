@@ -88,8 +88,19 @@ BOOST_AUTO_TEST_CASE(TestBmp)
     std::string bmpOutPath = testOutputPath + "/outLogo.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     libsiedler2::ArchivInfo bmp;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(bmpPath, bmp, palette), 0);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(bmpOutPath, bmp, palette), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(bmpPath, bmp), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Write(bmpOutPath, bmp), 0);
+    BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
+}
+
+BOOST_AUTO_TEST_CASE(TestPalettedBmp)
+{
+    std::string bmpPath = "testFiles/pal.bmp";
+    std::string bmpOutPath = testOutputPath + "/outPal.bmp";
+    BOOST_REQUIRE(bfs::exists(bmpPath));
+    libsiedler2::ArchivInfo bmp;
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(bmpPath, bmp), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Write(bmpOutPath, bmp), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 

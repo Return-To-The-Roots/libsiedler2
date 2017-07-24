@@ -153,13 +153,7 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
         else if(extension == "bbm")
             ret = loader::LoadBBM(file, items);
         else if(extension == "bmp")
-        {
-            items.clear();
-            ArchivItem *bmp, *palette;
-            ret = loader::LoadBMP(file, bmp, &palette);
-            items.push(bmp);
-            items.push(palette);
-        }
+            ret = loader::LoadBMP(file, items);
         else if(extension == "bob")
             ret = loader::LoadBOB(file, palette, items);
         else if(extension == "dat" || extension == "idx")
