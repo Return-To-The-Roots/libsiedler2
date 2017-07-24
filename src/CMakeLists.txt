@@ -7,6 +7,16 @@ IF (MSVC)
 	# disable MSVC posix functions
 	ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
 	ADD_DEFINITIONS(/wd"4250")
+else()
+    include(CheckCXXSourceCompiles)
+    CHECK_CXX_SOURCE_COMPILES("
+        #if __cplusplus >= 201103L
+        int main() {}
+        #endif" COMPILER_IN_CXX11_MODE)
+
+    IF (NOT COMPILER_IN_CXX11_MODE)
+        ADD_DEFINITIONS(-Doverride=)
+    ENDIF()
 ENDIF()
 
 ADD_DEFINITIONS(-DNOMINMAX)
