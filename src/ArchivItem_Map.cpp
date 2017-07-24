@@ -25,16 +25,17 @@
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <fstream>
 
-/** @class libsiedler2::ArchivItem_Map
- *
- *  Klasse für eine Mapfile.
- */
+struct BlockHeader{ //-V802
+    uint16_t id; // Must be 0x2710
+    uint32_t unknown; // Always 0
+    uint16_t w, h;
+    uint16_t multiplier; // Not sure, always 1
+    uint32_t blockLength;
+};
 
 libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
 {
     setBobType(BOBTYPE_MAP);
-
-    alloc(16);
 }
 
 libsiedler2::ArchivItem_Map::~ArchivItem_Map()
@@ -54,6 +55,8 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     if(!file)
         return 1;
 
+    clear();
+
     ArchivItem_Map_Header* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
 
     if(header->load(file) != 0){
@@ -61,25 +64,17 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         return 2;
     }
 
-    set(0, header);
+    push(header);
 
     // nur der Header?
     if(only_header)
         return 0;
 
-    struct BlockHeader{ //-V802
-        uint16_t id; // Must be 0x2710
-        uint32_t unknown; // Always 0
-        uint16_t w, h;
-        uint16_t multiplier; // Not sure, always 1
-        uint32_t blockLength;
-    };
-
     const uint16_t w = header->getWidth();
     const uint16_t h = header->getHeight();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
-    for(uint32_t i = 0; i < 14; ++i)
+    for(uint32_t i = 1; i < 15; ++i)
     {
         BlockHeader bHeader;
         fs >> bHeader.id >> bHeader.unknown >> bHeader.w >> bHeader.h >> bHeader.multiplier >> bHeader.blockLength;
@@ -99,6 +94,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         if(bHeader.multiplier == 0)
         {
             assert(bHeader.blockLength == 0);
+            push(NULL);
             continue;
         }
         // If there is data, size must match
@@ -108,7 +104,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return 5;
         }
 
-        if(i == 0 && header->hasExtraWord())
+        if(i == 1 && header->hasExtraWord())
         {
             // Work around for map file bug: There are 2 extra bytes inbetween the header which would actually belong to the first block
             fs.setPositionRel(-2);
@@ -119,7 +115,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             delete layer;
             return 6;
         }
-        set(i + 1, layer);
+        push(layer);
     }
 
     extraInfo.clear();
@@ -156,21 +152,29 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     if(header->write(file) != 0)
         return 3;
 
+    BlockHeader bHeader;
+    bHeader.id = 0x2710;
+    bHeader.unknown = 0;
+    bHeader.w = header->getWidth();
+    bHeader.h = header->getHeight();
+    // For unused
+    bHeader.multiplier = 0;
+    bHeader.blockLength = 0;
+
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    for(uint32_t i = 0; i < 14; ++i)
+    for(uint32_t i = 1; i < std::max(15u, size()); ++i)
     {
-        const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i + 1));
-        fs << uint16_t(0x2710) << uint32_t(0);
+        const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i));
+        fs << bHeader.id << bHeader.unknown << bHeader.w << bHeader.h;
         if(layer)
         {
-            fs << uint16_t(header->getWidth()) << uint16_t(header->getHeight()) << uint16_t(1);
+            fs << uint16_t(1);
             assert(layer->getData().size() == size_t(header->getWidth()) * size_t(header->getHeight()));
+            // Size is written in layer
             if(layer->write(file, true) != 0)
                 return 4 + i;
         } else
-        {
-            fs << uint16_t(0) << uint16_t(0) << uint16_t(0) << uint32_t(0);
-        }
+            fs << bHeader.multiplier << bHeader.blockLength;
     }
 
     for(std::vector<ExtraAnimalInfo>::const_iterator it = extraInfo.begin(); it != extraInfo.end(); ++it)

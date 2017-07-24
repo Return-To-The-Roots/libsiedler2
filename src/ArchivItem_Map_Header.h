@@ -69,6 +69,7 @@ namespace libsiedler2
             uint8_t player;
             std::string author_;
             uint16_t playerHQx[7], playerHQy[7];
+            uint8_t isInvalid;
             uint8_t playerFaces[7];
             uint8_t areaInfos[250 * 9]; // 250 entries with: uint8 Type(0:Unused, 1:water, 2:land), uint16 x,y, uint32 size
             bool hasExtraWord_;

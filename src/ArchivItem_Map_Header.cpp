@@ -32,7 +32,7 @@ const char VALID_ID[10] = { 'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0' };
 
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
     : ArchivItem(),
-      width(0), height(0), gfxset(0), player(0), hasExtraWord_(false)
+      width(0), height(0), gfxset(0), player(0), isInvalid(0), hasExtraWord_(false)
 {
     setBobType(BOBTYPE_MAP_HEADER);
 }
@@ -83,7 +83,6 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
 
     fs >> playerHQx >> playerHQy;
 
-    char isInvalid;
     fs >> isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
     fs >> playerFaces >> areaInfos;
@@ -142,22 +141,15 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
         fs << width << height;
     }
 
-    // GFX-Set einlesen
-    fs << gfxset;
-
-    // Spielerzahl einlesen
-    fs << player;
+    fs << gfxset << player;
 
     // Autor einlesen
     char author[20];
     tmpName = author_.substr(0, 19);
     AnsiToOem(tmpName.c_str(), author);
     std::fill(author + tmpName.length(), author + sizeof(author), '\0');
-    fs << author;
+    fs << author << playerHQx << playerHQy;
 
-    fs << playerHQx << playerHQy;
-
-    uint8_t isInvalid = 0;
     fs << isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
     fs << playerFaces << areaInfos;

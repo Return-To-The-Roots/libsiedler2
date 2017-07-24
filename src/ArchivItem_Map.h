@@ -23,7 +23,6 @@
 #include "ArchivInfo.h"
 #include <iosfwd>
 #include <stdint.h>
-#include <stdint.h>
 
 namespace libsiedler2
 {

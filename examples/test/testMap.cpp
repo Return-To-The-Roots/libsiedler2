@@ -26,7 +26,6 @@ BOOST_AUTO_TEST_SUITE(Maps)
 
 BOOST_AUTO_TEST_CASE(ReadWriteSWD)
 {
-    return;//TODO
     std::string mapPath = "testFiles/map.SWD";
     std::string mapOutPath = testOutputPath + "/outMap.SWD";
     BOOST_REQUIRE(bfs::exists(mapPath));
@@ -38,7 +37,6 @@ BOOST_AUTO_TEST_CASE(ReadWriteSWD)
 
 BOOST_AUTO_TEST_CASE(ReadWriteWLD)
 {
-    return;//TODO
     std::string mapPath = "testFiles/map.wld";
     std::string mapOutPath = testOutputPath + "/outMap.wld";
     BOOST_REQUIRE(bfs::exists(mapPath));
