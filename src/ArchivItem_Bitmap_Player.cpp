@@ -407,7 +407,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
 
     this->width_ = width;
     this->height_ = height;
-    setPalette(palette);
+    setPalette(*palette);
     setFormat(buffer_format);
 
     // Texturspeicher anfordern

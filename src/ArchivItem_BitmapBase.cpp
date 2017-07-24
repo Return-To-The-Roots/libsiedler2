@@ -20,6 +20,7 @@
 #include "ArchivItem_Palette.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include <stdexcept>
 
 namespace libsiedler2{
 /** @class ArchivItem_BitmapBase
@@ -60,7 +61,7 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
     tex_data_ = item.tex_data_;
 
     palette_ = NULL;
-    setPalette(item.palette_);
+    setPalette(*item.palette_);
     setFormat(item.format_);
 }
 
@@ -93,7 +94,7 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
     tex_data_ = item.tex_data_;
 
     palette_ = NULL;
-    setPalette(item.palette_);
+    setPalette(*item.palette_);
     setFormat(item.format_);
 
     return *this;
@@ -109,7 +110,7 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
  */
 void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
         uint16_t y,
-        uint8_t color,
+        uint8_t colorIdx,
         const ArchivItem_Palette* palette)
 {
     if(tex_data_.empty())
@@ -117,7 +118,7 @@ void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
     if(palette == NULL)
         palette = this->palette_;
     if(palette == NULL)
-        return;
+        throw std::runtime_error("No palette found");
 
     if(x < tex_width_ && y < tex_height_)
     {
@@ -127,16 +128,16 @@ void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
             case 1:
             {
                 // Palettenindex setzen
-                tex_data_[position] = color;
+                tex_data_[position] = colorIdx;
             } break;
             case 4:
             {
                 // RGB+A setzen
-                if(color == TRANSPARENT_INDEX) // Transparenz
+                if(colorIdx == TRANSPARENT_INDEX) // Transparenz
                     tex_data_[position + 3] = 0x00;
                 else
                 {
-                    palette->get(color, tex_data_[position + 2], tex_data_[position + 1], tex_data_[position + 0]);
+                    palette->get(colorIdx, tex_data_[position + 2], tex_data_[position + 1], tex_data_[position + 0]);
                     tex_data_[position + 3] = 0xFF;
                 }
             } break;
@@ -502,15 +503,21 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
  *
  *  @param[in] palette Palette die zukünftig verwendet werden soll.
  */
-void ArchivItem_BitmapBase::setPalette(const ArchivItem_Palette* palette)
+void ArchivItem_BitmapBase::setPalette(ArchivItem_Palette* palette)
 {
-    // alte Palette freigeben
-    delete this->palette_;
+    removePalette();
+    palette_ = palette;
+}
 
-    if(palette)
-        this->palette_ = dynamic_cast<ArchivItem_Palette*>(getAllocator().clone(*palette));
-    else
-        this->palette_ = NULL;
+void ArchivItem_BitmapBase::setPalette(const ArchivItem_Palette& palette)
+{
+    palette_ = dynamic_cast<ArchivItem_Palette*>(getAllocator().clone(palette));
+}
+
+void ArchivItem_BitmapBase::removePalette()
+{
+    delete palette_;
+    palette_ = NULL;
 }
 
 } // namespace libsiedler2

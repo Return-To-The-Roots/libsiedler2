@@ -43,11 +43,11 @@ namespace libsiedler2
         ArchivItem_BitmapBase& operator=(const ArchivItem_BitmapBase& item);
 
         /// setzt einen Pixel auf einen bestimmten Wert.
-        virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t color, const ArchivItem_Palette* palette);
+        virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t colorIdx, const ArchivItem_Palette* palette = NULL);
         virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
         /// liefert einen Pixel an einem bestimmten Punkt.
-        uint8_t tex_getPixel(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const;
+        uint8_t tex_getPixel(uint16_t x, uint16_t y, const ArchivItem_Palette* palette = NULL) const;
 
         /// lädt die Bilddaten aus einer Datei.
         virtual int load(std::istream& file, const ArchivItem_Palette* palette) = 0;
@@ -92,7 +92,9 @@ namespace libsiedler2
         virtual void tex_clear();
 
         /// setzt die Grundpalette des Bildes.
-        void setPalette(const ArchivItem_Palette* palette);
+        void setPalette(ArchivItem_Palette* palette);
+        void setPalette(const ArchivItem_Palette& palette);
+        void removePalette();
 
         /// setzt das Format des Bildes.
         void setFormat(TEXTURFORMAT format) { this->format_ = format; }
