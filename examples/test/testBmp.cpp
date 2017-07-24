@@ -82,4 +82,15 @@ BOOST_AUTO_TEST_CASE(TestRLEBitmap)
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
+BOOST_AUTO_TEST_CASE(TestBmp)
+{
+    std::string bmpPath = "testFiles/logo.bmp";
+    std::string bmpOutPath = testOutputPath + "/outLogo.bmp";
+    BOOST_REQUIRE(bfs::exists(bmpPath));
+    libsiedler2::ArchivInfo bmp;
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(bmpPath, bmp, palette), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Write(bmpOutPath, bmp, palette), 0);
+    BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

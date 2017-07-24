@@ -62,7 +62,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
         int32_t yppm; // 32
         int32_t clrused; // 36
         int32_t clrimp; // 40
-    } bmih = { 40, 0, 0, 1, 24, 0, 40, 0, 0, 0, 0 };
+    } bmih = { 40, 0, 0, 1, 24, 0, 0, 2834, 2834, 0, 0 };
 
     if(file.empty())
         return 1;
@@ -72,32 +72,35 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
         // Bitmap in ArchivInfo suchen, erstes Bitmap wird geschrieben
         for(size_t i = 0; i < items.size(); ++i)
         {
-            if(!items.get(i))
-                continue;
-
-            switch(items.get(i)->getBobType())
+            const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(i));
+            if(bitmap)
             {
-                case BOBTYPE_BITMAP_PLAYER:
-                case BOBTYPE_BITMAP_RLE:
-                case BOBTYPE_BITMAP_SHADOW:
-                case BOBTYPE_BITMAP_RAW:
-                {
-                    nr = static_cast<long>(i);
-                } break;
-                default:
-                    nr = -1;
-                    break;
-            }
-            if(nr != -1)
+                nr = i;
                 break;
+            }
         }
     }
 
     // Haben wir eine gefunden?
     if(nr == -1)
         return 2;
-
     const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(nr));
+
+    if(!palette)
+    {
+        for(size_t i = 0; i < items.size(); ++i)
+        {
+            palette = dynamic_cast<const ArchivItem_Palette*>(items.get(i));
+            if(palette)
+                break;
+        }
+    }
+
+    if(!palette)
+    {
+        bmih.clrused = 0;
+        bmih.bbp = 24;
+    }
 
     // Datei zum schreiben öffnen
     libendian::EndianOStreamAdapter<false, std::ofstream> fs(file, std::ios_base::binary);
@@ -114,6 +117,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 
     // Bitmap-Header schreiben
     fs << bmhd.header;
+    uint32_t bmhdsizepos = fs.getPosition();
     fs << bmhd.size;
     fs << bmhd.reserved;
     fs << bmhd.offset;
@@ -146,7 +150,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     // Farbpalette schreiben
     fs.write(colors[0], bmih.clrused * 4);
 
-    std::vector<uint8_t> buffer(bmih.width * bmih.height * 4 + 1);
+    std::vector<uint8_t> buffer(bmih.width * bmih.height * 4);
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
@@ -189,12 +193,10 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
         if((bmih.width * bmih.bbp / 8) % 4 > 0)
             fs.write(placeholder, 4 - (bmih.width * bmih.bbp / 8) % 4);
     }
-    if(fs.getPosition() % 4 > 0)
-        fs.write(placeholder, 4 - fs.getPosition() % 4);
 
     uint32_t endsize = fs.getPosition();
-    fs.setPosition(bmihsizepos);
-    fs << (endsize - bmihsizepos);
+    fs.setPosition(bmhdsizepos);
+    fs << endsize;
 
     // alles ok
     return (!fs) ? 99 : 0;
