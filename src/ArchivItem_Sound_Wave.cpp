@@ -44,7 +44,7 @@ libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned length)
+int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, uint32_t length)
 {
     if(!file || length == 0)
         return 1;
@@ -68,7 +68,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned le
 
         fs.read(&data[44], length);
 
-        //unsigned char header[] = {
+        //uint8_t header[] = {
         //   0 | 'R', 'I', 'F', 'F',
         //   4 | 0, 0, 0, 0, // file-size
         //   8 | 'W', 'A', 'V', 'E',
@@ -85,7 +85,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, unsigned le
         //  40 | 0, 0, 0, 0 // data-size
         //};
 
-        unsigned char header[44] =
+        uint8_t header[44] =
         {
             'R', 'I', 'F', 'F',
             0, 0, 0, 0, // file-size
@@ -138,8 +138,8 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
 
-    const unsigned char* start = &data.front();
-    unsigned length = static_cast<unsigned>(data.size());
+    const uint8_t* start = &data.front();
+    uint32_t length = static_cast<uint32_t>(data.size());
     if(stripheader)
     {
         start = &data[44];

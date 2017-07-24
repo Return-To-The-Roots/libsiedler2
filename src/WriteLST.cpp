@@ -33,7 +33,7 @@
  */
 int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
-    short header = 0x4E20;
+    int16_t header = 0x4E20;
     assert(items.size() < std::numeric_limits<uint32_t>::max());
     uint32_t count = static_cast<uint32_t>(items.size());
 
@@ -54,9 +54,9 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
     lst << count;
 
     // items schreiben
-    for(unsigned i = 0; i < count; ++i)
+    for(uint32_t i = 0; i < count; ++i)
     {
-        unsigned short used = 0x0001;
+        uint16_t used = 0x0001;
 
         const ArchivItem* item = items.get(i);
 

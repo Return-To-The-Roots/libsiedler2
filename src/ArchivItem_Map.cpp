@@ -75,11 +75,11 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         uint32_t blockLength;
     };
 
-    const unsigned short w = header->getWidth();
-    const unsigned short h = header->getHeight();
+    const uint16_t w = header->getWidth();
+    const uint16_t h = header->getHeight();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
-    for(unsigned i = 0; i < 14; ++i)
+    for(uint32_t i = 0; i < 14; ++i)
     {
         BlockHeader bHeader;
         fs >> bHeader.id >> bHeader.unknown >> bHeader.w >> bHeader.h >> bHeader.multiplier >> bHeader.blockLength;
@@ -90,7 +90,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return 3;
         }
         // Blocksize must match extents
-        if(bHeader.blockLength != static_cast<unsigned>(w)*static_cast<unsigned>(h))
+        if(bHeader.blockLength != static_cast<uint32_t>(w)*static_cast<uint32_t>(h))
         {
             assert(false);
             return 4;
@@ -157,7 +157,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
         return 3;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    for(unsigned i = 0; i < 14; ++i)
+    for(uint32_t i = 0; i < 14; ++i)
     {
         const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i + 1));
         fs << uint16_t(0x2710) << uint32_t(0);

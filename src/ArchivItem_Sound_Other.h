@@ -33,7 +33,7 @@ namespace libsiedler2
             ~baseArchivItem_Sound_Other() override;
 
             /// lädt die Daten aus einer Datei.
-            int load(std::istream& file, unsigned length) override;
+            int load(std::istream& file, uint32_t length) override;
 
             /// schreibt die Daten in eine Datei.
             int write(std::ostream& file) const override;
@@ -41,11 +41,11 @@ namespace libsiedler2
             /// räumt den Soundspeicher auf.
             void clear();
 
-            const std::vector<unsigned char> getData() { return data; }
-            unsigned getLength() { return static_cast<unsigned>(data.size()); }
+            const std::vector<uint8_t> getData() { return data; }
+            uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
 
         protected:
-            std::vector<unsigned char> data;
+            std::vector<uint8_t> data;
     };
 
     /// Klasse für Other-Sounds.

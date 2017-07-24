@@ -94,7 +94,7 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     if(skip)
     {
-        short unknown = 0x0100;
+        int16_t unknown = 0x0100;
         fs << unknown;
     }
 
@@ -113,7 +113,7 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
  *  @param[in] g     Grüner Farbwert
  *  @param[in] b     Blauer Farbwert
  */
-void libsiedler2::ArchivItem_Palette::set(unsigned char index, Color clr)
+void libsiedler2::ArchivItem_Palette::set(uint8_t index, Color clr)
 {
     colors[index] = clr;
 }
@@ -129,12 +129,12 @@ void libsiedler2::ArchivItem_Palette::set(unsigned char index, Color clr)
  *
  *  @bug Keine Fehlererkennung!
  */
-unsigned char libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
+uint8_t libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
 {
-    for(unsigned short i = 0; i < 256; ++i)
+    for(uint16_t i = 0; i < 256; ++i)
     {
         if(colors[i] == clr)
-            return static_cast<unsigned char>(i);
+            return static_cast<uint8_t>(i);
     }
     return 0;
 }
@@ -159,13 +159,13 @@ const libsiedler2::Color& libsiedler2::ArchivItem_Palette::operator[](int index)
  *
  *  @param[in,out] buffer Zielpuffer für die Palettendaten (muss 256*4-Byte groß sein)
  */
-void libsiedler2::ArchivItem_Palette::copy(unsigned char* buffer, size_t bufSize) const
+void libsiedler2::ArchivItem_Palette::copy(uint8_t* buffer, size_t bufSize) const
 {
     if(bufSize < 256 * 4)
         throw std::runtime_error("Buffer is to small!");
 
     // Farben kopieren
-    for(unsigned short i = 0; i < 256; ++i)
+    for(uint16_t i = 0; i < 256; ++i)
     {
         buffer[i * 4]     = colors[i].r;
         buffer[i * 4 + 1] = colors[i].g;

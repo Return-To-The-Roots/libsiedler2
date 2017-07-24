@@ -39,7 +39,7 @@
 int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
 {
     char header[4], pbm[4], chunk[4];
-    unsigned i = 0;
+    uint32_t i = 0;
 
     if(file.empty())
         return 1;
@@ -54,7 +54,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStreamAdapter<true, MMStream& > fs(mmapStream);
+    libendian::EndianIStreamAdapter<true, MMStream&> fs(mmapStream);
 
     // hat das geklappt?
     if(!fs)
@@ -68,7 +68,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
         return 4;
 
     // Länge einlesen
-    unsigned length;
+    uint32_t length;
     fs >> length;
 
     // Typ einlesen

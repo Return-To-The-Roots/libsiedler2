@@ -99,7 +99,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     if(headerSig != 0x2711)
         return 4;
 
-    uint32_t unknown; // Might be switch for short or long header blocks in WORLD#.DAT files
+    uint32_t unknown; // Might be switch for int16_t or long header blocks in WORLD#.DAT files
     fs >> unknown;
     assert(unknown == 0);
 
@@ -195,7 +195,7 @@ void libsiedler2::ArchivItem_Map_Header::setName(const std::string& name)
 /**
  *  liefert die Breite der Map.
  */
-unsigned short libsiedler2::ArchivItem_Map_Header::getWidth() const
+uint16_t libsiedler2::ArchivItem_Map_Header::getWidth() const
 {
     return width;
 }
@@ -205,7 +205,7 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getWidth() const
  *
  *  @param[in] width Breite der Map
  */
-void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
+void libsiedler2::ArchivItem_Map_Header::setWidth(uint16_t width)
 {
     this->width = width;
 }
@@ -213,7 +213,7 @@ void libsiedler2::ArchivItem_Map_Header::setWidth(unsigned short width)
 /**
  *  liefert die Höhe der Map.
  */
-unsigned short libsiedler2::ArchivItem_Map_Header::getHeight() const
+uint16_t libsiedler2::ArchivItem_Map_Header::getHeight() const
 {
     return height;
 }
@@ -223,7 +223,7 @@ unsigned short libsiedler2::ArchivItem_Map_Header::getHeight() const
  *
  *  @param[in] height Höhe der Map
  */
-void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
+void libsiedler2::ArchivItem_Map_Header::setHeight(uint16_t height)
 {
     this->height = height;
 }
@@ -231,7 +231,7 @@ void libsiedler2::ArchivItem_Map_Header::setHeight(unsigned short height)
 /**
  *  liefert das GfxSet der Map.
  */
-unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet() const
+uint8_t libsiedler2::ArchivItem_Map_Header::getGfxSet() const
 {
     return gfxset;
 }
@@ -241,7 +241,7 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getGfxSet() const
  *
  *  @param[in] gfxset GfxSet der Map
  */
-void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
+void libsiedler2::ArchivItem_Map_Header::setGfxSet(uint8_t gfxset)
 {
     this->gfxset = gfxset;
 }
@@ -249,7 +249,7 @@ void libsiedler2::ArchivItem_Map_Header::setGfxSet(unsigned char gfxset)
 /**
  *  liefert die Spielerzahl der Map.
  */
-unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer() const
+uint8_t libsiedler2::ArchivItem_Map_Header::getPlayer() const
 {
     return player;
 }
@@ -259,7 +259,7 @@ unsigned char libsiedler2::ArchivItem_Map_Header::getPlayer() const
  *
  *  @param[in] player Spielerzahl der Map
  */
-void libsiedler2::ArchivItem_Map_Header::setPlayer(unsigned char player)
+void libsiedler2::ArchivItem_Map_Header::setPlayer(uint8_t player)
 {
     this->player = player;
 }
@@ -289,7 +289,7 @@ void libsiedler2::ArchivItem_Map_Header::setAuthor(const std::string& author)
  * @param x x-coordinate of the headquarter
  * @param y y-coordinate of the headquarter
  */
-void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const unsigned player, const unsigned short x, const unsigned short y)
+void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const uint32_t player, const uint16_t x, const uint16_t y)
 {
     playerHQx[player] = x;
     playerHQy[player] = y;
@@ -302,7 +302,7 @@ void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const unsigned player, cons
  * @param[out] x x-coordinate of the headquarter
  * @param[out] y y-coordinate of the headquarter
  */
-void libsiedler2::ArchivItem_Map_Header::getPlayerHQ(const unsigned player, unsigned short& x, unsigned short& y)
+void libsiedler2::ArchivItem_Map_Header::getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y)
 {
     x = playerHQx[player];
     y = playerHQy[player];

@@ -99,38 +99,38 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     fs.ignore(2);
 
     // Länge einlesen
-    unsigned length;
+    uint32_t length;
     fs >> length;
 
-    std::vector<unsigned char> data(length);
+    std::vector<uint8_t> data(length);
     // Daten einlesen
     fs >> data;
 
     // Speicher anlegen
     tex_alloc();
 
-    unsigned char gray = palette->lookup(255, 255, 255);
+    uint8_t gray = palette->lookup(255, 255, 255);
 
     if(length != 0)
     {
-        unsigned position = height_ * 2;
+        uint32_t position = height_ * 2;
 
         // Einlesen
-        for(unsigned short y = 0; y < height_; ++y)
+        for(uint16_t y = 0; y < height_; ++y)
         {
-            unsigned short x = 0;
+            uint16_t x = 0;
 
             // Solange Zeile einlesen, bis x voll ist
             while(x < width_)
             {
                 // graue Pixel setzen
-                unsigned char count = data[position++];
-                for(unsigned char i = 0; i < count; ++i, ++x)
+                uint8_t count = data[position++];
+                for(uint8_t i = 0; i < count; ++i, ++x)
                     tex_setPixel(x, y, gray, palette);
 
                 // transparente Pixel setzen
                 count = data[position++];
-                for(unsigned char i = 0; i < count; ++i, ++x)
+                for(uint8_t i = 0; i < count; ++i, ++x)
                     tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
             }
 
@@ -190,16 +190,16 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     fs.write(unknown2, sizeof(unknown2));
 
     // maximale größe von RLE: width*height*2
-    std::vector<unsigned char> image(width_ * height_ * 2);
+    std::vector<uint8_t> image(width_ * height_ * 2);
 
     // Startadressen
-    std::vector<unsigned short> starts(height_);
+    std::vector<uint16_t> starts(height_);
 
     // Schattendaten kodieren
-    unsigned short position = 0;
-    for(unsigned short y = 0; y < height_; ++y)
+    uint16_t position = 0;
+    for(uint16_t y = 0; y < height_; ++y)
     {
-        unsigned short x = 0;
+        uint16_t x = 0;
 
         // Startadresse setzen
         starts[y] = position + height_ * 2;
@@ -208,7 +208,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
         while(x < width_)
         {
             // graue Pixel schreiben
-            unsigned char count, color;
+            uint8_t count, color;
             for(count = 0; count < width_ - x; ++count)
             {
                 color = tex_getPixel(x + count, y, palette);
@@ -235,7 +235,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     }
     image[position++] = 0xFF;
 
-    unsigned length = position + height_ * 2;
+    uint32_t length = position + height_ * 2;
 
     // Länge schreiben
     fs << length;

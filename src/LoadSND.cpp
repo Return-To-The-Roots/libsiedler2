@@ -58,7 +58,7 @@ int libsiedler2::loader::LoadSND(const std::string& file, ArchivInfo& items)
         return 3;
 
     size_t size = getIStreamSize(snd);
-    if(sound->load(snd, static_cast<unsigned>(size)) != 0)
+    if(sound->load(snd, static_cast<uint32_t>(size)) != 0)
         return 4;
 
     items.clear();

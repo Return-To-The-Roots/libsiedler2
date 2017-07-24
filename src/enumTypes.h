@@ -18,6 +18,8 @@
 #ifndef enumTypes_h__
 #define enumTypes_h__
 
+#include <stdint.h>
+
 namespace libsiedler2
 {
     /** Supported texture formats */
@@ -129,7 +131,7 @@ namespace libsiedler2
     /**
      * Hex value to combine with texture values to enable harbor placement.
      */
-    const unsigned char HARBOR_MASK = 0x40;
+    const uint8_t HARBOR_MASK = 0x40;
     
 } // namspace libsiedler2
 

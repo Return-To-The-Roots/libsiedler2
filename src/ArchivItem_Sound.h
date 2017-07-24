@@ -39,7 +39,7 @@ namespace libsiedler2
             SOUNDTYPES getType() const;
 
             /// lädt die Sound-Daten aus einer Datei.
-            virtual int load(std::istream& file, unsigned length) = 0;
+            virtual int load(std::istream& file, uint32_t length) = 0;
 
             /// schreibt die Sound-Daten in eine Datei.
             virtual int write(std::ostream& file) const = 0;

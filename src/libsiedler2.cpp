@@ -229,7 +229,7 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
         else if(extension == "swd" || extension == "wld")
             ret = loader::WriteMAP(file, items);
         else if(extension == "ger" || extension == "eng")
-            ret = loader::WriteTXT(file, items, false);
+            ret = loader::WriteTXT(file, items, true);
         else if(extension == "ini")
             ret = loader::WriteINI(file, items);
         else

@@ -25,7 +25,7 @@
 #include <iterator>
 
 static const int PATCH_VOL_PAN_BIAS = 5;
-static GammaTable<unsigned char> VolumeCurve(128);
+static GammaTable<uint8_t> VolumeCurve(128);
 
 
 XMIDI_Track::XMIDI_Track(MIDI_Track* track) : track(track)
@@ -64,9 +64,9 @@ int XMIDI_Track::Convert()
 int XMIDI_Track::ConvertTrackToList()
 {
     int            time = 0; // 120th of a second
-    unsigned   data;
+    uint32_t   data;
     int            end = 0;
-    unsigned   status = 0;
+    uint32_t   status = 0;
     int            play_size = 3;
     int            retval = 0;
 
@@ -78,7 +78,7 @@ int XMIDI_Track::ConvertTrackToList()
     {
         GetVLQ2(data);
         time += data;
-        status = (unsigned)track->xmid_data[position++];
+        status = (uint32_t)track->xmid_data[position++];
 
         switch (status >> 4)
         {
@@ -108,7 +108,7 @@ int XMIDI_Track::ConvertTrackToList()
                 if (status == 0xFF)
                 {
                     size_t pos = position;
-                    unsigned data = track->xmid_data[position++];
+                    uint32_t data = track->xmid_data[position++];
 
                     if (data == 0x2F)
                         end = 1;
@@ -133,11 +133,11 @@ int XMIDI_Track::ConvertTrackToList()
     return retval;
 }
 
-int XMIDI_Track::GetVLQ(unsigned& quant)
+int XMIDI_Track::GetVLQ(uint32_t& quant)
 {
     int i;
     quant = 0;
-    unsigned char data = 0;
+    uint8_t data = 0;
 
     for (i = 0; i < 4; i++)
     {
@@ -154,11 +154,11 @@ int XMIDI_Track::GetVLQ(unsigned& quant)
     return i;
 }
 
-int XMIDI_Track::GetVLQ2(unsigned& quant)
+int XMIDI_Track::GetVLQ2(uint32_t& quant)
 {
     int i;
     quant = 0;
-    unsigned char data = 0;
+    uint8_t data = 0;
 
     for (i = 0; i < 4; i++)
     {
@@ -173,7 +173,7 @@ int XMIDI_Track::GetVLQ2(unsigned& quant)
     return i;
 }
 
-void XMIDI_Track::PutVLQ(unsigned value)
+void XMIDI_Track::PutVLQ(uint32_t value)
 {
     int buffer;
     int i = 1;
@@ -192,9 +192,9 @@ void XMIDI_Track::PutVLQ(unsigned value)
     }
 }
 
-int XMIDI_Track::ConvertNote(const int time, const unsigned char status, const int size)
+int XMIDI_Track::ConvertNote(const int time, const uint8_t status, const int size)
 {
-    unsigned delta = 0;
+    uint32_t delta = 0;
     int data;
 
     data = track->xmid_data[position++];
@@ -233,12 +233,12 @@ int XMIDI_Track::ConvertNote(const int time, const unsigned char status, const i
     return i + 2;
 }
 
-int XMIDI_Track::ConvertEvent(const int time, const unsigned char status, const int size, first_state& fs)
+int XMIDI_Track::ConvertEvent(const int time, const uint8_t status, const int size, first_state& fs)
 {
     //   Uint32 delta=0;
     int data = track->xmid_data[position++];
     MidiStatus curStatus = MidiStatus(status >> 4);
-    unsigned char statValue = status & 0xF;
+    uint8_t statValue = status & 0xF;
     // Bank changes are handled here
     if(curStatus == MIDI_STATUS_CONTROLLER && data == 0)
     {
@@ -296,7 +296,7 @@ int XMIDI_Track::ConvertEvent(const int time, const unsigned char status, const 
     return 2;
 }
 
-int XMIDI_Track::ConvertSystemMessage(const int time, const unsigned char status)
+int XMIDI_Track::ConvertSystemMessage(const int time, const uint8_t status)
 {
     int i = 0;
 
@@ -310,7 +310,7 @@ int XMIDI_Track::ConvertSystemMessage(const int time, const unsigned char status
         i++;
     }
 
-    unsigned len;
+    uint32_t len;
     i += GetVLQ(len);
 
     current->buffer.clear();
@@ -374,7 +374,7 @@ void XMIDI_Track::ConvertListToMTrk()
 {
     int time = 0;
     int lasttime = 0;
-    unsigned char last_status = 0;
+    uint8_t last_status = 0;
 
     track->clearMid();
 
@@ -399,7 +399,7 @@ void XMIDI_Track::ConvertListToMTrk()
             break;
         }
 
-        unsigned delta = (event->time - time);
+        uint32_t delta = (event->time - time);
         time = event->time;
 
         PutVLQ(delta);
@@ -430,7 +430,7 @@ void XMIDI_Track::ConvertListToMTrk()
                 if (event->status == 0xFF)
                     track->mid_data.push_back(event->data[0]);
 
-                PutVLQ(static_cast<unsigned>(event->buffer.size()));
+                PutVLQ(static_cast<uint32_t>(event->buffer.size()));
 
                 std::copy(event->buffer.begin(), event->buffer.end(), std::back_inserter(track->mid_data));
                 break;
@@ -455,7 +455,7 @@ void XMIDI_Track::ConvertListToMTrk()
 
 void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
 {
-    for (unsigned char channel = 0; channel < 16; channel++)
+    for (uint8_t channel = 0; channel < 16; channel++)
     {
         MIDI_Event* patch = fs.patch[channel];
         MIDI_Event* vol = fs.vol[channel];
@@ -470,7 +470,7 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
         temp = patch;
         patch = new MIDI_Event;
         patch->time = temp->time;
-        patch->status = (unsigned char)(channel | (MIDI_STATUS_PROG_CHANGE << 4));
+        patch->status = (uint8_t)(channel | (MIDI_STATUS_PROG_CHANGE << 4));
         patch->data[0] = temp->data[0];
 
         // Copy Volume
@@ -480,7 +480,7 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
 
         temp = vol;
         vol = new MIDI_Event;
-        vol->status = (unsigned char)(channel | (MIDI_STATUS_CONTROLLER << 4));
+        vol->status = (uint8_t)(channel | (MIDI_STATUS_CONTROLLER << 4));
         vol->data[0] = 7;
 
         if (!temp)
@@ -497,7 +497,7 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
         temp = bank;
 
         bank = new MIDI_Event;
-        bank->status = (unsigned char)(channel | (MIDI_STATUS_CONTROLLER << 4));
+        bank->status = (uint8_t)(channel | (MIDI_STATUS_CONTROLLER << 4));
 
         if (!temp)
             bank->data[1] = 0;
@@ -511,7 +511,7 @@ void XMIDI_Track::ApplyFirstState(first_state& fs, int chan_mask)
 
         temp = pan;
         pan = new MIDI_Event;
-        pan->status = (unsigned char)(channel | (MIDI_STATUS_CONTROLLER << 4));
+        pan->status = (uint8_t)(channel | (MIDI_STATUS_CONTROLLER << 4));
         pan->data[0] = 10;
 
         if (!temp)

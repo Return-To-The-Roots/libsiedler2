@@ -41,23 +41,23 @@ namespace libsiedler2
             const std::string& getName() const;
             void setName(const std::string& name);
 
-            unsigned short getWidth() const;
-            void setWidth(unsigned short width);
+            uint16_t getWidth() const;
+            void setWidth(uint16_t width);
 
-            unsigned short getHeight() const;
-            void setHeight(unsigned short height);
+            uint16_t getHeight() const;
+            void setHeight(uint16_t height);
 
-            unsigned char getGfxSet() const;
-            void setGfxSet(unsigned char gfxset);
+            uint8_t getGfxSet() const;
+            void setGfxSet(uint8_t gfxset);
 
-            unsigned char getPlayer() const;
-            void setPlayer(unsigned char player);
+            uint8_t getPlayer() const;
+            void setPlayer(uint8_t player);
 
             const std::string& getAuthor() const;
             void setAuthor(const std::string& author);
         
-            void setPlayerHQ(const unsigned player, const unsigned short x, const unsigned short y);
-            void getPlayerHQ(const unsigned player, unsigned short& x, unsigned short& y);
+            void setPlayerHQ(const uint32_t player, const uint16_t x, const uint16_t y);
+            void getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y);
         
             bool hasExtraWord() const { return hasExtraWord_; }
 

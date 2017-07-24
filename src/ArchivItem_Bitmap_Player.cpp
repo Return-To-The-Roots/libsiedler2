@@ -118,17 +118,17 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
     // Unbekannte Daten überspringen
     fs.ignore(2);
 
-    unsigned length;
+    uint32_t length;
     // Länge einlesen
     fs >> length;
 
-    std::vector<unsigned short> starts;
-    std::vector<unsigned char> data;
+    std::vector<uint16_t> starts;
+    std::vector<uint8_t> data;
     // Daten einlesen
-    if(length >= height_ * sizeof(unsigned short))
+    if(length >= height_ * sizeof(uint16_t))
     {
         starts.resize(height_);
-        data.resize(length - height_ * sizeof(unsigned short));
+        data.resize(length - height_ * sizeof(uint16_t));
         fs >> starts >> data;
     }
 
@@ -151,7 +151,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
+int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
 {
     this->width_ = width;
     this->height_ = height;
@@ -162,11 +162,11 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned s
     if(!image.empty())
     {
         // Einlesen
-        for(unsigned short y = 0; y < height; ++y)
+        for(uint16_t y = 0; y < height; ++y)
         {
-            unsigned short x = 0;
+            uint16_t x = 0;
 
-            unsigned position = starts[y];
+            uint32_t position = starts[y];
             if(!absoluteStarts)
                 position -= height * 2;
 
@@ -177,12 +177,12 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned s
             while(x < width)
             {
                 // Schalter einlesen
-                unsigned char shift = image[position++];
+                uint8_t shift = image[position++];
 
                 if(shift < 0x40)
                 {
                     // transparente Pixel setzen
-                    for(unsigned char i = 0; i < shift; ++i, ++x)
+                    for(uint8_t i = 0; i < shift; ++i, ++x)
                         tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
                 }
                 else if (shift < 0x80)
@@ -190,7 +190,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned s
                     shift -= 0x40;
 
                     // farbige Pixel setzen
-                    for(unsigned char i = 0; i < shift; ++i, ++x)
+                    for(uint8_t i = 0; i < shift; ++i, ++x)
                         tex_setPixel(x, y, image[position++], palette);
                 }
                 else if (shift < 0xC0)
@@ -198,7 +198,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned s
                     shift -= 0x80;
 
                     // Spielerfarbe Pixel setzen
-                    for(unsigned char i = 0; i < shift; ++i, ++x)
+                    for(uint8_t i = 0; i < shift; ++i, ++x)
                     {
                         tex_pdata[y * width + x] = image[position];
                         tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
@@ -210,7 +210,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(unsigned short width, unsigned s
                     shift -= 0xC0;
 
                     // komprimierte Pixel setzen
-                    for(unsigned char i = 0; i < shift; ++i, ++x)
+                    for(uint8_t i = 0; i < shift; ++i, ++x)
                         tex_setPixel(x, y, image[position], palette);
                     ++position;
                 }
@@ -268,15 +268,15 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
     fs.write(unknown2, sizeof(unknown2));
 
     // maximale größe von Player-Image: width*height*2 (sollte reichen :P)
-    std::vector<unsigned char> image(width_ * height_ * 2);
+    std::vector<uint8_t> image(width_ * height_ * 2);
 
     // Startadressen
-    std::vector<unsigned short> starts(height_);
+    std::vector<uint16_t> starts(height_);
 
-    unsigned short position = 0;
-    for(unsigned short y = 0; y < height_; ++y)
+    uint16_t position = 0;
+    for(uint16_t y = 0; y < height_; ++y)
     {
-        unsigned short x = 0;
+        uint16_t x = 0;
 
         // Startadresse setzen
         starts[y] = position + height_ * 2;
@@ -284,8 +284,8 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
         // Solange Zeile nicht voll
         while(x < width_)
         {
-            unsigned char color, count;
-            unsigned short target = position++;
+            uint8_t color, count;
+            uint16_t target = position++;
 
             color = tex_getPixel(x, y, palette);
             if(color == TRANSPARENT_INDEX && tex_pdata[y * width_ + x] == TRANSPARENT_INDEX)
@@ -304,7 +304,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
             }
             else if( tex_pdata[y * width_ + x] != TRANSPARENT_INDEX )
             {
-                unsigned char first = tex_pdata[y * width_ + x];
+                uint8_t first = tex_pdata[y * width_ + x];
                 count = 0;
 
                 // spielerfarbe Pixel
@@ -319,7 +319,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
             }
             else
             {
-                unsigned char first = color;
+                uint8_t first = color;
                 count = 0;
 
                 // komprimierte Pixel
@@ -338,7 +338,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
     }
 
     image.resize(position);
-    unsigned length = position + height_ * sizeof(unsigned short);
+    uint32_t length = position + height_ * sizeof(uint16_t);
 
     // Länge schreiben
     fs << length;
@@ -393,14 +393,14 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_clear()
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
-        unsigned short height,
-        const unsigned char* buffer,
-        unsigned short buffer_width,
-        unsigned short buffer_height,
+int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
+        uint16_t height,
+        const uint8_t* buffer,
+        uint16_t buffer_width,
+        uint16_t buffer_height,
         TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette,
-        unsigned char color)
+        uint8_t color)
 {
     if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0 || palette == NULL)
         return 1;
@@ -413,7 +413,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
     // Texturspeicher anfordern
     tex_alloc();
 
-    unsigned short bpp;
+    uint16_t bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
@@ -427,9 +427,9 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
             break;
     }
 
-    for(unsigned y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
+    for(uint32_t y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
     {
-        for(unsigned x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
+        for(uint32_t x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
             size_t posBuffer  = (y2 * buffer_width + x2) * bpp;
             size_t posPlayerTex = (y * width + x) * 1;
@@ -438,7 +438,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
             {
                 case FORMAT_RGBA:
                 {
-                    unsigned char c = palette->lookup(buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
+                    uint8_t c = palette->lookup(buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
                     if(buffer[posBuffer + 3] != 0x00)
                     {
                         if(c >= color && c <= color + 3) // Spielerfarbe
@@ -454,7 +454,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(unsigned short width,
                 } break;
                 case FORMAT_PALETTED:
                 {
-                    unsigned char c = buffer[posBuffer];
+                    uint8_t c = buffer[posBuffer];
                     if(c >= color && c <= color + 3) // Spielerfarbe
                     {
                         tex_pdata[posPlayerTex] = c - color;
@@ -610,18 +610,18 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
-        unsigned short buffer_width,
-        unsigned short buffer_height,
+int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
+        uint16_t buffer_width,
+        uint16_t buffer_height,
         TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette,
-        unsigned char color,
-        unsigned short to_x,
-        unsigned short to_y,
-        unsigned short from_x,
-        unsigned short from_y,
-        unsigned short from_w,
-        unsigned short from_h,
+        uint8_t color,
+        uint16_t to_x,
+        uint16_t to_y,
+        uint16_t from_x,
+        uint16_t from_y,
+        uint16_t from_w,
+        uint16_t from_h,
         bool only_player) const
 {
     if(buffer == NULL || buffer_width == 0 || buffer_height == 0)
@@ -636,7 +636,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
     if(from_h == 0 || from_y + from_h > height_)
         from_h = height_ - from_y;
 
-    unsigned short bpp;
+    uint16_t bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
@@ -650,9 +650,9 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(unsigned char* buffer,
             break;
     }
 
-    for(unsigned short y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
+    for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
     {
-        for(unsigned short x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
+        for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
             size_t posBuffer = (y2 * buffer_width + x2) * bpp;
             size_t posTexture = (y * tex_width_ + x) * tex_bpp_;

@@ -82,10 +82,10 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     fs.ignore(2);
 
     // Länge einlesen
-    unsigned length;
+    uint32_t length;
     fs >> length;
 
-    std::vector<unsigned char> data(length);
+    std::vector<uint8_t> data(length);
     // Daten einlesen
     fs >> data;
 
@@ -106,9 +106,9 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
 
     if(length != 0)
     {
-        for(unsigned short y = 0; y < height_; ++y)
+        for(uint16_t y = 0; y < height_; ++y)
         {
-            for(unsigned short x = 0; x < width_; ++x)
+            for(uint16_t x = 0; x < width_; ++x)
             {
                 // Pixel setzen
                 tex_setPixel(x, y, data[y * width_ + x], palette);
@@ -148,12 +148,12 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     fs.write(unknown, sizeof(unknown));
 
     // Länge schreiben
-    unsigned length = width_ * height_;
+    uint32_t length = width_ * height_;
     fs << length;
 
-    for(unsigned short y = 0; y < height_; ++y)
+    for(uint16_t y = 0; y < height_; ++y)
     {
-        for(unsigned short x = 0; x < width_; ++x)
+        for(uint16_t x = 0; x < width_; ++x)
         {
             // Pixel holen und schreiben
             fs << tex_getPixel(x, y, palette);
@@ -173,7 +173,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     fs << height_;
 
     // Unbekannte Daten schreiben
-    unsigned char unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
+    uint8_t unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
     fs.write(unknown2, sizeof(unknown2));
 
     return (!fs) ? 99 : 0;

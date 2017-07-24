@@ -42,7 +42,7 @@ libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, unsigned length)
+int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, uint32_t length)
 {
     if(!file || length == 0)
         return 1;

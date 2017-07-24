@@ -68,7 +68,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
         return 4;
 
     // Länge einlesen
-    unsigned length;
+    uint32_t length;
     lbm >> length;
 
     // Typ einlesen
@@ -86,9 +86,9 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     // i'll change position of those items to be compatible with LoadBMP
     items.alloc(2);
 
-    unsigned short width, height;
-    unsigned short compression;
-    unsigned chunk;
+    uint16_t width, height;
+    uint16_t compression;
+    uint32_t chunk;
     // Chunks einlesen
     while(lbm.read(chunk))
     {
@@ -113,7 +113,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                 lbm.ignore(4);
 
                 // Farbtiefe einlesen
-                unsigned short depth;
+                uint16_t depth;
                 lbm >> depth;
 
                 // Nur 256 Farben und nicht mehr!
@@ -171,12 +171,12 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                 {
                     case 0: // unkomprimiert
                     {
-                        if(length != static_cast<unsigned>(width * height))
+                        if(length != static_cast<uint32_t>(width * height))
                             return 222;
                         for(int y = 0; y<height; ++y)
                             for(int x = 0; x<width; ++x)
                             {
-                                unsigned char color;
+                                uint8_t color;
                                 lbm >> color;
                                 bitmap->tex_setPixel(x, y, color, palette);
                             }
@@ -184,7 +184,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                     case 256: // komprimiert (RLE?)
                     {
                         // Welcher Pixel ist dran?
-                        unsigned short x = 0, y = 0;
+                        uint16_t x = 0, y = 0;
 
                         // Solange einlesen, bis Block zuende bzw. Datei zuende ist
                         while(length > 0 && !lbm.eof())
@@ -198,12 +198,12 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 
                             if(ctype > 0) // unkomprimierte Pixel
                             {
-                                short count = 1 + static_cast<short>(ctype);
+                                int16_t count = 1 + static_cast<int16_t>(ctype);
 
-                                for(short i = 0; i < count; ++i)
+                                for(int16_t i = 0; i < count; ++i)
                                 {
                                     // Farbe auslesen
-                                    unsigned char color;
+                                    uint8_t color;
                                     lbm >> color;
                                     --length;
 
@@ -217,14 +217,14 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                             }
                             else // komprimierte Pixel
                             {
-                                short count = 1 - static_cast<short>(ctype);
+                                int16_t count = 1 - static_cast<int16_t>(ctype);
 
                                 // Farbe auslesen
-                                unsigned char color;
+                                uint8_t color;
                                 lbm >> color;
                                 --length;
 
-                                for(unsigned short i = 0; i < count; ++i)
+                                for(uint16_t i = 0; i < count; ++i)
                                 {
                                     bitmap->tex_setPixel(x++, y, color, palette);
                                     if(x >= width)

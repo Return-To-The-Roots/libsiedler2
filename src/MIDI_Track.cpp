@@ -54,9 +54,9 @@ int MIDI_Track::readMid(std::istream& file, size_t length)
     mid_data[2] = 'h';
     mid_data[3] = 'd';
     mid_data[7] = 0x06; // block length (bytes 3-7)
-    *reinterpret_cast<unsigned short*>(&mid_data[8]) = 0x0000; // type (MIDI 0)
-    *reinterpret_cast<unsigned short*>(&mid_data[10]) = 0x0100; // trackanzahl (1)
-    *reinterpret_cast<unsigned short*>(&mid_data[12]) = 0x3C00; // PPQN (?)
+    *reinterpret_cast<uint16_t*>(&mid_data[8]) = 0x0000; // type (MIDI 0)
+    *reinterpret_cast<uint16_t*>(&mid_data[10]) = 0x0100; // trackanzahl (1)
+    *reinterpret_cast<uint16_t*>(&mid_data[12]) = 0x3C00; // PPQN (?)
     if(!file.read(reinterpret_cast<char*>(&mid_data[14]), length - 14))
         return 1;
     return 0;
@@ -76,7 +76,7 @@ int MIDI_Track::XMid2Mid()
     return 0;
 }
 
-const unsigned char* MIDI_Track::getMid(bool withheader) const
+const uint8_t* MIDI_Track::getMid(bool withheader) const
 {
     if(mid_data.empty())
         return NULL;
@@ -87,10 +87,10 @@ const unsigned char* MIDI_Track::getMid(bool withheader) const
     return &mid_data[14];
 }
 
-unsigned MIDI_Track::getMidLength(bool withheader) const
+uint32_t MIDI_Track::getMidLength(bool withheader) const
 {
-    assert(mid_data.size() < std::numeric_limits<unsigned>::max());
-    unsigned size = static_cast<unsigned>(mid_data.size());
+    assert(mid_data.size() < std::numeric_limits<uint32_t>::max());
+    uint32_t size = static_cast<uint32_t>(mid_data.size());
     if(!withheader)
         size -= 14;
     return size;

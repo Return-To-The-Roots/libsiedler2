@@ -66,30 +66,30 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     alloc(96);
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Größe des ersten Farbblocks auslesen
-    unsigned short size;
+    uint16_t size;
     fs >> size;
 
     // Farbblock auslesen
-    std::vector<unsigned char> raw_base(size);
+    std::vector<uint8_t> raw_base(size);
     fs >> raw_base;
 
     // Einzelner Bilder auslesen ( untere Körper )
-    for(unsigned i = 0; i < 96; ++i)
+    for(uint32_t i = 0; i < 96; ++i)
     {
-        unsigned short id;
+        uint16_t id;
         fs >> id;
 
         // stimmt die ID? (ID 0xF401)
         if(id != 0x01F4)
             return 5;
 
-        unsigned char height;
+        uint8_t height;
         fs >> height;
 
-        std::vector<unsigned short> starts(height);
+        std::vector<uint16_t> starts(height);
         fs >> starts;
 
-        unsigned char ny;
+        uint8_t ny;
         fs >> ny;
 
         ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
@@ -105,11 +105,11 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     }
 
     // erstmal die 6 Farbblöcke fr die 6 Richtungen
-    std::vector<unsigned char> raw[6];
+    std::vector<uint8_t> raw[6];
 
-    for(unsigned i = 0; i < 6; ++i)
+    for(uint32_t i = 0; i < 6; ++i)
     {
-        unsigned short id;
+        uint16_t id;
         fs >> id;
 
         // stimmt die ID? (ID 0xF401)
@@ -117,7 +117,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
             return 10;
 
         // Größe des Farbblocks
-        unsigned short size;
+        uint16_t size;
         fs >> size;
 
         raw[i].resize(size);
@@ -131,13 +131,13 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
     std::vector<bool> used(good_count);
 
-    std::vector<unsigned char> heights(good_count);
-    std::vector< std::vector<unsigned short> > starts(good_count);
-    std::vector<unsigned char> ny(good_count);
+    std::vector<uint8_t> heights(good_count);
+    std::vector< std::vector<uint16_t> > starts(good_count);
+    std::vector<uint8_t> ny(good_count);
 
-    for(unsigned short i = 0; i < good_count; ++i)
+    for(uint16_t i = 0; i < good_count; ++i)
     {
-        unsigned short id;
+        uint16_t id;
         fs >> id;
 
         // stimmt die ID? (ID 0xF401)
@@ -157,7 +157,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
     links.resize(item_count);
 
-    for(unsigned i = 0; i < item_count; ++i)
+    for(uint32_t i = 0; i < item_count; ++i)
     {
         fs >> links[i];
 

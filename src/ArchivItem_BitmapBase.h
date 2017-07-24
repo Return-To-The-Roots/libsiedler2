@@ -42,11 +42,11 @@ namespace libsiedler2
         ArchivItem_BitmapBase& operator=(const ArchivItem_BitmapBase& item);
 
         /// setzt einen Pixel auf einen bestimmten Wert.
-        virtual void tex_setPixel(unsigned short x, unsigned short y, unsigned char color, const ArchivItem_Palette* palette);
-        virtual void tex_setPixel(unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+        virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t color, const ArchivItem_Palette* palette);
+        virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
         /// liefert einen Pixel an einem bestimmten Punkt.
-        unsigned char tex_getPixel(unsigned short x, unsigned short y, const ArchivItem_Palette* palette) const;
+        uint8_t tex_getPixel(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const;
 
         /// lädt die Bilddaten aus einer Datei.
         virtual int load(std::istream& file, const ArchivItem_Palette* palette) = 0;
@@ -55,34 +55,34 @@ namespace libsiedler2
         virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const = 0;
 
         /// liefert den Textur-Datenblock.
-        const std::vector<unsigned char>& getTexData() const;
+        const std::vector<uint8_t>& getTexData() const;
 
         /// liefert den X-Nullpunkt.
-        short getNx() const;
+        int16_t getNx() const;
 
         /// liefert den Y-Nullpunkt.
-        short getNy() const;
+        int16_t getNy() const;
 
         /// liefert die Breite des Bildes.
-        unsigned short getWidth() const;
+        uint16_t getWidth() const;
 
         /// liefert die Höhe des Bildes.
-        unsigned short getHeight() const;
+        uint16_t getHeight() const;
 
         /// gibt Palette zurück
         const ArchivItem_Palette* getPalette() const { return palette_; }
 
         /// setzt den X-Nullpunkt.
-        void setNx(short nx);
+        void setNx(int16_t nx);
 
         /// setzt den Y-Nullpunkt.
-        void setNy(short ny);
+        void setNy(int16_t ny);
 
         /// setzt die Breite des Bildes.
-        void setWidth(unsigned short width);
+        void setWidth(uint16_t width);
 
         /// setzt die Höhe des Bildes.
-        void setHeight(unsigned short height);
+        void setHeight(uint16_t height);
 
         /// alloziert Bildspeicher für die gewünschte Größe.
         virtual void tex_alloc();
@@ -99,20 +99,20 @@ namespace libsiedler2
         virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
         /// liefert die nächste Quadratzahl zu einer Zahl.
-        static unsigned short tex_pow2(unsigned short n);
+        static uint16_t tex_pow2(uint16_t n);
 
     protected:
-        unsigned short width_;       /// Breite des Bildes.
-        unsigned short height_;      /// Höhe des Bildes.
+        uint16_t width_;       /// Breite des Bildes.
+        uint16_t height_;      /// Höhe des Bildes.
 
-        short nx_;                   /// X-Nullpunkt.
-        short ny_;                   /// Y-Nullpunkt.
+        int16_t nx_;                   /// X-Nullpunkt.
+        int16_t ny_;                   /// Y-Nullpunkt.
 
-        unsigned short tex_width_;   /// Breite der Textur.
-        unsigned short tex_height_;  /// Höhe der Textur.
+        uint16_t tex_width_;   /// Breite der Textur.
+        uint16_t tex_height_;  /// Höhe der Textur.
 
-        unsigned short tex_bpp_;     /// Bytebreite der Textur pro Pixel.
-        std::vector<unsigned char> tex_data_;    /// Die Texturdaten.
+        uint16_t tex_bpp_;     /// Bytebreite der Textur pro Pixel.
+        std::vector<uint8_t> tex_data_;    /// Die Texturdaten.
 
         const ArchivItem_Palette* palette_; /// Die Palette.
         TEXTURFORMAT format_; /// Das Texturformat.

@@ -43,25 +43,25 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 {
     struct BMHD
     {
-        unsigned short header; // 2
-        unsigned size; // 6
-        unsigned reserved; // 10
-        unsigned offset; // 14
+        uint16_t header; // 2
+        uint32_t size; // 6
+        uint32_t reserved; // 10
+        uint32_t offset; // 14
     } bmhd = { 0x4D42, 40, 0, 54 };
 
     struct BMIH
     {
-        unsigned length; // 4
-        int width; // 8
-        int height; // 12
-        short planes; // 14
-        short bbp; // 16
-        unsigned compression; // 20
-        unsigned size; // 24
-        int xppm; // 28
-        int yppm; // 32
-        int clrused; // 36
-        int clrimp; // 40
+        uint32_t length; // 4
+        int32_t width; // 8
+        int32_t height; // 12
+        int16_t planes; // 14
+        int16_t bbp; // 16
+        uint32_t compression; // 20
+        uint32_t size; // 24
+        int32_t xppm; // 28
+        int32_t yppm; // 32
+        int32_t clrused; // 36
+        int32_t clrimp; // 40
     } bmih = { 40, 0, 0, 1, 24, 0, 40, 0, 0, 0, 0 };
 
     if(file.empty())
@@ -126,7 +126,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     fs << bmih.bbp;
     fs << bmih.compression;
 
-    unsigned bmihsizepos = fs.getPosition();
+    uint32_t bmihsizepos = fs.getPosition();
     fs << bmih.size;
     fs << bmih.xppm;
     fs << bmih.yppm;
@@ -134,7 +134,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     fs << bmih.clrimp;
 
     // Farbpalette lesen
-    unsigned char colors[256][4];
+    uint8_t colors[256][4];
 
     // Farbpalette zuweisen
     for(int i = 0; i < bmih.clrused; ++i)
@@ -146,7 +146,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     // Farbpalette schreiben
     fs.write(colors[0], bmih.clrused * 4);
 
-    std::vector<unsigned char> buffer(bmih.width * bmih.height * 4 + 1);
+    std::vector<uint8_t> buffer(bmih.width * bmih.height * 4 + 1);
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
@@ -156,7 +156,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     else if(dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, FORMAT_RGBA, palette) != 0)
         return 7;
 
-    unsigned char placeholder[80];
+    uint8_t placeholder[80];
     memset(placeholder, 0, 80);
 
     // Bottom-Up, "von unten nach oben"
@@ -168,14 +168,14 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
             {
                 case 8:
                 {
-                    unsigned char color = buffer[x + bmih.width * y];
+                    uint8_t color = buffer[x + bmih.width * y];
                     fs << color;
                 } break;
                 case 24:
                 {
-                    unsigned char r = buffer[4 * (x + bmih.width * y) + 2];
-                    unsigned char g = buffer[4 * (x + bmih.width * y) + 1];
-                    unsigned char b = buffer[4 * (x + bmih.width * y) + 0];
+                    uint8_t r = buffer[4 * (x + bmih.width * y) + 2];
+                    uint8_t g = buffer[4 * (x + bmih.width * y) + 1];
+                    uint8_t b = buffer[4 * (x + bmih.width * y) + 0];
                     if(buffer[4 * (x + bmih.width * y) + 3] == 0x00)
                     {
                         r = 0xff;
@@ -192,7 +192,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     if(fs.getPosition() % 4 > 0)
         fs.write(placeholder, 4 - fs.getPosition() % 4);
 
-    unsigned endsize = fs.getPosition();
+    uint32_t endsize = fs.getPosition();
     fs.setPosition(bmihsizepos);
     fs << (endsize - bmihsizepos);
 

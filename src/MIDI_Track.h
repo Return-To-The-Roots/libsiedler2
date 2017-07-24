@@ -36,14 +36,14 @@ class MIDI_Track
         void clearMid();
 
         int XMid2Mid();
-        const unsigned char* getMid(bool withheader = false) const;
-        unsigned getMidLength(bool withheader = false) const;
+        const uint8_t* getMid(bool withheader = false) const;
+        uint32_t getMidLength(bool withheader = false) const;
 
         friend class XMIDI_Track;
 
     protected:
-        std::vector<unsigned char> xmid_data;
-        std::vector<unsigned char> mid_data;
+        std::vector<uint8_t> xmid_data;
+        std::vector<uint8_t> mid_data;
 };
 
 #endif // !MIDI_TRACK_H_INCLUDED

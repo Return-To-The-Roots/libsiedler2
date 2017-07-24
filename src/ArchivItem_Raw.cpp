@@ -26,7 +26,7 @@
  *  Basisklasse für Rawdaten.
  */
 
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<unsigned char>& initialData)
+libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<uint8_t>& initialData)
     : ArchivItem(), data(initialData)
 {
     setBobType(BOBTYPE_RAW);
@@ -49,7 +49,7 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Raw::load(std::istream& file, unsigned length)
+int libsiedler2::baseArchivItem_Raw::load(std::istream& file, uint32_t length)
 {
     if(!file)
         return 1;
@@ -84,7 +84,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     if(with_length)
     {
-        // Convert to unsigned first
+        // Convert to uint32_t first
         fs << static_cast<uint32_t>(data.size());
     }
 
@@ -96,7 +96,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
 /**
  *  liefert die Daten zurück (ro).
  */
-const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData() const
+const std::vector<uint8_t>& libsiedler2::baseArchivItem_Raw::getData() const
 {
     return data;
 }
@@ -104,7 +104,7 @@ const std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData() con
 /**
  *  liefert die Daten zurück (rw).
  */
-std::vector<unsigned char>& libsiedler2::baseArchivItem_Raw::getData()
+std::vector<uint8_t>& libsiedler2::baseArchivItem_Raw::getData()
 {
     return data;
 }

@@ -41,8 +41,6 @@
  */
 int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, bool conversion)
 {
-    short header;
-
     if(file.empty())
         return 1;
 
@@ -62,9 +60,10 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     if(!fs)
         return 2;
 
-    size_t length = getIStreamSize(fs.getStream());
-    assert(length < std::numeric_limits<unsigned>::max());
+    const size_t fileSize = getIStreamSize(fs.getStream());
+    assert(fileSize < std::numeric_limits<uint32_t>::max());
 
+    int16_t header;
     // Header einlesen
     if(!(fs >> header))
         return 99;
@@ -72,7 +71,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     items.clear();
 
     // ist es eine TXT-File? (Header 0xE7FD)
-    if( header != (short)0xFDE7 )
+    if( header != (int16_t)0xFDE7 )
     {
         // den Header zurückspringen
         fs.setPositionRel(-2);
@@ -85,50 +84,76 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     else
     {
         // "archiviert"
-        unsigned short count, unknown;
-        unsigned size;
+        uint16_t count, unknown;
+        uint32_t size;
+
+        BOOST_CONSTEXPR_OR_CONST size_t headerSize = sizeof(header) + sizeof(count) + sizeof(unknown) + sizeof(size);
 
         if(!(fs >> count >> unknown >> size))
             return 99;
 
         if(size == 0)
-            size = static_cast<unsigned>(length);
-        else
-            size += 10;
+            size = static_cast<uint32_t>(fileSize) - headerSize;
+        if(size < count * sizeof(uint32_t))
+            return 89;
 
-        std::vector<unsigned> starts(count);
+        std::vector<uint32_t> starts(count);
 
         // Starts einlesen
-        for(unsigned short x = 0; x < count; ++x)
+        uint16_t lastStart = 0;
+        for(uint16_t x = 0; x < count; ++x)
         {
             uint32_t s;
             fs >> s;
 
+            if(!fs)
+                return 99;
             if(s != 0)
-                starts[x] = s + 10;
+            {
+                // Contiguous values
+                if(s < lastStart)
+                    return 98;
+                lastStart = s;
+                starts[x] = s + headerSize;
+            }
         }
 
-        // Daten einlesen, zwecks Längenbestimmung
-        size_t pos = fs.getPosition();
-        size_t rest = size - pos;
-        std::vector<char> buffer(rest + 1);
-        buffer.resize(rest);
-        fs >> buffer;
-        buffer.push_back(0);
+        // Add value for getting end position
+        starts.push_back(size + headerSize);
 
-        for(unsigned short x = 0; x < count; ++x)
+        const size_t pos = fs.getPosition();
+
+        for(uint16_t x = 0; x < count; ++x)
         {
-            unsigned i = starts[x];
+            uint32_t itemPos = starts[x];
 
-            if(i != 0)
+            if(itemPos != 0)
             {
+                // No jump back
+                if(itemPos < pos)
+                    return 99;
+
+                bool sizeFound = false;
+                uint32_t itemSize = 0;
+                for(uint16_t j = x + 1; j <= count; ++j)
+                {
+                    if(starts[j])
+                    {
+                        itemSize = starts[j] - itemPos;
+                        sizeFound = true;
+                        break;
+                    }
+                }
+                if(!sizeFound)
+                    return 98;
                 // An Start springen
-                fs.setPosition(i);
+                fs.setPosition(itemPos);
 
                 // einlesen
                 ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
-                assert(i >= pos);
-                item->load(fs.getStream(), conversion, (unsigned)strlen(&buffer[i - pos]) + 1);
+                int res = item->load(fs.getStream(), conversion, itemSize);
+                if(res)
+                    return res + 100;
 
                 items.push(item);
             }

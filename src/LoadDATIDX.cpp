@@ -41,7 +41,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     bfs::path filepath = file;
     bfs::path datFilepath = filepath.replace_extension("DAT");
     bfs::path idxFilepath = filepath.replace_extension("IDX");
-    unsigned count;
+    uint32_t count;
 
     // Datei zum lesen öffnen
     boost::iostreams::mapped_file_source mmapFile;
@@ -82,12 +82,12 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     items.alloc(count);
 
     // items einlesen
-    for(unsigned i = 0; i < count; ++i)
+    for(uint32_t i = 0; i < count; ++i)
     {
         char name[16];
-        unsigned offset;
-        short idxbobtype;
-        short bobtype_s;
+        uint32_t offset;
+        int16_t idxbobtype;
+        int16_t bobtype_s;
 
         // Name einlesen
         idx >> name;

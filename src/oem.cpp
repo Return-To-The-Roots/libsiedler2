@@ -31,10 +31,10 @@
  *
  *  @return            @p to wird zurückgeliefert
  */
-char* AnsiToOem(const char* from, char* to, unsigned length)
+char* AnsiToOem(const char* from, char* to, uint32_t length)
 {
     /// Konvertiertabelle von ANSI nach OEM, beginnend bei char 128
-    static unsigned char ansi2oem_tab[] =
+    static uint8_t ansi2oem_tab[] =
     {
         /*0080:*/ 0x00, 0x00, 0x00, 0x9F, 0x00, 0x00, 0x00, 0xD8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         /*0090:*/ 0x00, 0x60, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -52,14 +52,14 @@ char* AnsiToOem(const char* from, char* to, unsigned length)
 
     // wir haben keine Länge erhalten, also ermitteln
     if(length == 0)
-        length = (unsigned)strlen(from);
+        length = (uint32_t)strlen(from);
 
     // und string umwandeln
-    for(unsigned x = 0; x < length; x++)
+    for(uint32_t x = 0; x < length; x++)
     {
         if(from[x])
         {
-            unsigned char C = (unsigned char)from[x];
+            uint8_t C = (uint8_t)from[x];
 
             // ab char 128 nötig
             if(C > 128)
@@ -81,10 +81,10 @@ char* AnsiToOem(const char* from, char* to, unsigned length)
  *
  *  @return            @p to wird zurückgeliefert
  */
-char* OemToAnsi(const char* from, char* to, unsigned length)
+char* OemToAnsi(const char* from, char* to, uint32_t length)
 {
     /// Konvertiertabelle von OEM nach ANSI
-    static unsigned char ansi2oem_tab[256] =
+    static uint8_t ansi2oem_tab[256] =
     {
         /*0000:*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         /*0010:*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -110,16 +110,16 @@ char* OemToAnsi(const char* from, char* to, unsigned length)
 
     // wir haben keine Länge erhalten, also ermitteln
     if(length == 0)
-        length = (unsigned)strlen(from);
+        length = (uint32_t)strlen(from);
 
     // und string umwandeln
-    for(unsigned x = 0; x < length; ++x)
+    for(uint32_t x = 0; x < length; ++x)
     {
-        if((unsigned char)from[x] > 128)
+        if((uint8_t)from[x] > 128)
         {
             for(int i = 0; i < 256; ++i)
             {
-                if((unsigned char)from[x] == ansi2oem_tab[i])
+                if((uint8_t)from[x] == ansi2oem_tab[i])
                 {
                     to[x] = (char)i;
                     break;

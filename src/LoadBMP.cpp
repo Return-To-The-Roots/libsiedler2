@@ -35,15 +35,15 @@
  */
 template<class T_FStream>
 static inline void LoadBMP_ReadLine(T_FStream& bmp,
-                                    unsigned short y,
-                                    unsigned width,
-                                    unsigned char bbp,
+                                    uint16_t y,
+                                    uint32_t width,
+                                    uint8_t bbp,
                                     libsiedler2::baseArchivItem_Bitmap& bitmap,
-                                    std::vector<unsigned char>& buffer)
+                                    std::vector<uint8_t>& buffer)
 {
     bmp >> buffer;
 
-    for(unsigned short x = 0; x < width; ++x)
+    for(uint16_t x = 0; x < width; ++x)
     {
         switch(bbp)
         {
@@ -78,21 +78,21 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
 {
     struct BMHD
     {
-        unsigned short header; // 2
-        unsigned size; // 6
-        unsigned reserved; // 10
-        unsigned offset; // 14
+        uint16_t header; // 2
+        uint32_t size; // 6
+        uint32_t reserved; // 10
+        uint32_t offset; // 14
     } bmhd;
 
     struct BMIH
     {
-        unsigned length; // 4
+        uint32_t length; // 4
         int width; // 8
         int height; // 12
-        short planes; // 14
-        short bbp; // 16
-        unsigned compression; // 20
-        unsigned size; // 24
+        int16_t planes; // 14
+        int16_t bbp; // 16
+        uint32_t compression; // 20
+        uint32_t size; // 24
         int xppm; // 28
         int yppm; // 32
         int clrused; // 36
@@ -197,7 +197,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
         //items->set(0, palette);
 
         // Farbpalette lesen
-        unsigned char colors[256][4];
+        uint8_t colors[256][4];
         if(!bmp.read(colors[0], bmih.clrused * 4))
             return 99;
 
@@ -217,8 +217,8 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivItem*& image, Ar
     bitmap->setHeight(bmih.height);
     bitmap->tex_alloc();
 
-    unsigned char bbp = (bmih.bbp / 8);
-    std::vector<unsigned char> buffer(bmih.width * bbp);
+    uint8_t bbp = (bmih.bbp / 8);
+    std::vector<uint8_t> buffer(bmih.width * bbp);
 
     // Bitmap Pixel einlesen
     if(bottomup)

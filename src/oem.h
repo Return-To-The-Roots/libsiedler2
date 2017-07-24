@@ -22,10 +22,10 @@
 #ifndef _WIN32
 
 /// Wandelt einen String vom ANSI ins OEM Format um.
-char* AnsiToOem(const char* from, char* to, unsigned length = 0);
+char* AnsiToOem(const char* from, char* to, uint32_t length = 0);
 
 /// Wandelt einen String vom OEM ins ANSI Format um.
-char* OemToAnsi(const char* from, char* to, unsigned length = 0);
+char* OemToAnsi(const char* from, char* to, uint32_t length = 0);
 
 #else
 

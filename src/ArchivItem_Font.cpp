@@ -73,9 +73,9 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
     alloc(numChars);
 
     // Buchstaben einlesen
-    for(unsigned long i = 32; i < numChars; ++i)
+    for(uint32_t i = 32; i < numChars; ++i)
     {
-        short bobtype_s;
+        int16_t bobtype_s;
 
         // bobtype des Items einlesen
         fs >> bobtype_s;
@@ -121,7 +121,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     fs << dx << dy;
 
     // Buchstaben schreiben
-    for(unsigned long i = 32; i < size(); ++i)
+    for(size_t i = 32; i < size(); ++i)
     {
         const ArchivItem* item = get(i);
         BOBTYPES bobtype = BOBTYPE_NONE;

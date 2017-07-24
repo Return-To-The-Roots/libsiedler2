@@ -33,8 +33,8 @@
 int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& items)
 {
     char header[4] = {'F', 'O', 'R', 'M'}, pbm[4] = {'P', 'B', 'M', ' '}, cmap[4] = {'C', 'M', 'A', 'P'};
-    unsigned count = 0;
-    unsigned length = 0;
+    uint32_t count = 0;
+    uint32_t length = 0;
 
     if(file.empty())
         return 1;
@@ -49,7 +49,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, std::ofstream> bbm(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<true, std::ofstream> bbm(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!bbm)
@@ -75,10 +75,9 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
 
             // Länge schreiben
             length = 256 * 3;
-            libendian::EndianOStreamAdapter<true, std::ostream&> fsBE(bbm.getStream());
-            fsBE << length;
+            bbm << length;
 
-            palette->write(bbm.getStream());
+            palette->write(bbm.getStream(), false);
         }
     }
 

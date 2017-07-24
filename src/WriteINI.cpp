@@ -39,12 +39,20 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
     if (!ini)
         return 2;
 
+    bool first = true;
     for(size_t i = 0; i < items.size(); ++i)
     {
         const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
 
-        if(item && item->write(ini) != 0)
-            return 99;
+        if(item)
+        {
+            if(!first)
+                ini << "\r\n";
+            else
+                first = false;
+            if(item->write(ini) != 0)
+                return 99;
+        }
     }
 
     // alles ok

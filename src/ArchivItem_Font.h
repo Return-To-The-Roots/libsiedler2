@@ -41,33 +41,33 @@ namespace libsiedler2
             int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             /// liefert den X-Buchstabenabstand.
-            inline unsigned char getDx() const
+            inline uint8_t getDx() const
             {
                 return dx;
             }
 
             /// liefert den Y-Buchstabenabstand.
-            inline unsigned char getDy() const
+            inline uint8_t getDy() const
             {
                 return dy;
             }
 
             /// setzt den X-Buchstabenabstand.
-            inline void setDx(unsigned char dx)
+            inline void setDx(uint8_t dx)
             {
                 this->dx = dx;
             }
 
             /// setzt den Y-Buchstabenabstand.
-            inline void setDy(unsigned char dy)
+            inline void setDy(uint8_t dy)
             {
                 this->dy = dy;
             }
 
             bool isUnicode;
         protected:
-            unsigned char dx; /// X-Buchstabenabstand.
-            unsigned char dy; /// Y-Buchstabenabstand.
+            uint8_t dx; /// X-Buchstabenabstand.
+            uint8_t dy; /// Y-Buchstabenabstand.
     };
 
 }

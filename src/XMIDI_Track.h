@@ -30,14 +30,14 @@ class XMIDI_Track
         struct MIDI_Event
         {
             int            time;
-            unsigned char  status;
+            uint8_t  status;
 
-            boost::array<unsigned char, 2>  data;
+            boost::array<uint8_t, 2>  data;
 
-            std::vector<unsigned char>  buffer;
+            std::vector<uint8_t>  buffer;
             int            duration;
             MIDI_Event*     next_note;
-            unsigned   note_time;
+            uint32_t   note_time;
             MIDI_Event*     next;
             MIDI_Event(): time(0), status(0), data(), duration(0), next_note(NULL), note_time(0), next(NULL)
             {}
@@ -65,20 +65,20 @@ class XMIDI_Track
 
         void ApplyFirstState(first_state& fs, int chan_mask);
 
-        int ConvertNote(const int time, const unsigned char status, const int size);
-        int ConvertEvent(const int time, const unsigned char status, const int size, first_state& fs);
-        int ConvertSystemMessage(const int time, const unsigned char status);
+        int ConvertNote(const int time, const uint8_t status, const int size);
+        int ConvertEvent(const int time, const uint8_t status, const int size, first_state& fs);
+        int ConvertSystemMessage(const int time, const uint8_t status);
 
-        int GetVLQ(unsigned& quant);
-        int GetVLQ2(unsigned& quant);
-        void PutVLQ(unsigned value);
+        int GetVLQ(uint32_t& quant);
+        int GetVLQ2(uint32_t& quant);
+        void PutVLQ(uint32_t value);
 
         void CreateNewEvent(int time);
 
     private:
         MIDI_Track* track;
         MIDI_Event* events;
-        unsigned event_count;
+        uint32_t event_count;
         MIDI_Event* current;
         size_t position;
 

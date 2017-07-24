@@ -107,9 +107,9 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
  *  @param[in] color   Farbe des Pixels
  *  @param[in] palette Grundpalette
  */
-void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
-        unsigned short y,
-        unsigned char color,
+void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
+        uint16_t y,
+        uint8_t color,
         const ArchivItem_Palette* palette)
 {
     if(tex_data_.empty())
@@ -121,7 +121,7 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
 
     if(x < tex_width_ && y < tex_height_)
     {
-        unsigned position = (y * tex_width_ + x) * tex_bpp_;
+        uint32_t position = (y * tex_width_ + x) * tex_bpp_;
         switch(tex_bpp_)
         {
             case 1:
@@ -154,19 +154,19 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
  *  @param[in] b Blauer Wert
  *  @param[in] a Alpha Wert (bei paletted nur 0xFF/0x00 unterstützt)
  */
-void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
-        unsigned short y,
-        unsigned char r,
-        unsigned char g,
-        unsigned char b,
-        unsigned char a)
+void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
+        uint16_t y,
+        uint8_t r,
+        uint8_t g,
+        uint8_t b,
+        uint8_t a)
 {
     if(tex_bpp_ == 1 && palette_ == NULL)
         return;
 
     if(x < tex_width_ && y < tex_height_)
     {
-        unsigned position = (y * tex_width_ + x) * tex_bpp_;
+        uint32_t position = (y * tex_width_ + x) * tex_bpp_;
         switch(tex_bpp_)
         {
             case 1:
@@ -202,8 +202,8 @@ void ArchivItem_BitmapBase::tex_setPixel(unsigned short x,
  *
  *  @bug Keine Fehlererkennung!
  */
-unsigned char ArchivItem_BitmapBase::tex_getPixel(unsigned short x,
-        unsigned short y,
+uint8_t ArchivItem_BitmapBase::tex_getPixel(uint16_t x,
+        uint16_t y,
         const ArchivItem_Palette* palette) const
 {
     if(tex_data_.empty())
@@ -215,7 +215,7 @@ unsigned char ArchivItem_BitmapBase::tex_getPixel(unsigned short x,
 
     if(x < tex_width_ && y < tex_height_)
     {
-        unsigned position = (y * tex_width_ + x) * tex_bpp_;
+        uint32_t position = (y * tex_width_ + x) * tex_bpp_;
         switch(tex_bpp_)
         {
             case 1:
@@ -249,7 +249,7 @@ void ArchivItem_BitmapBase::tex_alloc()
     if(format_ == FORMAT_UNKNOWN)
         format_ = getTextureFormat();
 
-    unsigned char clear;
+    uint8_t clear;
     switch(format_)
     {
         case FORMAT_RGBA:
@@ -288,9 +288,9 @@ void ArchivItem_BitmapBase::tex_clear()
  *
  *  @return nächste 2er Potenz
  */
-unsigned short ArchivItem_BitmapBase::tex_pow2(unsigned short n)
+uint16_t ArchivItem_BitmapBase::tex_pow2(uint16_t n)
 {
-    unsigned short t = 2;
+    uint16_t t = 2;
     while(true)
     {
         if(t >= n)
@@ -304,7 +304,7 @@ unsigned short ArchivItem_BitmapBase::tex_pow2(unsigned short n)
  *
  *  @return Der Textur-Datenblock
  */
-const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData() const
+const std::vector<uint8_t>& ArchivItem_BitmapBase::getTexData() const
 {
     return tex_data_;
 }
@@ -314,7 +314,7 @@ const std::vector<unsigned char>& ArchivItem_BitmapBase::getTexData() const
  *
  *  @return X-Nullpunkt
  */
-short ArchivItem_BitmapBase::getNx() const
+int16_t ArchivItem_BitmapBase::getNx() const
 {
     return nx_;
 }
@@ -324,7 +324,7 @@ short ArchivItem_BitmapBase::getNx() const
  *
  *  @return Y-Nullpunkt
  */
-short ArchivItem_BitmapBase::getNy() const
+int16_t ArchivItem_BitmapBase::getNy() const
 {
     return ny_;
 }
@@ -334,7 +334,7 @@ short ArchivItem_BitmapBase::getNy() const
  *
  *  @return Breite des Bildes
  */
-unsigned short ArchivItem_BitmapBase::getWidth() const
+uint16_t ArchivItem_BitmapBase::getWidth() const
 {
     return width_;
 }
@@ -344,7 +344,7 @@ unsigned short ArchivItem_BitmapBase::getWidth() const
  *
  *  @return Höhe des Bildes
  */
-unsigned short ArchivItem_BitmapBase::getHeight() const
+uint16_t ArchivItem_BitmapBase::getHeight() const
 {
     return height_;
 }
@@ -354,7 +354,7 @@ unsigned short ArchivItem_BitmapBase::getHeight() const
  *
  *  @param[in] nx X-Nullpunkt
  */
-void ArchivItem_BitmapBase::setNx(short nx)
+void ArchivItem_BitmapBase::setNx(int16_t nx)
 {
     this->nx_ = nx;
 }
@@ -364,7 +364,7 @@ void ArchivItem_BitmapBase::setNx(short nx)
  *
  *  @param[in] ny Y-Nullpunkt
  */
-void ArchivItem_BitmapBase::setNy(short ny)
+void ArchivItem_BitmapBase::setNy(int16_t ny)
 {
     this->ny_ = ny;
 }
@@ -374,7 +374,7 @@ void ArchivItem_BitmapBase::setNy(short ny)
  *
  *  @param[in] width Breite des Bildes
  */
-void ArchivItem_BitmapBase::setWidth(unsigned short width)
+void ArchivItem_BitmapBase::setWidth(uint16_t width)
 {
     this->width_ = width;
 }
@@ -384,7 +384,7 @@ void ArchivItem_BitmapBase::setWidth(unsigned short width)
  *
  *  @param[in] height Höhe des Bildes
  */
-void ArchivItem_BitmapBase::setHeight(unsigned short height)
+void ArchivItem_BitmapBase::setHeight(uint16_t height)
 {
     this->height_ = height;
 }

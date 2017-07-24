@@ -48,7 +48,7 @@ namespace libsiedler2
             int load(std::istream& file, const ArchivItem_Palette* palette) override;
 
             /// lädt die Bilddaten aus einem Puffer.
-            int load(unsigned short width, unsigned short height, const std::vector<unsigned char>& image, const std::vector<unsigned short>& starts, bool absoluteStarts, const ArchivItem_Palette* palette);
+            int load(uint16_t width, uint16_t height, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts, bool absoluteStarts, const ArchivItem_Palette* palette);
 
             /// schreibt die Bilddaten in eine Datei.
             int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
@@ -62,32 +62,32 @@ namespace libsiedler2
             void getVisibleArea(int& vx, int& vy, int& vw, int& vh) override;
 
             /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
-            int print(unsigned char* buffer,
-                      unsigned short buffer_width,
-                      unsigned short buffer_height,
+            int print(uint8_t* buffer,
+                      uint16_t buffer_width,
+                      uint16_t buffer_height,
                       TEXTURFORMAT buffer_format,
                       const ArchivItem_Palette* palette,
-                      unsigned char color,
-                      unsigned short to_x = 0,
-                      unsigned short to_y = 0,
-                      unsigned short from_x = 0,
-                      unsigned short from_y = 0,
-                      unsigned short from_w = 0,
-                      unsigned short from_h = 0,
+                      uint8_t color,
+                      uint16_t to_x = 0,
+                      uint16_t to_y = 0,
+                      uint16_t from_x = 0,
+                      uint16_t from_y = 0,
+                      uint16_t from_w = 0,
+                      uint16_t from_h = 0,
                       bool only_player = false) const;
 
             /// erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
-            int create(unsigned short width,
-                       unsigned short height,
-                       const unsigned char* buffer,
-                       unsigned short buffer_width,
-                       unsigned short buffer_height,
+            int create(uint16_t width,
+                       uint16_t height,
+                       const uint8_t* buffer,
+                       uint16_t buffer_width,
+                       uint16_t buffer_height,
                        TEXTURFORMAT buffer_format,
                        const ArchivItem_Palette* palette,
-                       unsigned char color);
+                       uint8_t color);
 
         protected:
-            std::vector<unsigned char> tex_pdata; /// Die Spielerfarbedaten.
+            std::vector<uint8_t> tex_pdata; /// Die Spielerfarbedaten.
     };
 
 }

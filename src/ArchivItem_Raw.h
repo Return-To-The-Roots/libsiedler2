@@ -30,24 +30,24 @@ namespace libsiedler2
     {
         public:
             baseArchivItem_Raw();
-            baseArchivItem_Raw(const std::vector<unsigned char>& initialData);
+            baseArchivItem_Raw(const std::vector<uint8_t>& initialData);
             ~baseArchivItem_Raw() override;
 
             /// lädt die Rawdaten aus einer Datei.
-            int load(std::istream& file, unsigned length = 0xFFFFFFFF);
+            int load(std::istream& file, uint32_t length = 0xFFFFFFFF);
             /// schreibt die Rawdaten in eine Datei.
             int write(std::ostream& file, bool with_length) const;
 
             /// liefert die Daten zurück (ro).
-            const std::vector<unsigned char>& getData() const;
+            const std::vector<uint8_t>& getData() const;
             /// liefert die Daten zurück (rw).
-            std::vector<unsigned char>& getData();
+            std::vector<uint8_t>& getData();
 
             /// löscht den Datenblock.
             void clear();
 
         private:
-            std::vector<unsigned char> data; /// Die Daten.
+            std::vector<uint8_t> data; /// Die Daten.
     };
 
     /// Klasse für Rawdaten.
@@ -55,7 +55,7 @@ namespace libsiedler2
     {
         public:
             ArchivItem_Raw() : baseArchivItem_Raw() {}
-            ArchivItem_Raw(const std::vector<unsigned char>& initialData) : baseArchivItem_Raw(initialData) {}
+            ArchivItem_Raw(const std::vector<uint8_t>& initialData) : baseArchivItem_Raw(initialData) {}
             ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
     };
 }

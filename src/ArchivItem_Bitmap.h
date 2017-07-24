@@ -34,24 +34,24 @@ namespace libsiedler2
         public:
 
             /// schreibt das Bitmap in einen Puffer.
-            int print(unsigned char* buffer,
-                      unsigned short buffer_width,
-                      unsigned short buffer_height,
+            int print(uint8_t* buffer,
+                      uint16_t buffer_width,
+                      uint16_t buffer_height,
                       TEXTURFORMAT buffer_format,
                       const ArchivItem_Palette* palette = NULL,
-                      unsigned short to_x = 0,
-                      unsigned short to_y = 0,
-                      unsigned short from_x = 0,
-                      unsigned short from_y = 0,
-                      unsigned short from_w = 0,
-                      unsigned short from_h = 0) const;
+                      uint16_t to_x = 0,
+                      uint16_t to_y = 0,
+                      uint16_t from_x = 0,
+                      uint16_t from_y = 0,
+                      uint16_t from_w = 0,
+                      uint16_t from_h = 0) const;
 
             /// erzeugt ein Bitmap aus einem Puffer.
-            int create(unsigned short width,
-                       unsigned short height,
-                       const unsigned char* buffer,
-                       unsigned short buffer_width,
-                       unsigned short buffer_height,
+            int create(uint16_t width,
+                       uint16_t height,
+                       const uint8_t* buffer,
+                       uint16_t buffer_width,
+                       uint16_t buffer_height,
                        TEXTURFORMAT buffer_format,
                        const ArchivItem_Palette* palette = NULL);
 

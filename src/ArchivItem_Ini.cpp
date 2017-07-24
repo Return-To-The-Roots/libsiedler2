@@ -57,7 +57,8 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
         return 1;
 
     std::string section;
-    std::getline(file, section);
+    if(!std::getline(file, section))
+        return file.eof() ? 0 : 2;
 
     size_t lr = section.find('\r');
     if (lr != std::string::npos) section.erase(lr, 1);
@@ -88,7 +89,7 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
         std::string entry;
         if(!std::getline(file, entry))
             break;
-        lr = entry.find('\015');
+        lr = entry.find('\r');
         if (lr != std::string::npos) entry.erase(lr, 1);
         ln = section.find('\n');
         if (ln != std::string::npos) entry.erase(ln, 1);
@@ -126,20 +127,13 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    std::string section = "[" + getName() + "]\n";
-
-    file << section;
+    file << "[" << getName() << "]\r\n";
 
     for(size_t i = 0; i < size(); ++i)
     {
         const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(get(i));
-
-        std::string entry = item->getName() + "=" + item->getText() + "\n";
-
-        file << entry;
+        file << item->getName() << "=" << item->getText() << "\r\n";
     }
-
-    file << "\n";
 
     return (!file) ? 99 : 0;
 }

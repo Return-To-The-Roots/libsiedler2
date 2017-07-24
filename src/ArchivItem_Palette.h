@@ -27,12 +27,12 @@
 namespace libsiedler2
 {
     /// Index des Transparenzwertes
-    const unsigned char TRANSPARENT_INDEX = 254;
+    const uint8_t TRANSPARENT_INDEX = 254;
     struct Color
     {
-        unsigned char r, g, b;
+        uint8_t r, g, b;
         Color(): r(0), g(0), b(0){}
-        Color(unsigned char r, unsigned char g, unsigned char b): r(r), g(g), b(b){}
+        Color(uint8_t r, uint8_t g, uint8_t b): r(r), g(g), b(b){}
 
         bool operator==(const Color& obj) const
         {
@@ -56,10 +56,10 @@ namespace libsiedler2
             int write(std::ostream& file, bool skip = true) const;
 
             /// setzt einen Farbwert am entsprechenden Index.
-            void set(unsigned char index, Color clr);
+            void set(uint8_t index, Color clr);
 
             /// liefert einen Farbwert am entsprechenden Index.
-            void get(unsigned char index, unsigned char& r, unsigned char& g, unsigned char& b) const
+            void get(uint8_t index, uint8_t& r, uint8_t& g, uint8_t& b) const
             {
                 const Color& clr = (*this)[index];
                 r = clr.r;
@@ -67,9 +67,14 @@ namespace libsiedler2
                 b = clr.b;
             }
 
+            Color get(uint8_t index) const
+            {
+                return (*this)[index];
+            }
+
             /// liefert einen Index zum entsprechenden RGB-Wert.
-            unsigned char lookup(const Color& clr) const;
-            unsigned char lookup(unsigned char r, unsigned char g, unsigned char b) const
+            uint8_t lookup(const Color& clr) const;
+            uint8_t lookup(uint8_t r, uint8_t g, uint8_t b) const
             {
                 return lookup(Color(r, g, b));
             }
@@ -78,7 +83,7 @@ namespace libsiedler2
             const Color& operator[](int index) const;
 
             /// kopiert die Palette in einen Puffer (als RGBA)
-            void copy(unsigned char* buffer, size_t bufSize) const;
+            void copy(uint8_t* buffer, size_t bufSize) const;
 
         protected:
             boost::array<Color, 256> colors; //-V730_NOINIT

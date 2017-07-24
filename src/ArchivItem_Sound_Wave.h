@@ -33,7 +33,7 @@ namespace libsiedler2
             ~baseArchivItem_Sound_Wave() override;
 
             /// lädt die Wave-Daten aus einer Datei.
-            int load(std::istream& file, unsigned length) override;
+            int load(std::istream& file, uint32_t length) override;
 
             /// schreibt die Wave-Daten in eine Datei.
             int write(std::ostream& file) const override { return write(file, false); }
@@ -42,16 +42,16 @@ namespace libsiedler2
             /// räumt den Soundspeicher auf.
             void clear();
 
-            void setData(const std::vector<unsigned char>& data)
+            void setData(const std::vector<uint8_t>& data)
             {
                 this->data = data;
             }
 
-            const std::vector<unsigned char>& getData() { return data; }
-            unsigned getLength() { return static_cast<unsigned>(data.size()); }
+            const std::vector<uint8_t>& getData() { return data; }
+            uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
 
         protected:
-            std::vector<unsigned char> data;
+            std::vector<uint8_t> data;
     };
 
     /// Klasse für WAVE-Sounds.

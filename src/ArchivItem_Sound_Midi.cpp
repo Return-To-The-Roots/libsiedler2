@@ -58,19 +58,19 @@ baseArchivItem_Sound_Midi& baseArchivItem_Sound_Midi::operator=(const baseArchiv
     return *this;
 }
 
-int baseArchivItem_Sound_Midi::load(std::istream& file, unsigned length)
+int baseArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
 {
     if(!file || length == 0)
         return 1;
 
     libendian::EndianIStreamAdapter<true, std::istream&> fs(file);
-    unsigned item_length = length;
+    uint32_t item_length = length;
     long position = fs.getPosition();
 
     char header[4];
-    unsigned chunk;
-    unsigned short type = 0;
-    unsigned short ppqs = 96;
+    uint32_t chunk;
+    uint16_t type = 0;
+    uint16_t ppqs = 96;
 
     // Header einlesen
     fs >> header;
@@ -94,7 +94,7 @@ int baseArchivItem_Sound_Midi::load(std::istream& file, unsigned length)
     if(tracks == 0 || tracks > 256)
         return 8;
 
-    unsigned short track_nr = 0;
+    uint16_t track_nr = 0;
     while(track_nr < tracks)
     {
         // Chunk-Typ einlesen
@@ -133,8 +133,8 @@ int baseArchivItem_Sound_Midi::write(std::ostream& file) const
     libendian::EndianOStreamAdapter<true, std::ostream&> fs(file);
     libendian::EndianOStreamAdapter<false, std::ostream&> fsLE(file);
 
-    unsigned length = 0;
-    for(unsigned short i = 0; i < tracks; ++i)
+    uint32_t length = 0;
+    for(uint16_t i = 0; i < tracks; ++i)
         length += tracklist[i].getMidLength(false);
 
     // LST-Länge schreiben (little endian!)
@@ -155,7 +155,7 @@ int baseArchivItem_Sound_Midi::write(std::ostream& file) const
     // PPQS schreiben
     fs << uint16_t(96);
 
-    for(unsigned short i = 0; i < tracks; ++i)
+    for(uint16_t i = 0; i < tracks; ++i)
     {
         fs.write(tracklist[i].getMid(false), tracklist[i].getMidLength(false));
     }

@@ -65,7 +65,7 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
     baseArchivItem_Sound* item = NULL;
 
     char header[4];
-    unsigned length;
+    uint32_t length;
 
     // Header einlesen
     fs >> header;
@@ -95,7 +95,7 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         // midi
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_MIDI));
     }
-    else if(strncmp(header, "OggS", 4) == 0 || strncmp(header, "ID3", 3) == 0 || ((unsigned char)header[0] == 0xFF && (unsigned char)header[1] == 0xFB) )
+    else if(strncmp(header, "OggS", 4) == 0 || strncmp(header, "ID3", 3) == 0 || (header[0] == 0xFF && header[1] == 0xFB) )
     {
         // ogg, mp3 (id3tag, ohne),
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_OTHER));

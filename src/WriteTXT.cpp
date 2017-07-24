@@ -66,9 +66,9 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
     else
     {
         // "archiviert"
-        unsigned short header = 0xFDE7;
-        unsigned short count = (unsigned short)items.size();
-        unsigned short unknown = 0x0001;
+        uint16_t header = 0xFDE7;
+        uint16_t count = (uint16_t)items.size();
+        uint16_t unknown = 0x0001;
 
         // Header schreiben
         fs << header;
@@ -79,20 +79,17 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
         // Unbekannte Bytes schreiben
         fs << unknown;
 
-        std::vector<int> starts(count);
+        std::vector<uint32_t> starts(count);
 
-        uint32_t size = count * 4;
-        for(unsigned long i = 0; i < count; ++i)
+        uint32_t size = count * sizeof(uint32_t);
+        for(uint32_t i = 0; i < count; ++i)
         {
             const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(i));
 
-            if(item)
+            if(item && !item->getText().empty())
             {
-                if(item->getText().size() != 0)
-                {
-                    starts[i] = size;
-                    size += static_cast<uint32_t>(item->getText().size()) + 1;
-                }
+                starts[i] = size;
+                size += static_cast<uint32_t>(item->getFileText(conversion).size());
             }
         }
 
@@ -101,7 +98,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
         fs << starts;
 
         // Texte schreiben
-        for(unsigned long i = 0; i < count; ++i)
+        for(uint32_t i = 0; i < count; ++i)
         {
             const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(i));
 

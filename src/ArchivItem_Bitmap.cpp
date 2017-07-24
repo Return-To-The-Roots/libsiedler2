@@ -40,17 +40,17 @@ namespace libsiedler2{
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::print(unsigned char* buffer,
-        unsigned short buffer_width,
-        unsigned short buffer_height,
+int baseArchivItem_Bitmap::print(uint8_t* buffer,
+        uint16_t buffer_width,
+        uint16_t buffer_height,
         TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette,
-        unsigned short to_x,
-        unsigned short to_y,
-        unsigned short from_x,
-        unsigned short from_y,
-        unsigned short from_w,
-        unsigned short from_h) const
+        uint16_t to_x,
+        uint16_t to_y,
+        uint16_t from_x,
+        uint16_t from_y,
+        uint16_t from_w,
+        uint16_t from_h) const
 {
     if(buffer == NULL || buffer_width == 0 || buffer_height == 0)
         return 1;
@@ -64,7 +64,7 @@ int baseArchivItem_Bitmap::print(unsigned char* buffer,
     if(from_h == 0 || from_y + from_h > tex_height_)
         from_h = tex_height_ - from_y;
 
-    unsigned short bpp;
+    uint16_t bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
@@ -78,9 +78,9 @@ int baseArchivItem_Bitmap::print(unsigned char* buffer,
             break;
     }
 
-    for(unsigned short y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
+    for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
     {
-        for(unsigned short x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
+        for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
             size_t position = (y2 * buffer_width + x2) * bpp;
             size_t position2 = (y * tex_width_ + x) * tex_bpp_;
@@ -153,11 +153,11 @@ int baseArchivItem_Bitmap::print(unsigned char* buffer,
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::create(unsigned short width,
-        unsigned short height,
-        const unsigned char* buffer,
-        unsigned short buffer_width,
-        unsigned short buffer_height,
+int baseArchivItem_Bitmap::create(uint16_t width,
+        uint16_t height,
+        const uint8_t* buffer,
+        uint16_t buffer_width,
+        uint16_t buffer_height,
         TEXTURFORMAT buffer_format,
         const ArchivItem_Palette* palette)
 {
@@ -175,7 +175,7 @@ int baseArchivItem_Bitmap::create(unsigned short width,
     // Texturspeicher anfordern
     tex_alloc();
 
-    unsigned short bpp;
+    uint16_t bpp;
     switch(buffer_format)
     {
         case FORMAT_RGBA:
@@ -189,9 +189,9 @@ int baseArchivItem_Bitmap::create(unsigned short width,
             break;
     }
 
-    for(unsigned y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
+    for(uint32_t y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
     {
-        for(unsigned x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
+        for(uint32_t x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
             size_t position = (y2 * buffer_width + x2) * bpp;
             // und Pixel setzen
