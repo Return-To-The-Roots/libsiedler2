@@ -19,8 +19,8 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <boost/filesystem/fstream.hpp>
 
 /**
  *  schreibt ein ArchivInfo in eine BBM-File.
@@ -49,7 +49,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& ite
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<true, std::ofstream> bbm(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<true, bfs::ofstream> bbm(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!bbm)

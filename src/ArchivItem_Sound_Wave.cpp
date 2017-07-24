@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Wave.h"
 #include <boost/endian/conversion.hpp>
-#include <fstream>
+#include <iostream>
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <cstring>

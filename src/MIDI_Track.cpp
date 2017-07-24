@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "MIDI_Track.h"
 #include "XMIDI_Track.h"
-#include <fstream>
+#include <iostream>
 #include <cstring>
 #include <limits>
 

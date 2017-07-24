@@ -19,7 +19,7 @@
 #include "ArchivItem_Ini.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 /**
  *  lädt eine INI-File in ein ArchivInfo.
@@ -35,7 +35,7 @@ int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
         return 1;
 
     // Datei zum lesen öffnen
-    std::ifstream ini(file.c_str(), std::ios_base::binary);
+    bfs::ifstream ini(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!ini)

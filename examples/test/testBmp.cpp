@@ -22,7 +22,6 @@
 #include "libsiedler2/src/ArchivItem_Palette.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
-#include <fstream>
 
 struct LoadPalette
 {

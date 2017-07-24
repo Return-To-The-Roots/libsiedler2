@@ -18,11 +18,11 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Palette.h"
-#include <fstream>
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <vector>
 #include <cstddef>
+#include <iostream>
 
 /** @class libsiedler2::ArchivItem_Bitmap_Player
  *

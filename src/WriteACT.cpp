@@ -19,7 +19,7 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 /**
  *  schreibt ein ArchivInfo in eine ACT-File.
@@ -57,7 +57,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& ite
         return 2;
 
     // Datei zum schreiben öffnen
-    std::ofstream act(file.c_str(), std::ios_base::binary);
+    bfs::ofstream act(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!act)

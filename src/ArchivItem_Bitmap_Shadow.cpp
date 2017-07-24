@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Shadow.h"
 #include "ArchivItem_Palette.h"
-#include <fstream>
+#include <iostream>
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <vector>

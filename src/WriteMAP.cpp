@@ -19,7 +19,7 @@
 #include "ArchivItem_Map.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 /**
  *  schreibt ein ArchivInfo in eine SWD/WSD-File.
@@ -55,7 +55,7 @@ int libsiedler2::loader::WriteMAP(const std::string& file, const ArchivInfo& ite
         return 2;
 
     // Datei zum lesen öffnen
-    std::ofstream map(file.c_str(), std::ios_base::binary);
+    bfs::ofstream map(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!map)

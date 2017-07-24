@@ -19,7 +19,7 @@
 #include "ArchivItem_Ini.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 /**
  *  schreibt ein ArchivInfo in eine INI-File.
@@ -35,7 +35,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
         return 1;
 
     // Datei zum schreiben öffnen
-    std::ofstream ini(file.c_str(), std::ios_base::binary);
+    bfs::ofstream ini(file, std::ios_base::binary);
     if (!ini)
         return 2;
 

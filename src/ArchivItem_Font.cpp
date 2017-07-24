@@ -20,7 +20,7 @@
 #include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
-#include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 

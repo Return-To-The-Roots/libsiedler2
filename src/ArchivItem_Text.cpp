@@ -18,7 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Text.h"
 #include "oem.h"
-#include <fstream>
+#include <iostream>
 #include <vector>
 #include <limits>
 

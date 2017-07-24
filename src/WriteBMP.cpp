@@ -22,7 +22,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "libendian/src/EndianOStreamAdapter.h"
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 #include <vector>
 #include <cstring>
 
@@ -101,7 +101,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, std::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, bfs::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

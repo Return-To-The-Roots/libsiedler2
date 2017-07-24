@@ -18,8 +18,8 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <fstream>
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <boost/filesystem/fstream.hpp>
 #include <limits>
 
 /**
@@ -41,7 +41,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         return 1;
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, std::ofstream> lst(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, bfs::ofstream> lst(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!lst)

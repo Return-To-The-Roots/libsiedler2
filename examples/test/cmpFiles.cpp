@@ -17,7 +17,7 @@
 
 #include "cmpFiles.h"
 #include <boost/filesystem.hpp>
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 namespace bfs = boost::filesystem;
 
@@ -30,8 +30,8 @@ boost::test_tools::predicate_result testFilesEqual(const std::string& fileToChec
         return result;
     }
 
-    std::ifstream ifs1(fileToCheck, std::ios::binary);
-    std::ifstream ifs2(expectedFile, std::ios::binary);
+    bfs::ifstream ifs1(fileToCheck, std::ios::binary);
+    bfs::ifstream ifs2(expectedFile, std::ios::binary);
     ifs1.unsetf(std::ios::skipws);
     ifs2.unsetf(std::ios::skipws);
 

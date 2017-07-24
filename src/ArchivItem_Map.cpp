@@ -23,7 +23,7 @@
 #include "IAllocator.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
-#include <fstream>
+#include <iostream>
 
 struct BlockHeader{ //-V802
     uint16_t id; // Must be 0x2710

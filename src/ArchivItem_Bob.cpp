@@ -20,7 +20,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include <fstream>
+#include <iostream>
 #include "libendian/src/EndianIStreamAdapter.h"
 
 /** @class libsiedler2::ArchivItem_Bob
