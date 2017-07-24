@@ -33,19 +33,21 @@ namespace libsiedler2
             ~ArchivItem_Text() override;
 
             /// Konstruktor von @p ArchivItem_Text mit Laden des Textes aus einer Datei.
-            ArchivItem_Text(std::istream& file, bool conversion = true, unsigned length = 0);
+            ArchivItem_Text(std::istream& file, bool conversion = true, uint32_t length = 0);
 
             /// liest den Text aus einer Datei.
-            int load(std::istream& file, bool conversion = true, unsigned length = 0);
+            int load(std::istream& file, bool conversion = true, uint32_t length = 0);
 
             /// schreibt den Text in eine Datei.
             int write(std::ostream& file, bool conversion = true) const;
 
             // liefert den Text.
             const std::string& getText() const;
+            // Get the text as it will be written to file
+            std::string getFileText(bool convertToOem) const;
 
             // setzt den Text.
-            void setText(const std::string& text, bool conversion = true);
+            void setText(const std::string& text);
 
         private:
             std::string text_;          /// Der Textspeicher.

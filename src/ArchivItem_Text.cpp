@@ -53,7 +53,7 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
  *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
  *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
  */
-libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, unsigned length) : ArchivItem()
+libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, uint32_t length) : ArchivItem()
 {
     setBobType(BOBTYPE_TEXT);
 
@@ -71,7 +71,7 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversio
  *
  *  @todo Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
  */
-int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsigned length)
+int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint32_t length)
 {
     if(!file)
         return 1;
@@ -103,7 +103,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, unsi
     if(conversion)
         OemToAnsi(&text.front(), &text.front()); //-V742
 
-    for(unsigned i = 0; i + 1 < length; ++i)
+    for(uint32_t i = 0; i + 1 < text.size(); ++i)
     {
         if(text[i] == '@' && text[i + 1] == '@')
         {
@@ -137,30 +137,8 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
     if(text_.empty())
         return 0;
 
-    assert(text_.size() < std::numeric_limits<unsigned>::max());
-    unsigned length = static_cast<unsigned>(text_.size());
-    std::vector<char> text(length * 2 + 1);
-
-
-    for(unsigned i = 0, j = 0; i < length; ++i)
-    {
-        if(this->text_[i] == '\n')
-        {
-            text[j++] = '@';
-            text[j++] = '@';
-        }
-        else if(this->text_[i] == '\r')
-            continue;
-        else
-            text[j++] = this->text_[i];
-    }
-
-    // ggf umwandeln
-    if(conversion)
-        AnsiToOem(&text.front(), &text.front()); //-V742
-
-    // Schreiben
-    if(!file.write(&text.front(), length + 1))
+    std::string convText = getFileText(conversion);
+    if(!file.write(&convText[0], convText.size()))
         return 2;
 
     return 0;
@@ -176,22 +154,41 @@ const std::string& libsiedler2::ArchivItem_Text::getText() const
     return text_;
 }
 
+std::string libsiedler2::ArchivItem_Text::getFileText(bool convertToOem) const
+{
+    assert(text_.size() < std::numeric_limits<uint32_t>::max());
+    const uint32_t length = static_cast<uint32_t>(text_.size());
+    std::vector<char> textBuf;
+    textBuf.reserve(length * 2 + 1);
+
+    for(uint32_t i = 0, j = 0; i < length; ++i)
+    {
+        if(this->text_[i] == '\n')
+        {
+            textBuf.push_back('@');
+            textBuf.push_back('@');
+        } else if(this->text_[i] == '\r')
+            continue;
+        else
+            textBuf.push_back(this->text_[i]);
+    }
+    textBuf.push_back('\0');
+
+    if(convertToOem)
+        AnsiToOem(&textBuf.front(), &textBuf.front()); //-V742
+    return &textBuf.front();
+}
+
 /**
  *  setzt den Text.
  *
  *  @param[in] text       Der Text der gesetzt werden soll, falls @p NULL, wird
  *                        evtl vorhandener Text gelöscht
- *  @param[in] conversion Soll ggf. ANSI-Charset in OEM umgewandelt werden?
  *  @param[in] length     Länge des Textes, bei @p 0 wird @p strlen verwendet
  */
-void libsiedler2::ArchivItem_Text::setText(const std::string& text, bool conversion)
+void libsiedler2::ArchivItem_Text::setText(const std::string& text)
 {
-    if(conversion){
-        std::vector<char> tmp(text.size() + 1);
-        AnsiToOem(text.data(), &tmp.front()); //-V742
-        this->text_ = &tmp.front();
-    }else
-        this->text_ = text;
+    this->text_ = text;
 
     // Name setzen
     if(getName().empty())

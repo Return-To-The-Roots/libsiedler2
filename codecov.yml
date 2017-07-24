@@ -1,0 +1,6 @@
+coverage:
+    range: "65..95"
+    ignore:
+        - examples
+comment: false
+

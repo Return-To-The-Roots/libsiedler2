@@ -40,7 +40,7 @@ boost::test_tools::predicate_result testFilesEqual(const std::string& fileToChec
         if(*b1 != *b2)
         {
             boost::test_tools::predicate_result result(false);
-            result.message() << "Mismatch at pos << " << pos << std::hex << unsigned(*b1) << " != " << unsigned(*b2);
+            result.message() << "Mismatch at pos " << pos << ": " << std::hex << unsigned(*b1) << " != " << unsigned(*b2);
             return result;
         }
     }
