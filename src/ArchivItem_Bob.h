@@ -47,7 +47,7 @@ namespace libsiedler2
             int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
             uint32_t getGoodCount() const { return good_count; }
-            uint32_t getItemCount() const { return links.size(); }
+            uint32_t getItemCount() const { return uint32_t(links.size()); }
             uint16_t getLink(uint32_t idx) const {return(links[idx]);};
 
         protected:

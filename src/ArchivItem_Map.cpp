@@ -162,7 +162,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     bHeader.blockLength = 0;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    for(uint32_t i = 1; i < std::max<uint32_t>(15u, size()); ++i)
+    for(uint32_t i = 1; i < std::max(15u, uint32_t(size())); ++i)
     {
         const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i));
         fs << bHeader.id << bHeader.unknown << bHeader.w << bHeader.h;
