@@ -144,8 +144,8 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                 file.file += (file.file.empty() ? "" : ".") + *it;
         }
 
-
-        files.push_back(file);
+        if(file.bobtype != BOBTYPE_NONE || !file.type.empty())
+            files.push_back(file);
     }
 
     cerr << "done" << endl;
