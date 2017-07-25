@@ -162,8 +162,6 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadLBM(file, items);
         else if(extension == "lst")
             ret = loader::LoadLST(file, palette, items);
-        else if(extension == "tlst")
-            ret = loader::LoadTLST(file, items);
         else if(extension == "swd" || extension == "wld")
             ret = loader::LoadMAP(file, items);
         else if(extension == "ger" || extension == "eng")
@@ -174,7 +172,8 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadSND(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
-    }catch(std::runtime_error&){
+    }catch(std::runtime_error& error){
+        std::cerr << "Error while reading: " << error.what() << std::endl;
         // Mostly error on reading (e.g. unexpected end of file)
         return 999;
     }
@@ -212,12 +211,6 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteBBM(file, items);
         else if(extension == "bmp")
             ret = loader::WriteBMP(file, palette, items);
-        /*else if(strncmp(endung, "bob", 3)==0)
-            ret = loader::WriteBOB(file, palette, items);*/
-        /*else if(strncmp(endung, "dat", 3)==0 || strncmp(endung, "idx", 3)==0)
-            ret = loader::WriteDATIDX(file, palette, items);*/
-        /*else if(strncmp(endung, "lbm", 3)==0)
-            ret = loader::WriteLBM(file, items);*/
         else if(extension == "lst")
             ret = loader::WriteLST(file, palette, items);
         else if(extension == "swd" || extension == "wld")
@@ -228,8 +221,9 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteINI(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
-    }catch(std::runtime_error&)
+    }catch(std::runtime_error& error)
     {
+        std::cerr << "Error while writing: " << error.what() << std::endl;
         // Mostly error on write to file
         return 999;
     }

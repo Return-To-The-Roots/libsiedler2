@@ -46,8 +46,10 @@ namespace libsiedler2
         BOBTYPE_RAW = 10,
         BOBTYPE_MAP_HEADER = 11,
         BOBTYPE_INI = 12,
+        BOBTYPE_UNSET,
         BOBTYPE_BITMAP_RAW = 14
     };
+    static const uint16_t NUM_BOB_TYPES = BOBTYPE_BITMAP_RAW + 1;
 
     enum SOUNDTYPES
     {

@@ -46,10 +46,7 @@ namespace libsiedler2
              *
              *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
             */
-            void alloc_inc(size_t increment)
-            {
-                data.resize(size() + increment);
-            }
+            void alloc_inc(size_t increment);
 
             /// gibt die angelegten Daten wieder frei.
             void clear();
@@ -62,10 +59,7 @@ namespace libsiedler2
             void setC(size_t index, const ArchivItem& item);
 
             /// Deletes the item at the given index
-            void clearItem(size_t index)
-            {
-                set(index, NULL);
-            }
+            void clearItem(size_t index);
 
             /// Adds an element to the end. Transfers ownership!
             void push(ArchivItem* item)
@@ -89,28 +83,10 @@ namespace libsiedler2
             }
 
             /// liefert das erste Item mit entsprechenden Namen
-            ArchivItem* find(const std::string& name)
-            {
-                for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
-                {
-                    if(*it && (*it)->getName() == name)
-                        return *it;
-                }
-
-                return NULL;
-            }
+            ArchivItem* find(const std::string& name);
 
             /// liefert das erste Item mit entsprechenden Namen
-            const ArchivItem* find(const std::string& name) const
-            {
-                for(std::vector<ArchivItem*>::const_iterator it = data.begin(); it != data.end(); ++it)
-                {
-                    if(*it && (*it)->getName() == name)
-                        return *it;
-                }
-
-                return NULL;
-            }
+            const ArchivItem* find(const std::string& name) const;
 
             /// liefert die Größe des Archivs.
             size_t size() const
@@ -134,9 +110,6 @@ namespace libsiedler2
             }
 
             ArchivInfo& operator=(const ArchivInfo& info);
-
-            /// Kopierfunktion von @p ArchivInfo.
-            void copy(size_t to, size_t from, size_t count, const ArchivInfo& source);
 
         private:
             std::vector<ArchivItem*> data;   /// die Elemente.

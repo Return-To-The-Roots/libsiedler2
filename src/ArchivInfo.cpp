@@ -37,12 +37,15 @@ ArchivInfo::ArchivInfo()
 {
 }
 
-ArchivInfo::ArchivInfo(const ArchivInfo& info) : data(info.data)
+ArchivInfo::ArchivInfo(const ArchivInfo& info)
 {
-    for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
+    data.reserve(info.size());
+    for(std::vector<ArchivItem*>::const_iterator it = info.data.begin(); it != info.data.end(); ++it)
     {
         if(*it)
-            *it = getAllocator().clone(**it);
+            pushC(**it);
+        else
+            push(NULL);
     }
 }
 
@@ -52,7 +55,12 @@ ArchivInfo& ArchivInfo::operator=(const ArchivInfo& info){
     clear();
     data.reserve(info.size());
     for(std::vector<ArchivItem*>::const_iterator it = info.data.begin(); it != info.data.end(); ++it)
-        data.push_back(*it ? getAllocator().clone(**it) : NULL);
+    {
+        if(*it)
+            pushC(**it);
+        else
+            push(NULL);
+    }
     return *this;
 }
 
@@ -74,6 +82,11 @@ void ArchivInfo::alloc(size_t count)
     clear();
 
     data.resize(count);
+}
+
+void ArchivInfo::alloc_inc(size_t increment)
+{
+    data.resize(size() + increment);
 }
 
 /**
@@ -113,12 +126,10 @@ void ArchivInfo::setC(size_t index, const ArchivItem& item)
     set(index, getAllocator().clone(item));
 }
 
-/**
- *  fügt ein Element hinten an.
- *
- *  @param[in] item Item mit dem anzufügenden Inhalt
- */
-
+void ArchivInfo::clearItem(size_t index)
+{
+    set(index, NULL);
+}
 /**
  *  fügt ein Element hinten an und kopiert die Daten von @p item.
  *
@@ -129,59 +140,26 @@ void ArchivInfo::pushC(const ArchivItem& item)
     data.push_back(getAllocator().clone(item));
 }
 
-/**
- *  liefert den Inhalt eines ArchivItems am entsprechenden Index.
- *
- *  @param[in] index Index des zu setzenden Eintrags
- *
- *  @return liefert NULL bei Fehler, ansonsten das entsprechende Item
- */
-
-/**
- *  liefert den Inhalt eines ArchivItems am entsprechenden Index.
- *
- *  @param[in] index Index des zu setzenden Eintrags
- *
- *  @return liefert NULL bei Fehler, ansonsten das entsprechende Item
- */
-
-/**
- *  liefert den Pointer eines ArchivItems am entsprechenden Index.
- *
- *  @param[in] index Index des zu setzenden Eintrags
- *
- *  @return liefert NULL bei Fehler, ansonsten das entsprechende Item
- */
-
-/**
- *  liefert die Größe des Archivs.
- *
- *  @return liefert die Größe des Archivs.
- */
-
-/**
- *  Index-Operator von @p ArchivInfo.
- *
- *  @param[in] index Index des zu liefernden Eintrags
- *
- *  @return Bei Erfolg ArchivItem, ansonsten NULL
- */
-
-/**
- *  Kopierfunktion von @p ArchivInfo.
- *
- *  @param[in] to     Zielposition
- *  @param[in] from   Quellposition
- *  @param[in] count  Anzahl
- *  @param[in] source Quelle
- */
-void ArchivInfo::copy(size_t to, size_t from, size_t count, const ArchivInfo& source)
+const libsiedler2::ArchivItem* ArchivInfo::find(const std::string& name) const
 {
-    if(to + count > size())
-        data.resize(to + count);
+    for(std::vector<ArchivItem*>::const_iterator it = data.begin(); it != data.end(); ++it)
+    {
+        if(*it && (*it)->getName() == name)
+            return *it;
+    }
 
-    for(size_t f = from; f < from + count; ++to, ++f)
-        setC(to, *source.get(f));
+    return NULL;
+}
+
+libsiedler2::ArchivItem* ArchivInfo::find(const std::string& name)
+{
+    for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
+    {
+        if(*it && (*it)->getName() == name)
+            return *it;
+    }
+
+    return NULL;
 }
 
 }

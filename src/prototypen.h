@@ -44,9 +44,6 @@ namespace libsiedler2
 		/// schreibt ein ArchivInfo eine LST-File.
 		int WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items);
 
-		/// lädt eine TLST-File (beschriebenes LST-File in Textform) in ein ArchivInfo.
-		int LoadTLST(const std::string& file, ArchivInfo& items);
-
 		/// lädt eine BBM-File in ein ArchivInfo.
 		int LoadBBM(const std::string& file, ArchivInfo& items);
 
