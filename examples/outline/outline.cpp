@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-    TEXTURFORMAT format = FORMAT_PALETTED;
+    TexturFormat format = FORMAT_PALETTED;
 
     setTextureFormat(format);
 

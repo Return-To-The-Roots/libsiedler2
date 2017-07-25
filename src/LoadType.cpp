@@ -43,7 +43,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadType(BOBTYPES bobtype, std::istream& file, const ArchivItem_Palette* palette, ArchivItem*& item)
+int libsiedler2::loader::LoadType(BobType bobtype, std::istream& file, const ArchivItem_Palette* palette, ArchivItem*& item)
 {
     if(!file)
         return 1;

@@ -97,7 +97,7 @@ namespace libsiedler2
         void removePalette();
 
         /// setzt das Format des Bildes.
-        void setFormat(TEXTURFORMAT format) { this->format_ = format; }
+        void setFormat(TexturFormat format) { this->format_ = format; }
 
         virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
@@ -118,7 +118,7 @@ namespace libsiedler2
         std::vector<uint8_t> tex_data_;    /// Die Texturdaten.
 
         const ArchivItem_Palette* palette_; /// Die Palette.
-        TEXTURFORMAT format_; /// Das Texturformat.
+        TexturFormat format_; /// Das Texturformat.
     };
 
 } // namespace libsiedler2

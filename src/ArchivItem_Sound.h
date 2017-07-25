@@ -34,10 +34,10 @@ namespace libsiedler2
             ~baseArchivItem_Sound() override;
 
             /// setzt den Typ des Sounds.
-            void setType(SOUNDTYPES type);
+            void setType(SoundType type);
 
             /// liefert den Typ des Sounds.
-            SOUNDTYPES getType() const;
+            SoundType getType() const;
 
             /// lädt die Sound-Daten aus einer Datei.
             virtual int load(std::istream& file, uint32_t length) = 0;
@@ -48,7 +48,7 @@ namespace libsiedler2
             static baseArchivItem_Sound* findSubType(std::istream& file);
 
         protected:
-            SOUNDTYPES type_;
+            SoundType type_;
     };
 
     /// Basisklasse für Sounditems.

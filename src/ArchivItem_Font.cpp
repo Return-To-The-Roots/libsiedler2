@@ -79,7 +79,7 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
 
         // bobtype des Items einlesen
         fs >> bobtype_s;
-        BOBTYPES bobtype = static_cast<BOBTYPES>(bobtype_s);
+        BobType bobtype = static_cast<BobType>(bobtype_s);
 
         if(bobtype == BOBTYPE_NONE)
             continue;
@@ -127,7 +127,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     for(size_t i = 32; i < numChars; ++i)
     {
         const ArchivItem* item = get(i);
-        BOBTYPES bobtype = BOBTYPE_NONE;
+        BobType bobtype = BOBTYPE_NONE;
 
         if(item)
             bobtype = item->getBobType();

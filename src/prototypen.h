@@ -33,10 +33,10 @@ namespace libsiedler2
 	namespace loader
 	{
 		/// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-		int LoadType(BOBTYPES bobtype, std::istream&lst, const ArchivItem_Palette* palette, ArchivItem *&item);
+		int LoadType(BobType bobtype, std::istream&lst, const ArchivItem_Palette* palette, ArchivItem *&item);
 
 		/// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-		int WriteType(BOBTYPES bobtype, std::ostream&lst, const ArchivItem_Palette* palette, const ArchivItem& item);
+		int WriteType(BobType bobtype, std::ostream&lst, const ArchivItem_Palette* palette, const ArchivItem& item);
 
 		/// lädt eine LST-File in ein ArchivInfo.
 		int LoadLST(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items);

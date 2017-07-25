@@ -43,7 +43,7 @@ libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
  *
  *  @param[in] type Der Typ der gesetzt werden soll
  */
-void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
+void libsiedler2::baseArchivItem_Sound::setType(SoundType type)
 {
     this->type_ = type;
 }
@@ -53,7 +53,7 @@ void libsiedler2::baseArchivItem_Sound::setType(SOUNDTYPES type)
  *
  *  @return Der eingestellte Typ
  */
-libsiedler2::SOUNDTYPES libsiedler2::baseArchivItem_Sound::getType() const
+libsiedler2::SoundType libsiedler2::baseArchivItem_Sound::getType() const
 {
     return type_;
 }

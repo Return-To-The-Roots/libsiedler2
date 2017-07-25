@@ -44,7 +44,7 @@ struct fileentry
     fileentry() : bobtype(BOBTYPE_NONE), nx(0), ny(0) { }
     string file;
     string path;
-    BOBTYPES bobtype;
+    BobType bobtype;
     unsigned short nx;
     unsigned short ny;
     string type;

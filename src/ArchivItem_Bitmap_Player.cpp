@@ -392,7 +392,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
         const uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
-        TEXTURFORMAT buffer_format,
+        TexturFormat buffer_format,
         const ArchivItem_Palette* palette,
         uint8_t color)
 {
@@ -607,7 +607,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
 int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
-        TEXTURFORMAT buffer_format,
+        TexturFormat buffer_format,
         const ArchivItem_Palette* palette,
         uint8_t color,
         uint16_t to_x,

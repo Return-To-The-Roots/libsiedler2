@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
     libsiedler2::ArchivInfo archiv;
     for(int i = 1; i < libsiedler2::NUM_BOB_TYPES; i++)
     {
-        libsiedler2::BOBTYPES bobType = libsiedler2::BOBTYPES(i);
+        libsiedler2::BobType bobType = libsiedler2::BobType(i);
         if(bobType == libsiedler2::BOBTYPE_UNSET || bobType == libsiedler2::BOBTYPE_SOUND)
             continue;
         libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(bobType);
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
     }
     for(int i = libsiedler2::SOUNDTYPE_WAVE; i < libsiedler2::SOUNDTYPE_OTHER; i++)
     {
-        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, libsiedler2::SOUNDTYPES(i));
+        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, libsiedler2::SoundType(i));
         BOOST_REQUIRE(item);
         item->setName("Sound" + boost::lexical_cast<std::string>(i));
         archiv.push(item);

@@ -33,13 +33,13 @@ namespace libsiedler2
             virtual ~ArchivItem();
 
             /// setzt den Bobtype des Items.
-            void setBobType(BOBTYPES bobtype)
+            void setBobType(BobType bobtype)
             {
                 this->bobtype_ = bobtype;
             }
 
             /// liefert den Bobtype des Items.
-            BOBTYPES getBobType() const
+            BobType getBobType() const
             {
                 return bobtype_;
             }
@@ -57,7 +57,7 @@ namespace libsiedler2
             }
 
         protected:
-            BOBTYPES bobtype_; /// Bobtype des Elements.
+            BobType bobtype_; /// Bobtype des Elements.
             std::string name_; /// Name des Elements.
     };
 }

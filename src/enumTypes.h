@@ -23,7 +23,7 @@
 namespace libsiedler2
 {
     /** Supported texture formats */
-    enum TEXTURFORMAT
+    enum TexturFormat
     {
         FORMAT_UNKNOWN = 0,
         FORMAT_PALETTED = 1,
@@ -31,7 +31,7 @@ namespace libsiedler2
     };
 
      /** Supported bob types */
-    enum BOBTYPES
+    enum BobType
     {
         BOBTYPE_NONE = 0,
         BOBTYPE_SOUND = 1,
@@ -51,7 +51,7 @@ namespace libsiedler2
     };
     static const uint16_t NUM_BOB_TYPES = BOBTYPE_BITMAP_RAW + 1;
 
-    enum SOUNDTYPES
+    enum SoundType
     {
         SOUNDTYPE_NONE = 0,
         SOUNDTYPE_WAVE = 1,
@@ -66,7 +66,7 @@ namespace libsiedler2
      * representation in SWD.
      * @see http://settlers2.net/documentation/world-map-file-format-wldswd/
      */
-    enum ANIMALS
+    enum Animal
     {
         A_None    = 0x00,
         A_Rabbit  = 0x01,
@@ -86,7 +86,7 @@ namespace libsiedler2
      * of the resource in SWD.
      * @see http://settlers2.net/documentation/world-map-file-format-wldswd/
      */
-    enum RESOURCES
+    enum Resource
     {
         R_None    = 0x00,
         R_Water   = 0x21,
@@ -101,7 +101,7 @@ namespace libsiedler2
      * Enumeration for object types stored in SWD. In combination with the
      * object information it makes a real object (therefore the "info"-comments).
      */
-    enum OBJECT_TYPES
+    enum ObjectType
     {
         OT_Empty            = 0x00,
         OT_Stone_Begin      = 0x01, // info: 0xCC / 0xCD
@@ -119,7 +119,7 @@ namespace libsiedler2
     /**
      * Enumeration for object info stored in SWD.
      */
-    enum OBJECT_INFO
+    enum ObjectInfo
     {
         OI_Empty            = 0x00,
         OI_Stone1           = 0xCC,

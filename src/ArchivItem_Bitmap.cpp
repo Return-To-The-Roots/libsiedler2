@@ -43,7 +43,7 @@ namespace libsiedler2{
 int baseArchivItem_Bitmap::print(uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
-        TEXTURFORMAT buffer_format,
+        TexturFormat buffer_format,
         const ArchivItem_Palette* palette,
         uint16_t to_x,
         uint16_t to_y,
@@ -158,7 +158,7 @@ int baseArchivItem_Bitmap::create(uint16_t width,
         const uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
-        TEXTURFORMAT buffer_format,
+        TexturFormat buffer_format,
         const ArchivItem_Palette* palette)
 {
     if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0)

@@ -30,7 +30,7 @@ namespace libsiedler2
     class IAllocator{
     public:
         virtual ~IAllocator(){}
-        virtual ArchivItem* create(BOBTYPES type, SOUNDTYPES subtype = SOUNDTYPE_NONE) const = 0;
+        virtual ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
         virtual ArchivItem* clone(const ArchivItem& item) const = 0;
     };
 

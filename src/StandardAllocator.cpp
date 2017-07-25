@@ -45,7 +45,7 @@ namespace libsiedler2
      *  @param[in] subtype Der Subtyp des Items
      *
      */
-    ArchivItem* StandardAllocator::create(BOBTYPES type, SOUNDTYPES subtype) const
+    ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
     {
         switch(type)
         {
@@ -104,13 +104,13 @@ namespace libsiedler2
      */
     ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
     {
-        BOBTYPES type = static_cast<BOBTYPES>(item.getBobType());
+        BobType type = static_cast<BobType>(item.getBobType());
 
         switch(type)
         {
             case BOBTYPE_SOUND: // WAVs, MIDIs
             {
-                SOUNDTYPES subtype = static_cast<SOUNDTYPES>(dynamic_cast<const ArchivItem_Sound&>(item).getType());
+                SoundType subtype = static_cast<SoundType>(dynamic_cast<const ArchivItem_Sound&>(item).getType());
 
                 switch(subtype)
                 {

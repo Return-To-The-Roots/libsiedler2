@@ -43,7 +43,7 @@ namespace libsiedler2{
      *
      *  @ingroup textureformat
      */
-    static TEXTURFORMAT texturformat;
+    static TexturFormat texturformat;
 
     /**
      *  Der gesetzte Item-Allokator.
@@ -84,10 +84,10 @@ namespace libsiedler2{
  *
  *  @return liefert das vorherige Texturausgabeformat zurück
  */
-TEXTURFORMAT setTextureFormat(TEXTURFORMAT format)
+TexturFormat setTextureFormat(TexturFormat format)
 {
     // altes Texturformat sichern
-    TEXTURFORMAT old = texturformat;
+    TexturFormat old = texturformat;
 
     // Neues setzen
     texturformat = format;
@@ -101,7 +101,7 @@ TEXTURFORMAT setTextureFormat(TEXTURFORMAT format)
  *
  *  @return liefert das Texturausgabeformat zurück
  */
-TEXTURFORMAT getTextureFormat()
+TexturFormat getTextureFormat()
 {
     // Aktuelles zurückliefern
     return texturformat;

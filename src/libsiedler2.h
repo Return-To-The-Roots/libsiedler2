@@ -30,9 +30,9 @@ namespace libsiedler2
     class IAllocator;
 
     /// Setzt das verwendete Texturausgabeformat.
-    TEXTURFORMAT setTextureFormat(TEXTURFORMAT format);
+    TexturFormat setTextureFormat(TexturFormat format);
     /// liefert das verwendete Texturausgabeformat.
-    TEXTURFORMAT getTextureFormat();
+    TexturFormat getTextureFormat();
 
 
     const IAllocator& getAllocator();
