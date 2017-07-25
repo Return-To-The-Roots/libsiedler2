@@ -96,4 +96,24 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
     BOOST_REQUIRE_EQUAL(txtIn->getText(), txtOut->getText());
 }
 
+BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
+{
+    std::string inFilepath = "testFiles/txtAsLst.lst";
+    libsiedler2::ArchivInfo archiv;
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inFilepath, archiv), 0);
+    BOOST_REQUIRE_EQUAL(archiv.size(), 7u);
+    for(unsigned i = 0; i < archiv.size(); i++)
+    {
+        const libsiedler2::ArchivItem_Text* txt = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
+        // Item 4 is empty
+        if(i == 4)
+            BOOST_REQUIRE(!txt);
+        else
+        {
+            BOOST_REQUIRE(txt);
+            BOOST_REQUIRE(!txt->getText().empty());
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
