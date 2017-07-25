@@ -110,18 +110,21 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     if(!file || palette == NULL)
         return 1;
 
-    if(size() > 256 && !isUnicode)
+    size_t numChars = size();
+    if(numChars > 256 && !isUnicode)
         throw std::runtime_error("Trying to save a non-unicode font with more than 256 glyphs");
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     
     if(isUnicode)
         fs << static_cast<uint16_t>(0xFFFF) << static_cast<uint32_t>(size());
+    else
+        numChars = 256;
     // Spacing schreiben
     fs << dx << dy;
 
     // Buchstaben schreiben
-    for(size_t i = 32; i < size(); ++i)
+    for(size_t i = 32; i < numChars; ++i)
     {
         const ArchivItem* item = get(i);
         BOBTYPES bobtype = BOBTYPE_NONE;

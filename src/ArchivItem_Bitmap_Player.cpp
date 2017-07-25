@@ -159,66 +159,60 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
     // Speicher anlegen
     tex_alloc();
 
-    if(!image.empty())
+    if(image.empty())
+        return 0;
+
+    // Einlesen
+    for(uint16_t y = 0; y < height; ++y)
     {
-        // Einlesen
-        for(uint16_t y = 0; y < height; ++y)
+        uint16_t x = 0;
+
+        uint32_t position = starts[y];
+        if(!absoluteStarts)
+            position -= height * 2;
+
+        if(position > image.size())
+            return 1;
+
+        // Solange Zeile einlesen, bis x voll ist
+        while(x < width)
         {
-            uint16_t x = 0;
+            // Schalter einlesen
+            uint8_t shift = image[position++];
 
-            uint32_t position = starts[y];
-            if(!absoluteStarts)
-                position -= height * 2;
-
-            if (position > image.size())
-                return 1;
-
-            // Solange Zeile einlesen, bis x voll ist
-            while(x < width)
+            if(shift < 0x40)
             {
-                // Schalter einlesen
-                uint8_t shift = image[position++];
+                // transparente Pixel setzen
+                for(uint8_t i = 0; i < shift; ++i, ++x)
+                    tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
+            } else if(shift < 0x80)
+            {
+                shift -= 0x40;
 
-                if(shift < 0x40)
-                {
-                    // transparente Pixel setzen
-                    for(uint8_t i = 0; i < shift; ++i, ++x)
-                        tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
-                }
-                else if (shift < 0x80)
-                {
-                    shift -= 0x40;
+                // farbige Pixel setzen
+                for(uint8_t i = 0; i < shift; ++i, ++x)
+                    tex_setPixel(x, y, image[position++], palette);
+            } else if(shift < 0xC0)
+            {
+                shift -= 0x80;
 
-                    // farbige Pixel setzen
-                    for(uint8_t i = 0; i < shift; ++i, ++x)
-                        tex_setPixel(x, y, image[position++], palette);
-                }
-                else if (shift < 0xC0)
+                // Spielerfarbe Pixel setzen
+                for(uint8_t i = 0; i < shift; ++i, ++x)
                 {
-                    shift -= 0x80;
-
-                    // Spielerfarbe Pixel setzen
-                    for(uint8_t i = 0; i < shift; ++i, ++x)
-                    {
-                        tex_pdata[y * width + x] = image[position];
-                        tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
-                    }
-                    ++position;
+                    tex_pdata[y * width + x] = image[position];
+                    tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
                 }
-                else
-                {
-                    shift -= 0xC0;
+                ++position;
+            } else
+            {
+                shift -= 0xC0;
 
-                    // komprimierte Pixel setzen
-                    for(uint8_t i = 0; i < shift; ++i, ++x)
-                        tex_setPixel(x, y, image[position], palette);
-                    ++position;
-                }
+                // komprimierte Pixel setzen
+                for(uint8_t i = 0; i < shift; ++i, ++x)
+                    tex_setPixel(x, y, image[position], palette);
+                ++position;
             }
         }
-
-        /*if(position != length-(height*2) )
-            return 1;*/
     }
 
     return 0;

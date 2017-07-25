@@ -42,8 +42,9 @@ namespace libsiedler2
             /// räumt den Soundspeicher auf.
             void clear();
 
-            const std::vector<uint8_t> getData() { return data; }
-            uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
+            const std::vector<uint8_t>& getData() const { return data; }
+            void setData(const std::vector<uint8_t>& newData){ data = newData; }
+            uint32_t getLength() const { return static_cast<uint32_t>(data.size()); }
 
         protected:
             std::vector<uint8_t> data;
@@ -55,7 +56,7 @@ namespace libsiedler2
         public:
             ArchivItem_Sound_Other() : baseArchivItem_Sound_Other() {}
 
-            ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound_Other(item) {}
+            ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Other(item) {}
     };
 }
 

@@ -17,10 +17,11 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_XMidi.h"
-#include <iostream>
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <iostream>
 #include <cstring>
+#include <stdexcept>
 
 namespace libsiedler2{
 
@@ -202,6 +203,13 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
     }
 
     return (!file) ? 99 : 0;
+}
+
+void baseArchivItem_Sound_XMidi::addTrack(const MIDI_Track& track)
+{
+    if(getTrackCount() >= tracklist.size())
+        throw std::runtime_error("No more space for tracks");
+    tracklist[tracks++] = track;
 }
 
 } // namespace libsiedler2

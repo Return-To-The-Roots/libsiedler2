@@ -184,7 +184,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                         while(length > 0 && !lbm.eof())
                         {
                             // Typ lesen
-                            signed char ctype;
+                            int8_t ctype;
                             lbm >> ctype;
                             --length;
                             if(length == 0)
@@ -231,7 +231,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                         }
                     } break;
                 }
-                items.set(0, bitmap.release());
+                items.push(bitmap.release());
             } break;
             default:
             {

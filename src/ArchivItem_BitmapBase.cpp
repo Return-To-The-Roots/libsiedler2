@@ -61,7 +61,8 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
     tex_data_ = item.tex_data_;
 
     palette_ = NULL;
-    setPalette(*item.palette_);
+    if(item.palette_)
+        setPalette(*item.palette_);
     setFormat(item.format_);
 }
 

@@ -17,23 +17,12 @@
 
 #include "config.h"
 #include "cmpFiles.h"
+#include "LoadPalette.h"
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
-
-struct LoadPalette
-{
-    libsiedler2::ArchivInfo paletteArchiv;
-    libsiedler2::ArchivItem_Palette* palette;
-    LoadPalette()
-    {
-        BOOST_REQUIRE_EQUAL(libsiedler2::Load("pal5.act", paletteArchiv), 0);
-        palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(0));
-        BOOST_REQUIRE(palette);
-    }
-};
 
 BOOST_FIXTURE_TEST_SUITE(Bitmaps, LoadPalette)
 

@@ -61,7 +61,7 @@ namespace libsiedler2
         public:
             ArchivItem_Sound_Wave() : baseArchivItem_Sound_Wave() {}
 
-            ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound_Wave(item) {}
+            ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Wave(item) {}
     };
 }
 

@@ -44,6 +44,8 @@ namespace libsiedler2
             MIDI_Track* getTrack(uint16_t track) { if(track < tracks) return &tracklist[track]; return NULL; }
             uint16_t getTrackCount() const { return tracks; }
 
+            void addTrack(const MIDI_Track& track);
+
         protected:
             uint16_t tracks;
             boost::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
@@ -55,7 +57,7 @@ namespace libsiedler2
         public:
             ArchivItem_Sound_XMidi() : baseArchivItem_Sound_XMidi() {}
 
-            ArchivItem_Sound_XMidi(const ArchivItem_Sound_XMidi& item) : baseArchivItem_Sound_XMidi(item) {}
+            ArchivItem_Sound_XMidi(const ArchivItem_Sound_XMidi& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_XMidi(item) {}
     };
 }
 

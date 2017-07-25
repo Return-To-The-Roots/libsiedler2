@@ -23,27 +23,30 @@
 #include <iosfwd>
 #include <stdint.h>
 
-class MIDI_Track
+namespace libsiedler2
 {
-    public:
-        MIDI_Track();
-        ~MIDI_Track();
-
-        int readXMid(std::istream& file, size_t length);
-        void clearXMid();
-
-        int readMid(std::istream& file, size_t length);
-        void clearMid();
-
-        int XMid2Mid();
-        const uint8_t* getMid(bool withheader = false) const;
-        uint32_t getMidLength(bool withheader = false) const;
-
-        friend class XMIDI_Track;
-
-    protected:
-        std::vector<uint8_t> xmid_data;
-        std::vector<uint8_t> mid_data;
-};
+	class MIDI_Track
+	{
+	    public:
+	        MIDI_Track();
+	        ~MIDI_Track();
+	
+	        int readXMid(std::istream& file, size_t length);
+	        void clearXMid();
+	
+	        int readMid(std::istream& file, size_t length);
+	        void clearMid();
+	
+	        int XMid2Mid();
+	        const uint8_t* getMid(bool withheader = false) const;
+	        uint32_t getMidLength(bool withheader = false) const;
+	
+	        friend class XMIDI_Track;
+	
+	    protected:
+	        std::vector<uint8_t> xmid_data;
+	        std::vector<uint8_t> mid_data;
+	};
+}
 
 #endif // !MIDI_TRACK_H_INCLUDED

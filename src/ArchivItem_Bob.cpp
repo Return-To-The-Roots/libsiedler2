@@ -28,7 +28,7 @@
  *  Klasse für Bobfiles.
  */
 
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good_count(0)
 {
     setBobType(BOBTYPE_BOB);
 }
@@ -40,7 +40,7 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good
  *  @param[in] file    Dateihandle aus denen die Bob-Daten geladen werden sollen
  *  @param[in] palette Grundpalette
  */
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), good_count(0), item_count(0)
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), good_count(0)
 {
     setBobType(BOBTYPE_BOB);
 
@@ -153,6 +153,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     }
 
     // Anzahl Bilder
+    uint16_t item_count;
     fs >> item_count;
 
     links.resize(item_count);
@@ -180,7 +181,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
         used[links[i]] = true;
 
-        // 2 Unbekannte Null-Bytes überspringen
+        // 2 Unbekannte Bytes überspringen
         fs.ignore(2);
     }
 

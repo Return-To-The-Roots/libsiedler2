@@ -43,6 +43,7 @@ namespace libsiedler2
 
             const MIDI_Track* getTrack(uint16_t track) const { if(track < tracks) return &tracklist[track]; return NULL; }
             uint16_t getTrackCount() const { return tracks; }
+            void addTrack(const MIDI_Track& track);
 
         protected:
             uint16_t tracks;
@@ -55,7 +56,7 @@ namespace libsiedler2
         public:
             ArchivItem_Sound_Midi() : baseArchivItem_Sound_Midi() {}
 
-            ArchivItem_Sound_Midi(const ArchivItem_Sound_Midi& item) : baseArchivItem_Sound_Midi(item) {}
+            ArchivItem_Sound_Midi(const ArchivItem_Sound_Midi& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Midi(item) {}
     };
 }
 
