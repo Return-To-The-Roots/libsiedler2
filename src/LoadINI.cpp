@@ -20,6 +20,7 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include <boost/filesystem/fstream.hpp>
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 /**
  *  lädt eine INI-File in ein ArchivInfo.
@@ -43,12 +44,12 @@ int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
 
     while(!ini.eof())
     {
-        ArchivItem_Ini item;
+        boost::interprocess::unique_ptr< ArchivItem_Ini, Deleter<ArchivItem_Ini> > item(new ArchivItem_Ini);
 
-        if(item.load(ini) != 0)
+        if(item->load(ini) != 0)
             return 3;
 
-        items.pushC(item);
+        items.push(item.release());
     }
 
     return 0;

@@ -51,6 +51,10 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(std::istream& file, bool ski
     load(file, skip);
 }
 
+ libsiedler2::ArchivItem_Palette::~ArchivItem_Palette()
+ {
+ }
+
 /**
  *  liest die Farbwerte aus einer Datei.
  *

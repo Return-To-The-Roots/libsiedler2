@@ -95,7 +95,8 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
     tex_data_ = item.tex_data_;
 
     palette_ = NULL;
-    setPalette(*item.palette_);
+    if(item.palette_)
+        setPalette(*item.palette_);
     setFormat(item.format_);
 
     return *this;

@@ -1,6 +1,8 @@
 sudo: false
 language: cpp
 dist: trusty
+notifications:
+  email: false
 branches:
     only:
         - master
