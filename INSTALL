@@ -1,18 +1,9 @@
-
 Installation:
 
-./autogen.sh
-./configure
+mkdir build && cd build
+cmake ../
 make
 make install
 
--------------------------------------------------------------------------------
-
-Andere make-Ziele:
-
-make mrproper (räumt alles weg was kein Source und 
-               zur Erstellung notwendig ist)
-
-make doc      (erstellt die Doxygen Dokumentation)
-
--------------------------------------------------------------------------------
+To run all tests you need to put the original Settlers II folders (DATA and GFX)
+in the testFiles directory.
