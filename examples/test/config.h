@@ -27,4 +27,6 @@ const std::string testOutputPath = "testOutput";
 namespace boost{ namespace filesystem{} }
 namespace bfs = boost::filesystem;
 
+#define RTTR_REQUIRE_EQUAL_COLLECTIONS(col1, col2) BOOST_REQUIRE_EQUAL_COLLECTIONS(col1.begin(), col1.end(), col2.begin(), col2.end())
+
 #endif // config_h__
