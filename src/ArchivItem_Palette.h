@@ -24,23 +24,14 @@
 #include <cstddef>
 #include <iosfwd>
 #include <stdint.h>
+#include "ColorRGB.h"
 
 namespace libsiedler2
 {
     /// Index des Transparenzwertes
     const uint8_t TRANSPARENT_INDEX = 254;
-    struct Color
-    {
-        uint8_t r, g, b;
-        Color(): r(0), g(0), b(0){}
-        Color(uint8_t r, uint8_t g, uint8_t b): r(r), g(g), b(b){}
-
-        bool operator==(const Color& obj) const
-        {
-            return (r == obj.r) && (g == obj.g) && (b == obj.b);
-        }
-    };
-    const Color TRANSPARENT_COLOR(0xff, 0, 0x8f);
+    
+    const ColorRGB TRANSPARENT_COLOR(0xff, 0, 0x8f);
 
     /// Klasse für Paletten.
     class ArchivItem_Palette : public ArchivItem
@@ -60,37 +51,37 @@ namespace libsiedler2
             int write(std::ostream& file, bool skip = true) const;
 
             /// setzt einen Farbwert am entsprechenden Index.
-            void set(uint8_t index, Color clr);
+            void set(uint8_t index, ColorRGB clr);
 
             /// liefert einen Farbwert am entsprechenden Index.
             void get(uint8_t index, uint8_t& r, uint8_t& g, uint8_t& b) const
             {
-                const Color& clr = (*this)[index];
+                const ColorRGB& clr = (*this)[index];
                 r = clr.r;
                 g = clr.g;
                 b = clr.b;
             }
 
-            Color get(uint8_t index) const
+            ColorRGB get(uint8_t index) const
             {
                 return (*this)[index];
             }
 
             /// liefert einen Index zum entsprechenden RGB-Wert.
-            uint8_t lookup(const Color& clr) const;
+            uint8_t lookup(const ColorRGB& clr) const;
             uint8_t lookup(uint8_t r, uint8_t g, uint8_t b) const
             {
-                return lookup(Color(r, g, b));
+                return lookup(ColorRGB(r, g, b));
             }
 
             /// Index-Operator von @p ArchivItem_Palette.
-            const Color& operator[](int index) const;
+            const ColorRGB& operator[](int index) const;
 
             /// kopiert die Palette in einen Puffer (als RGBA)
             void copy(uint8_t* buffer, size_t bufSize) const;
 
         protected:
-            boost::array<Color, 256> colors; //-V730_NOINIT
+            boost::array<ColorRGB, 256> colors; //-V730_NOINIT
     };
 }
 

@@ -54,7 +54,7 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
             } break;
             case 3: // 24 bit
             {
-                if(libsiedler2::Color(buffer[x * bbp + 2], buffer[x * bbp + 1], buffer[x * bbp + 0]) == libsiedler2::TRANSPARENT_COLOR) // transparenz? (color-key "rosa")
+                if(libsiedler2::ColorRGB(buffer[x * bbp + 2], buffer[x * bbp + 1], buffer[x * bbp + 0]) == libsiedler2::TRANSPARENT_COLOR) // transparenz? (color-key "rosa")
                     bitmap.tex_setPixel(x, y, 0, 0, 0, 0x00);
                 else
                     bitmap.tex_setPixel(x, y, buffer[x * bbp + 2], buffer[x * bbp + 1], buffer[x * bbp + 0], 0xFF);
@@ -193,7 +193,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 
             ArchivItem_Palette* pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
             for(int i = 0; i < bmih.clrused; ++i)
-                pal->set(i, Color(colors[i][2], colors[i][1], colors[i][0]));
+                pal->set(i, ColorRGB(colors[i][2], colors[i][1], colors[i][0]));
 
             bitmap->setPalette(pal);
     }

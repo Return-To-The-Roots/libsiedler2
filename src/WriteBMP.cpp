@@ -171,7 +171,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
             idx *= 4; // ARGB
             for(int x = 0; x < bmih.width; ++x, idx += 4)
             {
-                Color clr;
+                ColorRGB clr;
                 if(buffer[idx + 3] == 0x00)
                     clr = TRANSPARENT_COLOR;
                 else

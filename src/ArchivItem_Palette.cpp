@@ -117,7 +117,7 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
  *  @param[in] g     Grüner Farbwert
  *  @param[in] b     Blauer Farbwert
  */
-void libsiedler2::ArchivItem_Palette::set(uint8_t index, Color clr)
+void libsiedler2::ArchivItem_Palette::set(uint8_t index, ColorRGB clr)
 {
     colors[index] = clr;
 }
@@ -133,7 +133,7 @@ void libsiedler2::ArchivItem_Palette::set(uint8_t index, Color clr)
  *
  *  @bug Keine Fehlererkennung!
  */
-uint8_t libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
+uint8_t libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr) const
 {
     for(uint16_t i = 0; i < 256; ++i)
     {
@@ -150,7 +150,7 @@ uint8_t libsiedler2::ArchivItem_Palette::lookup(const Color& clr) const
  *
  *  @return Bei Erfolg einen Pointer auf einen, ansonsten NULL
  */
-const libsiedler2::Color& libsiedler2::ArchivItem_Palette::operator[](int index) const
+const libsiedler2::ColorRGB& libsiedler2::ArchivItem_Palette::operator[](int index) const
 {
     if( index < 256 && index >= 0)
         return colors[index];

@@ -178,7 +178,7 @@ void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
                 if(a == 0x00)
                     tex_data_[position] = TRANSPARENT_INDEX;
                 else
-                    tex_data_[position] = palette_->lookup(Color(r, g, b));
+                    tex_data_[position] = palette_->lookup(ColorRGB(r, g, b));
             } break;
             case 4:
             {

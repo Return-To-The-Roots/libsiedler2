@@ -20,11 +20,12 @@
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
 #include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/src/ColorRGB.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
 namespace libsiedler2{
-    std::ostream& operator<<(std::ostream& os, const Color& clr)
+    std::ostream& operator<<(std::ostream& os, const ColorRGB& clr)
     {
         return os << "Color(" << unsigned(clr.r) << ", " << unsigned(clr.g) << ", " << unsigned(clr.b) << ")";
     }
@@ -50,7 +51,7 @@ void createBBM(const std::string& palPath, const std::string& palOutPath)
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
     libsiedler2::ArchivItem_Palette* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     act.pushC(*pal);
-    pal->set(10, libsiedler2::Color(11, 22, 33));
+    pal->set(10, libsiedler2::ColorRGB(11, 22, 33));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(palOutPath, act), 0);
 }
 
@@ -65,7 +66,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteBBM)
     BOOST_REQUIRE_EQUAL(libsiedler2::Load("pal5.act", act2), 0);
     libsiedler2::ArchivItem_Palette* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     BOOST_REQUIRE(pal);
-    BOOST_REQUIRE_EQUAL(pal->get(10), libsiedler2::Color(11, 22, 33));
+    BOOST_REQUIRE_EQUAL(pal->get(10), libsiedler2::ColorRGB(11, 22, 33));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(palOutPath, act), 0);
     BOOST_REQUIRE(testFilesEqual(palOutPath, palPath));
 }
