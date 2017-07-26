@@ -88,46 +88,38 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
             {
                 case 1: // Textur ist Paletted
                 {
+                    if(tex_data_[position2] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                        continue;
                     switch(bpp)
                     {
                         case 1:
-                        {
                             // Ziel ist auch Paletted
-                            if(tex_data_[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
-                                buffer[position] = tex_data_[position2];
-                        } break;
+                             buffer[position] = tex_data_[position2];
+                            break;
                         case 4:
-                        {
                             // Ziel ist RGB+A
-                            if(tex_data_[position2] != TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
-                            {
-                                palette->get(tex_data_[position2], buffer[position + 2], buffer[position + 1], buffer[position + 0]);
-                                buffer[position + 3] = 0xFF;
-                            }
-                        } break;
+                            palette->get(tex_data_[position2], buffer[position + 2], buffer[position + 1], buffer[position + 0]);
+                            buffer[position + 3] = 0xFF;
+                            break;
                     }
                 } break;
                 case 4: // Textur ist RGBA
                 {
+                    if(tex_data_[position2 + 3] == 0)  // bei Transparenz wird buffer nicht verändert
+                        continue;
                     switch(bpp)
                     {
                         case 1:
-                        {
                             // Ziel ist Paletted
-                            if(tex_data_[position2] != TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
-                                buffer[position] = tex_getPixel(x, y, palette);
-                        } break;
+                            buffer[position] = tex_getPixel(x, y, palette);
+                            break;
                         case 4:
-                        {
                             // Ziel ist auch RGB+A
-                            if(tex_data_[position2 + 3] == 0xFF)  // bei Transparenz wird buffer nicht verändert
-                            {
-                                buffer[position + 0] = tex_data_[position2 + 0]; // b
-                                buffer[position + 1] = tex_data_[position2 + 1]; // g
-                                buffer[position + 2] = tex_data_[position2 + 2]; // r
-                                buffer[position + 3] = tex_data_[position2 + 3]; // a
-                            }
-                        } break;
+                            buffer[position + 0] = tex_data_[position2 + 0]; // b
+                            buffer[position + 1] = tex_data_[position2 + 1]; // g
+                            buffer[position + 2] = tex_data_[position2 + 2]; // r
+                            buffer[position + 3] = tex_data_[position2 + 3]; // a
+                            break;
                     }
                 } break;
             }
