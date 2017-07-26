@@ -396,12 +396,17 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
         const ArchivItem_Palette* palette,
         uint8_t color)
 {
-    if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0 || palette == NULL)
+    if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0)
         return 1;
+    if(!palette && buffer_format == FORMAT_PALETTED)
+        return 2;
 
     this->width_ = width;
     this->height_ = height;
-    setPalette(*palette);
+    if(palette)
+        setPalette(*palette);
+    else
+        setPalette(NULL);
     setFormat(buffer_format);
 
     // Texturspeicher anfordern

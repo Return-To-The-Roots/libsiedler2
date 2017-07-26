@@ -163,14 +163,17 @@ int baseArchivItem_Bitmap::create(uint16_t width,
 {
     if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0)
         return 1;
-    if(palette == NULL)
-        palette = this->palette_;
-    if(palette == NULL)
+    if(!palette && buffer_format == FORMAT_PALETTED)
         return 2;
 
     this->width_ = width;
     this->height_ = height;
     this->format_ = buffer_format;
+    // Save the used palette
+    if(palette)
+        setPalette(*palette);
+    else
+        setPalette(NULL);
 
     // Texturspeicher anfordern
     tex_alloc();
@@ -201,7 +204,7 @@ int baseArchivItem_Bitmap::create(uint16_t width,
                     if(buffer[position + 3] != 0x00)
                         tex_setPixel(x, y, buffer[position + 2], buffer[position + 1], buffer[position], buffer[position + 3]);
                     else
-                        tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
+                        tex_setPixel(x, y, 0, 0, 0, 0);
                     break;
                 case FORMAT_PALETTED:
                     tex_setPixel(x, y, buffer[position], palette);
