@@ -437,15 +437,15 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
             {
                 case FORMAT_BGRA:
                 {
-                    if(buffer[posBuffer + 3] != 0x00)
+                    if(buffer[posBuffer + 3] != 0)
                     {
                         uint8_t c = palette->lookup(buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
                         if(c >= color && c <= color + 3) // Spielerfarbe
                         {
                             tex_pdata[posPlayerTex] = c - color;
-                            tex_setPixel(x, y, 0, 0, 0, 0);
+                            tex_setPixel(x, y, 0, 0, 0, buffer[posBuffer + 3]);
                         }else
-                            tex_setPixel(x, y, buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer], 0xFF);
+                            tex_setPixel(x, y, buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer], buffer[posBuffer + 3]);
                     }
                     else
                         tex_setPixel(x, y, 0, 0, 0, 0);
@@ -701,7 +701,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
                             {
                                 // Playerfarbe setzen
                                 buffer[posBuffer] = tex_pdata[posPlayerTex] + color;
-                            } else if(!only_player && tex_data_[posTexture + 3] == 0xFF)
+                            } else if(!only_player && tex_data_[posTexture + 3] != 0)
                             {
                                 // normale Pixel setzen
                                 buffer[posBuffer] = tex_getPixel(x, y, palette);
@@ -714,8 +714,8 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
                             {
                                 // Playerfarbe setzen
                                 palette->get(tex_pdata[posPlayerTex] + color, buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
-                                buffer[posBuffer + 3] = 0xFF; // a
-                            } else if(!only_player && tex_data_[posTexture + 3] == 0xFF)
+                                buffer[posBuffer + 3] = tex_data_[posTexture + 3]; // a
+                            } else if(!only_player && tex_data_[posTexture + 3] != 0)
                             {
                                 // normale Pixel setzen
                                 buffer[posBuffer + 0] = tex_data_[posTexture + 0]; // b

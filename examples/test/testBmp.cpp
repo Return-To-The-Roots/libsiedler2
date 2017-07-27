@@ -336,8 +336,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
-    // This should be inBufferRGB but current implementation only writes 0xFF for alpha
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 }
 
 BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
@@ -417,8 +416,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to BGRA
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
-    // This should not be inBufferRGB but current implementation only writes 0xFF for alpha
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
@@ -427,18 +425,17 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal2);
     // Same for BGRA
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2), 0);
-    // This should not be inBufferRGB2 but current implementation only writes 0xFF for alpha
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB2);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer2);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     // Player colors only
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA::fromABGR(&inBufferRGB2[i * 4]));
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA::fromABGR(&inBuffer2[i * 4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
