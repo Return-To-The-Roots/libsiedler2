@@ -17,19 +17,14 @@
 
 #include "config.h"
 #include "cmpFiles.h"
+#include "ColorOutput.h"
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ColorRGB.h"
+#include "libsiedler2/src/ColorRGBA.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
-
-namespace libsiedler2{
-    std::ostream& operator<<(std::ostream& os, const ColorRGB& clr)
-    {
-        return os << "Color(" << unsigned(clr.r) << ", " << unsigned(clr.g) << ", " << unsigned(clr.b) << ")";
-    }
-}
 
 BOOST_AUTO_TEST_SUITE(Palette)
 
@@ -70,5 +65,50 @@ BOOST_AUTO_TEST_CASE(ReadWriteBBM)
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(palOutPath, act), 0);
     BOOST_REQUIRE(testFilesEqual(palOutPath, palPath));
 }
+
+BOOST_AUTO_TEST_CASE(GetColor)
+{
+    libsiedler2::ArchivItem_Palette pal;
+    // Default all black
+    for(unsigned i = 0; i < 256; i++)
+        BOOST_REQUIRE_EQUAL(pal[i], libsiedler2::ColorRGB(0, 0, 0));
+    for(unsigned i = 0; i < 256; i++)
+        pal.set(i, libsiedler2::ColorRGB(i, i + 1, i + 2));
+    for(unsigned i = 0; i < 256; i++)
+    {
+        BOOST_REQUIRE_EQUAL(pal.get(i), libsiedler2::ColorRGB(i, i + 1, i + 2));
+        BOOST_REQUIRE_EQUAL(pal[i], libsiedler2::ColorRGB(i, i + 1, i + 2));
+    }
+    // Out of bounds throws
+    BOOST_REQUIRE_THROW(pal[256], std::exception);
+    // Reverse: Lookup
+    for(unsigned i = 0; i < 256; i++)
+    {
+        BOOST_REQUIRE_EQUAL(pal.lookup(libsiedler2::ColorRGB(i, i + 1, i + 2)), i);
+        BOOST_REQUIRE_EQUAL(pal.lookupOrDef(libsiedler2::ColorRGB(i, i + 1, i + 2)), i);
+    }
+    // Non existent color throws
+    BOOST_REQUIRE_THROW(pal.lookup(libsiedler2::ColorRGB(10, 20, 30)), std::exception);
+    // Return default
+    BOOST_REQUIRE_EQUAL(pal.lookupOrDef(libsiedler2::ColorRGB(10, 20, 30)), 0u);
+    BOOST_REQUIRE_EQUAL(pal.lookupOrDef(libsiedler2::ColorRGB(10, 20, 30), 1), 1u);
+    BOOST_REQUIRE_EQUAL(pal.lookupOrDef(libsiedler2::ColorRGB(10, 20, 30), 2), 2u);
+    // Existent and different default value
+    BOOST_REQUIRE_EQUAL(pal.lookupOrDef(pal[5], 2), 5u);
+
+    std::vector<uint8_t> clrBuf(256 * 4);
+    pal.copy(&clrBuf[0], clrBuf.size());
+    for(unsigned i = 0; i < 256; i++)
+    {
+        libsiedler2::ColorRGBA clr = pal[i];
+        if(i == libsiedler2::TRANSPARENT_INDEX)
+            clr = libsiedler2::ColorRGBA(0, 0, 0, 0);
+
+        // RGBA buffer:
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromRGBA(&clrBuf[i * 4]), clr);
+    }
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END()

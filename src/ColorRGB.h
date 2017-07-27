@@ -33,7 +33,11 @@ namespace libsiedler2
 	    static ColorRGB fromBGR(const uint8_t* ptr);
 	
 	    void toBGR(uint8_t* ptr) const;
-	
+
+        uint8_t getRed() const { return r; }
+        uint8_t getGreen() const { return g; }
+        uint8_t getBlue() const { return b; }
+
 	    bool operator==(const ColorRGB& rhs) const
 	    {
 	        return (r == rhs.r) && (g == rhs.g) && (b == rhs.b);

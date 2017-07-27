@@ -28,22 +28,23 @@ namespace libsiedler2
 {
     /// Stores color information as a word
     /// If this is written to memory it will result in A being the first byte which is
-    /// in byte order: ABGR on little endian and RGBA in big endian
-    struct ColorARGB
+    /// in word order: ABGR on little endian and RGBA in big endian
+    struct ColorRGBA
     {
         uint32_t clrValue;
-        ColorARGB(): clrValue(0){}
-        explicit ColorARGB(uint32_t clrValue): clrValue(clrValue){}
-        ColorARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b);
-        ColorARGB(ColorRGB clrRGB);
+        ColorRGBA(): clrValue(0){}
+        explicit ColorRGBA(uint32_t clrValue): clrValue(clrValue){}
+        /// Create a RGBA color.
+        ColorRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xFF);
+        ColorRGBA(ColorRGB clrRGB);
         /// Create a color from a byte oriented buffer (A first, then B, G, R)
-        static ColorARGB fromABGR(const uint8_t* ptr);
+        static ColorRGBA fromABGR(const uint8_t* ptr);
         /// Create a color from a byte oriented buffer (R first, then G, B, A)
-        static ColorARGB fromRGBA(const uint8_t* ptr);
+        static ColorRGBA fromRGBA(const uint8_t* ptr);
         /// Create a color from a byte oriented buffer (A first, then B, G, R)
-        static ColorARGB fromABGR(const uint32_t* ptr);
+        static ColorRGBA fromABGR(const uint32_t* ptr);
         /// Create a color from a byte oriented buffer (R first, then G, B, A)
-        static ColorARGB fromRGBA(const uint32_t* ptr);
+        static ColorRGBA fromRGBA(const uint32_t* ptr);
 
         /// Write the color to a byte oriented buffer (A first, then B, G, R)
         void toABGR(uint8_t* ptr);
@@ -63,76 +64,76 @@ namespace libsiedler2
         uint8_t getBlue() const;
         void setBlue(uint8_t val);
 
-        bool operator==(const ColorARGB& rhs) const
+        bool operator==(const ColorRGBA& rhs) const
         {
             return (clrValue == rhs.clrValue);
         }
-        bool operator!=(const ColorARGB& rhs) const
+        bool operator!=(const ColorRGBA& rhs) const
         {
             return !(*this == rhs);
         }
     };
 
-    inline ColorARGB::ColorARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b)
+    inline ColorRGBA::ColorRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     {
-        clrValue = a << 24 | r << 16 | g << 8 | b;
+        clrValue = r << 24 | g << 16 | b << 8 | a;
     }
 
-    inline ColorARGB::ColorARGB(ColorRGB clrRGB)
+    inline ColorRGBA::ColorRGBA(ColorRGB clrRGB)
     {
-        clrValue = ColorARGB(0xFF, clrRGB.r, clrRGB.g, clrRGB.g).clrValue;
+        clrValue = ColorRGBA(clrRGB.r, clrRGB.g, clrRGB.b).clrValue;
     }
 
-    inline ColorARGB ColorARGB::fromABGR(const uint8_t* ptr)
+    inline ColorRGBA ColorRGBA::fromABGR(const uint8_t* ptr)
     {
         return fromABGR(reinterpret_cast<const uint32_t*>(ptr));
     }
 
-    inline ColorARGB ColorARGB::fromABGR(const uint32_t* ptr)
+    inline ColorRGBA ColorRGBA::fromABGR(const uint32_t* ptr)
     {
         // This is little endian ABGR word format
-        return ColorARGB(boost::endian::little_to_native(*ptr));
+        return ColorRGBA(boost::endian::little_to_native(*ptr));
     }
 
-    inline ColorARGB ColorARGB::fromRGBA(const uint8_t* ptr)
+    inline ColorRGBA ColorRGBA::fromRGBA(const uint8_t* ptr)
     {
         return fromRGBA(reinterpret_cast<const uint32_t*>(ptr));
     }
 
-    inline ColorARGB ColorARGB::fromRGBA(const uint32_t* ptr)
+    inline ColorRGBA ColorRGBA::fromRGBA(const uint32_t* ptr)
     {
         // This is big endian RGBA word format
-        return ColorARGB(boost::endian::big_to_native(*ptr));
+        return ColorRGBA(boost::endian::big_to_native(*ptr));
     }
 
-    inline void ColorARGB::toABGR(uint8_t* ptr)
+    inline void ColorRGBA::toABGR(uint8_t* ptr)
     {
         toABGR(reinterpret_cast<uint32_t*>(ptr));
     }
 
-    inline void ColorARGB::toABGR(uint32_t* ptr)
+    inline void ColorRGBA::toABGR(uint32_t* ptr)
     {
         *ptr = boost::endian::native_to_little(clrValue);
     }
 
-    inline void ColorARGB::toRGBA(uint8_t* ptr)
+    inline void ColorRGBA::toRGBA(uint8_t* ptr)
     {
         toRGBA(reinterpret_cast<uint32_t*>(ptr));
     }
 
-    inline void ColorARGB::toRGBA(uint32_t* ptr)
+    inline void ColorRGBA::toRGBA(uint32_t* ptr)
     {
         *ptr = boost::endian::native_to_big(clrValue);
     }
 
-    inline uint8_t ColorARGB::getAlpha() const { return clrValue >> 24; }
-    inline void ColorARGB::setAlpha(uint8_t val) { clrValue = (clrValue && 0x00FFFFFF) | (val << 24); }
-    inline uint8_t ColorARGB::getRed() const { return clrValue >> 16; }
-    inline void ColorARGB::setRed(uint8_t val) { clrValue = (clrValue && 0xFF00FFFF) | (val << 16); }
-    inline uint8_t ColorARGB::getGreen() const { return clrValue >> 8; }
-    inline void ColorARGB::setGreen(uint8_t val) { clrValue = (clrValue && 0xFFFF00FF) | (val << 8); }
-    inline uint8_t ColorARGB::getBlue() const { return clrValue; }
-    inline void ColorARGB::setBlue(uint8_t val) { clrValue = (clrValue && 0xFFFFFF00) | val; }
+    inline uint8_t ColorRGBA::getRed() const { return clrValue >> 24; }
+    inline void ColorRGBA::setRed(uint8_t val) { clrValue = (clrValue & 0x00FFFFFF) | (val << 24); }
+    inline uint8_t ColorRGBA::getGreen() const { return clrValue >> 16; }
+    inline void ColorRGBA::setGreen(uint8_t val) { clrValue = (clrValue & 0xFF00FFFF) | (val << 16); }
+    inline uint8_t ColorRGBA::getBlue() const { return clrValue >> 8; }
+    inline void ColorRGBA::setBlue(uint8_t val) { clrValue = (clrValue & 0xFFFF00FF) | (val << 8); }
+    inline uint8_t ColorRGBA::getAlpha() const { return clrValue; }
+    inline void ColorRGBA::setAlpha(uint8_t val) { clrValue = (clrValue & 0xFFFFFF00) | val; }
 }
 
 #endif // ColorARGB_h__

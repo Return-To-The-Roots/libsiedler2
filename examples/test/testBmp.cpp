@@ -18,23 +18,17 @@
 #include "config.h"
 #include "cmpFiles.h"
 #include "LoadPalette.h"
+#include "ColorOutput.h"
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Raw.h"
-#include "libsiedler2/src/ColorARGB.h"
+#include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
+#include "libsiedler2/src/ColorRGBA.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
 
 using namespace libsiedler2;
-
-namespace libsiedler2
-{
-    std::ostream& operator<<(std::ostream& os, ColorARGB clr)
-    {
-        return os << "(" << std::hex << clr.clrValue << ")";
-    }
-}
 
 BOOST_FIXTURE_TEST_SUITE(Bitmaps, LoadPalette)
 
@@ -171,12 +165,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
             if(x < xStart || y < yStart || x >= xStart + partW || y >= yStart + partH)
             {
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], 42u);
-                BOOST_REQUIRE_EQUAL(ColorARGB::fromABGR(&outBuffer[idx]), ColorARGB(42, 42, 42, 42));
+                BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[idx]), ColorRGBA(42, 42, 42, 42));
             } else
             {
                 unsigned inBufferIdx = x - xStart + xStartB + (y - yStart + yStartB) * w;
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], inBufferPal[inBufferIdx]);
-                BOOST_REQUIRE_EQUAL(ColorARGB::fromABGR(&outBuffer[idx]), ColorARGB::fromABGR(&inBufferRGB[inBufferIdx * 4]));
+                BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[idx]), ColorRGBA::fromABGR(&inBufferRGB[inBufferIdx * 4]));
             }
         }
     }
@@ -233,6 +227,11 @@ BOOST_AUTO_TEST_CASE(TransparentTex)
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_RGBA), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+}
+
+BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
+{
+    ArchivItem_Bitmap_Player bmp;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

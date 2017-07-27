@@ -20,11 +20,11 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include "ColorRGB.h"
 #include <boost/array.hpp>
 #include <cstddef>
 #include <iosfwd>
 #include <stdint.h>
-#include "ColorRGB.h"
 
 namespace libsiedler2
 {
@@ -73,9 +73,11 @@ namespace libsiedler2
             {
                 return lookup(ColorRGB(r, g, b));
             }
+            /// Return the (first) index with the given color or defaultVal if none found
+            uint8_t lookupOrDef(const ColorRGB& clr, uint8_t defaultVal = 0) const;
 
             /// Index-Operator von @p ArchivItem_Palette.
-            const ColorRGB& operator[](int index) const;
+            const ColorRGB& operator[](unsigned index) const;
 
             /// kopiert die Palette in einen Puffer (als RGBA)
             void copy(uint8_t* buffer, size_t bufSize) const;

@@ -17,9 +17,10 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Palette.h"
-#include <iostream>
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <boost/static_assert.hpp>
+#include <iostream>
 #include <stdexcept>
 
 /** @var TRANSPARENT_INDEX
@@ -32,7 +33,7 @@
  *  Klasse für Paletten.
  */
 
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem()
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette()
 {
     setBobType(BOBTYPE_PALETTE);
 }
@@ -75,7 +76,7 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
         fs.ignore(2);
     }
 
-    // Farben einlesen
+    BOOST_STATIC_ASSERT_MSG(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot read it in whole");
     fs.read(&colors[0].r, sizeof(colors));
 
     // alles ok
@@ -102,7 +103,7 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
         fs << unknown;
     }
 
-    // Farben schreiben
+    BOOST_STATIC_ASSERT_MSG(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot write it in whole");
     fs.write(&colors[0].r, sizeof(colors));
 
     // alles ok
@@ -130,17 +131,25 @@ void libsiedler2::ArchivItem_Palette::set(uint8_t index, ColorRGB clr)
  *  @param[in] b     Blauer Farbwert
  *
  *  @return Farbindex der RGB-Farbe
- *
- *  @bug Keine Fehlererkennung!
  */
 uint8_t libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr) const
 {
-    for(uint16_t i = 0; i < 256; ++i)
+    for(unsigned i = 0; i < 256; ++i)
     {
         if(colors[i] == clr)
             return static_cast<uint8_t>(i);
     }
     throw std::runtime_error("Color not found in palette!");
+}
+
+uint8_t libsiedler2::ArchivItem_Palette::lookupOrDef(const ColorRGB & clr, uint8_t defaultVal) const
+{
+    for(unsigned i = 0; i < 256; ++i)
+    {
+        if(colors[i] == clr)
+            return static_cast<uint8_t>(i);
+    }
+    return defaultVal;
 }
 
 /**
@@ -150,9 +159,9 @@ uint8_t libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr) const
  *
  *  @return Bei Erfolg einen Pointer auf einen, ansonsten NULL
  */
-const libsiedler2::ColorRGB& libsiedler2::ArchivItem_Palette::operator[](int index) const
+const libsiedler2::ColorRGB& libsiedler2::ArchivItem_Palette::operator[](unsigned index) const
 {
-    if( index < 256 && index >= 0)
+    if(index < 256)
         return colors[index];
     else
         throw std::out_of_range("index");
@@ -178,5 +187,8 @@ void libsiedler2::ArchivItem_Palette::copy(uint8_t* buffer, size_t bufSize) cons
     }
 
     // Transparentes Element transparent machen
+    buffer[TRANSPARENT_INDEX * 4 + 0] = 0x00;
+    buffer[TRANSPARENT_INDEX * 4 + 1] = 0x00;
+    buffer[TRANSPARENT_INDEX * 4 + 2] = 0x00;
     buffer[TRANSPARENT_INDEX * 4 + 3] = 0x00;
 }
