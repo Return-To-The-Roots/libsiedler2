@@ -79,8 +79,10 @@ namespace libsiedler2
             /// Index-Operator von @p ArchivItem_Palette.
             const ColorRGB& operator[](unsigned index) const;
 
-            /// kopiert die Palette in einen Puffer (als RGBA)
-            void copy(uint8_t* buffer, size_t bufSize) const;
+            /// Copy palette to the buffer as BGRA
+            /// If writeFakeTransparency is true, then the pseudo transparency color is written
+            /// otherwise a true transparency (all 0) is written
+            void copy(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency = false) const;
 
         protected:
             boost::array<ColorRGB, 256> colors; //-V730_NOINIT

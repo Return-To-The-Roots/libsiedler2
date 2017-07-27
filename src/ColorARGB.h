@@ -37,6 +37,8 @@ namespace libsiedler2
         /// Create a ARGB color.
         ColorARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b);
         ColorARGB(ColorRGB clrRGB);
+
+        operator ColorRGB() const;
         /// Create a color from a byte oriented buffer (A first, then R, G, B)
         static ColorARGB fromARGB(const uint8_t* ptr);
         /// Create a color from a byte oriented buffer (B first, then G, R, A)
@@ -64,15 +66,16 @@ namespace libsiedler2
         uint8_t getBlue() const;
         void setBlue(uint8_t val);
 
-        bool operator==(const ColorARGB& rhs) const
-        {
-            return (clrValue == rhs.clrValue);
-        }
-        bool operator!=(const ColorARGB& rhs) const
-        {
-            return !(*this == rhs);
-        }
     };
+
+    inline bool operator==(const ColorARGB& lhs, const ColorARGB& rhs)
+    {
+        return (lhs.clrValue == rhs.clrValue);
+    }
+    inline bool operator!=(const ColorARGB& lhs, const ColorARGB& rhs)
+    {
+        return !(rhs == rhs);
+    }
 
     inline ColorARGB::ColorARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b)
     {
@@ -84,6 +87,11 @@ namespace libsiedler2
         clrValue = ColorARGB(0xFF, clrRGB.r, clrRGB.g, clrRGB.b).clrValue;
     }
 
+    inline ColorARGB::operator ColorRGB() const
+    {
+        return ColorRGB(getRed(), getGreen(), getBlue());
+    }
+
     inline ColorARGB ColorARGB::fromARGB(const uint8_t* ptr)
     {
         return fromARGB(reinterpret_cast<const uint32_t*>(ptr));
@@ -92,7 +100,7 @@ namespace libsiedler2
     inline ColorARGB ColorARGB::fromARGB(const uint32_t* ptr)
     {
         // This is big endian ARGB word format
-        return ColorARGB(boost::endian::little_to_native(*ptr));
+        return ColorARGB(boost::endian::big_to_native(*ptr));
     }
 
     inline ColorARGB ColorARGB::fromBGRA(const uint8_t* ptr)
@@ -103,7 +111,7 @@ namespace libsiedler2
     inline ColorARGB ColorARGB::fromBGRA(const uint32_t* ptr)
     {
         // This is little endian BGRA word format
-        return ColorARGB(boost::endian::big_to_native(*ptr));
+        return ColorARGB(boost::endian::little_to_native(*ptr));
     }
 
     inline void ColorARGB::toARGB(uint8_t* ptr)
@@ -113,17 +121,17 @@ namespace libsiedler2
 
     inline void ColorARGB::toARGB(uint32_t* ptr)
     {
-        *ptr = boost::endian::native_to_little(clrValue);
+        *ptr = boost::endian::native_to_big(clrValue);
     }
 
     inline void ColorARGB::toBGRA(uint8_t* ptr)
     {
-        fromBGRA(reinterpret_cast<uint32_t*>(ptr));
+        toBGRA(reinterpret_cast<uint32_t*>(ptr));
     }
 
     inline void ColorARGB::toBGRA(uint32_t* ptr)
     {
-        *ptr = boost::endian::native_to_big(clrValue);
+        *ptr = boost::endian::native_to_little(clrValue);
     }
 
     inline uint8_t ColorARGB::getAlpha() const { return clrValue >> 24; }

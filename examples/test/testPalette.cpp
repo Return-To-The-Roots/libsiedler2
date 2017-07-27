@@ -97,16 +97,19 @@ BOOST_AUTO_TEST_CASE(GetColor)
     BOOST_REQUIRE_EQUAL(pal.lookupOrDef(pal[5], 2), 5u);
 
     std::vector<uint8_t> clrBuf(256 * 4);
-    pal.copy(&clrBuf[0], clrBuf.size());
+    pal.copy(&clrBuf[0], clrBuf.size(), false);
     for(unsigned i = 0; i < 256; i++)
     {
         libsiedler2::ColorARGB clr = pal[i];
         if(i == libsiedler2::TRANSPARENT_INDEX)
             clr = libsiedler2::ColorARGB(0, 0, 0, 0);
 
-        // RGBA buffer:
+        // BGRA buffer:
         BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[i * 4]), clr);
     }
+    pal.copy(&clrBuf[0], clrBuf.size(), true);
+    // BGRA buffer:
+    BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[libsiedler2::TRANSPARENT_INDEX * 4]), libsiedler2::TRANSPARENT_COLOR);
 }
 
 

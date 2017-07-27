@@ -168,11 +168,11 @@ const libsiedler2::ColorRGB& libsiedler2::ArchivItem_Palette::operator[](unsigne
 }
 
 /**
- *  kopiert die Palette in einen Puffer (als RGBA)
+ *  kopiert die Palette in einen Puffer (als BGRA)
  *
  *  @param[in,out] buffer Zielpuffer für die Palettendaten (muss 256*4-Byte groß sein)
  */
-void libsiedler2::ArchivItem_Palette::copy(uint8_t* buffer, size_t bufSize) const
+void libsiedler2::ArchivItem_Palette::copy(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency) const
 {
     if(bufSize < 256 * 4)
         throw std::runtime_error("Buffer is to small!");
@@ -180,15 +180,22 @@ void libsiedler2::ArchivItem_Palette::copy(uint8_t* buffer, size_t bufSize) cons
     // Farben kopieren
     for(uint16_t i = 0; i < 256; ++i)
     {
-        buffer[i * 4]     = colors[i].r;
+        buffer[i * 4 + 0] = colors[i].b;
         buffer[i * 4 + 1] = colors[i].g;
-        buffer[i * 4 + 2] = colors[i].b;
+        buffer[i * 4 + 2] = colors[i].r;
         buffer[i * 4 + 3] = 0xFF;
     }
-
-    // Transparentes Element transparent machen
-    buffer[TRANSPARENT_INDEX * 4 + 0] = 0x00;
-    buffer[TRANSPARENT_INDEX * 4 + 1] = 0x00;
-    buffer[TRANSPARENT_INDEX * 4 + 2] = 0x00;
-    buffer[TRANSPARENT_INDEX * 4 + 3] = 0x00;
+    if(writeFakeTransparency)
+    {
+        buffer[TRANSPARENT_INDEX * 4 + 0] = TRANSPARENT_COLOR.b;
+        buffer[TRANSPARENT_INDEX * 4 + 1] = TRANSPARENT_COLOR.g;
+        buffer[TRANSPARENT_INDEX * 4 + 2] = TRANSPARENT_COLOR.r;
+    } else
+    {
+        // Transparentes Element transparent machen
+        buffer[TRANSPARENT_INDEX * 4 + 0] = 0x00;
+        buffer[TRANSPARENT_INDEX * 4 + 1] = 0x00;
+        buffer[TRANSPARENT_INDEX * 4 + 2] = 0x00;
+        buffer[TRANSPARENT_INDEX * 4 + 3] = 0x00;
+    }
 }
