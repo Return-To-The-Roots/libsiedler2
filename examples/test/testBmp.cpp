@@ -368,7 +368,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
 
     // Buffer with alpha = 0xFF
     std::vector<uint8_t> inBufferRGB(inBuffer);
-    std::vector<uint8_t> inBufferRGB2(inBufferRGB);
+    std::vector<uint8_t> inBufferRGB2(inBuffer2);
     for(unsigned i = 0; i < inBufferRGB.size(); i += 4)
         inBufferRGB[i + 3] = inBufferRGB2[i + 3] = 0xFF;
     std::vector<uint8_t> outBufferPal(inBufferPal.size(), 42);
@@ -399,13 +399,13 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
     for(unsigned i = 0; i < 4; i++)
     {
-        BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal[i]);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i*4]), libsiedler2::ColorRGBA::fromABGR(&inBufferRGB[i*4]));
+        BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i*4]), libsiedler2::ColorRGBA::fromABGR(&inBufferRGB2[i*4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBufferPal[i * 4]), libsiedler2::ColorRGBA(42, 42, 42, 42));
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA(42, 42, 42, 42));
     }
     // Test the same but create from BGRA buffer
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
@@ -417,7 +417,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to BGRA
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
-    // This should be inBufferRGB but current implementation only writes 0xFF for alpha
+    // This should not be inBufferRGB but current implementation only writes 0xFF for alpha
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
@@ -427,7 +427,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal2);
     // Same for BGRA
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2), 0);
-    // This should be inBufferRGB but current implementation only writes 0xFF for alpha
+    // This should not be inBufferRGB2 but current implementation only writes 0xFF for alpha
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB2);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
@@ -437,13 +437,13 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
     for(unsigned i = 0; i < 4; i++)
     {
-        BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal[i]);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA::fromABGR(&inBufferRGB[i * 4]));
+        BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA::fromABGR(&inBufferRGB2[i * 4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBufferPal[i * 4]), libsiedler2::ColorRGBA(42, 42, 42, 42));
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA(42, 42, 42, 42));
     }
 
 }
