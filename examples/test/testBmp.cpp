@@ -26,9 +26,28 @@
 #include "libsiedler2/src/ColorRGBA.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
+#include <boost/assign/std/vector.hpp>
+#include <boost/foreach.hpp>
 #include <algorithm>
 
+struct Rect
+{
+    int x, y, w, h;
+    Rect(){}
+    Rect(int x, int y, int w, int h): x(x), y(y), w(w), h(h){}
+    bool operator==(const Rect& rhs) const
+    {
+        return x == rhs.x && y == rhs.y && w == rhs.w && h == rhs.h;
+    }
+};
+
+std::ostream& operator<<(std::ostream& os, const Rect& rect)
+{
+    return os << "(" << rect.x << ", " << rect.y << ", " << rect.w << ", " << rect.h << ")";
+}
+
 using namespace libsiedler2;
+using namespace boost::assign;
 
 BOOST_FIXTURE_TEST_SUITE(Bitmaps, LoadPalette)
 
@@ -399,12 +418,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i*4]), libsiedler2::ColorRGBA::fromABGR(&inBufferRGB2[i*4]));
+        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i*4]), ColorRGBA::fromABGR(&inBufferRGB2[i*4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA(42, 42, 42, 42));
+        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i * 4]), ColorRGBA(42, 42, 42, 42));
     }
     // Test the same but create from BGRA buffer
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
@@ -435,14 +454,86 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA::fromABGR(&inBuffer2[i * 4]));
+        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i * 4]), ColorRGBA::fromABGR(&inBuffer2[i * 4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromABGR(&outBuffer[i * 4]), libsiedler2::ColorRGBA(42, 42, 42, 42));
+        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i * 4]), ColorRGBA(42, 42, 42, 42));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(GetVisibleArea)
+{
+    unsigned w = 7, h = 8;
+    // Use bigger size for bitmap
+    unsigned bw = w + 2, bh = h + 6;
+    std::vector<uint8_t> inBufferPal(w * h, TRANSPARENT_INDEX);
+    ArchivItem_Bitmap_Player bmp;
+    Rect vis;
+    // Test empty bmp
+    BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+    bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
+    BOOST_REQUIRE_EQUAL(vis, Rect(0, 0, 0, 0));
+
+    std::vector<Rect> singlePixelRects;
+    //                  left-top          top               right-top           
+    singlePixelRects += Rect(0, 0, 1, 1), Rect(2, 0, 1, 1), Rect(w - 1, 0, 1, 1),
+        //left            middle            right           
+        Rect(0, 3, 1, 1), Rect(3, 2, 1, 1), Rect(w - 1, 3, 1, 1),
+        //left-bottom     bottom-middle     bottom-right           
+        Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1);
+
+    BOOST_FOREACH(const Rect& rect, singlePixelRects)
+    {
+        // Test for non-player-color (127) and player color (128)
+        for(unsigned i = 127; i < 129; i++)
+        {
+            inBufferPal[rect.x + rect.y * w] = i;
+            BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+            Rect vis;
+            bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
+            BOOST_REQUIRE_EQUAL(vis, rect);
+            inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
+            // Buffer in (byte) BGRA format
+            std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u, 0);
+            BOOST_REQUIRE_EQUAL(bmp.print(&inBuffer[0], w, h, FORMAT_BGRA), 0);
+            ArchivItem_Bitmap_Player bmp2;
+            BOOST_REQUIRE_EQUAL(bmp2.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+            Rect vis2;
+            bmp2.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
+            BOOST_REQUIRE_EQUAL(vis2, rect);
+        }
     }
 
+    std::vector<Rect> doublePixelRects;
+    doublePixelRects += Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1),
+        Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(3, 2, 3, 1), Rect(3, 2, 1, 3),
+        Rect(0, h - 3, 2, 1), Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3), Rect(w - 4, h - 3, 4, 3),
+        Rect(0, 0, w, h);
+
+    BOOST_FOREACH(const Rect& rect, doublePixelRects)
+    {
+        for(unsigned i = 127; i < 129; i++)
+        {
+            inBufferPal[rect.x + rect.y * w] = i;
+            inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = i;
+            BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+            Rect vis;
+            bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
+            BOOST_REQUIRE_EQUAL(vis, rect);
+            inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
+            inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = TRANSPARENT_INDEX;
+            // Buffer in (byte) BGRA format
+            std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u, 0);
+            BOOST_REQUIRE_EQUAL(bmp.print(&inBuffer[0], w, h, FORMAT_BGRA), 0);
+            ArchivItem_Bitmap_Player bmp2;
+            BOOST_REQUIRE_EQUAL(bmp2.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+            Rect vis2;
+            bmp2.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
+            BOOST_REQUIRE_EQUAL(vis2, rect);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

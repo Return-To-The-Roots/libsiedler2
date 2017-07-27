@@ -199,7 +199,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
                 // Spielerfarbe Pixel setzen
                 for(uint8_t i = 0; i < shift; ++i, ++x)
                 {
-                    tex_pdata[y * width + x] = image[position];
+                    tex_pdata[y * tex_width_ + x] = image[position];
                     tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
                 }
                 ++position;
@@ -282,12 +282,12 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
             uint16_t target = position++;
 
             color = tex_getPixel(x, y, palette);
-            if(color == TRANSPARENT_INDEX && tex_pdata[y * width_ + x] == TRANSPARENT_INDEX)
+            if(color == TRANSPARENT_INDEX && tex_pdata[y * tex_width_ + x] == TRANSPARENT_INDEX)
             {
                 count = 0;
 
                 // transparente Pixel
-                while(color == TRANSPARENT_INDEX && tex_pdata[y * width_ + x + count] == TRANSPARENT_INDEX && count < 63 && x + count < width_)
+                while(color == TRANSPARENT_INDEX && tex_pdata[y * tex_width_ + x + count] == TRANSPARENT_INDEX && count < 63 && x + count < width_)
                 {
                     ++count;
                     color = tex_getPixel(x + count, y, palette);
@@ -296,14 +296,14 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
 
                 image[target] = count;
             }
-            else if( tex_pdata[y * width_ + x] != TRANSPARENT_INDEX )
+            else if( tex_pdata[y * tex_width_ + x] != TRANSPARENT_INDEX )
             {
-                uint8_t first = tex_pdata[y * width_ + x];
+                uint8_t first = tex_pdata[y * tex_width_ + x];
                 count = 0;
 
                 // spielerfarbe Pixel
-                image[position++] = tex_pdata[y * width_ + x];
-                while( tex_pdata[y * width_ + x + count] == first && count < 63 && x + count < width_)
+                image[position++] = tex_pdata[y * tex_width_ + x];
+                while( tex_pdata[y * tex_width_ + x + count] == first && count < 63 && x + count < width_)
                 {
                     ++count;
                 }
@@ -318,7 +318,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
 
                 // komprimierte Pixel
                 image[position++] = color;
-                while( color == first && tex_pdata[y * width_ + x + count] == TRANSPARENT_INDEX && count < 63 && x + count < width_)
+                while( color == first && tex_pdata[y * tex_width_ + x + count] == TRANSPARENT_INDEX && count < 63 && x + count < width_)
                 {
                     ++count;
                     color = tex_getPixel(x + count, y, palette);
@@ -431,7 +431,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
         for(uint32_t x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
             size_t posBuffer  = (y2 * buffer_width + x2) * bpp;
-            size_t posPlayerTex = (y * width + x) * 1;
+            size_t posPlayerTex = (y * tex_width_ + x) * 1;
             // und Pixel setzen
             switch(buffer_format)
             {
@@ -468,119 +468,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
 
     // Alles ok
     return 0;
-}
-
-void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
-{
-    int x, y, lx, ly;
-
-    vx = vy = 0;
-    lx = ly = -1;
-
-    if ((tex_width_ == 0) || (tex_height_ == 0))
-    {
-        return;
-    }
-
-//fprintf(stderr, "BPP %u\n", tex_bpp);
-
-    // find empty rows at left
-    for (x = 0; x < tex_width_; ++x)
-    {
-        for (y = 0; y < tex_height_; ++y)
-        {
-            if ((tex_bpp_ == 1) && ((tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                vx = x;
-                break;
-            }
-            else if ((tex_bpp_ == 4) && ((tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                vx = x;
-                break;
-            }
-        }
-
-        if (y != tex_height_)
-        {
-//fprintf(stderr, "--- %i\n", tex_pdata[tex_width * y +x]);
-            break;
-        }
-    }
-
-    // find empty rows at bottom
-    for (x = tex_width_ - 1; x >= 0; --x)
-    {
-        for (y = 0; y < tex_height_; ++y)
-        {
-            if ((tex_bpp_ == 1) && ((tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                lx = x;
-                break;
-            }
-            else if ((tex_bpp_ == 4) && ((tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                lx = x;
-                break;
-            }
-        }
-
-        if (y != tex_height_)
-        {
-            break;
-        }
-    }
-
-    // find empty rows at top
-    for (y = 0; y < tex_height_; ++y)
-    {
-        for (x = 0; x < tex_width_; ++x)
-        {
-            if ((tex_bpp_ == 1) && ((tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                vy = y;
-                break;
-            }
-            else if ((tex_bpp_ == 4) && ((tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                vy = y;
-                break;
-            }
-        }
-
-        if (x != tex_width_)
-        {
-            break;
-        }
-    }
-
-    // find empty rows at bottom
-    for (y = tex_height_ - 1; y >= 0; --y)
-    {
-        for (x = 0; x < tex_width_; ++x)
-        {
-            if ((tex_bpp_ == 1) && ((tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                ly = y;
-                break;
-            }
-            else if ((tex_bpp_ == 4) && ((tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00) || (tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX)))
-            {
-                ly = y;
-                break;
-            }
-        }
-
-        if (x != tex_width_)
-        {
-            break;
-        }
-    }
-
-    vw = lx + 1 - vx;
-    vh = ly + 1 - vy;
-
-//  fprintf(stderr, "%ix%i -> %ix%i %i,%i-%i,%i\n", tex_width, tex_height, vw, vh, vx, vy, lx, ly);
 }
 
 /**
@@ -654,7 +541,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
         {
             size_t posBuffer = (y2 * buffer_width + x2) * bpp;
             size_t posTexture = (y * tex_width_ + x) * tex_bpp_;
-            size_t posPlayerTex = (y * width_ + x) * 1;
+            size_t posPlayerTex = (y * tex_width_ + x) * 1;
             switch(tex_bpp_)
             {
                 case 1: // Textur ist Paletted
@@ -732,4 +619,92 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
 
     // Alles ok
     return 0;
+}
+
+void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
+{
+    int x, y, lx, ly;
+
+    vx = vy = 0;
+    lx = ly = -1;
+
+    if((tex_width_ == 0) || (tex_height_ == 0))
+    {
+        return;
+    }
+
+    // find empty rows at left
+    for(x = 0; x < tex_width_; ++x)
+    {
+        for(y = 0; y < tex_height_; ++y)
+        {
+            if((tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 1 && tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 4 && tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            {
+                vx = x;
+                break;
+            }
+        }
+
+        if(y != tex_height_)
+            break;
+    }
+
+    // find empty rows at bottom
+    for(x = tex_width_ - 1; x >= 0; --x)
+    {
+        for(y = 0; y < tex_height_; ++y)
+        {
+            if((tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 1 && tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 4 && tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            {
+                lx = x;
+                break;
+            }
+        }
+
+        if(y != tex_height_)
+            break;
+    }
+
+    // find empty rows at top
+    for(y = 0; y < tex_height_; ++y)
+    {
+        for(x = 0; x < tex_width_; ++x)
+        {
+            if((tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 1 && tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 4 && tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            {
+                vy = y;
+                break;
+            }
+        }
+
+        if(x != tex_width_)
+            break;
+    }
+
+    // find empty rows at bottom
+    for(y = tex_height_ - 1; y >= 0; --y)
+    {
+        for(x = 0; x < tex_width_; ++x)
+        {
+            if((tex_pdata[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 1 && tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX) ||
+                (tex_bpp_ == 4 && tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            {
+                ly = y;
+                break;
+            }
+        }
+
+        if(x != tex_width_)
+            break;
+    }
+
+    vw = lx + 1 - vx;
+    vh = ly + 1 - vy;
 }
