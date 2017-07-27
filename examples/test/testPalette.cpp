@@ -22,7 +22,7 @@
 #include "libsiedler2/src/ArchivItem_Palette.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ColorRGB.h"
-#include "libsiedler2/src/ColorRGBA.h"
+#include "libsiedler2/src/ColorARGB.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -100,12 +100,12 @@ BOOST_AUTO_TEST_CASE(GetColor)
     pal.copy(&clrBuf[0], clrBuf.size());
     for(unsigned i = 0; i < 256; i++)
     {
-        libsiedler2::ColorRGBA clr = pal[i];
+        libsiedler2::ColorARGB clr = pal[i];
         if(i == libsiedler2::TRANSPARENT_INDEX)
-            clr = libsiedler2::ColorRGBA(0, 0, 0, 0);
+            clr = libsiedler2::ColorARGB(0, 0, 0, 0);
 
         // RGBA buffer:
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorRGBA::fromRGBA(&clrBuf[i * 4]), clr);
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[i * 4]), clr);
     }
 }
 

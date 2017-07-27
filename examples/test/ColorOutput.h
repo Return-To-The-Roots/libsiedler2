@@ -21,7 +21,7 @@
 #define ColorOutput_h__
 
 #include "libsiedler2/src/ColorRGB.h"
-#include "libsiedler2/src/ColorRGBA.h"
+#include "libsiedler2/src/ColorARGB.h"
 #include <iostream>
 
 namespace libsiedler2{
@@ -29,7 +29,7 @@ namespace libsiedler2{
     {
         return os << "Color(" << unsigned(clr.r) << ", " << unsigned(clr.g) << ", " << unsigned(clr.b) << ")";
     }
-    inline std::ostream& operator<<(std::ostream& os, const ColorRGBA& clr)
+    inline std::ostream& operator<<(std::ostream& os, const ColorARGB& clr)
     {
         return os << "Color(" << unsigned(clr.getAlpha()) << ", " << unsigned(clr.getRed()) << ", "
             << unsigned(clr.getGreen()) << ", " << unsigned(clr.getBlue()) << ")";

@@ -17,14 +17,14 @@
 
 #include "ColorOutput.h"
 #include "libsiedler2/src/ColorRGB.h"
-#include "libsiedler2/src/ColorRGBA.h"
+#include "libsiedler2/src/ColorARGB.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/array.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/endian/conversion.hpp>
 #include <algorithm>
 
-using libsiedler2::ColorRGBA;
+using libsiedler2::ColorARGB;
 using libsiedler2::ColorRGB;
 
 BOOST_AUTO_TEST_CASE(ColorRGBCtor)
@@ -44,38 +44,38 @@ BOOST_AUTO_TEST_CASE(ColorRGBCtor)
 BOOST_AUTO_TEST_CASE(ColorARGBCtor)
 {
     // Default should be all zeros
-    ColorRGBA clrDef;
+    ColorARGB clrDef;
     BOOST_REQUIRE_EQUAL(clrDef.getRed(), 0u);
     BOOST_REQUIRE_EQUAL(clrDef.getGreen(), 0u);
     BOOST_REQUIRE_EQUAL(clrDef.getBlue(), 0u);
     BOOST_REQUIRE_EQUAL(clrDef.getAlpha(), 0u);
     // Default for alpha is 0xFF
-    ColorRGBA clr2(1, 2, 3);
+    ColorARGB clr2(1, 2, 3);
     BOOST_REQUIRE_EQUAL(clr2.getRed(), 1u);
     BOOST_REQUIRE_EQUAL(clr2.getGreen(), 2u);
     BOOST_REQUIRE_EQUAL(clr2.getBlue(), 3u);
     BOOST_REQUIRE_EQUAL(clr2.getAlpha(), 0xFF);
     // Check setting of elements
-    ColorRGBA clr(1, 2, 3, 4);
+    ColorARGB clr(1, 2, 3, 4);
     BOOST_REQUIRE_EQUAL(clr.getRed(), 1u);
     BOOST_REQUIRE_EQUAL(clr.getGreen(), 2u);
     BOOST_REQUIRE_EQUAL(clr.getBlue(), 3u);
     BOOST_REQUIRE_EQUAL(clr.getAlpha(), 4u);
     // Construct from RGB
-    ColorRGBA clrRGB(ColorRGB(5, 6, 7));
+    ColorARGB clrRGB(ColorRGB(5, 6, 7));
     BOOST_REQUIRE_EQUAL(clrRGB.getRed(), 5u);
     BOOST_REQUIRE_EQUAL(clrRGB.getGreen(), 6u);
     BOOST_REQUIRE_EQUAL(clrRGB.getBlue(), 7u);
     BOOST_REQUIRE_EQUAL(clrRGB.getAlpha(), 0xFF);
     // Set components
     clr.setRed(10);
-    BOOST_REQUIRE_EQUAL(clr, ColorRGBA(10, 2, 3, 4));
+    BOOST_REQUIRE_EQUAL(clr, ColorARGB(10, 2, 3, 4));
     clr.setGreen(20);
-    BOOST_REQUIRE_EQUAL(clr, ColorRGBA(10, 20, 3, 4));
+    BOOST_REQUIRE_EQUAL(clr, ColorARGB(10, 20, 3, 4));
     clr.setBlue(30);
-    BOOST_REQUIRE_EQUAL(clr, ColorRGBA(10, 20, 30, 4));
+    BOOST_REQUIRE_EQUAL(clr, ColorARGB(10, 20, 30, 4));
     clr.setAlpha(40);
-    BOOST_REQUIRE_EQUAL(clr, ColorRGBA(10, 20, 30, 40));
+    BOOST_REQUIRE_EQUAL(clr, ColorARGB(10, 20, 30, 40));
 }
 
 BOOST_AUTO_TEST_CASE(ColorRGBBuffer)
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(ColorRGBBuffer)
 BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
 {
     // Read from buffer
-    ColorRGBA checkClr(1, 42, 24, 99);
+    ColorARGB checkClr(1, 42, 24, 99);
     boost::array<uint8_t, 4> buf, buf2;
     // RGBA
     buf[0] = checkClr.getRed();
@@ -118,14 +118,14 @@ BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
     buf[3] = checkClr.getAlpha();
     // ABGR
     std::reverse_copy(buf.begin(), buf.end(), buf2.begin());
-    BOOST_REQUIRE_EQUAL(ColorRGBA::fromRGBA(&buf[0]), checkClr);
-    BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&buf2[0]), checkClr);
+    BOOST_REQUIRE_EQUAL(ColorARGB::fromBGRA(&buf[0]), checkClr);
+    BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&buf2[0]), checkClr);
     // Write to buffer. Check by reading from it which is tested
-    ColorRGBA checkClr2(5, 6, 23, 34);
-    checkClr2.toRGBA(&buf[0]);
-    BOOST_REQUIRE_EQUAL(ColorRGBA::fromRGBA(&buf[0]), checkClr2);
-    checkClr2.toABGR(&buf[0]);
-    BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&buf[0]), checkClr2);
+    ColorARGB checkClr2(5, 6, 23, 34);
+    checkClr2.toBGRA(&buf[0]);
+    BOOST_REQUIRE_EQUAL(ColorARGB::fromBGRA(&buf[0]), checkClr2);
+    checkClr2.toARGB(&buf[0]);
+    BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&buf[0]), checkClr2);
 
     boost::array<uint8_t, 8> bufABGR;
     bufABGR[0] = checkClr.getAlpha();
@@ -136,14 +136,14 @@ BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
     bufABGR[5] = checkClr2.getBlue();
     bufABGR[6] = checkClr2.getGreen();
     bufABGR[7] = checkClr2.getRed();
-    BOOST_STATIC_ASSERT_MSG(sizeof(ColorRGBA) == 4u, "Padding added to ColorARGB. Cannot read it as buffer");
+    BOOST_STATIC_ASSERT_MSG(sizeof(ColorARGB) == 4u, "Padding added to ColorARGB. Cannot read it as buffer");
 #if BOOST_BIG_ENDIAN
     // On big endian systems this is a word RGBA buffer. Swap it to BGRA
     boost::endian::endian_reverse_inplace(*reinterpret_cast<uint32_t*>(&bufABGR[0]));
     boost::endian::endian_reverse_inplace(*reinterpret_cast<uint32_t*>(&bufABGR[4]));
 #endif
     // Interpreting a buffer of ABGRABGR values as ColorARGB should be possible
-    const ColorRGBA* clrs = reinterpret_cast<const ColorRGBA*>(&bufABGR[0]);
+    const ColorARGB* clrs = reinterpret_cast<const ColorARGB*>(&bufABGR[0]);
     BOOST_REQUIRE_EQUAL(clrs[0], checkClr);
     BOOST_REQUIRE_EQUAL(clrs[1], checkClr2);
 }

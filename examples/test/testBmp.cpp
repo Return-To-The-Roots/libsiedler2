@@ -23,7 +23,7 @@
 #include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Raw.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
-#include "libsiedler2/src/ColorRGBA.h"
+#include "libsiedler2/src/ColorARGB.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/assign/std/vector.hpp>
@@ -184,12 +184,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
             if(x < xStart || y < yStart || x >= xStart + partW || y >= yStart + partH)
             {
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], 42u);
-                BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[idx]), ColorRGBA(42, 42, 42, 42));
+                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB(42, 42, 42, 42));
             } else
             {
                 unsigned inBufferIdx = x - xStart + xStartB + (y - yStart + yStartB) * w;
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], inBufferPal[inBufferIdx]);
-                BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[idx]), ColorRGBA::fromABGR(&inBufferRGB[inBufferIdx * 4]));
+                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB::fromARGB(&inBufferRGB[inBufferIdx * 4]));
             }
         }
     }
@@ -332,12 +332,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
             if(x < xStart || y < yStart || x >= xStart + partW || y >= yStart + partH)
             {
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], 42u);
-                BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[idx]), ColorRGBA(42, 42, 42, 42));
+                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB(42, 42, 42, 42));
             } else
             {
                 unsigned inBufferIdx = x - xStart + xStartB + (y - yStart + yStartB) * w;
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], inBufferPal[inBufferIdx]);
-                BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[idx]), ColorRGBA::fromABGR(&inBufferRGB[inBufferIdx * 4]));
+                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB::fromARGB(&inBufferRGB[inBufferIdx * 4]));
             }
         }
     }
@@ -418,12 +418,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i*4]), ColorRGBA::fromABGR(&inBufferRGB2[i*4]));
+        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i*4]), ColorARGB::fromARGB(&inBufferRGB2[i*4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i * 4]), ColorRGBA(42, 42, 42, 42));
+        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB(42, 42, 42, 42));
     }
     // Test the same but create from BGRA buffer
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
@@ -454,12 +454,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i * 4]), ColorRGBA::fromABGR(&inBuffer2[i * 4]));
+        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB::fromARGB(&inBuffer2[i * 4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(ColorRGBA::fromABGR(&outBuffer[i * 4]), ColorRGBA(42, 42, 42, 42));
+        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB(42, 42, 42, 42));
     }
 }
 
