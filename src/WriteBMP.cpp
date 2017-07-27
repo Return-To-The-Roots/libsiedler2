@@ -147,7 +147,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     fs.write(colors[0], bmih.clrused * 4);
 
     std::vector<uint8_t> buffer(bmih.width * bmih.height * (palette ? 1 : 4), palette ? TRANSPARENT_INDEX : 0);
-    TexturFormat bufFmt = palette ? FORMAT_PALETTED : FORMAT_RGBA;
+    TexturFormat bufFmt = palette ? FORMAT_PALETTED : FORMAT_BGRA;
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
@@ -168,7 +168,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
             fs.write(&buffer[idx], bmih.width);
         else
         {
-            idx *= 4; // ARGB
+            idx *= 4; // BGRA
             for(int x = 0; x < bmih.width; ++x, idx += 4)
             {
                 ColorRGB clr;

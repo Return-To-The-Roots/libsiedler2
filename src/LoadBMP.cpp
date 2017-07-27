@@ -167,7 +167,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
         } break;
         case 24: // oder 24 Bit
         {
-            bitmap->setFormat(libsiedler2::FORMAT_RGBA);
+            bitmap->setFormat(libsiedler2::FORMAT_BGRA);
         } break;
         default:
         {

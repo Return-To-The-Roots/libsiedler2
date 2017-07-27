@@ -67,8 +67,8 @@ namespace libsiedler2
                       uint16_t buffer_width,
                       uint16_t buffer_height,
                       TexturFormat buffer_format,
-                      const ArchivItem_Palette* palette,
-                      uint8_t color,
+                      const ArchivItem_Palette* palette = NULL,
+                      uint8_t color = 128,
                       uint16_t to_x = 0,
                       uint16_t to_y = 0,
                       uint16_t from_x = 0,
@@ -85,7 +85,7 @@ namespace libsiedler2
                        uint16_t buffer_height,
                        TexturFormat buffer_format,
                        const ArchivItem_Palette* palette,
-                       uint8_t color);
+                       uint8_t color = 128);
 
         protected:
             std::vector<uint8_t> tex_pdata; /// Die Spielerfarbedaten.

@@ -58,7 +58,7 @@ namespace {
         {
             assert(libsiedler2::allocator == NULL);
             libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
-            libsiedler2::setTextureFormat(libsiedler2::FORMAT_RGBA);
+            libsiedler2::setTextureFormat(libsiedler2::FORMAT_BGRA);
         }
         ~Initializer()
         {

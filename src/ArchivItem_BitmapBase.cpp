@@ -255,7 +255,7 @@ void ArchivItem_BitmapBase::tex_alloc()
     uint8_t clear;
     switch(format_)
     {
-        case FORMAT_RGBA:
+        case FORMAT_BGRA:
             tex_bpp_ = 4;
             clear = 0x00;
             break;

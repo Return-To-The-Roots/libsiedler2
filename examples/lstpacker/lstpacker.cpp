@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-    TexturFormat format = FORMAT_RGBA;
+    TexturFormat format = FORMAT_BGRA;
 
     setTextureFormat(format);
 

@@ -67,7 +67,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
     uint16_t bpp;
     switch(buffer_format)
     {
-        case FORMAT_RGBA:
+        case FORMAT_BGRA:
             bpp = 4;
             break;
         case FORMAT_PALETTED:
@@ -173,7 +173,7 @@ int baseArchivItem_Bitmap::create(uint16_t width,
     uint16_t bpp;
     switch(buffer_format)
     {
-        case FORMAT_RGBA:
+        case FORMAT_BGRA:
             bpp = 4;
             break;
         case FORMAT_PALETTED:
@@ -192,7 +192,7 @@ int baseArchivItem_Bitmap::create(uint16_t width,
             // und Pixel setzen
             switch(buffer_format)
             {
-                case FORMAT_RGBA:
+                case FORMAT_BGRA:
                     if(buffer[position + 3] != 0x00)
                         tex_setPixel(x, y, buffer[position + 2], buffer[position + 1], buffer[position], buffer[position + 3]);
                     else

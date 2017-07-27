@@ -27,7 +27,7 @@ namespace libsiedler2
     {
         FORMAT_UNKNOWN = 0,
         FORMAT_PALETTED = 1,
-        FORMAT_RGBA = 4
+        FORMAT_BGRA = 4
     };
 
      /** Supported bob types */

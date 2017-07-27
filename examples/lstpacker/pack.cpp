@@ -221,9 +221,9 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                 {
                     memset(buffer, 0, 1000 * 1000 * 4);
                     if(i->getBobType() == BOBTYPE_BITMAP_PLAYER)
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(i)->print(buffer, 1000, 1000, FORMAT_RGBA, palette, 128);
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(i)->print(buffer, 1000, 1000, FORMAT_BGRA, palette, 128);
                     else
-                        dynamic_cast<ArchivItem_Bitmap*>(i)->print(buffer, 1000, 1000, FORMAT_RGBA, palette);
+                        dynamic_cast<ArchivItem_Bitmap*>(i)->print(buffer, 1000, 1000, FORMAT_BGRA, palette);
                 }
 
                 switch(it->bobtype)
@@ -232,11 +232,11 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                     case BOBTYPE_BITMAP_SHADOW:
                     case BOBTYPE_BITMAP_RAW:
                     {
-                        dynamic_cast<ArchivItem_Bitmap*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_RGBA, palette);
+                        dynamic_cast<ArchivItem_Bitmap*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA, palette);
                     } break;
                     case BOBTYPE_BITMAP_PLAYER:
                     {
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_RGBA, palette, 128);
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA, palette, 128);
                     } break;
                     default:
                         cerr << "Unknown type for " << it->path << endl;

@@ -415,7 +415,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
     uint16_t bpp;
     switch(buffer_format)
     {
-        case FORMAT_RGBA:
+        case FORMAT_BGRA:
             bpp = 4;
             break;
         case FORMAT_PALETTED:
@@ -435,7 +435,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
             // und Pixel setzen
             switch(buffer_format)
             {
-                case FORMAT_RGBA:
+                case FORMAT_BGRA:
                 {
                     uint8_t c = palette->lookup(buffer[posBuffer + 2], buffer[posBuffer + 1], buffer[posBuffer + 0]);
                     if(buffer[posBuffer + 3] != 0x00)
@@ -638,7 +638,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
     uint16_t bpp;
     switch(buffer_format)
     {
-        case FORMAT_RGBA:
+        case FORMAT_BGRA:
             bpp = 4;
             break;
         case FORMAT_PALETTED:
