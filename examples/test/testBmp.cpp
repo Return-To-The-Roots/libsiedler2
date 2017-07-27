@@ -470,50 +470,36 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
     unsigned bw = w + 2, bh = h + 6;
     std::vector<uint8_t> inBufferPal(w * h, TRANSPARENT_INDEX);
     ArchivItem_Bitmap_Player bmp;
-    Rect vis;
-    // Test empty bmp
-    BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
-    bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
-    BOOST_REQUIRE_EQUAL(vis, Rect(0, 0, 0, 0));
+    ArchivItem_Bitmap_Raw bmpRaw;
+    {
+        Rect vis;
+        // Test empty bmp
+        BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+        bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
+        BOOST_REQUIRE_EQUAL(vis, Rect(0, 0, 0, 0));
+        Rect vis2;
+        // Test empty bmp
+        BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+        bmp.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
+        BOOST_REQUIRE_EQUAL(vis2, Rect(0, 0, 0, 0));
+    }
 
-    std::vector<Rect> singlePixelRects;
+    std::vector<Rect> testRects;
     //                  left-top          top               right-top           
-    singlePixelRects += Rect(0, 0, 1, 1), Rect(2, 0, 1, 1), Rect(w - 1, 0, 1, 1),
+    testRects += Rect(0, 0, 1, 1), Rect(2, 0, 1, 1), Rect(w - 1, 0, 1, 1),
         //left            middle            right           
         Rect(0, 3, 1, 1), Rect(3, 2, 1, 1), Rect(w - 1, 3, 1, 1),
         //left-bottom     bottom-middle     bottom-right           
-        Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1);
-
-    BOOST_FOREACH(const Rect& rect, singlePixelRects)
-    {
-        // Test for non-player-color (127) and player color (128)
-        for(unsigned i = 127; i < 129; i++)
-        {
-            inBufferPal[rect.x + rect.y * w] = i;
-            BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
-            Rect vis;
-            bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
-            BOOST_REQUIRE_EQUAL(vis, rect);
-            inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
-            // Buffer in (byte) BGRA format
-            std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u, 0);
-            BOOST_REQUIRE_EQUAL(bmp.print(&inBuffer[0], w, h, FORMAT_BGRA), 0);
-            ArchivItem_Bitmap_Player bmp2;
-            BOOST_REQUIRE_EQUAL(bmp2.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
-            Rect vis2;
-            bmp2.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
-            BOOST_REQUIRE_EQUAL(vis2, rect);
-        }
-    }
-
-    std::vector<Rect> doublePixelRects;
-    doublePixelRects += Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1),
+        Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1),
+    // doublePixelRects;
+        Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1),
         Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(3, 2, 3, 1), Rect(3, 2, 1, 3),
         Rect(0, h - 3, 2, 1), Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3), Rect(w - 4, h - 3, 4, 3),
         Rect(0, 0, w, h);
 
-    BOOST_FOREACH(const Rect& rect, doublePixelRects)
+    BOOST_FOREACH(const Rect& rect, testRects)
     {
+        // Test for non-player-color (127) and player color (128)
         for(unsigned i = 127; i < 129; i++)
         {
             inBufferPal[rect.x + rect.y * w] = i;
@@ -522,8 +508,15 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
             Rect vis;
             bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
             BOOST_REQUIRE_EQUAL(vis, rect);
+
+            BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+            Rect visRaw;
+            bmp.getVisibleArea(visRaw.x, visRaw.y, visRaw.w, visRaw.h);
+            BOOST_REQUIRE_EQUAL(visRaw, rect);
+
             inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
             inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = TRANSPARENT_INDEX;
+
             // Buffer in (byte) BGRA format
             std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u, 0);
             BOOST_REQUIRE_EQUAL(bmp.print(&inBuffer[0], w, h, FORMAT_BGRA), 0);
@@ -532,6 +525,12 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
             Rect vis2;
             bmp2.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
             BOOST_REQUIRE_EQUAL(vis2, rect);
+
+            BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+            Rect visRaw2;
+            bmp.getVisibleArea(visRaw2.x, visRaw2.y, visRaw2.w, visRaw2.h);
+            BOOST_REQUIRE_EQUAL(visRaw2, rect);
+            inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
         }
     }
 }
