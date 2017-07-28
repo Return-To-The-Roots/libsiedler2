@@ -157,8 +157,11 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
         else if(extension == "bob")
             ret = loader::LoadBOB(file, palette, items);
         else if(extension == "dat" || extension == "idx")
+        {
             ret = loader::LoadDATIDX(file, palette, items);
-        else if(extension == "lbm")
+            if(ret != 0 && extension == "dat")
+                ret = loader::LoadSND(file, items);
+        } else if(extension == "lbm")
             ret = loader::LoadLBM(file, items);
         else if(extension == "lst")
             ret = loader::LoadLST(file, palette, items);
