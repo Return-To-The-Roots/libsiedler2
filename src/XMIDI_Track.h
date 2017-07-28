@@ -68,12 +68,12 @@ namespace libsiedler2
 	
 	        void ApplyFirstState(first_state& fs, int chan_mask);
 	
-	        int ConvertNote(const int time, const uint8_t status, const int size);
-	        int ConvertEvent(const int time, const uint8_t status, const int size, first_state& fs);
-	        int ConvertSystemMessage(const int time, const uint8_t status);
+	        void ConvertNote(const int time, const uint8_t status, const int size);
+	        void ConvertEvent(const int time, const uint8_t status, const int size, first_state& fs);
+	        void ConvertSystemMessage(const int time, const uint8_t status);
 	
-	        int GetVLQ(uint32_t& quant);
-	        int GetVLQ2(uint32_t& quant);
+	        uint32_t GetVLQ();
+	        uint32_t GetVLQ2();
 	        void PutVLQ(uint32_t value);
 	
 	        void CreateNewEvent(int time);

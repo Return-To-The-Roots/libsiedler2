@@ -25,6 +25,11 @@
 
 namespace libsiedler2{
 
+bool isChunk(const char lhs[4], const char rhs[5])
+{
+    return strncmp(lhs, rhs, 4) == 0;
+}
+
 /** @class baseArchivItem_Sound_XMidi
  *
  *  Basisklasse für XMIDI-Sounds.
@@ -34,12 +39,12 @@ baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound(
 {
     setType(SOUNDTYPE_XMIDI);
 
-    tracks = 0;
+    numTracks = 0;
 }
 
 baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound( item )
 {
-    tracks = item.tracks;
+    numTracks = item.numTracks;
     tracklist = item.tracklist;
 }
 
@@ -52,7 +57,7 @@ baseArchivItem_Sound_XMidi& baseArchivItem_Sound_XMidi::operator=(const baseArch
     if(this == &item)
         return *this;
     baseArchivItem_Sound::operator=(item);
-    tracks = item.tracks;
+    numTracks = item.numTracks;
     tracklist = item.tracklist;
     return *this;
 }
@@ -63,108 +68,111 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
         return 1;
 
     libendian::EndianIStreamAdapter<true, std::istream &> fs(file);
-    uint32_t item_length = length;
-    long position = fs.getPosition();
+    // Position after the current item
+    long endPos = fs.getPosition() + length;
 
-    char header[4], subheader[4];
-    uint32_t chunk;
-
+    char header[4];
     // Header einlesen
     fs >> header;
 
     // ist es eine XMIDI-File? (Header "FORM")
-    if(strncmp(header, "FORM", 4) != 0)
+    if(!isChunk(header, "FORM"))
         return 3;
 
     // Länge einlesen
-    fs >> length;
+    uint32_t formHeaderLen;
+    fs >> formHeaderLen;
+    if(formHeaderLen & 1)
+        ++formHeaderLen;
+    const long headerEndPos = fs.getPosition() + formHeaderLen;
 
-    // Typ einlesen
-    fs >> subheader;
+    char chunkId[4];
+    fs >> chunkId;
 
     // ist es eine singleTrack-XMIDI-File? (Typ "XMID")
-    if(strncmp(subheader, "XMID", 4) == 0)
+    if(isChunk(chunkId, "XMID"))
+        numTracks = 1;
+    else if(isChunk(chunkId, "XDIR"))
     {
-        tracks = 1;
-    }
-    else if(strncmp(subheader, "XDIR", 4) == 0)
-    {
-        fs >> subheader;
-        if(strncmp(subheader, "INFO", 4) != 0)
+        fs >> chunkId;
+        if(!isChunk(chunkId, "INFO"))
             return 4;
         // Länge einlesen
-        fs >> length;
+        uint32_t chunkLen;
+        fs >> chunkLen;
         // Bei ungerader Zahl aufrunden
-        if(length & 1)
-            ++length;
-        if(length != sizeof(tracks))
+        if(chunkLen & 1)
+            ++chunkLen;
+        if(chunkLen != sizeof(numTracks))
             return 8;
 
+        // Little endian track count
         libendian::EndianIStreamAdapter<false, std::istream&> fsLE(file);
-        fsLE >> tracks;
+        fsLE >> numTracks;
 
-        fs >> subheader;
-        if(strncmp(subheader, "CAT ", 4) != 0)
+        assert(fs.getPosition() == headerEndPos);
+
+        fs >> chunkId;
+        if(!isChunk(chunkId, "CAT "))
             return 5;
-        fs.ignore(4);
-        fs >> subheader;
-        if(strncmp(subheader, "XMID", 4) != 0)
+        fs.ignore(4); // Ignore cat size which is the following XMID (4)
+        fs >> chunkId;
+        if(!isChunk(chunkId, "XMID"))
             return 12;
-    }
-    else
+    } else
         return 13;
 
-    if(tracks == 0 || tracks > 256)
+    if(numTracks == 0 || numTracks > 256)
         return 14;
 
     uint16_t track_nr = 0;
-    while(track_nr < tracks)
+    while(track_nr < numTracks)
     {
+        if(!fs)
+            return 99;
         // Chunk-Typ einlesen
-        fs >> chunk;
+        fs >> header;
 
-        switch(chunk)
+        if(isChunk(header, "FORM"))
         {
-            case 0x464F524D: // "FORM"
+            uint32_t chunkLen;
+            fs >> formHeaderLen;
+            if(formHeaderLen & 1)
+                ++formHeaderLen;
+
+            fs >> chunkId;
+            if(!isChunk(chunkId, "XMID"))
+                return 22;
+            fs >> chunkId;
+            // Optional TIMB
+            if(isChunk(chunkId, "TIMB"))
             {
-                fs.ignore(4);
-            } break;
-            case 0x584D4944: // "XMID"
-            {
-            } break;
-            case 0x54494D42: // "TIMB"
-            {
-                // Länge einlesen
-                fs >> length;
+                fs >> chunkLen;
+                // Alignment: Round uneven up
+                if(chunkLen & 1)
+                    ++chunkLen;
 
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
+                fs.ignore(chunkLen);
+                fs >> chunkId;
+            }
+            if(!isChunk(chunkId, "EVNT"))
+                return 23;
+            fs >> chunkLen;
+            // Alignment: Round uneven up
+            if(chunkLen & 1)
+                ++chunkLen;
+            if(tracklist[track_nr].readXMid(file, chunkLen) != 0)
+                return 18;
 
-                fs.ignore(length);
-            } break;
-            case 0x45564E54: // "EVNT"
-            {
-                // Länge einlesen
-                 fs >> length;
-
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
-
-                if(tracklist[track_nr].readXMid(file, length) != 0)
-                    return 18;
-
-                if(tracklist[track_nr].XMid2Mid() != 0)
-                    return 19;
-
-                ++track_nr;
-            } break;
-        }
+            if(tracklist[track_nr].XMid2Mid() != 0)
+                return 19;
+            ++track_nr;
+        } else
+            return 33;
     }
 
     // auf jeden Fall kompletten Datensatz überspringen
-    fs.setPosition(position + item_length);
+    fs.setPosition(endPos);
     return (!file) ? 99 : 0;
 }
 
@@ -174,7 +182,7 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
         return 1;
 
     uint32_t length = 0;
-    for(uint16_t i = 0; i < tracks; ++i)
+    for(uint16_t i = 0; i < numTracks; ++i)
         length += tracklist[i].getMidLength(false);
     libendian::EndianOStreamAdapter<true, std::ostream&> fs(file);
     libendian::EndianOStreamAdapter<false, std::ostream&> fsLE(file);
@@ -192,12 +200,12 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
     fs << uint16_t(0);
 
     // Tracksanzahl schreiben
-    fs << tracks;
+    fs << numTracks;
 
     // PPQS schreiben
     fs << uint16_t(96);
 
-    for(uint16_t i = 0; i < tracks; ++i)
+    for(uint16_t i = 0; i < numTracks; ++i)
     {
         fs.write(tracklist[i].getMid(false), tracklist[i].getMidLength(false));
     }
@@ -209,7 +217,7 @@ void baseArchivItem_Sound_XMidi::addTrack(const MIDI_Track& track)
 {
     if(getTrackCount() >= tracklist.size())
         throw std::runtime_error("No more space for tracks");
-    tracklist[tracks++] = track;
+    tracklist[numTracks++] = track;
 }
 
 } // namespace libsiedler2

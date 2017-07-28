@@ -23,6 +23,7 @@
 #include <boost/endian/conversion.hpp>
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 
 namespace libsiedler2
 {
@@ -65,28 +66,26 @@ namespace libsiedler2
 	
 	int XMIDI_Track::ConvertTrackToList()
 	{
-	    int            time = 0; // 120th of a second
-	    uint32_t   data;
-	    int            end = 0;
-	    uint32_t   status = 0;
-	    int            play_size = 3;
-	    int            retval = 0;
-	
+	    int time = 0; // 120th of a second
+	    bool end = false;
+	    uint32_t status = 0;
+        int retval = 0;
+
 	    position = 0;
 	
 	    first_state fs;
 	
 	    while (!end && position < track->xmid_data.size())
 	    {
-	        GetVLQ2(data);
-	        time += data;
+            const uint32_t delta = GetVLQ2();
+	        time += delta;
 	        status = (uint32_t)track->xmid_data[position++];
 	
 	        switch (status >> 4)
 	        {
 	            case MIDI_STATUS_NOTE_ON:
 	                retval |= 1 << (status & 0xF);
-	                ConvertNote(time, status, play_size);
+	                ConvertNote(time, status, 3);
 	                break;
 	
 	            case MIDI_STATUS_NOTE_OFF:
@@ -109,19 +108,20 @@ namespace libsiedler2
 	            case MIDI_STATUS_SYSEX:
 	                if (status == 0xFF)
 	                {
-	                    size_t pos = position;
-	                    uint32_t data = track->xmid_data[position++];
-	
-	                    if (data == 0x2F)
-	                        end = 1;
-	                    else if (data == 0x51)
+	                    uint32_t data = track->xmid_data[position];
+	                    // Handle those 2 in here
+                        if(data == 0x2F)
+                        {
+                            position++;
+                            end = true;
+                        } else if(data == 0x51)
 	                    {
-	                        GetVLQ(data);
-	                        position += data;
+                            // Tempo setting -> ignore
+                            position++;
+	                        uint32_t offset = GetVLQ();
+	                        position += offset;
 	                        break;
 	                    }
-	
-	                    position = pos;
 	                }
 	                ConvertSystemMessage(time, status);
 	                break;
@@ -135,44 +135,36 @@ namespace libsiedler2
 	    return retval;
 	}
 	
-	int XMIDI_Track::GetVLQ(uint32_t& quant)
-	{
-	    int i;
-	    quant = 0;
+	uint32_t XMIDI_Track::GetVLQ()
+{
+        uint32_t quant = 0;
 	    uint8_t data = 0;
 	
-	    for (i = 0; i < 4; i++)
+	    for (int i = 0; i < 4; i++)
 	    {
 	        data = track->xmid_data[position++];
 	        quant <<= 7;
 	        quant |= data & 0x7F;
 	
 	        if (!(data & 0x80))
-	        {
-	            i++;
-	            break;
-	        }
+                return quant;
 	    }
-	    return i;
-	}
+        throw std::runtime_error("Could not get VLQ");
+    }
 	
-	int XMIDI_Track::GetVLQ2(uint32_t& quant)
+	uint32_t XMIDI_Track::GetVLQ2()
 	{
-	    int i;
-	    quant = 0;
-	    uint8_t data = 0;
-	
-	    for (i = 0; i < 4; i++)
-	    {
-	        data = track->xmid_data[position++];
-	        if (data & 0x80)
-	        {
-	            position--;
-	            break;
-	        }
-	        quant += data;
-	    }
-	    return i;
+        uint32_t quant = 0;
+        for(int i = 0; i < 4; i++)
+        {
+            uint8_t data = track->xmid_data[position];
+            if(data & 0x80)
+                return quant;
+            quant += data;
+            ++position;
+        }
+        // Exceeded max size
+        throw std::runtime_error("Could not get VLQ2");
 	}
 	
 	void XMIDI_Track::PutVLQ(uint32_t value)
@@ -194,12 +186,9 @@ namespace libsiedler2
 	    }
 	}
 	
-	int XMIDI_Track::ConvertNote(const int time, const uint8_t status, const int size)
+	void XMIDI_Track::ConvertNote(const int time, const uint8_t status, const int size)
 	{
-	    uint32_t delta = 0;
-	    int data;
-	
-	    data = track->xmid_data[position++];
+	    int data = track->xmid_data[position++];
 	
 	    CreateNewEvent(time);
 	    current->status = status;
@@ -212,18 +201,16 @@ namespace libsiedler2
 	        current->data[1] = VolumeCurve[current->data[1]];
 	
 	    if (size == 2)
-	        return 2;
+	        return;
 	
 	    // XMI Note On handling
-	
-	    int i = GetVLQ(delta);
-	    current->duration = delta;
+	    current->duration = GetVLQ();
 	
 	    // This is an optimization
 	    MIDI_Event* prev = current;
 	
 	    // Create a note off
-	    CreateNewEvent(time + delta);
+	    CreateNewEvent(time + current->duration);
 	
 	    current->status = status;
 	    current->data[0] = data;
@@ -231,11 +218,9 @@ namespace libsiedler2
 	
 	    // Optimization
 	    current = prev;
-	
-	    return i + 2;
 	}
 	
-	int XMIDI_Track::ConvertEvent(const int time, const uint8_t status, const int size, first_state& fs)
+	void XMIDI_Track::ConvertEvent(const int time, const uint8_t status, const int size, first_state& fs)
 	{
 	    //   Uint32 delta=0;
 	    int data = track->xmid_data[position++];
@@ -247,15 +232,11 @@ namespace libsiedler2
 	        // Skip byte
 	        position++;
 	        bank127[statValue] = false;
-	
-	        return 2;
 	    }
 	
 	    // Disable patch changes on Track 10 is doing a conversion
 	    else if (curStatus == MIDI_STATUS_PROG_CHANGE && statValue == 9)
-	    {
-	        return size;
-	    }
+	        return
 	
 	    CreateNewEvent(time);
 	    current->status = status;
@@ -287,41 +268,32 @@ namespace libsiedler2
 	    }
 	
 	    if (size == 1)
-	        return 1;
+	        return;
 	
 	    current->data[1] = track->xmid_data[position++];
 	
 	    // Volume modify the volume controller, only if converting
 	    if (curStatus == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
 	        current->data[1] = VolumeCurve[current->data[1]];
-	
-	    return 2;
 	}
 	
-	int XMIDI_Track::ConvertSystemMessage(const int time, const uint8_t status)
+	void XMIDI_Track::ConvertSystemMessage(const int time, const uint8_t status)
 	{
-	    int i = 0;
-	
 	    CreateNewEvent(time);
 	    current->status = status;
 	
 	    // Handling of Meta events
 	    if (status == 0xFF)
-	    {
 	        current->data[0] = track->xmid_data[position++];
-	        i++;
-	    }
 	
-	    uint32_t len;
-	    i += GetVLQ(len);
+	    uint32_t len = GetVLQ();
 	
 	    current->buffer.clear();
 	    if (!len)
-	        return i;
+	        return;
 	
 	    std::copy(track->xmid_data.begin() + position, track->xmid_data.begin() + position + len, std::back_inserter(current->buffer));
-	
-	    return i + len;
+        position += len;
 	}
 	
 	void XMIDI_Track::CreateNewEvent(int time)
