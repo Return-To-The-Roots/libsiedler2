@@ -49,14 +49,14 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, uint32_t le
     if(!file || length == 0)
         return 1;
 
-    char header[4];
-    bool prependheader = true;
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
 
     // Header einlesen
+    char header[4];
     fs >> header;
 
     // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
+    bool prependheader = true;
     if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
         prependheader = false;
 
@@ -145,8 +145,6 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
         start = &data[44];
         length -= 44;
     }
-
-    fs << length;
 
     fs.write(start, length);
 

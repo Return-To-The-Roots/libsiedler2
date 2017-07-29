@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Midi.h"
+#include "MIDI_Header.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -24,6 +25,11 @@
 #include <stdexcept>
 
 namespace libsiedler2{
+
+inline bool isChunk(const char lhs[4], const char rhs[5])
+{
+    return strncmp(lhs, rhs, 4) == 0;
+}
 
 /** @class baseArchivItem_Sound_Midi
  *
@@ -34,12 +40,12 @@ baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi() : baseArchivItem_Sound()
 {
     setType(SOUNDTYPE_MIDI);
 
-    tracks = 0;
+    numTracks = 0;
 }
 
 baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item) : baseArchivItem_Sound( item )
 {
-    tracks = item.tracks;
+    numTracks = item.numTracks;
     tracklist = item.tracklist;
 }
 
@@ -53,7 +59,7 @@ baseArchivItem_Sound_Midi& baseArchivItem_Sound_Midi::operator=(const baseArchiv
         return *this;
 
     baseArchivItem_Sound::operator=(item);
-    tracks = item.tracks;
+    numTracks = item.numTracks;
     tracklist = item.tracklist;
 
     return *this;
@@ -65,64 +71,44 @@ int baseArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
         return 1;
 
     libendian::EndianIStreamAdapter<true, std::istream&> fs(file);
-    uint32_t item_length = length;
-    long position = fs.getPosition();
+    const long itemEndPos = fs.getPosition() + length;
 
-    char header[4];
-    uint32_t chunk;
-    uint16_t type = 0;
-    uint16_t ppqs = 96;
-
-    // Header einlesen
-    fs >> header;
-
+    MIDI_Header header;
+    if(!fs.readRaw(&header, 1))
+        return 2;
     // ist es eine MIDI-File? (Header "MThd")
-    if(strncmp(header, "MThd", 4) != 0)
+    if(!isChunk(header.id, "MThd"))
         return 3;
 
-    // Länge einlesen
-    fs >> length;
+    numTracks = header.numTracks;
+    ppqs = header.ppqs;
 
-    // Typ einlesen
-    fs >> type;
-
-    // Tracksanzahl einlesen
-    fs >> tracks;
-
-    // PPQS einlesen
-    fs >> ppqs;
-
-    if(tracks == 0 || tracks > 256)
+    if(numTracks == 0 || numTracks > 256)
         return 8;
 
-    uint16_t track_nr = 0;
-    while(track_nr < tracks)
+    uint16_t curTrack = 0;
+    while(curTrack < numTracks)
     {
-        // Chunk-Typ einlesen
-        fs >> chunk;
-
-        switch(chunk)
+        char chunk[4];
+        uint32_t chunkLen;
+        if(!(fs >> chunk >> chunkLen))
+            return 9;
+        if(isChunk(chunk, "MTrk"))
         {
-            case 0x4D54726B: // "MTrk"
-            {
-                // Länge einlesen
-                fs >> length;
+            fs.setPositionRel(-8);
+            chunkLen += 8;
 
-                fs.setPositionRel(-8);
-                length += 8;
+            if(!tracklist[curTrack].read(file, chunkLen))
+                return 11;
 
-                if(tracklist[track_nr].readMid(file, length) != 0)
-                    return 11;
-
-                ++track_nr;
-            } break;
-            default:
-                return 12;
-        }
+            ++curTrack;
+        } else
+            return 12;
     }
 
+    assert(fs.getPosition() == itemEndPos);
     // auf jeden Fall kompletten Datensatz überspringen
-    fs.setPosition(position + item_length);
+    fs.setPosition(itemEndPos);
     return (!file) ? 99 : 0;
 }
 
@@ -132,34 +118,17 @@ int baseArchivItem_Sound_Midi::write(std::ostream& file) const
         return 1;
 
     libendian::EndianOStreamAdapter<true, std::ostream&> fs(file);
-    libendian::EndianOStreamAdapter<false, std::ostream&> fsLE(file);
 
-    uint32_t length = 0;
-    for(uint16_t i = 0; i < tracks; ++i)
-        length += tracklist[i].getMidLength(false);
-
-    // LST-Länge schreiben (little endian!)
-    fsLE << (length + 14);
-
-    // Header schreiben
-    fs.write("MThd", 4);
-
-    // Länge schreiben
-    fs << length;
-
-    // Typ schreiben
-    fs << uint16_t(0);
-
-    // Tracksanzahl schreiben
-    fs << tracks;
-
-    // PPQS schreiben
-    fs << uint16_t(96);
-
-    for(uint16_t i = 0; i < tracks; ++i)
-    {
-        fs.write(tracklist[i].getMid(false), tracklist[i].getMidLength(false));
-    }
+    MIDI_Header header;
+    strncpy(header.id, "MThd", 4);
+    header.headerSize = 6;
+    header.format = numTracks == 1 ? 0 : 1;
+    header.numTracks = numTracks;
+    header.ppqs = ppqs;
+    if(!fs.writeRaw(&header, 1))
+        return 2;
+    for(uint16_t i = 0; i < numTracks; ++i)
+        fs.write(tracklist[i].getMid(), tracklist[i].getMidLength());
 
     return (!file) ? 99 : 0;
 }
@@ -168,7 +137,7 @@ void baseArchivItem_Sound_Midi::addTrack(const MIDI_Track& track)
 {
     if(getTrackCount() >= tracklist.size())
         throw std::runtime_error("No more space for tracks");
-    tracklist[tracks++] = track;
+    tracklist[numTracks++] = track;
 }
 
 } // namespace libsiedler2

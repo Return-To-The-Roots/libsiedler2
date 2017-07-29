@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_XMidi.h"
+#include "XMIDI_TrackConverter.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -25,7 +26,7 @@
 
 namespace libsiedler2{
 
-bool isChunk(const char lhs[4], const char rhs[5])
+inline bool isChunk(const char lhs[4], const char rhs[5])
 {
     return strncmp(lhs, rhs, 4) == 0;
 }
@@ -35,17 +36,17 @@ bool isChunk(const char lhs[4], const char rhs[5])
  *  Basisklasse für XMIDI-Sounds.
  */
 
-baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound()
+baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound(), numTracks(0), ppqs(0)
 {
     setType(SOUNDTYPE_XMIDI);
-
-    numTracks = 0;
 }
 
 baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound( item )
 {
     numTracks = item.numTracks;
+    ppqs = item.ppqs;
     tracklist = item.tracklist;
+    midiTracklist = item.midiTracklist;
 }
 
 baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi()
@@ -58,7 +59,9 @@ baseArchivItem_Sound_XMidi& baseArchivItem_Sound_XMidi::operator=(const baseArch
         return *this;
     baseArchivItem_Sound::operator=(item);
     numTracks = item.numTracks;
+    ppqs = item.ppqs;
     tracklist = item.tracklist;
+    midiTracklist = item.midiTracklist;
     return *this;
 }
 
@@ -68,6 +71,7 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
         return 1;
 
     libendian::EndianIStreamAdapter<true, std::istream &> fs(file);
+    libendian::EndianIStreamAdapter<false, std::istream&> fsLE(file);
     // Position after the current item
     long endPos = fs.getPosition() + length;
 
@@ -107,7 +111,6 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
             return 8;
 
         // Little endian track count
-        libendian::EndianIStreamAdapter<false, std::istream&> fsLE(file);
         fsLE >> numTracks;
 
         assert(fs.getPosition() == headerEndPos);
@@ -151,8 +154,13 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
                 // Alignment: Round uneven up
                 if(chunkLen & 1)
                     ++chunkLen;
-
-                fs.ignore(chunkLen);
+                uint16_t numTimbres;
+                fsLE >> numTimbres;
+                if(numTimbres * 2 + sizeof(numTimbres) != chunkLen)
+                    return 22;
+                tracklist[track_nr].getTimbres().resize(numTimbres);
+                if(numTimbres > 0)
+                    fs.readRaw(&tracklist[track_nr].getTimbres()[0], numTimbres);
                 fs >> chunkId;
             }
             if(!isChunk(chunkId, "EVNT"))
@@ -161,16 +169,15 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
             // Alignment: Round uneven up
             if(chunkLen & 1)
                 ++chunkLen;
-            if(tracklist[track_nr].readXMid(file, chunkLen) != 0)
+            if(!tracklist[track_nr].read(file, chunkLen))
                 return 18;
 
-            if(tracklist[track_nr].XMid2Mid() != 0)
-                return 19;
             ++track_nr;
         } else
             return 33;
     }
 
+    assert(fs.getPosition() == endPos);
     // auf jeden Fall kompletten Datensatz überspringen
     fs.setPosition(endPos);
     return (!file) ? 99 : 0;
@@ -181,39 +188,66 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
     if(!file)
         return 1;
 
-    uint32_t length = 0;
-    for(uint16_t i = 0; i < numTracks; ++i)
-        length += tracklist[i].getMidLength(false);
     libendian::EndianOStreamAdapter<true, std::ostream&> fs(file);
     libendian::EndianOStreamAdapter<false, std::ostream&> fsLE(file);
-
-    // LST-Länge schreiben (Little Endian!)
-    fsLE << (length + 14);
-
-    // Header schreiben
-    fs.write("MThd", 4);
-
-    // Länge schreiben
-    fs << length;
-
-    // Typ schreiben
-    fs << uint16_t(0);
-
-    // Tracksanzahl schreiben
-    fs << numTracks;
-
-    // PPQS schreiben
-    fs << uint16_t(96);
-
-    for(uint16_t i = 0; i < numTracks; ++i)
+    fs.write("FORM", 4);
+    fs << uint32_t(14);
+    fs.write("XDIR", 4);
+    fs.write("INFO", 4);
+    fs << uint32_t(sizeof(numTracks));
+    fsLE << numTracks;
+    fs.write("CAT ", 4);
+    uint32_t len = 4; // "XMID"
+    std::vector<uint32_t> trackLengths(numTracks);
+    for(unsigned i = 0; i < numTracks; i++)
     {
-        fs.write(tracklist[i].getMid(false), tracklist[i].getMidLength(false));
+        uint32_t trackLength = 4 + sizeof(uint32_t) + 4; // XMID EVNT len
+        const XMIDI_Track& track = tracklist[i];
+        trackLength += track.getData().size();
+        if(!track.getTimbres().empty())
+            trackLength += 4 + sizeof(uint32_t) + sizeof(uint16_t) + track.getTimbres().size() * 2;
+        trackLengths[i] = trackLength;
+        len += 4 + sizeof(uint32_t) + trackLength; // FORM len
+    }
+    fs << len;
+    fs.write("XMID", 4);
+    for(unsigned i = 0; i < numTracks && !!fs; i++)
+    {
+        fs.write("FORM", 4);
+        fs << uint32_t(trackLengths[i]); // - FORM
+        fs.write("XMID", 4);
+        const XMIDI_Track& track = tracklist[i];
+        if(!track.getTimbres().empty())
+        {
+            fs.write("TIMB", 4);
+            fs << uint32_t(track.getTimbres().size() * 2 + 2);
+            fsLE << uint16_t(track.getTimbres().size());
+            fs.writeRaw(&track.getTimbres()[0], track.getTimbres().size());
+        }
+        fs.write("EVNT", 4);
+        fs << uint32_t(track.getData().size());
+        fs << track.getData();
     }
 
     return (!file) ? 99 : 0;
 }
 
-void baseArchivItem_Sound_XMidi::addTrack(const MIDI_Track& track)
+libsiedler2::MIDI_Track* baseArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
+{
+    const XMIDI_Track* origTrack = getTrack(trackIdx);
+    if(!origTrack)
+        return NULL;
+    if(midiTracklist[trackIdx].getData().empty())
+    {
+        XMIDI_TrackConverter converter(*origTrack);
+        if(!converter.Convert())
+            throw std::runtime_error("Invalid XMIDI track detected");
+        midiTracklist[trackIdx] = converter.CreateMidiTrack();
+    }
+    return &midiTracklist[trackIdx];
+}
+
+void baseArchivItem_Sound_XMidi::addTrack(const XMIDI_Track& track)
 {
     if(getTrackCount() >= tracklist.size())
         throw std::runtime_error("No more space for tracks");

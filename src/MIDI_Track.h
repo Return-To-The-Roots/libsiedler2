@@ -25,26 +25,22 @@
 
 namespace libsiedler2
 {
+    
 	class MIDI_Track
 	{
 	    public:
-	        MIDI_Track();
-	        ~MIDI_Track();
+            MIDI_Track();
+            MIDI_Track(const std::vector<uint8_t>& data);
+            ~MIDI_Track();
 	
-	        int readXMid(std::istream& file, size_t length);
-	        void clearXMid();
+            bool read(std::istream& file, size_t length);
+	        void clear();
 	
-	        int readMid(std::istream& file, size_t length);
-	        void clearMid();
-	
-	        int XMid2Mid();
-	        const uint8_t* getMid(bool withheader = false) const;
-	        uint32_t getMidLength(bool withheader = false) const;
-	
-	        friend class XMIDI_Track;
-	
+	        const uint8_t* getMid() const;
+	        uint32_t getMidLength() const;
+            const std::vector<uint8_t>& getData() const { return mid_data; }
+
 	    protected:
-	        std::vector<uint8_t> xmid_data;
 	        std::vector<uint8_t> mid_data;
 	};
 }

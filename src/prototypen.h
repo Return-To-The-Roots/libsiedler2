@@ -110,7 +110,7 @@ namespace libsiedler2
 #		define LoadXMID LoadSND
 #		define LoadWAV LoadSND
 
-		int WriteSND(const std::string& file, ArchivInfo& items);
+		int WriteSND(const std::string& file, const ArchivInfo& items);
 
 #		define WriteWAV WriteSND
 

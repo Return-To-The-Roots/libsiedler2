@@ -21,6 +21,7 @@
 
 #include "ArchivItem_Sound.h"
 #include "MIDI_Track.h"
+#include "XMIDI_Track.h"
 #include <boost/array.hpp>
 #include <stdint.h>
 
@@ -41,14 +42,17 @@ namespace libsiedler2
             int load(std::istream& file, uint32_t length) override;
             int write(std::ostream& file) const override;
 
-            MIDI_Track* getTrack(uint16_t track) { if(track < numTracks) return &tracklist[track]; return NULL; }
+            XMIDI_Track* getTrack(uint16_t track) { if(track < numTracks) return &tracklist[track]; return NULL; }
+            const XMIDI_Track* getTrack(uint16_t track) const { if(track < numTracks) return &tracklist[track]; return NULL; }
+            MIDI_Track* getMidiTrack(uint16_t trackIdx);
             uint16_t getTrackCount() const { return numTracks; }
 
-            void addTrack(const MIDI_Track& track);
+            void addTrack(const XMIDI_Track& track);
 
         protected:
-            uint16_t numTracks;
-            boost::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
+            uint16_t numTracks, ppqs;
+            boost::array<XMIDI_Track, 256> tracklist; //-V730_NOINIT
+            boost::array<MIDI_Track, 256> midiTracklist; //-V730_NOINIT
     };
 
     /// Klasse für XMIDI-Sounds.

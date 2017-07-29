@@ -17,7 +17,6 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "MIDI_Track.h"
-#include "XMIDI_Track.h"
 #include <iostream>
 #include <cstring>
 #include <limits>
@@ -26,75 +25,40 @@ namespace libsiedler2
 {
 	MIDI_Track::MIDI_Track()
 	{}
+
+    MIDI_Track::MIDI_Track(const std::vector<uint8_t>& data): mid_data(data)
+    {}
 	
 	MIDI_Track::~MIDI_Track()
 	{}
 	
-	int MIDI_Track::readXMid(std::istream& file, size_t length)
+    bool MIDI_Track::read(std::istream& file, size_t length)
 	{
-	    xmid_data.resize(length);
-	    if(!file.read(reinterpret_cast<char*>(&xmid_data.front()), length))
-	        return 1;
-	    return 0;
-	}
-	
-	void MIDI_Track::clearXMid()
-	{
-	    xmid_data.clear();
-	}
-	
-	int MIDI_Track::readMid(std::istream& file, size_t length)
-	{
-	    clearMid();
+	    clear();
 	    if(length == 0)
-	        return 0;
+	        return true;
 	
-	    mid_data.resize(length + 14);
-	    // MIDI Header setzen
-	    mid_data[0] = 'M';
-	    mid_data[1] = 'T';
-	    mid_data[2] = 'h';
-	    mid_data[3] = 'd';
-	    mid_data[7] = 0x06; // block length (bytes 3-7)
-	    *reinterpret_cast<uint16_t*>(&mid_data[8]) = 0x0000; // type (MIDI 0)
-	    *reinterpret_cast<uint16_t*>(&mid_data[10]) = 0x0100; // trackanzahl (1)
-	    *reinterpret_cast<uint16_t*>(&mid_data[12]) = 0x3C00; // PPQN (?)
-	    if(!file.read(reinterpret_cast<char*>(&mid_data[14]), length - 14))
-	        return 1;
-	    return 0;
+        mid_data.resize(length);
+	    if(!file.read(reinterpret_cast<char*>(&mid_data[0]), length))
+	        return false;
+	    return true;
 	}
 	
-	void MIDI_Track::clearMid()
+	void MIDI_Track::clear()
 	{
 	    mid_data.clear();
 	}
 	
-	int MIDI_Track::XMid2Mid()
-	{
-	    XMIDI_Track track(this);
-	    if(track.Convert() != 0)
-	        return 1;
-	
-	    return 0;
-	}
-	
-	const uint8_t* MIDI_Track::getMid(bool withheader) const
+	const uint8_t* MIDI_Track::getMid() const
 	{
 	    if(mid_data.empty())
 	        return NULL;
-	
-	    if(withheader)
-	        return &mid_data[0];
-	
-	    return &mid_data[14];
+        return &mid_data[0];
 	}
 	
-	uint32_t MIDI_Track::getMidLength(bool withheader) const
+	uint32_t MIDI_Track::getMidLength() const
 	{
 	    assert(mid_data.size() < std::numeric_limits<uint32_t>::max());
-	    uint32_t size = static_cast<uint32_t>(mid_data.size());
-	    if(!withheader)
-	        size -= 14;
-	    return size;
+	    return static_cast<uint32_t>(mid_data.size());
 	}
 }

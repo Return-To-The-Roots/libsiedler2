@@ -41,12 +41,12 @@ namespace libsiedler2
             int load(std::istream& file, uint32_t length) override;
             int write(std::ostream& file) const override;
 
-            const MIDI_Track* getTrack(uint16_t track) const { if(track < tracks) return &tracklist[track]; return NULL; }
-            uint16_t getTrackCount() const { return tracks; }
+            const MIDI_Track* getTrack(uint16_t track) const { if(track < numTracks) return &tracklist[track]; return NULL; }
+            uint16_t getTrackCount() const { return numTracks; }
             void addTrack(const MIDI_Track& track);
 
         protected:
-            uint16_t tracks;
+            uint16_t numTracks, ppqs;
             boost::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
     };
 

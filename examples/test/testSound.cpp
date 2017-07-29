@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
     BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getTrackCount(), 1u);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getTrack(0)->getMidLength(true), 39017u);
+    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0)->getMidLength(), 39003u);
     BOOST_REQUIRE(!archivLst[1]);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[51]);
     BOOST_REQUIRE(snd);
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
     BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getTrackCount(), 1u);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getTrack(0)->getMidLength(true), 6844u);
+    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0)->getMidLength(), 6830u);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
@@ -84,9 +84,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
     libsiedler2::ArchivItem_Sound_Wave* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(snd->getLength(), 105243u);
-    BOOST_REQUIRE_EQUAL(std::string(reinterpret_cast<const char*>(&snd->getData()[0])), "OggS");
-    BOOST_REQUIRE_EQUAL(snd->getData()[49999], uint8_t(0xe6));
+    BOOST_REQUIRE_EQUAL(snd->getLength(), 135988u);
     BOOST_REQUIRE_EQUAL(snd->getData().back(), uint8_t(0));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));
@@ -102,9 +100,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
     libsiedler2::ArchivItem_Sound_Wave* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(snd->getLength(), 105243u);
-    BOOST_REQUIRE_EQUAL(std::string(reinterpret_cast<const char*>(&snd->getData()[0])), "OggS");
-    BOOST_REQUIRE_EQUAL(snd->getData()[49999], uint8_t(0xe6));
+    BOOST_REQUIRE_EQUAL(snd->getLength(), 111458u);
     BOOST_REQUIRE_EQUAL(snd->getData().back(), uint8_t(0));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));
@@ -126,8 +122,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteMid)
 
 BOOST_AUTO_TEST_CASE(ReadWriteXMid)
 {
-    std::string inPath = "testFiles/testXMidi.mid";
-    std::string outPath = testOutputPath + "/outXMidi.mid";
+    std::string inPath = "testFiles/testXMidi.xmi";
+    std::string outPath = testOutputPath + "/outXMidi.xmi";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::ArchivInfo archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
@@ -147,7 +143,7 @@ BOOST_AUTO_TEST_CASE(Clone)
     libsiedler2::ArchivItem_Sound_Other snd4;
     // Add some data
     snd1.addTrack(libsiedler2::MIDI_Track());
-    snd2.addTrack(libsiedler2::MIDI_Track());
+    snd2.addTrack(libsiedler2::XMIDI_Track());
     snd3.setData(std::vector<uint8_t>(10, 42));
     snd4.setData(std::vector<uint8_t>(10, 43));
     // Copy to archiv

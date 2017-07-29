@@ -171,7 +171,7 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadTXT(file, items);
         else if(extension == "ini")
             ret = loader::LoadINI(file, items);
-        else if(extension == "ogg")
+        else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
             ret = loader::LoadSND(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
@@ -222,6 +222,8 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteTXT(file, items, true);
         else if(extension == "ini")
             ret = loader::WriteINI(file, items);
+        else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
+            ret = loader::WriteSND(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     }catch(std::runtime_error& error)

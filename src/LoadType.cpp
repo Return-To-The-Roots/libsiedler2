@@ -29,8 +29,8 @@
 #include "ArchivItem_Text.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include <iostream>
 #include "libendian/src/EndianIStreamAdapter.h"
+#include <iostream>
 #include <stdexcept>
 
 /**

@@ -26,6 +26,7 @@
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Palette.h"
 #include "ArchivItem_Sound.h"
+#include "libendian/src/EndianOStreamAdapter.h"
 #include <stdexcept>
 #include <ostream>
 
@@ -50,9 +51,15 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& file, const Ar
             case BOBTYPE_SOUND: // WAVs, MIDIs
             {
                 const baseArchivItem_Sound& i = dynamic_cast<const baseArchivItem_Sound&>(item);
-
+                libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
+                const long sizePos = fs.getPosition();
+                fs << uint32_t(0);
                 if(i.write(file) != 0)
                     return 2;
+                const long curPos = fs.getPosition();
+                fs.setPosition(sizePos);
+                fs << uint32_t(curPos - sizePos);
+                fs.setPosition(curPos);
             } break;
             case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
             {
