@@ -24,35 +24,54 @@
 #include <algorithm>
 #include <iterator>
 #include <stdexcept>
+#include <string>
+
+// Enable this to log status reports of the xmidi conversion to stdout
+//#define RTTR_LOG_XMIDI 1
+#if RTTR_LOG_XMIDI
+#   include <iostream>
+#endif // RTTR_LOG_XMIDI
 
 namespace libsiedler2
 {
 	static const int PATCH_VOL_PAN_BIAS = 5;
 	static GammaTable<uint8_t> VolumeCurve(128);
-	
+
+    struct LogStatus
+    {
+        LogStatus(const std::string& msg = "")
+        {
+            *this << msg;
+        }
+        
+        template<typename T>
+        LogStatus& operator<<(const T& el)
+        {
+#if RTTR_LOG_XMIDI
+            std::cout << el;
+#endif // RTTR_LOG_XMIDI
+            return *this;
+        }
+    };
 	
 	XMIDI_Track::XMIDI_Track(MIDI_Track* track) : track(track)
 	{
 	    position = 0;
-	    current = NULL;
+	    curEvent = NULL;
 	    events = NULL;
-	    event_count = 0,
+	    numEvents = 0,
 	
 	    std::fill(bank127.begin(), bank127.end(), false);
 	}
 	
 	XMIDI_Track::~XMIDI_Track()
 	{
-	    if(event_count > 0)
+        curEvent = events;
+	    while(curEvent)
 	    {
-	        MIDI_Event* next;
-	        current = events;
-	        next = events;
-	        while((current = next))
-	        {
-	            next = current->next;
-	            delete current;
-	        }
+            MIDI_Event* next = curEvent->next;
+	        delete curEvent;
+            curEvent = next;
 	    }
 	}
 	
@@ -75,20 +94,25 @@ namespace libsiedler2
 	
 	    first_state fs;
 	
+        uint32_t curEvntNum = 0;
 	    while (!end && position < track->xmid_data.size())
 	    {
             const uint32_t delta = GetVLQ2();
 	        time += delta;
 	        status = (uint32_t)track->xmid_data[position++];
+            LogStatus("Event #") << (curEvntNum++) << " d:" << delta;
 	
-	        switch (status >> 4)
+            const MidiStatus evntType = MidiStatus(status >> 4);
+	        switch (evntType)
 	        {
 	            case MIDI_STATUS_NOTE_ON:
+                    LogStatus(" Note on");
 	                retval |= 1 << (status & 0xF);
 	                ConvertNote(time, status, 3);
 	                break;
 	
 	            case MIDI_STATUS_NOTE_OFF:
+                    LogStatus(" Note off");
 	                ConvertNote(time, status, 2);
 	                break;
 	
@@ -96,29 +120,39 @@ namespace libsiedler2
 	            case MIDI_STATUS_AFTERTOUCH:
 	            case MIDI_STATUS_CONTROLLER:
 	            case MIDI_STATUS_PITCH_WHEEL:
+                    if(evntType == MIDI_STATUS_AFTERTOUCH)
+                        LogStatus(" after touch");
+                    else if(evntType == MIDI_STATUS_CONTROLLER)
+                        LogStatus(" controller");
+                    else
+                        LogStatus(" pitch wheel");
 	                ConvertEvent(time, status, 2, fs);
 	                break;
 	
 	                // 1 byte data
 	            case MIDI_STATUS_PROG_CHANGE:
 	            case MIDI_STATUS_PRESSURE:
-	                ConvertEvent(time, status, 1, fs);
+                    if(evntType == MIDI_STATUS_PROG_CHANGE)
+                        LogStatus(" prog change");
+                    else
+                        LogStatus(" pressure");
+                    ConvertEvent(time, status, 1, fs);
 	                break;
 	
 	            case MIDI_STATUS_SYSEX:
-	                if (status == 0xFF)
+                    LogStatus(" System");
+                    if(status == 0xFF)
 	                {
 	                    uint32_t data = track->xmid_data[position];
 	                    // Handle those 2 in here
                         if(data == 0x2F)
-                        {
-                            position++;
                             end = true;
-                        } else if(data == 0x51)
+                        else if(data == 0x51)
 	                    {
                             // Tempo setting -> ignore
                             position++;
 	                        uint32_t offset = GetVLQ();
+                            LogStatus(" ignored tempo, sz ") << offset;
 	                        position += offset;
 	                        break;
 	                    }
@@ -126,9 +160,9 @@ namespace libsiedler2
 	                ConvertSystemMessage(time, status);
 	                break;
 	        }
-	
+            LogStatus("\n");
 	    }
-	    current = events;
+	    curEvent = events;
 	
 	    ApplyFirstState(fs, retval);
 	
@@ -136,7 +170,7 @@ namespace libsiedler2
 	}
 	
 	uint32_t XMIDI_Track::GetVLQ()
-{
+    {
         uint32_t quant = 0;
 	    uint8_t data = 0;
 	
@@ -191,108 +225,106 @@ namespace libsiedler2
 	    int data = track->xmid_data[position++];
 	
 	    CreateNewEvent(time);
-	    current->status = status;
+	    curEvent->status = status;
 	
-	    current->data[0] = data;
-	    current->data[1] = track->xmid_data[position++];
+	    curEvent->data[0] = data;
+	    curEvent->data[1] = track->xmid_data[position++];
 	
 	    // Volume modify the note on's, only if converting
-	    if ((current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
-	        current->data[1] = VolumeCurve[current->data[1]];
+	    if ((curEvent->status >> 4) == MIDI_STATUS_NOTE_ON && curEvent->data[1])
+	        curEvent->data[1] = VolumeCurve[curEvent->data[1]];
 	
 	    if (size == 2)
 	        return;
 	
 	    // XMI Note On handling
-	    current->duration = GetVLQ();
+	    curEvent->duration = GetVLQ();
+
+        LogStatus(" note duration ") << curEvent->duration;
 	
 	    // This is an optimization
-	    MIDI_Event* prev = current;
+	    MIDI_Event* prev = curEvent;
 	
 	    // Create a note off
-	    CreateNewEvent(time + current->duration);
+	    CreateNewEvent(time + curEvent->duration);
 	
-	    current->status = status;
-	    current->data[0] = data;
-	    current->data[1] = 0;
+	    curEvent->status = status;
+	    curEvent->data[0] = data;
+	    curEvent->data[1] = 0;
 	
 	    // Optimization
-	    current = prev;
+	    curEvent = prev;
 	}
 	
 	void XMIDI_Track::ConvertEvent(const int time, const uint8_t status, const int size, first_state& fs)
 	{
-	    //   Uint32 delta=0;
 	    int data = track->xmid_data[position++];
 	    MidiStatus curStatus = MidiStatus(status >> 4);
 	    uint8_t statValue = status & 0xF;
 	    // Bank changes are handled here
 	    if(curStatus == MIDI_STATUS_CONTROLLER && data == 0)
-	    {
-	        // Skip byte
-	        position++;
 	        bank127[statValue] = false;
-	    }
-	
 	    // Disable patch changes on Track 10 is doing a conversion
 	    else if (curStatus == MIDI_STATUS_PROG_CHANGE && statValue == 9)
 	        return
 	
 	    CreateNewEvent(time);
-	    current->status = status;
-	
-	    current->data[0] = data;
+	    curEvent->status = status;	
+	    curEvent->data[0] = data;
+        LogStatus(" type ") << unsigned(statValue) << ", " << unsigned(data);
 	
 	    // Check for patch change, and update fs if req
 	    if (curStatus == MIDI_STATUS_PROG_CHANGE)
 	    {
 	        if (!fs.patch[statValue] || fs.patch[statValue]->time > time)
-	            fs.patch[statValue] = current;
+	            fs.patch[statValue] = curEvent;
 	    }
 	
 	    // Controllers
 	    else if (curStatus == MIDI_STATUS_CONTROLLER)
 	    {
 	        // Volume
-	        if (current->data[0] == 7)
+	        if (curEvent->data[0] == 7)
 	        {
 	            if (!fs.vol[statValue] || fs.vol[statValue]->time > time)
-	                fs.vol[statValue] = current;
+	                fs.vol[statValue] = curEvent;
 	        }
 	        // Pan
-	        else if (current->data[0] == 10)
+	        else if (curEvent->data[0] == 10)
 	        {
 	            if (!fs.pan[statValue] || fs.pan[statValue]->time > time)
-	                fs.pan[statValue] = current;
+	                fs.pan[statValue] = curEvent;
 	        }
 	    }
 	
 	    if (size == 1)
 	        return;
 	
-	    current->data[1] = track->xmid_data[position++];
+	    curEvent->data[1] = track->xmid_data[position++];
+        LogStatus(", ") << unsigned(curEvent->data[1]);
 	
 	    // Volume modify the volume controller, only if converting
-	    if (curStatus == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
-	        current->data[1] = VolumeCurve[current->data[1]];
+	    if (curStatus == MIDI_STATUS_CONTROLLER && curEvent->data[0] == 7)
+	        curEvent->data[1] = VolumeCurve[curEvent->data[1]];
 	}
 	
 	void XMIDI_Track::ConvertSystemMessage(const int time, const uint8_t status)
 	{
 	    CreateNewEvent(time);
-	    current->status = status;
+	    curEvent->status = status;
 	
 	    // Handling of Meta events
 	    if (status == 0xFF)
-	        current->data[0] = track->xmid_data[position++];
+	        curEvent->data[0] = track->xmid_data[position++];
 	
 	    uint32_t len = GetVLQ();
+        LogStatus(" curStat:") << unsigned(status) << " len: " << len;
 	
-	    current->buffer.clear();
+	    curEvent->buffer.clear();
 	    if (!len)
 	        return;
 	
-	    std::copy(track->xmid_data.begin() + position, track->xmid_data.begin() + position + len, std::back_inserter(current->buffer));
+	    std::copy(track->xmid_data.begin() + position, track->xmid_data.begin() + position + len, std::back_inserter(curEvent->buffer));
         position += len;
 	}
 	
@@ -300,10 +332,10 @@ namespace libsiedler2
 	{
 	    if (!events)
 	    {
-	        events = current = new MIDI_Event;
+	        events = curEvent = new MIDI_Event;
 	        if (time > 0)
-	            current->time = time;
-	        event_count++;
+	            curEvent->time = time;
+	        numEvents++;
 	        return;
 	    }
 	
@@ -311,36 +343,36 @@ namespace libsiedler2
 	    {
 	        MIDI_Event* event = new MIDI_Event;
 	        event->next = events;
-	        events = current = event;
-	        event_count++;
+	        events = curEvent = event;
+	        numEvents++;
 	        return;
 	    }
 	
-	    if (!current || current->time > time)
-	        current = events;
+	    if (!curEvent || curEvent->time > time)
+	        curEvent = events;
 	
-	    while (current->next)
+	    while (curEvent->next)
 	    {
-	        if (current->next->time > time)
+	        if (curEvent->next->time > time)
 	        {
 	            MIDI_Event* event = new MIDI_Event;
 	
-	            event->next = current->next;
-	            current->next = event;
-	            current = event;
-	            current->time = time;
-	            event_count++;
+	            event->next = curEvent->next;
+	            curEvent->next = event;
+	            curEvent = event;
+	            curEvent->time = time;
+	            numEvents++;
 	            return;
 	        }
 	
-	        current = current->next;
+	        curEvent = curEvent->next;
 	    }
 	
-	    current->next = new MIDI_Event;
-	    current = current->next;
-	    current->time = time;
+	    curEvent->next = new MIDI_Event;
+	    curEvent = curEvent->next;
+	    curEvent->time = time;
 	
-	    event_count++;
+	    numEvents++;
 	}
 	
 	

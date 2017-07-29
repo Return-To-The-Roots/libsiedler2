@@ -81,8 +81,8 @@ namespace libsiedler2
 	    private:
 	        MIDI_Track* track;
 	        MIDI_Event* events;
-	        uint32_t event_count;
-	        MIDI_Event* current;
+	        uint32_t numEvents;
+	        MIDI_Event* curEvent;
 	        size_t position;
 	
 	        enum MidiStatus
