@@ -36,7 +36,7 @@ namespace libsiedler2
         explicit ColorARGB(uint32_t clrValue): clrValue(clrValue){}
         /// Create a ARGB color.
         ColorARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b);
-        ColorARGB(ColorRGB clrRGB);
+        ColorARGB(ColorRGB clrRGB, uint8_t a = 0xFF);
 
         operator ColorRGB() const;
         /// Create a color from a byte oriented buffer (A first, then R, G, B)
@@ -49,13 +49,13 @@ namespace libsiedler2
         static ColorARGB fromBGRA(const uint32_t* ptr);
 
         /// Write the color to a byte oriented buffer (A first, then R, G, B)
-        void toARGB(uint8_t* ptr);
+        void toARGB(uint8_t* ptr) const;
         /// Write the color to a byte oriented buffer (R first, then G, R, A)
-        void toBGRA(uint8_t* ptr);
+        void toBGRA(uint8_t* ptr) const;
         /// Write the color to a byte oriented buffer (A first, then R, G, B)
-        void toARGB(uint32_t* ptr);
+        void toARGB(uint32_t* ptr) const;
         /// Write the color to a byte oriented buffer (R first, then G, R, A)
-        void toBGRA(uint32_t* ptr);
+        void toBGRA(uint32_t* ptr) const;
 
         uint8_t getAlpha() const;
         void setAlpha(uint8_t val);
@@ -82,9 +82,9 @@ namespace libsiedler2
         clrValue = a << 24 | r << 16 | g << 8 | b;
     }
 
-    inline ColorARGB::ColorARGB(ColorRGB clrRGB)
+    inline ColorARGB::ColorARGB(ColorRGB clrRGB, uint8_t a)
     {
-        clrValue = ColorARGB(0xFF, clrRGB.r, clrRGB.g, clrRGB.b).clrValue;
+        clrValue = ColorARGB(a, clrRGB.r, clrRGB.g, clrRGB.b).clrValue;
     }
 
     inline ColorARGB::operator ColorRGB() const
@@ -114,22 +114,22 @@ namespace libsiedler2
         return ColorARGB(boost::endian::little_to_native(*ptr));
     }
 
-    inline void ColorARGB::toARGB(uint8_t* ptr)
+    inline void ColorARGB::toARGB(uint8_t* ptr) const
     {
         toARGB(reinterpret_cast<uint32_t*>(ptr));
     }
 
-    inline void ColorARGB::toARGB(uint32_t* ptr)
+    inline void ColorARGB::toARGB(uint32_t* ptr) const
     {
         *ptr = boost::endian::native_to_big(clrValue);
     }
 
-    inline void ColorARGB::toBGRA(uint8_t* ptr)
+    inline void ColorARGB::toBGRA(uint8_t* ptr) const
     {
         toBGRA(reinterpret_cast<uint32_t*>(ptr));
     }
 
-    inline void ColorARGB::toBGRA(uint32_t* ptr)
+    inline void ColorARGB::toBGRA(uint32_t* ptr) const
     {
         *ptr = boost::endian::native_to_little(clrValue);
     }
