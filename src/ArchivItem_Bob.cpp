@@ -28,7 +28,7 @@
  *  Klasse für Bobfiles.
  */
 
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good_count(0)
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), numGoodImgs(0)
 {
     setBobType(BOBTYPE_BOB);
 }
@@ -40,7 +40,7 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), good
  *  @param[in] file    Dateihandle aus denen die Bob-Daten geladen werden sollen
  *  @param[in] palette Grundpalette
  */
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), good_count(0)
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), numGoodImgs(0)
 {
     setBobType(BOBTYPE_BOB);
 
@@ -63,7 +63,6 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     if(!file || palette == NULL)
         return 1;
 
-    alloc(96);
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Größe des ersten Farbblocks auslesen
     uint16_t size;
@@ -73,24 +72,23 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     std::vector<uint8_t> raw_base(size);
     fs >> raw_base;
 
-    // Einzelner Bilder auslesen ( untere Körper )
+    // Einzelner Bilder auslesen ( untere Körper ): 8 Animation Steps, 6 directions, 2 types (Fat, Non-Fat) = 96
+    alloc(96);
     for(uint32_t i = 0; i < 96; ++i)
     {
         uint16_t id;
-        fs >> id;
+        uint8_t height;
+        if(!(fs >> id >> height))
+            return 4;
 
         // stimmt die ID? (ID 0xF401)
         if(id != 0x01F4)
             return 5;
 
-        uint8_t height;
-        fs >> height;
-
         std::vector<uint16_t> starts(height);
-        fs >> starts;
-
         uint8_t ny;
-        fs >> ny;
+        if(!(fs >> starts >> ny))
+            return 6;
 
         ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
         image->setNx(16);
@@ -109,80 +107,74 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
     for(uint32_t i = 0; i < 6; ++i)
     {
-        uint16_t id;
-        fs >> id;
+        uint16_t id, size;
+        if(!(fs >> id >> size))
+            return 7;
 
         // stimmt die ID? (ID 0xF401)
         if(id != 0x01F5)
             return 10;
-
-        // Größe des Farbblocks
-        uint16_t size;
-        fs >> size;
 
         raw[i].resize(size);
         fs >> raw[i];
     }
 
     // Anzahl Warenbilder
-    fs >> good_count;
+    fs >> numGoodImgs;
 
-    alloc_inc(good_count);
+    alloc_inc(numGoodImgs);
 
-    std::vector<bool> used(good_count);
+    std::vector<bool> loaded(numGoodImgs, false);
 
-    std::vector<uint8_t> heights(good_count);
-    std::vector< std::vector<uint16_t> > starts(good_count);
-    std::vector<uint8_t> ny(good_count);
+    std::vector<uint8_t> heights(numGoodImgs);
+    std::vector< std::vector<uint16_t> > starts(numGoodImgs);
+    std::vector<uint8_t> ny(numGoodImgs);
 
-    for(uint16_t i = 0; i < good_count; ++i)
+    for(uint16_t i = 0; i < numGoodImgs; ++i)
     {
         uint16_t id;
-        fs >> id;
+        if(!(fs >> id >> heights[i]))
+            return 14;
 
         // stimmt die ID? (ID 0xF401)
         if(id != 0x01F4)
             return 15;
 
-        fs >> heights[i];
-
         starts[i].resize(heights[i]);
-        fs >> starts[i];
-
-        fs >> ny[i];
+        fs >> starts[i] >> ny[i];
     }
 
-    // Anzahl Bilder
+    // Number of complete pictures.
+    // Links form an array: [ware][animStep][fat][direction]: [][8][2][6]
+    // the item at position 96 + link[ware][animStep][fat][direction] shall be combined
+    // with the appropriate body
     uint16_t item_count;
-    fs >> item_count;
+    if(!(fs >> item_count))
+        return 16;
 
     links.resize(item_count);
 
     for(uint32_t i = 0; i < item_count; ++i)
     {
-        fs >> links[i];
+        uint16_t unknown;
+        if(!(fs >> links[i] >> unknown))
+            return 22;
 
-        if(!used[links[i]])
-        {
-            ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+        if(loaded[links[i]])
+            continue;
 
-            image->setNx(16);
-            image->setNy(ny[links[i]]);
+        ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
 
-            if(image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, palette) != 0){
-                delete image;
-                return 21;
-            }
+        image->setNx(16);
+        image->setNy(ny[links[i]]);
 
-            set(96 + links[i], image);
-
-            starts[links[i]].clear();
+        if(image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, palette) != 0){
+            delete image;
+            return 21;
         }
 
-        used[links[i]] = true;
-
-        // 2 Unbekannte Bytes überspringen
-        fs.ignore(2);
+        set(96 + links[i], image);
+        loaded[links[i]] = true;
     }
 
     return (!fs) ? 99 : 0;

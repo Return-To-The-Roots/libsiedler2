@@ -46,12 +46,12 @@ namespace libsiedler2
             /// schreibt die Bobdaten in eine Datei.
             int write(std::ostream& file, const ArchivItem_Palette* palette) const;
 
-            uint32_t getGoodCount() const { return good_count; }
+            uint32_t getGoodImgCount() const { return numGoodImgs; }
             uint32_t getItemCount() const { return uint32_t(links.size()); }
             uint16_t getLink(uint32_t idx) const {return(links[idx]);};
 
         protected:
-            uint16_t good_count; /// Warenanzahl
+            uint16_t numGoodImgs; /// Number of pictures for wares
             std::vector<uint16_t> links;     /// "Links" (Zugehörigkeiten der Bilder)
     };
 }

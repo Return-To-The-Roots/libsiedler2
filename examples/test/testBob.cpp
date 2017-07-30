@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
     const libsiedler2::ArchivItem_Bob& bob = *dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);
-    BOOST_REQUIRE_EQUAL(bob.getGoodCount(), 602u);
+    BOOST_REQUIRE_EQUAL(bob.getGoodImgCount(), 602u);
     BOOST_REQUIRE_EQUAL(bob.getItemCount(), 3264u);
     BOOST_REQUIRE_EQUAL(bob.size(), 698u);
     for(unsigned i = 0; i < bob.size(); i++)
