@@ -79,9 +79,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
         return 7;
 
     boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
-    bitmap->setFormat(FORMAT_PALETTED);
 
-    uint16_t width, height;
+    uint16_t width = 0, height = 0;
     uint16_t compression;
     uint32_t chunk;
     // Chunks einlesen
@@ -100,9 +99,6 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                     ++length;
 
                 lbm >> width >> height;
-
-                bitmap->setWidth(width);
-                bitmap->setHeight(height);
 
                 // Unbekannte Daten ( 4 Byte ) berspringen
                 lbm.ignore(4);
@@ -159,7 +155,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                 if(bitmap->getPalette() == NULL)
                     return 20;
 
-                bitmap->tex_alloc();
+                bitmap->tex_alloc(width, height, FORMAT_PALETTED);
 
                 switch(compression)
                 {

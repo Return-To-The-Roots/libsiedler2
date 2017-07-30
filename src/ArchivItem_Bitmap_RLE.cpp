@@ -18,9 +18,10 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Palette.h"
-#include <iostream>
+#include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <iostream>
 #include <vector>
 
 /** @class libsiedler2::baseArchivItem_Bitmap_RLE
@@ -107,7 +108,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
     fs >> data;
 
     // Speicher anlegen
-    tex_alloc();
+    tex_alloc(width_, height_, getTextureFormat());
 
     if(length != 0)
     {

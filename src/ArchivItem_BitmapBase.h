@@ -29,6 +29,7 @@ namespace libsiedler2
 {
 
     class ArchivItem_Palette;
+    struct ColorARGB;
 
     /**
      * Base class for all bitmaps (regular and player bitmaps)
@@ -44,7 +45,7 @@ namespace libsiedler2
 
         /// setzt einen Pixel auf einen bestimmten Wert.
         virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t colorIdx, const ArchivItem_Palette* palette = NULL);
-        virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        virtual void tex_setPixel(uint16_t x, uint16_t y, const ColorARGB clr);
 
         /// liefert einen Pixel an einem bestimmten Punkt.
         uint8_t tex_getPixel(uint16_t x, uint16_t y, const ArchivItem_Palette* palette = NULL) const;
@@ -79,14 +80,8 @@ namespace libsiedler2
         /// setzt den Y-Nullpunkt.
         void setNy(int16_t ny);
 
-        /// setzt die Breite des Bildes.
-        void setWidth(uint16_t width);
-
-        /// setzt die Höhe des Bildes.
-        void setHeight(uint16_t height);
-
         /// alloziert Bildspeicher für die gewünschte Größe.
-        virtual void tex_alloc();
+        virtual void tex_alloc(int16_t width, int16_t height, TexturFormat format);
 
         /// räumt den Bildspeicher auf.
         virtual void tex_clear();
@@ -96,13 +91,14 @@ namespace libsiedler2
         void setPalette(const ArchivItem_Palette& palette);
         void removePalette();
 
-        /// setzt das Format des Bildes.
-        void setFormat(TexturFormat format) { this->format_ = format; }
+        TexturFormat getFormat() const { return format_; }
 
         virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
-        /// liefert die nächste Quadratzahl zu einer Zahl.
         static uint16_t tex_pow2(uint16_t n);
+        /// Return the bytes per pixel for a given format
+        static uint32_t getBBP(TexturFormat format);
+        uint32_t getBBP() const { return getBBP(getFormat()); }
 
     protected:
         uint16_t width_;       /// Breite des Bildes.
@@ -114,12 +110,17 @@ namespace libsiedler2
         uint16_t tex_width_;   /// Breite der Textur.
         uint16_t tex_height_;  /// Höhe der Textur.
 
-        uint16_t tex_bpp_;     /// Bytebreite der Textur pro Pixel.
         std::vector<uint8_t> tex_data_;    /// Die Texturdaten.
 
         const ArchivItem_Palette* palette_; /// Die Palette.
         TexturFormat format_; /// Das Texturformat.
     };
+
+    // Define inline in header to allow optimizations
+    inline uint32_t ArchivItem_BitmapBase::getBBP(TexturFormat format)
+    {
+        return (format == FORMAT_PALETTED) ? 1 : 4;
+    }
 
 } // namespace libsiedler2
 

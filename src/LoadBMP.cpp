@@ -20,6 +20,7 @@
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
 #include "prototypen.h"
+#include "ColorARGB.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include "libendian/src/EndianIStreamAdapter.h"
@@ -39,26 +40,22 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
                                     uint16_t y,
                                     uint32_t width,
                                     uint8_t bbp,
-                                    libsiedler2::baseArchivItem_Bitmap& bitmap,
-                                    std::vector<uint8_t>& buffer)
+                                    std::vector<uint8_t>& buffer,
+                                    std::vector<uint8_t>& tmpBuffer)
 {
-    bmp >> buffer;
-
-    for(uint16_t x = 0; x < width; ++x)
+    if(bbp == 1)
     {
-        switch(bbp)
+        bmp.read(&buffer[y * width], width);
+    } else
+    {
+        bmp >> tmpBuffer;
+        for(uint16_t x = 0; x < width; ++x)
         {
-            case 1: // 256
-            {
-                bitmap.tex_setPixel(x, y, buffer[x * bbp], NULL);
-            } break;
-            case 3: // 24 bit
-            {
-                if(libsiedler2::ColorRGB(buffer[x * bbp + 2], buffer[x * bbp + 1], buffer[x * bbp + 0]) == libsiedler2::TRANSPARENT_COLOR) // transparenz? (color-key "rosa")
-                    bitmap.tex_setPixel(x, y, 0, 0, 0, 0x00);
-                else
-                    bitmap.tex_setPixel(x, y, buffer[x * bbp + 2], buffer[x * bbp + 1], buffer[x * bbp + 0], 0xFF);
-            } break;
+            libsiedler2::ColorRGB clr = libsiedler2::ColorRGB::fromBGR(&tmpBuffer[x * 3]);
+            libsiedler2::ColorARGB clrOut;
+            if(clr != libsiedler2::TRANSPARENT_COLOR)
+                clrOut = clr;
+            clrOut.toBGRA(&buffer[(y * width + x) * 4]);
         }
     }
     if(width * bbp % 4 > 0)
@@ -159,23 +156,6 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
     boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setName(file);
 
-    switch(bmih.bbp)
-    {
-        case 8: // nur 8 Bit
-        {
-            bitmap->setFormat(libsiedler2::FORMAT_PALETTED);
-        } break;
-        case 24: // oder 24 Bit
-        {
-            bitmap->setFormat(libsiedler2::FORMAT_BGRA);
-        } break;
-        default:
-        {
-            fprintf(stderr, "unknown bitmap depth: %d ", bmih.bbp);
-            return 7;
-        } break;
-    }
-
     // keine Kompression
     if(bmih.compression != 0)
         return 8;
@@ -184,6 +164,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
     if(bmih.clrused == 0)
         bmih.clrused = (int)pow(2.0, bmih.bbp);
 
+    ArchivItem_Palette* pal = NULL;
     if(bmih.bbp == 8)
     {
         // Farbpalette lesen
@@ -191,34 +172,34 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
         if(!bmp.read(colors[0], bmih.clrused * 4))
             return 99;
 
-            ArchivItem_Palette* pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
-            for(int i = 0; i < bmih.clrused; ++i)
-                pal->set(i, ColorRGB(colors[i][2], colors[i][1], colors[i][0]));
-
-            bitmap->setPalette(pal);
+        pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
+        for(int i = 0; i < bmih.clrused; ++i)
+            pal->set(i, ColorARGB::fromBGRA(&colors[i][0]));
     }
 
-    // Bitmapdaten setzen
-    bitmap->setWidth(bmih.width);
-    bitmap->setHeight(bmih.height);
-    bitmap->tex_alloc();
-
     uint8_t bbp = (bmih.bbp / 8);
-    std::vector<uint8_t> buffer(bmih.width * bbp);
+    if(bbp != 1 && bbp != 3)
+        return 10;
+    std::vector<uint8_t> buffer(bmih.height * bmih.width * (bbp == 1 ? 1 : 4));
+    std::vector<uint8_t> tmpBuffer(bmih.width * bbp);
 
     // Bitmap Pixel einlesen
     if(bottomup)
     {
         // Bottom-Up, "von unten nach oben"
         for(int y = bmih.height - 1; y >= 0; --y)
-            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, *bitmap, buffer);
+            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, buffer, tmpBuffer);
     }
     else
     {
         // Top-Down, "von oben nach unten"
         for(int y = 0; y < bmih.height; ++y)
-            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, *bitmap, buffer);
+            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, buffer, tmpBuffer);
     }
+
+    if(bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
+        (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal) != 0)
+        return 22;
 
     // Bitmap zuweisen
     image.push(bitmap.release());

@@ -18,6 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_BitmapBase.h"
 #include "ArchivItem_Palette.h"
+#include "ColorARGB.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include <stdexcept>
@@ -28,22 +29,9 @@ namespace libsiedler2{
  *  Basis-Basisklasse für Bitmapitems.
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase() : ArchivItem()
-{
-    width_ = 0;
-    height_ = 0;
-
-    nx_ = 0;
-    ny_ = 0;
-
-    tex_width_ = 0;
-    tex_height_ = 0;
-
-    tex_bpp_ = 0;
-
-    palette_ = NULL;
-    format_ = FORMAT_UNKNOWN;
-}
+ArchivItem_BitmapBase::ArchivItem_BitmapBase(): ArchivItem(), width_(0), height_(0), nx_(0), ny_(0),
+    tex_width_(0), tex_height_(0), palette_(NULL), format_(getTextureFormat())
+{}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem( item )
 {
@@ -56,14 +44,12 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
     tex_width_ = item.tex_width_;
     tex_height_ = item.tex_height_;
 
-    tex_bpp_ = item.tex_bpp_;
-
     tex_data_ = item.tex_data_;
 
     palette_ = NULL;
     if(item.palette_)
         setPalette(*item.palette_);
-    setFormat(item.format_);
+    format_ = item.format_;
 }
 
 ArchivItem_BitmapBase::~ArchivItem_BitmapBase()
@@ -90,14 +76,12 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
     tex_width_ = item.tex_width_;
     tex_height_ = item.tex_height_;
 
-    tex_bpp_ = item.tex_bpp_;
-
     tex_data_ = item.tex_data_;
 
     palette_ = NULL;
     if(item.palette_)
         setPalette(*item.palette_);
-    setFormat(item.format_);
+    format_ = item.format_;
 
     return *this;
 }
@@ -110,40 +94,27 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
  *  @param[in] color   Farbe des Pixels
  *  @param[in] palette Grundpalette
  */
-void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
-        uint16_t y,
-        uint8_t colorIdx,
-        const ArchivItem_Palette* palette)
+void ArchivItem_BitmapBase::tex_setPixel(uint16_t x, uint16_t y,
+    uint8_t colorIdx,
+    const ArchivItem_Palette* palette)
 {
-    if(tex_data_.empty())
-        return;
     if(palette == NULL)
         palette = this->palette_;
     if(palette == NULL)
         throw std::runtime_error("No palette found");
+    if(x >= tex_width_ || y >= tex_height_)
+        throw std::out_of_range("Invalid index");
 
-    if(x < tex_width_ && y < tex_height_)
+    uint32_t position = (y * tex_width_ + x) * getBBP();
+    if(getFormat() == FORMAT_PALETTED)
+        tex_data_[position] = colorIdx;
+    else
     {
-        uint32_t position = (y * tex_width_ + x) * tex_bpp_;
-        switch(tex_bpp_)
-        {
-            case 1:
-            {
-                // Palettenindex setzen
-                tex_data_[position] = colorIdx;
-            } break;
-            case 4:
-            {
-                // RGB+A setzen
-                if(colorIdx == TRANSPARENT_INDEX) // Transparenz
-                    tex_data_[position + 3] = 0x00;
-                else
-                {
-                    palette->get(colorIdx, tex_data_[position + 2], tex_data_[position + 1], tex_data_[position + 0]);
-                    tex_data_[position + 3] = 0xFF;
-                }
-            } break;
-        }
+        // RGB+A setzen
+        if(colorIdx == TRANSPARENT_INDEX) // Transparenz
+            tex_data_[position + 3] = 0x00;
+        else
+            ColorARGB(palette->get(colorIdx)).toBGRA(&tex_data_[position]);
     }
 }
 
@@ -157,42 +128,24 @@ void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
  *  @param[in] b Blauer Wert
  *  @param[in] a Alpha Wert (bei paletted nur 0xFF/0x00 unterstützt)
  */
-void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
-        uint16_t y,
-        uint8_t r,
-        uint8_t g,
-        uint8_t b,
-        uint8_t a)
+void ArchivItem_BitmapBase::tex_setPixel(uint16_t x, uint16_t y, const ColorARGB clr)
 {
-    if(tex_bpp_ == 1 && palette_ == NULL)
-        return;
+    if(getFormat() == FORMAT_PALETTED && palette_ == NULL)
+        throw std::runtime_error("No palette");
+    if(x >= tex_width_ || y >= tex_height_)
+        throw std::out_of_range("Invalid index");
 
-    if(x < tex_width_ && y < tex_height_)
+    uint32_t position = (y * tex_width_ + x) * getBBP();
+    if(getFormat() == FORMAT_PALETTED)
     {
-        uint32_t position = (y * tex_width_ + x) * tex_bpp_;
-        switch(tex_bpp_)
-        {
-            case 1:
-            {
-                // Palettenindex setzen
-                if(a == 0x00)
-                    tex_data_[position] = TRANSPARENT_INDEX;
-                else
-                    tex_data_[position] = palette_->lookup(ColorRGB(r, g, b));
-            } break;
-            case 4:
-            {
-                // RGBA setzen
-                tex_data_[position + 0] = b;
-                tex_data_[position + 1] = g;
-                tex_data_[position + 2] = r;
-                tex_data_[position + 3] = a;
-            } break;
-        }
-    }
-
+        // Palettenindex setzen
+        if(clr.getAlpha() == 0)
+            tex_data_[position] = TRANSPARENT_INDEX;
+        else
+            tex_data_[position] = palette_->lookup(clr);
+    } else
+        clr.toBGRA(&tex_data_[position]);
 }
-
 
 /**
  *  liefert einen Pixel an einem bestimmten Punkt.
@@ -202,73 +155,47 @@ void ArchivItem_BitmapBase::tex_setPixel(uint16_t x,
  *  @param[in] palette Grundpalette
  *
  *  @return liefert die Farbe des Pixels
- *
- *  @bug Keine Fehlererkennung!
  */
-uint8_t ArchivItem_BitmapBase::tex_getPixel(uint16_t x,
-        uint16_t y,
-        const ArchivItem_Palette* palette) const
+uint8_t ArchivItem_BitmapBase::tex_getPixel(uint16_t x, uint16_t y,
+    const ArchivItem_Palette* palette) const
 {
-    if(tex_data_.empty())
-        return 0;
     if(palette == NULL)
         palette = this->palette_;
     if(palette == NULL)
-        return 0;
+        throw std::runtime_error("No palette");
+    if(x >= tex_width_ || y >= tex_height_)
+        throw std::out_of_range("Invalid index");
 
-    if(x < tex_width_ && y < tex_height_)
+    uint32_t position = (y * tex_width_ + x) * getBBP();
+    if(getFormat() == FORMAT_PALETTED)
+        return tex_data_[position];
+    else
     {
-        uint32_t position = (y * tex_width_ + x) * tex_bpp_;
-        switch(tex_bpp_)
-        {
-            case 1:
-            {
-                // Palettenindex liefern
-                return tex_data_[position];
-            } break;
-            case 4:
-            {
-                // Index von RGB+A liefern
-                if(tex_data_[position + 3] == 0x00) // Transparenz
-                    return TRANSPARENT_INDEX;
-                else
-                    return palette->lookup(tex_data_[position + 2], tex_data_[position + 1], tex_data_[position + 0]);
-            } break;
-        }
+        ColorARGB clr = ColorARGB::fromBGRA(&tex_data_[position]);
+        // Index von RGB+A liefern
+        if(tex_data_[position + 3] == 0x00) // Transparenz
+            return TRANSPARENT_INDEX;
+        else
+            return palette->lookup(clr);
     }
-    return 0;
 }
 
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
  */
-void ArchivItem_BitmapBase::tex_alloc()
+void ArchivItem_BitmapBase::tex_alloc(int16_t width, int16_t height, TexturFormat format)
 {
     tex_clear();
+    width_ = width;
+    height_ = height;
+    format_ = format;
 
     tex_width_ = tex_pow2(width_);
     tex_height_ = tex_pow2(height_);
 
-    if(format_ == FORMAT_UNKNOWN)
-        format_ = getTextureFormat();
+    uint8_t clear = (getFormat() == FORMAT_PALETTED) ? TRANSPARENT_INDEX : 0;
 
-    uint8_t clear;
-    switch(format_)
-    {
-        case FORMAT_BGRA:
-            tex_bpp_ = 4;
-            clear = 0x00;
-            break;
-        case FORMAT_PALETTED:
-            tex_bpp_ = 1;
-            clear = TRANSPARENT_INDEX;
-            break;
-        default:
-            tex_bpp_ = 0;
-            clear = 0x7F;
-    }
-
-    tex_data_.resize(tex_width_ * tex_height_ * tex_bpp_, clear);
+    tex_data_.resize(tex_width_ * tex_height_ * getBBP(), clear);
 }
 
 /**
@@ -278,9 +205,6 @@ void ArchivItem_BitmapBase::tex_clear()
 {
     tex_width_ = 0;
     tex_height_ = 0;
-
-    tex_bpp_ = 0;
-
     tex_data_.clear();
 }
 
@@ -372,26 +296,6 @@ void ArchivItem_BitmapBase::setNy(int16_t ny)
     this->ny_ = ny;
 }
 
-/**
- *  setzt die Breite des Bildes.
- *
- *  @param[in] width Breite des Bildes
- */
-void ArchivItem_BitmapBase::setWidth(uint16_t width)
-{
-    this->width_ = width;
-}
-
-/**
- *  setzt die Höhe des Bildes.
- *
- *  @param[in] height Höhe des Bildes
- */
-void ArchivItem_BitmapBase::setHeight(uint16_t height)
-{
-    this->height_ = height;
-}
-
 void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
 {
     int x, y, lx, ly;
@@ -409,12 +313,12 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
     {
         for (y = 0; y < tex_height_; ++y)
         {
-            if ((tex_bpp_ == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
+            if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
                 vx = x;
                 break;
             }
-            else if ((tex_bpp_ == 4) && (tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            else if ((getBBP() == 4) && (tex_data_[((tex_width_ * y + x) * 4) + 3] != 0x00))
             {
                 vx = x;
                 break;
@@ -432,12 +336,12 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
     {
         for (y = 0; y < tex_height_; ++y)
         {
-            if ((tex_bpp_ == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
+            if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
                 lx = x;
                 break;
             }
-            else if ((tex_bpp_ == 4) && (tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            else if ((getBBP() == 4) && (tex_data_[((tex_width_ * y + x) * 4) + 3] != 0x00))
             {
                 lx = x;
                 break;
@@ -455,12 +359,12 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
     {
         for (x = 0; x < tex_width_; ++x)
         {
-            if ((tex_bpp_ == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
+            if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
                 vy = y;
                 break;
             }
-            else if ((tex_bpp_ == 4) && (tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            else if ((getBBP() == 4) && (tex_data_[((tex_width_ * y + x) * 4) + 3] != 0x00))
             {
                 vy = y;
                 break;
@@ -478,12 +382,12 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
     {
         for (x = 0; x < tex_width_; ++x)
         {
-            if ((tex_bpp_ == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
+            if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
                 ly = y;
                 break;
             }
-            else if ((tex_bpp_ == 4) && (tex_data_[((tex_width_ * y + x) << 2) + 3] != 0x00))
+            else if ((getBBP() == 4) && (tex_data_[((tex_width_ * y + x) * 4) + 3] != 0x00))
             {
                 ly = y;
                 break;

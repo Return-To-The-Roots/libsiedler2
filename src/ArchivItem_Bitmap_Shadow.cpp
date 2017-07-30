@@ -107,9 +107,9 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     fs >> data;
 
     // Speicher anlegen
-    tex_alloc();
+    tex_alloc(width_, height_, FORMAT_PALETTED);
 
-    uint8_t gray = palette->lookup(255, 255, 255);
+    uint8_t gray = palette->lookup(ColorRGB(255, 255, 255));
 
     if(length != 0)
     {

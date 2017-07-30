@@ -18,6 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
+#include "ColorARGB.h"
 #include <cstddef>
 #include <vector>
 
@@ -59,69 +60,39 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
     if(palette == NULL && (buffer_format == FORMAT_PALETTED || buffer_format == FORMAT_PALETTED))
         return 2;
 
+    if(from_x >= tex_width_ || from_y >= tex_height_ || to_x >= buffer_width || to_y >= buffer_height)
+        return 0;
+
     if(from_w == 0 || from_x + from_w > tex_width_)
         from_w = tex_width_ - from_x;
     if(from_h == 0 || from_y + from_h > tex_height_)
         from_h = tex_height_ - from_y;
 
-    uint16_t bpp;
-    switch(buffer_format)
-    {
-        case FORMAT_BGRA:
-            bpp = 4;
-            break;
-        case FORMAT_PALETTED:
-            bpp = 1;
-            break;
-        default:
-            bpp = 0;
-            break;
-    }
+    const unsigned bufBpp = getBBP(buffer_format);
+    const unsigned texBpp = getBBP(getFormat());
 
     for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
     {
         for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
-            size_t position = (y2 * buffer_width + x2) * bpp;
-            size_t position2 = (y * tex_width_ + x) * tex_bpp_;
-            switch(tex_bpp_)
+            size_t posBuf = (y2 * buffer_width + x2) * bufBpp;
+            size_t posTex = (y * tex_width_ + x) * texBpp;
+            if(getFormat() == FORMAT_PALETTED)
             {
-                case 1: // Textur ist Paletted
-                {
-                    if(tex_data_[position2] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
-                        continue;
-                    switch(bpp)
-                    {
-                        case 1:
-                            // Ziel ist auch Paletted
-                             buffer[position] = tex_data_[position2];
-                            break;
-                        case 4:
-                            // Ziel ist RGB+A
-                            palette->get(tex_data_[position2], buffer[position + 2], buffer[position + 1], buffer[position + 0]);
-                            buffer[position + 3] = 0xFF;
-                            break;
-                    }
-                } break;
-                case 4: // Textur ist RGBA
-                {
-                    if(tex_data_[position2 + 3] == 0)  // bei Transparenz wird buffer nicht verändert
-                        continue;
-                    switch(bpp)
-                    {
-                        case 1:
-                            // Ziel ist Paletted
-                            buffer[position] = tex_getPixel(x, y, palette);
-                            break;
-                        case 4:
-                            // Ziel ist auch RGB+A
-                            buffer[position + 0] = tex_data_[position2 + 0]; // b
-                            buffer[position + 1] = tex_data_[position2 + 1]; // g
-                            buffer[position + 2] = tex_data_[position2 + 2]; // r
-                            buffer[position + 3] = tex_data_[position2 + 3]; // a
-                            break;
-                    }
-                } break;
+                if(tex_data_[posTex] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                    continue;
+                if(buffer_format == FORMAT_PALETTED)
+                    buffer[posBuf] = tex_data_[posTex];
+                else
+                    ColorARGB(palette->get(tex_data_[posTex])).toBGRA(&buffer[posBuf]);
+            } else
+            {
+                if(tex_data_[posTex + 3] == 0)  // bei Transparenz wird buffer nicht verändert
+                    continue;
+                if(buffer_format == FORMAT_PALETTED)
+                    buffer[posBuf] = tex_getPixel(x, y, palette);
+                else
+                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(&tex_data_[posTex]);
             }
         }
     }
@@ -158,9 +129,6 @@ int baseArchivItem_Bitmap::create(uint16_t width,
     if(!palette && buffer_format == FORMAT_PALETTED)
         return 2;
 
-    this->width_ = width;
-    this->height_ = height;
-    this->format_ = buffer_format;
     // Save the used palette
     if(palette)
         setPalette(*palette);
@@ -168,43 +136,18 @@ int baseArchivItem_Bitmap::create(uint16_t width,
         setPalette(NULL);
 
     // Texturspeicher anfordern
-    tex_alloc();
+    tex_alloc(width, height, buffer_format);
 
-    uint16_t bpp;
-    switch(buffer_format)
-    {
-        case FORMAT_BGRA:
-            bpp = 4;
-            break;
-        case FORMAT_PALETTED:
-            bpp = 1;
-            break;
-        default:
-            bpp = 0;
-            break;
-    }
+    const unsigned bpp = getBBP();
+    uint16_t copyWidth = std::min(buffer_width, width);
+    uint16_t copyHeight = std::min(buffer_height, height);
+    size_t rowSize = copyWidth * bpp;
 
-    for(uint32_t y = 0, y2 = 0; y2 < buffer_height && y < height; ++y, ++y2)
+    for(uint32_t y = 0; y < copyHeight; ++y)
     {
-        for(uint32_t x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
-        {
-            size_t position = (y2 * buffer_width + x2) * bpp;
-            // und Pixel setzen
-            switch(buffer_format)
-            {
-                case FORMAT_BGRA:
-                    if(buffer[position + 3] != 0x00)
-                        tex_setPixel(x, y, buffer[position + 2], buffer[position + 1], buffer[position], buffer[position + 3]);
-                    else
-                        tex_setPixel(x, y, 0, 0, 0, 0);
-                    break;
-                case FORMAT_PALETTED:
-                    tex_setPixel(x, y, buffer[position], palette);
-                    break;
-                default:
-                    break; // Do nothing
-            }
-        }
+        size_t posFrom = y * buffer_width * bpp;
+        size_t posTexFrom = y * tex_width_ * bpp;
+        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], tex_data_.begin() + posTexFrom);
     }
 
     // Alles ok

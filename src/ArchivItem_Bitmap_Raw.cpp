@@ -101,20 +101,12 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     // Höhe einlesen
     fs >> height_;
 
-    // Speicher anlegen
-    tex_alloc();
+    if(length != width_ * height_)
+        return 4;
 
-    if(length != 0)
-    {
-        for(uint16_t y = 0; y < height_; ++y)
-        {
-            for(uint16_t x = 0; x < width_; ++x)
-            {
-                // Pixel setzen
-                tex_setPixel(x, y, data[y * width_ + x], palette);
-            }
-        }
-    }
+    // Speicher anlegen
+    if(length > 0 && create(width_, height_, &data[0], width_, height_, FORMAT_PALETTED, palette) != 0)
+        return 5;
 
     // Unbekannte Daten überspringen
     fs.ignore(8);

@@ -55,7 +55,7 @@ namespace libsiedler2
             int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
 
             /// alloziert Bildspeicher für die gewünschte Größe.
-            void tex_alloc() override;
+            void tex_alloc(int16_t width, int16_t height, TexturFormat format) override;
 
             /// räumt den Bildspeicher auf.
             void tex_clear() override;

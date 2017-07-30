@@ -54,25 +54,11 @@ namespace libsiedler2
             void set(uint8_t index, ColorRGB clr);
 
             /// liefert einen Farbwert am entsprechenden Index.
-            void get(uint8_t index, uint8_t& r, uint8_t& g, uint8_t& b) const
-            {
-                const ColorRGB& clr = (*this)[index];
-                r = clr.r;
-                g = clr.g;
-                b = clr.b;
-            }
-
-            ColorRGB get(uint8_t index) const
-            {
-                return (*this)[index];
-            }
+            ColorRGB get(uint8_t index) const { return (*this)[index]; }
 
             /// liefert einen Index zum entsprechenden RGB-Wert.
             uint8_t lookup(const ColorRGB& clr) const;
-            uint8_t lookup(uint8_t r, uint8_t g, uint8_t b) const
-            {
-                return lookup(ColorRGB(r, g, b));
-            }
+
             /// Return the (first) index with the given color or defaultVal if none found
             uint8_t lookupOrDef(const ColorRGB& clr, uint8_t defaultVal = 0) const;
 

@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
+#include "ColorARGB.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "libendian/src/EndianOStreamAdapter.h"
@@ -130,21 +131,14 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     fs << bmih.clrused;
     fs << bmih.clrimp;
 
-    // Farbpalette lesen
-    uint8_t colors[256][4];
-
-    // Farbpalette zuweisen
-    for(int i = 0; i < bmih.clrused; ++i)
+    if(bmih.clrused > 0)
     {
-        colors[i][3] = 0;
-        palette->get(i, colors[i][2], colors[i][1], colors[i][0]);
+        uint8_t colors[256][4];
+        // Bmps use 0 for alpha channel
+        for(int i = 0; i < bmih.clrused; ++i)
+            ColorARGB(palette->get(i), 0).toBGRA(&colors[i][0]);
+        fs.write(colors[0], bmih.clrused * 4);
     }
-    colors[TRANSPARENT_INDEX][0] = TRANSPARENT_COLOR.b;
-    colors[TRANSPARENT_INDEX][1] = TRANSPARENT_COLOR.g;
-    colors[TRANSPARENT_INDEX][2] = TRANSPARENT_COLOR.r;
-
-    // Farbpalette schreiben
-    fs.write(colors[0], bmih.clrused * 4);
 
     std::vector<uint8_t> buffer(bmih.width * bmih.height * (palette ? 1 : 4), palette ? TRANSPARENT_INDEX : 0);
     TexturFormat bufFmt = palette ? FORMAT_PALETTED : FORMAT_BGRA;
@@ -175,11 +169,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
                 if(buffer[idx + 3] == 0x00)
                     clr = TRANSPARENT_COLOR;
                 else
-                {
-                    clr.b = buffer[idx + 0];
-                    clr.g = buffer[idx + 1];
-                    clr.r = buffer[idx + 2];
-                }
+                    clr = ColorRGB::fromBGR(&buffer[idx]);
                 fs << clr.b << clr.g << clr.r;
             }
         }
@@ -187,9 +177,10 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
             fs << lineAlignBytes;
     }
 
-    uint32_t endsize = fs.getPosition();
+    long endPos = fs.getPosition();
     fs.setPosition(bmhdsizepos);
-    fs << endsize;
+    fs << uint32_t(endPos);
+    fs.setPosition(endPos);
 
     // alles ok
     return (!fs) ? 99 : 0;
