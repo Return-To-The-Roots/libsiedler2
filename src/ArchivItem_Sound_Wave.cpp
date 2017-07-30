@@ -17,10 +17,10 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Wave.h"
-#include <boost/endian/conversion.hpp>
-#include <iostream>
+#include "WAV_Header.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <iostream>
 #include <cstring>
 
 /** @class libsiedler2::baseArchivItem_Sound_Wave
@@ -52,73 +52,36 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, uint32_t le
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
 
     // Header einlesen
-    char header[4];
-    fs >> header;
-
-    // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
-    bool prependheader = true;
-    if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
-        prependheader = false;
-
+    char headerId[4];
+    fs >> headerId;
     fs.setPositionRel(-4);
 
-    if(prependheader)
+    // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
+    bool hasHeader = false;
+    if(strncmp(headerId, "FORM", 4) == 0 || strncmp(headerId, "RIFF", 4) == 0)
     {
-        data.resize(length + 44);
-
-        fs.read(&data[44], length);
-
-        //uint8_t header[] = {
-        //   0 | 'R', 'I', 'F', 'F',
-        //   4 | 0, 0, 0, 0, // file-size
-        //   8 | 'W', 'A', 'V', 'E',
-        //  12 | 'f', 'm', 't', ' ',
-        //  16 | 0x10, 0x00, // fmt-length
-        //  18 | 0x00, 0x00, // fmt-format, unkomprimiert
-        //  20 | 0x01, 0x00, // Audio-Format (PCM)
-        //  22 | 0x01, 0x00, // channels, mono
-        //  24 | 0x11, 0x2B, 0x00, 0x00, // 11,025 kHz
-        //  28 | 0x11, 0x2B, 0x00, 0x00, // average bytes, 11025
-        //  32 | 0x01, 0x00, // block align, 1
-        //  34 | 0x08, 0x00, // bits per sample, 8
-        //  36 | 'd', 'a', 't', 'a',
-        //  40 | 0, 0, 0, 0 // data-size
-        //};
-
-        uint8_t header[44] =
-        {
-            'R', 'I', 'F', 'F',
-            0, 0, 0, 0, // file-size
-            'W', 'A', 'V', 'E',
-            'f', 'm', 't', ' ',
-            0x10, 0x00, // fmt-length
-            0x00, 0x00, // fmt-format, unkomprimiert
-            0x01, 0x00, // Audio-Format (PCM)
-            0x01, 0x00, // channels, mono
-            0x44, 0xac, 0x00, 0x00, // 44100 kHz
-            0x44, 0xac, 0x00, 0x00, // average bytes, 44100
-            0x02, 0x00, // block align, 1
-            0x10, 0x00, // bits per sample, 16
-            'd', 'a', 't', 'a',
-            0, 0, 0, 0 // data-size
-        };
-
-        uint32_t size = length + sizeof(header) - 8;
-        uint32_t flength = length;
-
-        boost::endian::native_to_little_inplace(size);
-        boost::endian::native_to_little_inplace(flength);
-
-        memcpy(&header[4],  &size, 4);
-        memcpy(&header[40], &flength,   4);
-
-        memcpy(&data[0], header, 44);
-    }
-    else
+        if(!fs.readRaw(&header, 1))
+            return 2;
+        length -= sizeof(header);
+    } else
     {
-        data.resize(length);
-        fs >> data;
+        strncpy(header.RIFF_ID, "RIFF", 4);
+        strncpy(header.WAVE_ID, "WAVE", 4);
+        strncpy(header.fmt_ID, "fmt ", 4);
+        strncpy(header.data_ID, "data", 4);
+        header.fmtTag = 1;
+        header.numChannels = 1;
+        header.samplesPerSec = 11025;
+        header.bytesPerSec = 11025;
+        header.frameSize = 1;
+        header.bitsPerSample = 8;
+        header.dataSize = length;
+        header.fmtSize = 28;
+        header.fileSize = length + sizeof(header);
     }
+
+    data.resize(length);
+    fs >> data;
 
     return (!fs) ? 99 : 0;
 }
@@ -138,15 +101,10 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
 
-    const uint8_t* start = &data.front();
-    uint32_t length = static_cast<uint32_t>(data.size());
-    if(stripheader)
-    {
-        start = &data[44];
-        length -= 44;
-    }
+    if(!stripheader)
+        fs.writeRaw(&header, 1);
 
-    fs.write(start, length);
+    fs << data;
 
     return (!fs) ? 99 : 0;
 }

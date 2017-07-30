@@ -20,6 +20,7 @@
 #pragma once
 
 #include "ArchivItem_Sound.h"
+#include "WAV_Header.h"
 #include <vector>
 #include <stdint.h>
 
@@ -52,9 +53,7 @@ namespace libsiedler2
             uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
 
         protected:
-            uint16_t format_, numChannels_;
-            uint32_t samplesPerSec_, bytesPerSec_;
-            uint16_t blockAlign_, bitsPerSample_;
+            WAV_Header header;
             std::vector<uint8_t> data;
     };
 
