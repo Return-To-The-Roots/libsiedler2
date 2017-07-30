@@ -23,6 +23,7 @@
 #include "ColorARGB.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "BmpHeader.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
@@ -74,29 +75,6 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
  */
 int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 {
-    struct BMHD
-    {
-        uint16_t header; // 2
-        uint32_t size; // 6
-        uint32_t reserved; // 10
-        uint32_t offset; // 14
-    } bmhd;
-
-    struct BMIH
-    {
-        uint32_t length; // 4
-        int width; // 8
-        int height; // 12
-        int16_t planes; // 14
-        int16_t bbp; // 16
-        uint32_t compression; // 20
-        uint32_t size; // 24
-        int xppm; // 28
-        int yppm; // 32
-        int clrused; // 36
-        int clrimp; // 40
-    } bmih ;
-
     bool bottomup = false;
 
     if(file.empty())
@@ -112,42 +90,31 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
     }
     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
     MMStream mmapStream(mmapFile);
-    libendian::EndianIStreamAdapter<false, MMStream& > bmp(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream& > bmpFs(mmapStream);
 
     // hat das geklappt?
-    if(!bmp)
+    if(!bmpFs)
         return 2;
 
-    // Bitmap-Header einlesen
-    bmp >> bmhd.header;
-    bmp >> bmhd.size;
-    bmp >> bmhd.reserved;
-    bmp >> bmhd.offset;
+    BmpFileHeader bmhd;
 
-    if(bmhd.header != 0x4D42)
+    if(!bmpFs.readRaw(&bmhd, 1))
+        return 3;
+
+    if(bmhd.header[0] != 'B' || bmhd.header[1] != 'M')
         return 4;
 
-    // Bitmap-Info-Header einlesen
-    //bmp >> bmih;
-    bmp >> bmih.length;
-    bmp >> bmih.width;
-    bmp >> bmih.height;
-    bmp >> bmih.planes;
-    bmp >> bmih.bbp;
-    bmp >> bmih.compression;
-    bmp >> bmih.size;
-    bmp >> bmih.xppm;
-    bmp >> bmih.yppm;
-    bmp >> bmih.clrused;
-    bmp >> bmih.clrimp;
+    BitmapInfoHeader bmih;
+    if(!bmpFs.readRaw(&bmih, 1))
+        return 5;
 
-    if(!bmp)
-        return 99;
+    if(bmih.headerSize != sizeof(bmih))
+        return 6;
 
-    if(bmih.height > 0)
+    if(bmih.height >= 0)
         bottomup = true;
-
-    bmih.height = (bottomup ? bmih.height : -bmih.height);
+    else
+        bmih.height = -bmih.height;
 
     // nur eine Ebene
     if(bmih.planes != 1)
@@ -162,14 +129,14 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 
     // Einträge in der Farbtabelle
     if(bmih.clrused == 0)
-        bmih.clrused = (int)pow(2.0, bmih.bbp);
+        bmih.clrused = (int)pow(2.0, bmih.bpp);
 
     ArchivItem_Palette* pal = NULL;
-    if(bmih.bbp == 8)
+    if(bmih.bpp == 8)
     {
         // Farbpalette lesen
         uint8_t colors[256][4];
-        if(!bmp.read(colors[0], bmih.clrused * 4))
+        if(!bmpFs.read(colors[0], bmih.clrused * 4))
             return 99;
 
         pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
@@ -177,24 +144,26 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
             pal->set(i, ColorARGB::fromBGRA(&colors[i][0]));
     }
 
-    uint8_t bbp = (bmih.bbp / 8);
+    uint8_t bbp = (bmih.bpp / 8);
     if(bbp != 1 && bbp != 3)
         return 10;
     std::vector<uint8_t> buffer(bmih.height * bmih.width * (bbp == 1 ? 1 : 4));
     std::vector<uint8_t> tmpBuffer(bmih.width * bbp);
+
+    bmpFs.setPosition(bmhd.pixelOffset);
 
     // Bitmap Pixel einlesen
     if(bottomup)
     {
         // Bottom-Up, "von unten nach oben"
         for(int y = bmih.height - 1; y >= 0; --y)
-            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, buffer, tmpBuffer);
+            LoadBMP_ReadLine(bmpFs, y, bmih.width, bbp, buffer, tmpBuffer);
     }
     else
     {
         // Top-Down, "von oben nach unten"
         for(int y = 0; y < bmih.height; ++y)
-            LoadBMP_ReadLine(bmp, y, bmih.width, bbp, buffer, tmpBuffer);
+            LoadBMP_ReadLine(bmpFs, y, bmih.width, bbp, buffer, tmpBuffer);
     }
 
     if(!bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
@@ -205,6 +174,6 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
     image.push(bitmap.release());
 
     // alles ok
-    return (!bmp) ? 99 : 0;
+    return (!bmpFs) ? 99 : 0;
 }
 

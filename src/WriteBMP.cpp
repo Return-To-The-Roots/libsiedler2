@@ -22,6 +22,7 @@
 #include "ColorARGB.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "BmpHeader.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 #include <vector>
@@ -42,29 +43,6 @@
  */
 int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items, long nr)
 {
-    struct BMHD
-    {
-        uint16_t header; // 2
-        uint32_t size; // 6
-        uint32_t reserved; // 10
-        uint32_t offset; // 14
-    } bmhd = { 0x4D42, 40, 0, 54 };
-
-    struct BMIH
-    {
-        uint32_t length; // 4
-        int32_t width; // 8
-        int32_t height; // 12
-        int16_t planes; // 14
-        int16_t bbp; // 16
-        uint32_t compression; // 20
-        uint32_t size; // 24
-        int32_t xppm; // 28
-        int32_t yppm; // 32
-        int32_t clrused; // 36
-        int32_t clrimp; // 40
-    } bmih = { 40, 0, 0, 1, 24, 0, 0, 2834, 2834, 0, 0 };
-
     if(file.empty())
         return 1;
 
@@ -87,19 +65,35 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
         return 2;
     const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(nr));
 
-    if(!palette)
+    if(!palette && bitmap->getFormat() == FORMAT_PALETTED)
         palette = bitmap->getPalette();
+
+    BmpFileHeader bmpHd;
+    BitmapInfoHeader bmih;
+    bmpHd.header[0] = 'B'; bmpHd.header[1] = 'M';
+    bmpHd.reserved = 0;
+    bmih.headerSize = sizeof(bmih);
+    bmih.width = bitmap->getWidth();
+    bmih.height = bitmap->getHeight();
+    bmih.planes = 1;
+    bmih.compression = 0;
+    bmih.size = 0; // Valid for BI_RGB
+    bmih.xppm = bmih.yppm = 2834;
+    bmih.clrimp = 0;
 
     if(palette)
     {
         bmih.clrused = 256;
-        bmih.bbp = 8;
-        bmih.size = bitmap->getWidth() * bitmap->getHeight();
+        bmih.bpp = 8;
     }else
     {
         bmih.clrused = 0;
-        bmih.bbp = 24;
+        bmih.bpp = 24;
     }
+    bmpHd.pixelOffset = sizeof(bmpHd) + sizeof(bmih) + bmih.clrused * 4;
+    unsigned numLineAlignBytes = (bmih.width * bmih.bpp / 8) % 4;
+    numLineAlignBytes = numLineAlignBytes == 0 ? 0 : 4 - numLineAlignBytes;
+    bmpHd.fileSize = (bitmap->getWidth() * bmih.bpp / 8 + numLineAlignBytes) * bitmap->getHeight() + bmpHd.pixelOffset;
 
     // Datei zum schreiben öffnen
     libendian::EndianOStreamAdapter<false, bfs::ofstream> fs(file, std::ios_base::binary);
@@ -108,35 +102,15 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     if(!fs)
         return 3;
 
-    bmih.height = bitmap->getHeight();
-    bmih.width = bitmap->getWidth();
-
-    // Bitmap-Header schreiben
-    fs << bmhd.header;
-    uint32_t bmhdsizepos = fs.getPosition();
-    fs << bmhd.size;
-    fs << bmhd.reserved;
-    fs << bmhd.offset;
-
-    // Bitmap-Info-Header schreiben
-    fs << bmih.length;
-    fs << bmih.width;
-    fs << bmih.height;
-    fs << bmih.planes;
-    fs << bmih.bbp;
-    fs << bmih.compression;
-    fs << bmih.size;
-    fs << bmih.xppm;
-    fs << bmih.yppm;
-    fs << bmih.clrused;
-    fs << bmih.clrimp;
+    if(!fs.writeRaw(&bmpHd, 1))
+        return 4;
+    if(!fs.writeRaw(&bmih, 1))
+        return 5;
 
     if(bmih.clrused > 0)
     {
         uint8_t colors[256][4];
-        // Bmps use 0 for alpha channel
-        for(int i = 0; i < bmih.clrused; ++i)
-            ColorARGB(palette->get(i), 0).toBGRA(&colors[i][0]);
+        palette->copy(&colors[0][0], sizeof(colors), true);
         fs.write(colors[0], bmih.clrused * 4);
     }
 
@@ -151,14 +125,13 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     else if(!dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
         return 7;
 
-    unsigned lineAlignOff = (bmih.width * bmih.bbp / 8) % 4;
-    std::vector<uint8_t> lineAlignBytes(lineAlignOff == 0 ? 0 : 4 - lineAlignOff);
+    std::vector<uint8_t> lineAlignBytes(numLineAlignBytes);
 
     // Bottom-Up, "von unten nach oben"
     for(int y = bmih.height - 1; y >= 0; --y)
     {
         unsigned idx = bmih.width * y;
-        if(bmih.bbp == 8)
+        if(bmih.bpp == 8)
             fs.write(&buffer[idx], bmih.width);
         else
         {
@@ -177,10 +150,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
             fs << lineAlignBytes;
     }
 
-    long endPos = fs.getPosition();
-    fs.setPosition(bmhdsizepos);
-    fs << uint32_t(endPos);
-    fs.setPosition(endPos);
+    assert(fs.getPosition() == bmpHd.fileSize);
 
     // alles ok
     return (!fs) ? 99 : 0;
