@@ -41,7 +41,7 @@ namespace libsiedler2{
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::print(uint8_t* buffer,
+bool baseArchivItem_Bitmap::print(uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
         TexturFormat buffer_format,
@@ -53,52 +53,55 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
         uint16_t from_w,
         uint16_t from_h) const
 {
-    if(buffer == NULL || buffer_width == 0 || buffer_height == 0)
-        return 1;
-    if(palette == NULL)
-        palette = this->palette_;
-    if(palette == NULL && (buffer_format == FORMAT_PALETTED || buffer_format == FORMAT_PALETTED))
-        return 2;
+    if(buffer_width == 0 || buffer_height == 0)
+        return true;
+    if(!buffer)
+        return false;
+    if(!palette)
+        palette = getPalette();
+    if(!palette && buffer_format == FORMAT_PALETTED)
+        return false;
 
-    if(from_x >= tex_width_ || from_y >= tex_height_ || to_x >= buffer_width || to_y >= buffer_height)
-        return 0;
+    if(from_x >= getWidth() || from_y >= getHeight() || to_x >= buffer_width || to_y >= buffer_height)
+        return true;
 
-    if(from_w == 0 || from_x + from_w > tex_width_)
-        from_w = tex_width_ - from_x;
-    if(from_h == 0 || from_y + from_h > tex_height_)
-        from_h = tex_height_ - from_y;
+    if(from_w == 0 || from_x + from_w > getWidth())
+        from_w = getWidth() - from_x;
+    if(from_h == 0 || from_y + from_h > getHeight())
+        from_h = getHeight() - from_y;
 
     const unsigned bufBpp = getBBP(buffer_format);
-    const unsigned texBpp = getBBP(getFormat());
+    const unsigned texBpp = getBBP();
+    const std::vector<uint8_t>& texData = getTexData();
 
     for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
     {
         for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
             size_t posBuf = (y2 * buffer_width + x2) * bufBpp;
-            size_t posTex = (y * tex_width_ + x) * texBpp;
+            size_t posTex = (y * getTexWidth() + x) * texBpp;
             if(getFormat() == FORMAT_PALETTED)
             {
-                if(tex_data_[posTex] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                if(texData[posTex] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
-                    buffer[posBuf] = tex_data_[posTex];
+                    buffer[posBuf] = texData[posTex];
                 else
-                    ColorARGB(palette->get(tex_data_[posTex])).toBGRA(&buffer[posBuf]);
+                    ColorARGB(palette->get(texData[posTex])).toBGRA(&buffer[posBuf]);
             } else
             {
-                if(tex_data_[posTex + 3] == 0)  // bei Transparenz wird buffer nicht verändert
+                if(texData[posTex + 3] == 0)  // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
                     buffer[posBuf] = tex_getPixel(x, y, palette);
                 else
-                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(&tex_data_[posTex]);
+                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(&texData[posTex]);
             }
         }
     }
 
     // Alles ok
-    return 0;
+    return true;
 }
 
 /**
@@ -116,7 +119,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::create(uint16_t width,
+bool baseArchivItem_Bitmap::create(uint16_t width,
         uint16_t height,
         const uint8_t* buffer,
         uint16_t buffer_width,
@@ -124,19 +127,20 @@ int baseArchivItem_Bitmap::create(uint16_t width,
         TexturFormat buffer_format,
         const ArchivItem_Palette* palette)
 {
-    if(width == 0 || height == 0 || buffer == NULL || buffer_width == 0 || buffer_height == 0)
-        return 1;
+    if(buffer_width > 0 && buffer_height > 0 && !buffer)
+        return false;
+    if(!palette)
+        palette = getPalette();
     if(!palette && buffer_format == FORMAT_PALETTED)
-        return 2;
+        return false;
 
+    // Texturspeicher anfordern
+    tex_alloc(width, height, buffer_format);
     // Save the used palette
     if(palette)
         setPalette(*palette);
     else
         setPalette(NULL);
-
-    // Texturspeicher anfordern
-    tex_alloc(width, height, buffer_format);
 
     const unsigned bpp = getBBP();
     uint16_t copyWidth = std::min(buffer_width, width);
@@ -146,12 +150,12 @@ int baseArchivItem_Bitmap::create(uint16_t width,
     for(uint32_t y = 0; y < copyHeight; ++y)
     {
         size_t posFrom = y * buffer_width * bpp;
-        size_t posTexFrom = y * tex_width_ * bpp;
-        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], tex_data_.begin() + posTexFrom);
+        size_t posTexFrom = y * getTexWidth() * bpp;
+        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getTexData().begin() + posTexFrom);
     }
 
     // Alles ok
-    return 0;
+    return true;
 }
 
 } // namespace libsiedler2

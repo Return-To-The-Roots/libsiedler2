@@ -29,17 +29,17 @@ namespace libsiedler2{
  *  Basis-Basisklasse für Bitmapitems.
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase(): ArchivItem(), width_(0), height_(0), nx_(0), ny_(0),
+ArchivItem_BitmapBase::ArchivItem_BitmapBase(): ArchivItem(), nx_(0), ny_(0), width_(0), height_(0),
     tex_width_(0), tex_height_(0), palette_(NULL), format_(getTextureFormat())
 {}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem( item )
 {
-    width_ = item.width_;
-    height_ = item.height_;
-
     nx_ = item.nx_;
     ny_ = item.ny_;
+
+    width_ = item.width_;
+    height_ = item.height_;
 
     tex_width_ = item.tex_width_;
     tex_height_ = item.tex_height_;
@@ -54,8 +54,6 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
 
 ArchivItem_BitmapBase::~ArchivItem_BitmapBase()
 {
-    tex_clear();
-
     delete palette_;
     palette_ = NULL;
 }
@@ -67,11 +65,11 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
 
     ArchivItem::operator=(item);
 
-    width_ = item.width_;
-    height_ = item.height_;
-
     nx_ = item.nx_;
     ny_ = item.ny_;
+
+    width_ = item.width_;
+    height_ = item.height_;
 
     tex_width_ = item.tex_width_;
     tex_height_ = item.tex_height_;
@@ -186,6 +184,12 @@ uint8_t ArchivItem_BitmapBase::tex_getPixel(uint16_t x, uint16_t y,
 void ArchivItem_BitmapBase::tex_alloc(int16_t width, int16_t height, TexturFormat format)
 {
     tex_clear();
+    // Consistency: width == 0 <=> height == 0
+    if(width == 0)
+        height = 0;
+    else if(height == 0)
+        width = 0;
+
     width_ = width;
     height_ = height;
     format_ = format;
@@ -217,6 +221,8 @@ void ArchivItem_BitmapBase::tex_clear()
  */
 uint16_t ArchivItem_BitmapBase::tex_pow2(uint16_t n)
 {
+    if(n == 0)
+        return 0;
     uint16_t t = 2;
     while(true)
     {
@@ -224,16 +230,6 @@ uint16_t ArchivItem_BitmapBase::tex_pow2(uint16_t n)
             return t;
         t *= 2;
     }
-}
-
-/**
- *  liefert den Textur-Datenblock.
- *
- *  @return Der Textur-Datenblock
- */
-const std::vector<uint8_t>& ArchivItem_BitmapBase::getTexData() const
-{
-    return tex_data_;
 }
 
 /**
@@ -309,9 +305,9 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
     }
 
     // find empty rows at left
-    for (x = 0; x < tex_width_; ++x)
+    for (x = 0; x < width_; ++x)
     {
-        for (y = 0; y < tex_height_; ++y)
+        for (y = 0; y < height_; ++y)
         {
             if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
@@ -325,16 +321,14 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
             }
         }
 
-        if (y != tex_height_)
-        {
+        if (y != height_)
             break;
-        }
     }
 
     // find empty rows at bottom
-    for (x = tex_width_ - 1; x >= 0; --x)
+    for (x = width_ - 1; x >= 0; --x)
     {
-        for (y = 0; y < tex_height_; ++y)
+        for (y = 0; y < height_; ++y)
         {
             if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
@@ -348,16 +342,14 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
             }
         }
 
-        if (y != tex_height_)
-        {
+        if (y != height_)
             break;
-        }
     }
 
     // find empty rows at top
-    for (y = 0; y < tex_height_; ++y)
+    for (y = 0; y < height_; ++y)
     {
-        for (x = 0; x < tex_width_; ++x)
+        for (x = 0; x < width_; ++x)
         {
             if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
@@ -371,16 +363,14 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
             }
         }
 
-        if (x != tex_width_)
-        {
+        if (x != width_)
             break;
-        }
     }
 
     // find empty rows at bottom
-    for (y = tex_height_ - 1; y >= 0; --y)
+    for (y = height_ - 1; y >= 0; --y)
     {
-        for (x = 0; x < tex_width_; ++x)
+        for (x = 0; x < width_; ++x)
         {
             if ((getBBP() == 1) && (tex_data_[tex_width_ * y + x] != TRANSPARENT_INDEX))
             {
@@ -395,9 +385,7 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
         }
 
         if (x != tex_width_)
-        {
             break;
-        }
     }
 
     vw = lx + 1 - vx;
@@ -411,7 +399,12 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
  */
 void ArchivItem_BitmapBase::setPalette(ArchivItem_Palette* palette)
 {
-    removePalette();
+    // Can happen if we create the bitmap with its own palette
+    if(palette_ == palette)
+        return;
+    if(!palette && format_ == FORMAT_PALETTED)
+        throw std::runtime_error("Cannot remove palette from paletted image");
+    delete palette_;
     palette_ = palette;
 }
 
@@ -422,8 +415,7 @@ void ArchivItem_BitmapBase::setPalette(const ArchivItem_Palette& palette)
 
 void ArchivItem_BitmapBase::removePalette()
 {
-    delete palette_;
-    palette_ = NULL;
+    setPalette(NULL);
 }
 
 } // namespace libsiedler2

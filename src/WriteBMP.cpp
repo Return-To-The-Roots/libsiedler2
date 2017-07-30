@@ -145,10 +145,10 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        if(dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128) != 0)
+        if(!dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
             return 7;
     }
-    else if(dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette) != 0)
+    else if(!dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
         return 7;
 
     unsigned lineAlignOff = (bmih.width * bmih.bbp / 8) % 4;

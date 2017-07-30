@@ -144,37 +144,53 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     std::vector<uint8_t> outBuffer(inBuffer.size(), 42);
     std::fill(outBufferPal.begin() + bh * w, outBufferPal.end(), 0u);
     std::fill(outBuffer.begin() + bh * w * 4, outBuffer.end(), 0u);
+    std::vector<uint8_t> emptyBufferPal(outBufferPal);
+    std::vector<uint8_t> emptyBuffer(outBuffer);
     // First create paletted bmp
     ArchivItem_Bitmap_Raw bmpPal;
-    // Any 0 should make this fail
-    BOOST_REQUIRE_NE(bmpPal.create(0, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, 0, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, NULL, w, h, FORMAT_PALETTED, palette), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, &inBufferPal[0], 0, h, FORMAT_PALETTED, palette), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, &inBufferPal[0], w, 0, FORMAT_PALETTED, palette), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, NULL), 0);
+    // Any NULL should make this fail
+    BOOST_REQUIRE(!bmpPal.create(bw, bh, NULL, w, h, FORMAT_PALETTED, palette));
+    BOOST_REQUIRE(!bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, NULL));
+    // These create transparent bitmaps
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], 0, h, FORMAT_PALETTED, palette));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], w, 0, FORMAT_PALETTED, palette));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
+    // These create empty bitmaps
+    BOOST_REQUIRE(bmpPal.create(0, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), 0u);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), 0u);
+    BOOST_REQUIRE(bmpPal.create(bw, 0, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), 0u);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), 0u);
+
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
     // Now write to paletted buffer
-    // Fail on 0
-    BOOST_REQUIRE_NE(bmpPal.print(NULL, w, h, FORMAT_PALETTED), 0);
-    BOOST_REQUIRE_NE(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED), 0);
-    BOOST_REQUIRE_NE(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED), 0);
+    // Fail on NULL
+    BOOST_REQUIRE(!bmpPal.print(NULL, w, h, FORMAT_PALETTED));
+    // Do nothing
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED));
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED));
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to RGBA buffer
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
 
     // Test partial write
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42u);
     std::fill(outBuffer.begin(), outBuffer.end(), 42u);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, xStart, yStart, xStartB, yStartB, partW, partH), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, xStart, yStart, xStartB, yStartB, partW, partH));
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, xStart, yStart, xStartB, yStartB, partW, partH));
     for(unsigned y = 0; y < h; y++)
     {
         for(unsigned x = 0; x < w; x++)
@@ -201,14 +217,14 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     std::fill(outBufferPal.begin() + bh * w, outBufferPal.end(), 0u);
     std::fill(outBuffer.begin() + bh * w * 4, outBuffer.end(), 0u);
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA));
     BOOST_REQUIRE_EQUAL(bmp.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmp.getHeight(), bh);
     // Now write to paletted buffer
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 }
 
@@ -232,34 +248,34 @@ BOOST_AUTO_TEST_CASE(TransparentTex)
     // Create paletted
     ArchivItem_Bitmap_Raw bmpPal;
     ArchivItem_Bitmap_Player bmpPlayerPal;
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
-    BOOST_REQUIRE_EQUAL(bmpPlayerPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
+    BOOST_REQUIRE(bmpPlayerPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
     // Create BGRA
     ArchivItem_Bitmap_Raw bmp;
     ArchivItem_Bitmap_Player bmpPlayer;
-    BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA), 0);
-    BOOST_REQUIRE_EQUAL(bmpPlayer.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+    BOOST_REQUIRE(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA));
+    BOOST_REQUIRE(bmpPlayer.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette));
     // Writing should not change buffer
     std::vector<uint8_t> outBuffer(inBuffer.size(), 42);
     std::vector<uint8_t> outBufferCheck(outBuffer);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_PALETTED));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
-    BOOST_REQUIRE_EQUAL(bmpPlayerPal.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
-
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
-    BOOST_REQUIRE_EQUAL(bmpPlayerPal.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE(bmpPlayerPal.print(&outBuffer[0], w, h, FORMAT_PALETTED));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
 
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
-    BOOST_REQUIRE_EQUAL(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE(bmpPlayerPal.print(&outBuffer[0], w, h, FORMAT_BGRA));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
 
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED, palette));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
-    BOOST_REQUIRE_EQUAL(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_PALETTED, palette));
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+
+    BOOST_REQUIRE(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA));
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_REQUIRE(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_BGRA));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
 }
 
@@ -292,37 +308,52 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     std::vector<uint8_t> outBuffer(inBuffer.size(), 42);
     std::fill(outBufferPal.begin() + bh * w, outBufferPal.end(), 0u);
     std::fill(outBuffer.begin() + bh * w * 4, outBuffer.end(), 0u);
+    std::vector<uint8_t> emptyBufferPal(outBufferPal);
+    std::vector<uint8_t> emptyBuffer(outBuffer);
+
     // First create paletted bmp
     ArchivItem_Bitmap_Player bmpPal;
-    // Any 0 should make this fail
-    BOOST_REQUIRE_NE(bmpPal.create(0, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, 0, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, NULL, w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, &inBufferPal[0], 0, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, &inBufferPal[0], w, 0, FORMAT_PALETTED, palette, playerClrStart), 0);
-    BOOST_REQUIRE_NE(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    // Any NULL should make this fail
+    BOOST_REQUIRE(!bmpPal.create(bw, bh, NULL, w, h, FORMAT_PALETTED, palette, playerClrStart));
+    BOOST_REQUIRE(!bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart));
+    // These create transparent bitmaps
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], 0, h, FORMAT_PALETTED, palette, playerClrStart));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], w, 0, FORMAT_PALETTED, palette, playerClrStart));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
+    // These create empty bitmaps
+    BOOST_REQUIRE(bmpPal.create(0, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), 0u);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), 0u);
+    BOOST_REQUIRE(bmpPal.create(bw, 0, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart));
+    BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), 0u);
+    BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), 0u);
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart));
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
     // Now write to paletted buffer
-    // Fail on 0
-    BOOST_REQUIRE_NE(bmpPal.print(NULL, w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
-    BOOST_REQUIRE_NE(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
-    BOOST_REQUIRE_NE(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    // Fail on NULL
+    BOOST_REQUIRE(!bmpPal.print(NULL, w, h, FORMAT_PALETTED, NULL, playerClrStart));
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED, NULL, playerClrStart));
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED, NULL, playerClrStart));
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to RGBA buffer
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
 
     // Test partial write
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42u);
     std::fill(outBuffer.begin(), outBuffer.end(), 42u);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH));
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH));
     for(unsigned y = 0; y < h; y++)
     {
         for(unsigned x = 0; x < w; x++)
@@ -348,13 +379,13 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     std::fill(outBuffer.begin(), outBuffer.end(), 42u);
     std::fill(outBufferPal.begin() + bh * w, outBufferPal.end(), 0u);
     std::fill(outBuffer.begin() + bh * w * 4, outBuffer.end(), 0u);
-    BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
+    BOOST_REQUIRE(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart));
     BOOST_REQUIRE_EQUAL(bmp.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmp.getHeight(), bh);
 
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 }
 
@@ -394,27 +425,27 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
 
     // First create paletted bmp
     ArchivItem_Bitmap_Player bmpPal;
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
+    BOOST_REQUIRE(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart));
     // Now write to paletted buffer
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to RGBA buffer
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     // paletted buffer, 2nd player color (recolor)
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal2);
     // Same for BGRA
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB2);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     // Player colors only
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
+    BOOST_REQUIRE(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true));
+    BOOST_REQUIRE(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true));
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
@@ -429,28 +460,28 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     ArchivItem_Bitmap_Player bmp;
-    BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
+    BOOST_REQUIRE(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart));
     // Write to paletted
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to BGRA
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
+    BOOST_REQUIRE(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     // recolored paletted
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2), 0);
+    BOOST_REQUIRE(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal2);
     // Same for BGRA
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2), 0);
+    BOOST_REQUIRE(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2));
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer2);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     // Player colors only
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
+    BOOST_REQUIRE(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true));
+    BOOST_REQUIRE(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true));
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
@@ -474,12 +505,12 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
     {
         Rect vis;
         // Test empty bmp
-        BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+        BOOST_REQUIRE(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
         bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
         BOOST_REQUIRE_EQUAL(vis, Rect(0, 0, 0, 0));
         Rect vis2;
         // Test empty bmp
-        BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+        BOOST_REQUIRE(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
         bmp.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
         BOOST_REQUIRE_EQUAL(vis2, Rect(0, 0, 0, 0));
     }
@@ -504,12 +535,12 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
         {
             inBufferPal[rect.x + rect.y * w] = i;
             inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = i;
-            BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+            BOOST_REQUIRE(bmp.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
             Rect vis;
             bmp.getVisibleArea(vis.x, vis.y, vis.w, vis.h);
             BOOST_REQUIRE_EQUAL(vis, rect);
 
-            BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
+            BOOST_REQUIRE(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette));
             Rect visRaw;
             bmp.getVisibleArea(visRaw.x, visRaw.y, visRaw.w, visRaw.h);
             BOOST_REQUIRE_EQUAL(visRaw, rect);
@@ -519,14 +550,14 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
 
             // Buffer in (byte) BGRA format
             std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u, 0);
-            BOOST_REQUIRE_EQUAL(bmp.print(&inBuffer[0], w, h, FORMAT_BGRA), 0);
+            BOOST_REQUIRE(bmp.print(&inBuffer[0], w, h, FORMAT_BGRA));
             ArchivItem_Bitmap_Player bmp2;
-            BOOST_REQUIRE_EQUAL(bmp2.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+            BOOST_REQUIRE(bmp2.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette));
             Rect vis2;
             bmp2.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
             BOOST_REQUIRE_EQUAL(vis2, rect);
 
-            BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+            BOOST_REQUIRE(bmpRaw.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette));
             Rect visRaw2;
             bmp.getVisibleArea(visRaw2.x, visRaw2.y, visRaw2.w, visRaw2.h);
             BOOST_REQUIRE_EQUAL(visRaw2, rect);

@@ -197,8 +197,8 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
             LoadBMP_ReadLine(bmp, y, bmih.width, bbp, buffer, tmpBuffer);
     }
 
-    if(bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
-        (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal) != 0)
+    if(!bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
+        (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal))
         return 22;
 
     // Bitmap zuweisen

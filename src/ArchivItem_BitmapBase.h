@@ -57,7 +57,7 @@ namespace libsiedler2
         virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const = 0;
 
         /// liefert den Textur-Datenblock.
-        const std::vector<uint8_t>& getTexData() const;
+        const std::vector<uint8_t>& getTexData() const { return tex_data_; }
 
         /// liefert den X-Nullpunkt.
         int16_t getNx() const;
@@ -71,9 +71,6 @@ namespace libsiedler2
         /// liefert die Höhe des Bildes.
         uint16_t getHeight() const;
 
-        /// gibt Palette zurück
-        const ArchivItem_Palette* getPalette() const { return palette_; }
-
         /// setzt den X-Nullpunkt.
         void setNx(int16_t nx);
 
@@ -86,9 +83,13 @@ namespace libsiedler2
         /// räumt den Bildspeicher auf.
         virtual void tex_clear();
 
-        /// setzt die Grundpalette des Bildes.
+        /// Return the currently used palette
+        const ArchivItem_Palette* getPalette() const { return palette_; }
+        /// Set the palette passing ownership
         void setPalette(ArchivItem_Palette* palette);
+        /// Set the palette NOT passing ownership
         void setPalette(const ArchivItem_Palette& palette);
+        /// Remove the currently used palette
         void removePalette();
 
         TexturFormat getFormat() const { return format_; }
@@ -99,13 +100,16 @@ namespace libsiedler2
         /// Return the bytes per pixel for a given format
         static uint32_t getBBP(TexturFormat format);
         uint32_t getBBP() const { return getBBP(getFormat()); }
-
     protected:
-        uint16_t width_;       /// Breite des Bildes.
-        uint16_t height_;      /// Höhe des Bildes.
+        uint16_t getTexWidth() const { return tex_width_; }
+        uint16_t getTexHeight() const { return tex_height_; }
+        std::vector<uint8_t>& getTexData() { return tex_data_; }
 
         int16_t nx_;                   /// X-Nullpunkt.
         int16_t ny_;                   /// Y-Nullpunkt.
+    private:
+        uint16_t width_;       /// Breite des Bildes.
+        uint16_t height_;      /// Höhe des Bildes.
 
         uint16_t tex_width_;   /// Breite der Textur.
         uint16_t tex_height_;  /// Höhe der Textur.

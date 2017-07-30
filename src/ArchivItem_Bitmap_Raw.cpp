@@ -17,9 +17,10 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Raw.h"
-#include <iostream>
+#include "ArchivItem_Palette.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <iostream>
 #include <vector>
 namespace libsiedler2 { class ArchivItem_Palette; }
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw
@@ -72,11 +73,10 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     if(!file)
         return 1;
     if(palette == NULL)
-        palette = this->palette_;
+        palette = getPalette();
     if(palette == NULL)
         return 2;
 
-    tex_clear();
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Unbekannte Daten überspringen
     fs.ignore(2);
@@ -86,26 +86,15 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     fs >> length;
 
     std::vector<uint8_t> data(length);
+    uint16_t width, height;
     // Daten einlesen
-    fs >> data;
+    fs >> data >> nx_ >> ny_ >> width >> height;
 
-    // Nullpunkt X einlesen
-    fs >> nx_;
-
-    // Nullpunkt Y einlesen
-    fs >> ny_;
-
-    // Breite einlesen
-    fs >> width_;
-
-    // Höhe einlesen
-    fs >> height_;
-
-    if(length != width_ * height_)
+    if(length != width * height)
         return 4;
 
     // Speicher anlegen
-    if(length > 0 && create(width_, height_, &data[0], width_, height_, FORMAT_PALETTED, palette) != 0)
+    if(length > 0 && !create(width, height, &data[0], width, height, FORMAT_PALETTED, palette))
         return 5;
 
     // Unbekannte Daten überspringen
@@ -127,46 +116,22 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     if(!file)
         return 1;
     if(palette == NULL)
-        palette = this->palette_;
-    if(palette == NULL)
-        return 2;
+        palette = getPalette();
 
-    if(width_ == 0 || height_ == 0)
+    const uint16_t width = getWidth(), height = getHeight();
+
+    if(width == 0 ||height == 0)
         return 2;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    // Unbekannte Daten schreiben
+    uint32_t length = width * height;
+    std::vector<uint8_t> buffer(length, libsiedler2::TRANSPARENT_INDEX);
+    if(!print(&buffer[0], width, height, FORMAT_PALETTED, palette))
+        return 3;
+
     char unknown[2] = {0x01, 0x00};
-    fs.write(unknown, sizeof(unknown));
-
-    // Länge schreiben
-    uint32_t length = width_ * height_;
-    fs << length;
-
-    for(uint16_t y = 0; y < height_; ++y)
-    {
-        for(uint16_t x = 0; x < width_; ++x)
-        {
-            // Pixel holen und schreiben
-            fs << tex_getPixel(x, y, palette);
-        }
-    }
-
-    // Nullpunkt X schreiben
-    fs << nx_;
-
-    // Nullpunkt Y schreiben
-    fs << ny_;
-
-    // Breite schreiben
-    fs << width_;
-
-    // Höhe schreiben
-    fs << height_;
-
-    // Unbekannte Daten schreiben
-    uint8_t unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
-    fs.write(unknown2, sizeof(unknown2));
+    uint8_t unknown2[8] = { 0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00 };
+    fs << unknown << length << buffer << nx_ << ny_ << width << height << unknown2;
 
     return (!fs) ? 99 : 0;
 }

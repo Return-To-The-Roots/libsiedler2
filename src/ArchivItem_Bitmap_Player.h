@@ -63,7 +63,7 @@ namespace libsiedler2
             void getVisibleArea(int& vx, int& vy, int& vw, int& vh) override;
 
             /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
-            int print(uint8_t* buffer,
+            bool print(uint8_t* buffer,
                       uint16_t buffer_width,
                       uint16_t buffer_height,
                       TexturFormat buffer_format,
@@ -78,7 +78,7 @@ namespace libsiedler2
                       bool only_player = false) const;
 
             /// erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
-            int create(uint16_t width,
+            bool create(uint16_t width,
                        uint16_t height,
                        const uint8_t* buffer,
                        uint16_t buffer_width,

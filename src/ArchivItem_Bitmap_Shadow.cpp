@@ -73,65 +73,51 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     if(!file)
         return 1;
     if(palette == NULL)
-        palette = this->palette_;
+        palette = getPalette();
     if(palette == NULL)
         return 2;
 
     tex_clear();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
-    // Nullpunkt X einlesen
-    fs >> nx_;
-
-    // Nullpunkt Y einlesen
-    fs >> ny_;
-
-    // Unbekannte Daten überspringen
-    fs.ignore(4);
-
-    // Breite einlesen
-    fs >> width_;
-
-    // Höhe einlesen
-    fs >> height_;
-
-    // Unbekannte Daten überspringen
-    fs.ignore(2);
-
-    // Länge einlesen
+    uint16_t width, height;
+    char unknown1[4], unknown2[2];
     uint32_t length;
-    fs >> length;
+
+    fs >> nx_ >> ny_ >> unknown1 >> width >> height >> unknown2 >> length;
 
     std::vector<uint8_t> data(length);
     // Daten einlesen
     fs >> data;
 
     // Speicher anlegen
-    tex_alloc(width_, height_, FORMAT_PALETTED);
+    tex_alloc(width, height, FORMAT_PALETTED);
 
     uint8_t gray = palette->lookup(ColorRGB(255, 255, 255));
 
     if(length != 0)
     {
-        uint32_t position = height_ * 2;
+        uint32_t position = height * 2;
+        std::vector<uint8_t> buffer(width * height);
+        unsigned bufPos = 0;
 
         // Einlesen
-        for(uint16_t y = 0; y < height_; ++y)
+        for(uint16_t y = 0; y < height; ++y, bufPos += width)
         {
             uint16_t x = 0;
 
             // Solange Zeile einlesen, bis x voll ist
-            while(x < width_)
+            while(x < width)
             {
                 // graue Pixel setzen
                 uint8_t count = data[position++];
                 for(uint8_t i = 0; i < count; ++i, ++x)
-                    tex_setPixel(x, y, gray, palette);
+                    buffer[bufPos + x] = gray;
 
                 // transparente Pixel setzen
                 count = data[position++];
                 for(uint8_t i = 0; i < count; ++i, ++x)
-                    tex_setPixel(x, y, TRANSPARENT_INDEX, palette);
+                    buffer[bufPos + x] = TRANSPARENT_INDEX;
             }
 
             // FF überspringen
@@ -143,6 +129,8 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
 
         if(position != length )
             return 8;
+        if(!create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette))
+            return 9;
     }
 
     return 0;
@@ -161,55 +149,37 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     if(!file)
         return 1;
     if(palette == NULL)
-        palette = this->palette_;
-    if(palette == NULL)
-        return 2;
-
-    if(width_ == 0 || height_ == 0)
-        return 2;
+        palette = this->getPalette();
+    assert(palette);
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    // Nullpunkt X schreiben
-    fs << nx_;
+    char unknown[4] = { 0x00, 0x00, 0x00, 0x00 };
+    char unknown2[2] = { 0x01, 0x00 };
+    const uint16_t width = getWidth(), height = getHeight();
 
-    // Nullpunkt Y schreiben
-    fs << ny_;
-
-    // Unbekannte Daten schreiben
-    char unknown[4] = {0x00, 0x00, 0x00, 0x00};
-    fs.write(unknown, sizeof(unknown));
-
-    // Breite schreiben
-    fs << width_;
-
-    // Höhe einlesen
-    fs << height_;
-
-    // Unbekannte Daten schreiben
-    char unknown2[2] = {0x01, 0x00};
-    fs.write(unknown2, sizeof(unknown2));
+    fs << nx_ << ny_ << unknown << width << height << unknown2;
 
     // maximale größe von RLE: width*height*2
-    std::vector<uint8_t> image(width_ * height_ * 2);
+    std::vector<uint8_t> image(width * height * 2);
 
     // Startadressen
-    std::vector<uint16_t> starts(height_);
+    std::vector<uint16_t> starts(height);
 
     // Schattendaten kodieren
     uint16_t position = 0;
-    for(uint16_t y = 0; y < height_; ++y)
+    for(uint16_t y = 0; y < height; ++y)
     {
         uint16_t x = 0;
 
         // Startadresse setzen
-        starts[y] = position + height_ * 2;
+        starts[y] = position + height * 2;
 
         // Solange Zeile nicht voll
-        while(x < width_)
+        while(x < width)
         {
             // graue Pixel schreiben
             uint8_t count, color;
-            for(count = 0; count < width_ - x; ++count)
+            for(count = 0; x + count < width; ++count)
             {
                 color = tex_getPixel(x + count, y, palette);
                 if(color == TRANSPARENT_INDEX)
@@ -220,7 +190,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
             x += count;
 
             // transparente Pixel schreiben
-            for(count = 0; count < width_ - x; ++count)
+            for(count = 0; x + count < width; ++count)
             {
                 color = tex_getPixel(x + count, y, palette);
                 if(color != TRANSPARENT_INDEX)
@@ -235,7 +205,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     }
     image[position++] = 0xFF;
 
-    uint32_t length = position + height_ * 2;
+    uint32_t length = position + height * 2;
 
     // Länge schreiben
     fs << length;
