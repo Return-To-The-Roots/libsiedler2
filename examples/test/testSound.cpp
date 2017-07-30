@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[51]);
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_WAVE);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(snd)->getLength(), 9987u);
+    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(snd)->getLength(), 9943u);
     libsiedler2::ArchivInfo archivSNG;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathSNG, archivSNG), 0);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivSNG[0]);
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
     libsiedler2::ArchivItem_Sound_Wave* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(snd->getLength(), 135988u);
+    BOOST_REQUIRE_EQUAL(snd->getLength(), 135944u);
     BOOST_REQUIRE_EQUAL(snd->getData().back(), uint8_t(0));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
     libsiedler2::ArchivItem_Sound_Wave* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(snd->getLength(), 111458u);
+    BOOST_REQUIRE_EQUAL(snd->getLength(), 111414u);
     BOOST_REQUIRE_EQUAL(snd->getData().back(), uint8_t(0));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));
