@@ -72,30 +72,29 @@ bool baseArchivItem_Bitmap::print(uint8_t* buffer,
 
     const unsigned bufBpp = getBBP(buffer_format);
     const unsigned texBpp = getBBP();
-    const std::vector<uint8_t>& texData = getTexData();
-
+    const std::vector<uint8_t>& pxlData = getData();
     for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
     {
         for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
             size_t posBuf = (y2 * buffer_width + x2) * bufBpp;
-            size_t posTex = (y * getTexWidth() + x) * texBpp;
+            size_t posTex = (y * getWidth() + x) * texBpp;
             if(getFormat() == FORMAT_PALETTED)
             {
-                if(texData[posTex] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                if(pxlData[posTex] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
-                    buffer[posBuf] = texData[posTex];
+                    buffer[posBuf] = pxlData[posTex];
                 else
-                    ColorARGB(palette->get(texData[posTex])).toBGRA(&buffer[posBuf]);
+                    ColorARGB(palette->get(pxlData[posTex])).toBGRA(&buffer[posBuf]);
             } else
             {
-                if(texData[posTex + 3] == 0)  // bei Transparenz wird buffer nicht verändert
+                if(pxlData[posTex + 3] == 0)  // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
-                    buffer[posBuf] = tex_getPixel(x, y, palette);
+                    buffer[posBuf] = getPixelClrIdx(x, y, palette);
                 else
-                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(&texData[posTex]);
+                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(&pxlData[posTex]);
             }
         }
     }
@@ -150,8 +149,8 @@ bool baseArchivItem_Bitmap::create(uint16_t width,
     for(uint32_t y = 0; y < copyHeight; ++y)
     {
         size_t posFrom = y * buffer_width * bpp;
-        size_t posTexFrom = y * getTexWidth() * bpp;
-        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getTexData().begin() + posTexFrom);
+        size_t posTexFrom = y * getWidth() * bpp;
+        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getData().begin() + posTexFrom);
     }
 
     // Alles ok

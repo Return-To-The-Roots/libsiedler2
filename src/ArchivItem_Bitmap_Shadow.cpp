@@ -181,7 +181,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
             uint8_t count, color;
             for(count = 0; x + count < width; ++count)
             {
-                color = tex_getPixel(x + count, y, palette);
+                color = getPixelClrIdx(x + count, y, palette);
                 if(color == TRANSPARENT_INDEX)
                     break;
             }
@@ -192,7 +192,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
             // transparente Pixel schreiben
             for(count = 0; x + count < width; ++count)
             {
-                color = tex_getPixel(x + count, y, palette);
+                color = getPixelClrIdx(x + count, y, palette);
                 if(color != TRANSPARENT_INDEX)
                     break;
             }

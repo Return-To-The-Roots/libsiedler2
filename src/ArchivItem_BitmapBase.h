@@ -44,11 +44,11 @@ namespace libsiedler2
         ArchivItem_BitmapBase& operator=(const ArchivItem_BitmapBase& item);
 
         /// setzt einen Pixel auf einen bestimmten Wert.
-        virtual void tex_setPixel(uint16_t x, uint16_t y, uint8_t colorIdx, const ArchivItem_Palette* palette = NULL);
-        virtual void tex_setPixel(uint16_t x, uint16_t y, const ColorARGB clr);
+        virtual void setPixel(uint16_t x, uint16_t y, uint8_t colorIdx, const ArchivItem_Palette* palette = NULL);
+        virtual void setPixel(uint16_t x, uint16_t y, const ColorARGB clr);
 
         /// liefert einen Pixel an einem bestimmten Punkt.
-        uint8_t tex_getPixel(uint16_t x, uint16_t y, const ArchivItem_Palette* palette = NULL) const;
+        uint8_t getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette = NULL) const;
 
         /// lädt die Bilddaten aus einer Datei.
         virtual int load(std::istream& file, const ArchivItem_Palette* palette) = 0;
@@ -57,7 +57,7 @@ namespace libsiedler2
         virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const = 0;
 
         /// liefert den Textur-Datenblock.
-        const std::vector<uint8_t>& getTexData() const { return tex_data_; }
+        const std::vector<uint8_t>& getData() const { return data_; }
 
         /// liefert den X-Nullpunkt.
         int16_t getNx() const;
@@ -66,10 +66,10 @@ namespace libsiedler2
         int16_t getNy() const;
 
         /// liefert die Breite des Bildes.
-        uint16_t getWidth() const;
+        uint16_t getWidth() const { return width_; }
 
         /// liefert die Höhe des Bildes.
-        uint16_t getHeight() const;
+        uint16_t getHeight() const { return height_; }
 
         /// setzt den X-Nullpunkt.
         void setNx(int16_t nx);
@@ -96,14 +96,11 @@ namespace libsiedler2
 
         virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
-        static uint16_t tex_pow2(uint16_t n);
         /// Return the bytes per pixel for a given format
         static uint32_t getBBP(TexturFormat format);
         uint32_t getBBP() const { return getBBP(getFormat()); }
     protected:
-        uint16_t getTexWidth() const { return tex_width_; }
-        uint16_t getTexHeight() const { return tex_height_; }
-        std::vector<uint8_t>& getTexData() { return tex_data_; }
+        std::vector<uint8_t>& getData() { return data_; }
 
         int16_t nx_;                   /// X-Nullpunkt.
         int16_t ny_;                   /// Y-Nullpunkt.
@@ -111,10 +108,7 @@ namespace libsiedler2
         uint16_t width_;       /// Breite des Bildes.
         uint16_t height_;      /// Höhe des Bildes.
 
-        uint16_t tex_width_;   /// Breite der Textur.
-        uint16_t tex_height_;  /// Höhe der Textur.
-
-        std::vector<uint8_t> tex_data_;    /// Die Texturdaten.
+        std::vector<uint8_t> data_;    /// Die Texturdaten.
 
         const ArchivItem_Palette* palette_; /// Die Palette.
         TexturFormat format_; /// Das Texturformat.

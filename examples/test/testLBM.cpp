@@ -41,9 +41,9 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
     BOOST_REQUIRE_EQUAL(bmp->getNx(), 0);
     BOOST_REQUIRE_EQUAL(bmp->getNy(), 0);
     // Hard coded expectation
-    BOOST_REQUIRE_EQUAL(bmp->tex_getPixel(0, 0), 124u);
-    BOOST_REQUIRE_EQUAL(bmp->tex_getPixel(123, 65), 77u);
-    BOOST_REQUIRE_EQUAL(bmp->tex_getPixel(255, 255), 240u);
+    BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(0, 0), 124u);
+    BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(123, 65), 77u);
+    BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(255, 255), 240u);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

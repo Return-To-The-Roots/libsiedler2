@@ -168,7 +168,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                             {
                                 uint8_t color;
                                 lbm >> color;
-                                bitmap->tex_setPixel(x, y, color);
+                                bitmap->setPixel(x, y, color);
                             }
                     } break;
                     case 256: // komprimiert (RLE?)
@@ -197,7 +197,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                                     lbm >> color;
                                     --length;
 
-                                    bitmap->tex_setPixel(x++, y, color);
+                                    bitmap->setPixel(x++, y, color);
                                     if(x >= width)
                                     {
                                         ++y;
@@ -216,7 +216,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 
                                 for(uint16_t i = 0; i < count; ++i)
                                 {
-                                    bitmap->tex_setPixel(x++, y, color);
+                                    bitmap->setPixel(x++, y, color);
                                     if(x >= width)
                                     {
                                         ++y;
