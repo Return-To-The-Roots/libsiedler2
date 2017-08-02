@@ -21,7 +21,7 @@
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/static_assert.hpp>
-#include <boost/lexical_cast.hpp>
+#include <sstream>
 #include <iostream>
 #include <stdexcept>
 
@@ -123,7 +123,12 @@ uint8_t libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr) const
 {
     uint8_t result;
     if(!lookup(clr, result))
-        throw std::runtime_error("Color not found in palette!");
+    {
+        std::stringstream str;
+        str << "Color(" << uint32_t(clr.r) << "," << uint32_t(clr.g) << "," << uint32_t(clr.b) << ")"
+            << " not found in palette!";
+        throw std::runtime_error(str.str());
+    }
     return result;
 }
 
