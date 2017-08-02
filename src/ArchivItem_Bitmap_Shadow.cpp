@@ -18,9 +18,10 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Shadow.h"
 #include "ArchivItem_Palette.h"
-#include <iostream>
+#include "ErrorCodes.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <iostream>
 #include <vector>
 
 /** @class libsiedler2::baseArchivItem_Bitmap_Shadow
@@ -71,20 +72,22 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow()
 int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const ArchivItem_Palette* palette)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
         palette = getPalette();
     if(palette == NULL)
-        return 2;
+        return ErrorCode::PALETTE_MISSING;
 
     tex_clear();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
-    uint16_t width, height;
-    char unknown1[4], unknown2[2];
-    uint32_t length;
+    uint16_t width, height, unknown2;
+    uint32_t unknown1, length;
 
     fs >> nx_ >> ny_ >> unknown1 >> width >> height >> unknown2 >> length;
+
+    if(!fs || unknown1 != 0 || unknown2 != 1)
+        return ErrorCode::WRONG_HEADER;
 
     std::vector<uint8_t> data(length);
     // Daten einlesen
@@ -128,12 +131,13 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
         ++position;
 
         if(position != length )
-            return 8;
-        if(!create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette))
-            return 9;
+            return ErrorCode::WRONG_FORMAT;
+        int ec = create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette);
+        if(ec)
+            return ec;
     }
 
-    return 0;
+    return ErrorCode::NONE;
 }
 
 /**
@@ -147,17 +151,15 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
 int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
         palette = this->getPalette();
     assert(palette);
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    char unknown[4] = { 0x00, 0x00, 0x00, 0x00 };
-    char unknown2[2] = { 0x01, 0x00 };
     const uint16_t width = getWidth(), height = getHeight();
 
-    fs << nx_ << ny_ << unknown << width << height << unknown2;
+    fs << nx_ << ny_ << uint32_t(0) << width << height << uint16_t(1);
 
     // maximale größe von RLE: width*height*2
     std::vector<uint8_t> image(width * height * 2);
@@ -213,5 +215,5 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
     // Daten schreiben
     fs << starts << image;
 
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

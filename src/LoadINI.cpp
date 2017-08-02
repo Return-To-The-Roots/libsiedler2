@@ -19,7 +19,8 @@
 #include "ArchivItem_Ini.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <boost/filesystem/fstream.hpp>
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 /**
@@ -32,25 +33,19 @@
  */
 int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
 {
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    bfs::ifstream ini(file, std::ios_base::binary);
-
-    // hat das geklappt?
-    if(!ini)
-        return 2;
+    MMStream ini;
+    if(int ec = openMemoryStream(file, ini))
+        return ec;
 
     while(!ini.eof())
     {
         boost::interprocess::unique_ptr< ArchivItem_Ini, Deleter<ArchivItem_Ini> > item(new ArchivItem_Ini);
 
-        if(item->load(ini) != 0)
-            return 3;
+        if(int ec = item->load(ini))
+            return ec;
 
         items.push(item.release());
     }
 
-    return 0;
+    return ErrorCode::NONE;
 }

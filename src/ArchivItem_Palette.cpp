@@ -17,9 +17,11 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Palette.h"
+#include "ErrorCodes.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/static_assert.hpp>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <stdexcept>
 
@@ -38,23 +40,8 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette()
     setBobType(BOBTYPE_PALETTE);
 }
 
-/**
- *  Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus
- *  einer Datei.
- *
- *  @param[in] file Dateihandle aus denen die Farbwerte geladen werden sollen
- *  @param[in] skip Sollen 2 Unbekannte Bytes übersprungen werden (bei LST) oder direkt?
- */
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette(std::istream& file, bool skip) : ArchivItem()
-{
-    setBobType(BOBTYPE_PALETTE);
-
-    load(file, skip);
-}
-
- libsiedler2::ArchivItem_Palette::~ArchivItem_Palette()
- {
- }
+libsiedler2::ArchivItem_Palette::~ArchivItem_Palette()
+{}
 
 /**
  *  liest die Farbwerte aus einer Datei.
@@ -67,20 +54,20 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette(std::istream& file, bool ski
 int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     if(skip)
     {
-        // Unbekannte 2 Bytes überspringen
-        fs.ignore(2);
+        uint16_t numColors;
+        if(!(fs >> numColors) || numColors != 256)
+            return ErrorCode::WRONG_HEADER;
     }
 
     BOOST_STATIC_ASSERT_MSG(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot read it in whole");
     fs.read(&colors[0].r, sizeof(colors));
 
-    // alles ok
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -94,20 +81,16 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
 int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     if(skip)
-    {
-        int16_t unknown = 0x0100;
-        fs << unknown;
-    }
+        fs << int16_t(256);
 
     BOOST_STATIC_ASSERT_MSG(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot write it in whole");
     fs.write(&colors[0].r, sizeof(colors));
 
-    // alles ok
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -123,33 +106,32 @@ void libsiedler2::ArchivItem_Palette::set(uint8_t index, ColorRGB clr)
     colors[index] = clr;
 }
 
-/**
- *  liefert einen Index zum entsprechenden RGB-Wert.
- *
- *  @param[in] r     Roter Farbwert
- *  @param[in] g     Grüner Farbwert
- *  @param[in] b     Blauer Farbwert
- *
- *  @return Farbindex der RGB-Farbe
- */
-uint8_t libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr) const
+bool libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr, uint8_t& clrIdx) const
 {
     for(unsigned i = 0; i < 256; ++i)
     {
         if(colors[i] == clr)
-            return static_cast<uint8_t>(i);
+        {
+            clrIdx = static_cast<uint8_t>(i);
+            return true;
+        }
     }
-    throw std::runtime_error("Color not found in palette!");
+    return false;
 }
 
-uint8_t libsiedler2::ArchivItem_Palette::lookupOrDef(const ColorRGB & clr, uint8_t defaultVal) const
+uint8_t libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr) const
 {
-    for(unsigned i = 0; i < 256; ++i)
-    {
-        if(colors[i] == clr)
-            return static_cast<uint8_t>(i);
-    }
-    return defaultVal;
+    uint8_t result;
+    if(!lookup(clr, result))
+        throw std::runtime_error("Color not found in palette!");
+    return result;
+}
+
+uint8_t libsiedler2::ArchivItem_Palette::lookupOrDef(const ColorRGB& clr, uint8_t defaultVal) const
+{
+    uint8_t result = defaultVal;
+    lookup(clr, result);
+    return result;
 }
 
 /**

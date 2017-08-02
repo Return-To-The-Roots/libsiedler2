@@ -18,11 +18,10 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 #include "libendian/src/EndianIStreamAdapter.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
-#include <iostream>
+#include <boost/filesystem.hpp>
 
 /**
  *  lädt eine DAT/IDX-File in ein ArchivInfo.
@@ -36,70 +35,52 @@
 int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
+
+    if(!bfs::exists(file))
+        return ErrorCode::FILE_NOT_FOUND;
 
     bfs::path filepath = file;
     bfs::path datFilepath = filepath.replace_extension("DAT");
     bfs::path idxFilepath = filepath.replace_extension("IDX");
+    // Both must exist or it is not a DATIDX file
+    if(!bfs::exists(datFilepath) || !bfs::exists(idxFilepath))
+        return ErrorCode::WRONG_HEADER;
 
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(datFilepath);
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStream(mmapFile);
+    MMStream mmapStream, mmapStreamIdx;
+    if(int ec = openMemoryStream(datFilepath.string(), mmapStream))
+        return ec;
+
+    if(int ec = openMemoryStream(idxFilepath.string(), mmapStreamIdx))
+        return ec;
+
     libendian::EndianIStreamAdapter<false, MMStream& > dat(mmapStream);
-
-    // hat das geklappt?
-    if(!dat)
-        return 2;
-
-    // IDX-Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFileIdx;
-    try{
-        mmapFileIdx.open(idxFilepath);
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStreamIdx(mmapFileIdx);
     libendian::EndianIStreamAdapter<false, MMStream& > idx(mmapStreamIdx);
-
-    // hat das geklappt?
-    if(!idx)
-        return 3;
 
     // Anzahl einlesen
     uint32_t count;
-    idx >> count;
+    if(!(idx >> count))
+        return ErrorCode::WRONG_HEADER;
 
     // Platz für items anlegen
     items.alloc(count);
+
+    const uint32_t datFileSize = getIStreamSize(dat.getStream());
 
     // items einlesen
     for(uint32_t i = 0; i < count; ++i)
     {
         char name[16];
         uint32_t offset;
+        uint8_t unknown[6];
         int16_t idxbobtype;
         int16_t bobtype_s;
 
-        // Name einlesen
-        idx >> name;
-
-        // Offset einlesen
-        idx >> offset;
-
-        // Unbekannte Daten überspringen
-        idx.ignore(6);
-
-        // BobType einlesen
-        idx >> idxbobtype;
+        idx >> name >> offset >> unknown >> idxbobtype;
+        if(!idx)
+            return ErrorCode::UNEXPECTED_EOF;
+        if(offset + sizeof(bobtype_s) > datFileSize)
+            return ErrorCode::WRONG_FORMAT;
 
         // Zum Offset springen
         dat.setPosition(offset);
@@ -108,16 +89,19 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
         dat >> bobtype_s;
 
         if(!dat)
-            return 99;
+            return ErrorCode::UNEXPECTED_EOF;
 
         if(idxbobtype != bobtype_s)
+        {
+            assert(false); // Is this even valid?
             continue;
+        }
         BobType bobtype = static_cast<BobType>(bobtype_s);
 
         // Daten von Item auswerten
         ArchivItem* item;
-        if(LoadType(bobtype, dat.getStream(), palette, item) != 0)
-            return 10;
+        if(int ec = LoadType(bobtype, dat.getStream(), palette, item))
+            return ec;
 
         // Name setzen
         if(item)
@@ -125,5 +109,5 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
         items.set(i, item);
     }
 
-    return 0;
+    return ErrorCode::NONE;
 }

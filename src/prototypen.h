@@ -54,7 +54,7 @@ namespace libsiedler2
 		int LoadACT(const std::string& file, ArchivInfo& items);
 
 		/// schreibt ein ArchivInfo in eine ACT-File.
-		int WriteACT(const std::string& file, const ArchivInfo& items, long nr = -1);
+		int WriteACT(const std::string& file, const ArchivInfo& items);
 
 		/// lädt eine DAT/IDX-File in ein ArchivInfo.
 		int LoadDATIDX(const std::string& file, const ArchivItem_Palette *palette, ArchivInfo& items);
@@ -66,7 +66,7 @@ namespace libsiedler2
 		int LoadBMP(const std::string& file, ArchivInfo& image);
 
 		/// schreibt ein ArchivInfo in eine BMP-File.
-		int WriteBMP(const std::string& file, const ArchivItem_Palette *palette, const ArchivInfo& items, long nr = -1);
+		int WriteBMP(const std::string& file, const ArchivItem_Palette *palette, const ArchivInfo& items);
 
 		/// lädt eine GER/ENG-File in ein ArchivInfo.
 		int LoadTXT(const std::string& file, ArchivInfo& items, bool conversion = true);
@@ -93,7 +93,7 @@ namespace libsiedler2
 #		define LoadWSD LoadMAP
 
 		/// schreibt ein ArchivInfo in eine SWD/WSD-File.
-		int WriteMAP(const std::string& file, const ArchivInfo& items, long nr = -1);
+		int WriteMAP(const std::string& file, const ArchivInfo& items);
 
 #		define WriteSWD WriteMAP
 #		define WriteWSD WriteMAP

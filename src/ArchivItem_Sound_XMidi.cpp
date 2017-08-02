@@ -18,18 +18,14 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_XMidi.h"
 #include "XMIDI_TrackConverter.h"
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
-#include <cstring>
 #include <stdexcept>
 
 namespace libsiedler2{
-
-inline bool isChunk(const char lhs[4], const char rhs[5])
-{
-    return strncmp(lhs, rhs, 4) == 0;
-}
 
 /** @class baseArchivItem_Sound_XMidi
  *
@@ -67,8 +63,10 @@ baseArchivItem_Sound_XMidi& baseArchivItem_Sound_XMidi::operator=(const baseArch
 
 int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
 {
-    if(!file || length == 0)
-        return 1;
+    if(!file)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+    if(length == 0)
+        return ErrorCode::WRONG_HEADER;
 
     libendian::EndianIStreamAdapter<true, std::istream &> fs(file);
     libendian::EndianIStreamAdapter<false, std::istream&> fsLE(file);
@@ -76,12 +74,10 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
     long endPos = fs.getPosition() + length;
 
     char header[4];
-    // Header einlesen
-    fs >> header;
 
     // ist es eine XMIDI-File? (Header "FORM")
-    if(!isChunk(header, "FORM"))
-        return 3;
+    if(!(fs >> header) || !isChunk(header, "FORM"))
+        return ErrorCode::WRONG_HEADER;
 
     // Länge einlesen
     uint32_t formHeaderLen;
@@ -100,7 +96,7 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
     {
         fs >> chunkId;
         if(!isChunk(chunkId, "INFO"))
-            return 4;
+            return ErrorCode::WRONG_FORMAT;
         // Länge einlesen
         uint32_t chunkLen;
         fs >> chunkLen;
@@ -108,7 +104,7 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
         if(chunkLen & 1)
             ++chunkLen;
         if(chunkLen != sizeof(numTracks))
-            return 8;
+            return ErrorCode::WRONG_FORMAT;
 
         // Little endian track count
         fsLE >> numTracks;
@@ -117,76 +113,75 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
 
         fs >> chunkId;
         if(!isChunk(chunkId, "CAT "))
-            return 5;
+            return ErrorCode::WRONG_FORMAT;
         fs.ignore(4); // Ignore cat size which is the following XMID (4)
         fs >> chunkId;
         if(!isChunk(chunkId, "XMID"))
-            return 12;
+            return ErrorCode::WRONG_FORMAT;
     } else
-        return 13;
+        return ErrorCode::WRONG_FORMAT;
 
     if(numTracks == 0 || numTracks > 256)
-        return 14;
+        return ErrorCode::WRONG_FORMAT;
 
     uint16_t track_nr = 0;
     while(track_nr < numTracks)
     {
         if(!fs)
-            return 99;
+            return ErrorCode::UNEXPECTED_EOF;
         // Chunk-Typ einlesen
         fs >> header;
 
-        if(isChunk(header, "FORM"))
-        {
-            uint32_t chunkLen;
-            fs >> formHeaderLen;
-            if(formHeaderLen & 1)
-                ++formHeaderLen;
+        if(!isChunk(header, "FORM"))
+            return ErrorCode::WRONG_FORMAT;
 
-            fs >> chunkId;
-            if(!isChunk(chunkId, "XMID"))
-                return 22;
-            fs >> chunkId;
-            // Optional TIMB
-            if(isChunk(chunkId, "TIMB"))
-            {
-                fs >> chunkLen;
-                // Alignment: Round uneven up
-                if(chunkLen & 1)
-                    ++chunkLen;
-                uint16_t numTimbres;
-                fsLE >> numTimbres;
-                if(numTimbres * 2 + sizeof(numTimbres) != chunkLen)
-                    return 22;
-                tracklist[track_nr].getTimbres().resize(numTimbres);
-                if(numTimbres > 0)
-                    fs.readRaw(&tracklist[track_nr].getTimbres()[0], numTimbres);
-                fs >> chunkId;
-            }
-            if(!isChunk(chunkId, "EVNT"))
-                return 23;
+        uint32_t chunkLen;
+        fs >> formHeaderLen;
+        if(formHeaderLen & 1)
+            ++formHeaderLen;
+
+        fs >> chunkId;
+        if(!isChunk(chunkId, "XMID"))
+            return ErrorCode::WRONG_FORMAT;
+        fs >> chunkId;
+        // Optional TIMB
+        if(isChunk(chunkId, "TIMB"))
+        {
             fs >> chunkLen;
             // Alignment: Round uneven up
             if(chunkLen & 1)
                 ++chunkLen;
-            if(!tracklist[track_nr].read(file, chunkLen))
-                return 18;
+            uint16_t numTimbres;
+            fsLE >> numTimbres;
+            if(numTimbres * 2 + sizeof(numTimbres) != chunkLen)
+                return ErrorCode::WRONG_FORMAT;
+            tracklist[track_nr].getTimbres().resize(numTimbres);
+            if(numTimbres > 0)
+                fs.readRaw(&tracklist[track_nr].getTimbres()[0], numTimbres);
+            fs >> chunkId;
+        }
+        if(!isChunk(chunkId, "EVNT"))
+            return ErrorCode::WRONG_FORMAT;
+        fs >> chunkLen;
+        // Alignment: Round uneven up
+        if(chunkLen & 1)
+            ++chunkLen;
+        if(int ec = tracklist[track_nr].read(file, chunkLen))
+            return ec;
 
-            ++track_nr;
-        } else
-            return 33;
+        ++track_nr;
     }
 
     assert(fs.getPosition() == endPos);
     // auf jeden Fall kompletten Datensatz überspringen
     fs.setPosition(endPos);
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianOStreamAdapter<true, std::ostream&> fs(file);
     libendian::EndianOStreamAdapter<false, std::ostream&> fsLE(file);
@@ -229,7 +224,7 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
         fs << track.getData();
     }
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 libsiedler2::MIDI_Track* baseArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)

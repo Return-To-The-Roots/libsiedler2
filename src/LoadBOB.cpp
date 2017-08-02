@@ -21,11 +21,10 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 #include "libendian/src/EndianIStreamAdapter.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem.hpp>
-#include <iostream>
+#include <boost/filesystem/path.hpp>
 
 /**
  *  lädt eine BOB-File in ein ArchivInfo.
@@ -37,33 +36,22 @@
  */
 int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
-    uint32_t header;
+    if(palette == NULL)
+        return ErrorCode::PALETTE_MISSING;
 
-    if(file.empty() || palette == NULL)
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStream(mmapFile);
+    MMStream mmapStream;
+    if(int ec = openMemoryStream(file, mmapStream))
+        return ec;
     libendian::EndianIStreamAdapter<false, MMStream& > bob(mmapStream);
 
-    // hat das geklappt?
-    if(!bob)
-        return 2;
-
     // Header einlesen
+    uint32_t header;
+
     bob >> header;
 
     // ist es eine BOB-File? (Header 0xF601F501)
-    if(header != 0x01F501F6)
-        return 4;
+    if(!bob || header != 0x01F501F6)
+        return ErrorCode::WRONG_HEADER;
 
     ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
 
@@ -71,14 +59,14 @@ int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palet
     if(filePath.has_filename())
         item->setName(filePath.filename().string());
 
-    if(item->load(bob.getStream(), palette) != 0){
+    if(int ec = item->load(bob.getStream(), palette)){
         delete item;
-        return 5;
+        return ec;
     }
 
     // Item alloziieren und zuweisen
     items.clear();
     items.push(item);
 
-    return 0;
+    return ErrorCode::NONE;
 }

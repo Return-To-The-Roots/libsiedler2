@@ -39,9 +39,6 @@ namespace libsiedler2
         public:
             ArchivItem_Palette();
 
-            /// Konstruktor von @p ArchivItem_Palette mit Laden der Farbwerte aus einer Datei.
-            ArchivItem_Palette(std::istream& file, bool skip = true);
-
             ~ArchivItem_Palette();
 
             /// liest die Farbwerte aus einer Datei.
@@ -56,7 +53,10 @@ namespace libsiedler2
             /// liefert einen Farbwert am entsprechenden Index.
             ColorRGB get(uint8_t index) const { return (*this)[index]; }
 
-            /// liefert einen Index zum entsprechenden RGB-Wert.
+            /// Write the index with the given color into clrIdx. Returns true iff color found
+            /// If color is not found, then clrIdx is NOT changed
+            bool lookup(const ColorRGB& clr, uint8_t& clrIdx) const;
+            /// Return the index with the given color. Throws an exception if not found
             uint8_t lookup(const ColorRGB& clr) const;
 
             /// Return the (first) index with the given color or defaultVal if none found

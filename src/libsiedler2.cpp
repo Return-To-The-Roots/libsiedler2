@@ -20,6 +20,7 @@
 #include "StandardAllocator.h"
 #include "prototypen.h"
 #include "ArchivInfo.h"
+#include "ErrorCodes.h"
 #include <boost/filesystem.hpp>
 #include <algorithm>
 #include <stdexcept>
@@ -136,15 +137,15 @@ void setAllocator(IAllocator* newAllocator)
 int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
     bfs::path filePath(file);
     if(!filePath.has_extension())
-        return 2;
+        return ErrorCode::UNSUPPORTED_FORMAT;
     std::string extension = filePath.extension().string().substr(1);
     std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
-    int ret = 254;
+    int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
     try{
         // Datei laden
@@ -159,7 +160,7 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
         else if(extension == "dat" || extension == "idx")
         {
             ret = loader::LoadDATIDX(file, palette, items);
-            if(ret != 0 && extension == "dat")
+            if(ret && extension == "dat")
                 ret = loader::LoadSND(file, items);
         } else if(extension == "lbm")
             ret = loader::LoadLBM(file, items);
@@ -175,10 +176,10 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadSND(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
-    }catch(std::runtime_error& error){
+    }catch(std::exception& error){
         std::cerr << "Error while reading: " << error.what() << std::endl;
         // Mostly error on reading (e.g. unexpected end of file)
-        return 999;
+        return ErrorCode::CUSTOM;
     }
 
     return ret;
@@ -196,15 +197,15 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
 int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
     bfs::path filePath(file);
     if(!filePath.has_extension())
-        return 2;
+        return ErrorCode::UNSUPPORTED_FORMAT;
     std::string extension = filePath.extension().string().substr(1);
     std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
-    int ret = 0;
+    int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
     try{
         // Datei schreiben
@@ -226,11 +227,11 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteSND(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
-    }catch(std::runtime_error& error)
+    }catch(std::exception& error)
     {
         std::cerr << "Error while writing: " << error.what() << std::endl;
         // Mostly error on write to file
-        return 999;
+        return ErrorCode::CUSTOM;
     }
 
     return ret;

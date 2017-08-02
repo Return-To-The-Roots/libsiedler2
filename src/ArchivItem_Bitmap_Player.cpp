@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
+#include "ErrorCodes.h"
 #include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
@@ -89,24 +90,29 @@ libsiedler2::ArchivItem_Bitmap_Player& libsiedler2::ArchivItem_Bitmap_Player::op
 int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette* palette)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
         palette = getPalette();
     else
         setPalette(*palette);
     if(palette == NULL)
-        return 2;
+        return ErrorCode::PALETTE_MISSING;
 
     tex_clear();
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     uint16_t width, height;
-    char unknown1[4], unknown2[2];
+    uint32_t unknown1;
+    uint16_t unknown2;
     uint32_t length;
 
     fs >> nx_ >> ny_ >> unknown1 >> width >> height >> unknown2 >> length;
 
+
     if(!fs)
-        return 4;
+        return ErrorCode::UNEXPECTED_EOF;
+
+    if(unknown1 != 0 || unknown2 != 1)
+        return ErrorCode::WRONG_HEADER;
 
     std::vector<uint16_t> starts;
     std::vector<uint8_t> data;
@@ -116,14 +122,15 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
         starts.resize(height);
         data.resize(length - height * sizeof(uint16_t));
         if(!(fs >> starts >> data))
-            return 6;
+            return ErrorCode::UNEXPECTED_EOF;
     } else
-        return 5;
+        return ErrorCode::WRONG_FORMAT;
 
-    if(load(width, height, data, starts, false, palette) != 0)
-        return 9;
+    int ec = load(width, height, data, starts, false, palette);
+    if(ec)
+        return ec;
 
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -143,9 +150,11 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
 {
     // Speicher anlegen
     tex_alloc(width, height, getTextureFormat());
+    if(palette)
+        setPalette(*palette);
 
     if(image.empty())
-        return 0;
+        return ErrorCode::NONE;
 
     // Einlesen
     for(uint16_t y = 0; y < height; ++y)
@@ -157,7 +166,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
             position -= height * 2;
 
         if(position > image.size())
-            return 1;
+            return ErrorCode::UNEXPECTED_EOF;
 
         // Solange Zeile einlesen, bis x voll ist
         while(x < width)
@@ -169,14 +178,14 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
             {
                 // transparente Pixel setzen
                 for(uint8_t i = 0; i < shift; ++i, ++x)
-                    setPixel(x, y, TRANSPARENT_INDEX, palette);
+                    setPixel(x, y, TRANSPARENT_INDEX);
             } else if(shift < 0x80)
             {
                 shift -= 0x40;
 
                 // farbige Pixel setzen
                 for(uint8_t i = 0; i < shift; ++i, ++x)
-                    setPixel(x, y, image[position++], palette);
+                    setPixel(x, y, image[position++]);
             } else if(shift < 0xC0)
             {
                 shift -= 0x80;
@@ -184,8 +193,8 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
                 // Spielerfarbe Pixel setzen
                 for(uint8_t i = 0; i < shift; ++i, ++x)
                 {
-                    tex_pdata[y * getWidth() + x] = image[position];
-                    setPixel(x, y, TRANSPARENT_INDEX, palette);
+                    tex_pdata.set(x, y, image[position]);
+                    setPixel(x, y, TRANSPARENT_INDEX);
                 }
                 ++position;
             } else
@@ -194,13 +203,13 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
 
                 // komprimierte Pixel setzen
                 for(uint8_t i = 0; i < shift; ++i, ++x)
-                    setPixel(x, y, image[position], palette);
+                    setPixel(x, y, image[position]);
                 ++position;
             }
         }
     }
 
-    return 0;
+    return ErrorCode::NONE;
 }
 
 /**
@@ -216,18 +225,17 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
 int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
         palette = getPalette();
-    if(palette == NULL)
-        return 2;
+    // Palette required for ARGB -> Palette conversion only
+    if(palette == NULL && getFormat() == FORMAT_BGRA)
+        return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    char unknown[4] = { 0x00, 0x00, 0x00, 0x00 };
-    char unknown2[2] = { 0x01, 0x00 };
     const uint16_t width = getWidth(), height = getHeight();
 
-    fs << nx_ << ny_ << unknown << width << height << unknown2;
+    fs << nx_ << ny_ << uint32_t(0) << width << height << uint16_t(1);
 
     // maximale größe von Player-Image: width*height*2 (sollte reichen :P)
     std::vector<uint8_t> image(width * height * 2);
@@ -249,15 +257,15 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
         {
             uint16_t target = position++;
 
-            if(tex_pdata[y * pxlWidth + x] != TRANSPARENT_INDEX)
+            if(tex_pdata.get(x, y) != TRANSPARENT_INDEX)
             {
                 // spielerfarbe Pixel
-                const uint8_t color = tex_pdata[y * pxlWidth + x];
+                const uint8_t color = tex_pdata.get(x, y);
                 image[position++] = color;
                 uint8_t count = 1;
                 for(++x; x < width && count < 63; ++x, ++count)
                 {
-                    if(tex_pdata[y * pxlWidth + x] != color)
+                    if(tex_pdata.get(x, y) != color)
                         break;
                 }
 
@@ -270,7 +278,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
                     uint8_t count = 1;
                     for(++x; x < width && count < 63; ++x, ++count)
                     {
-                        if(getPixelClrIdx(x, y, palette) != TRANSPARENT_INDEX || tex_pdata[y * pxlWidth + x] != TRANSPARENT_INDEX)
+                        if(getPixelClrIdx(x, y, palette) != TRANSPARENT_INDEX || tex_pdata.get(x, y) != TRANSPARENT_INDEX)
                             break;
                     }
                     image[target] = count;
@@ -281,7 +289,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
                     uint8_t count = 1;
                     for(++x; x < width && count < 63; ++x, ++count)
                     {
-                        if(getPixelClrIdx(x, y, palette) != color || tex_pdata[y * pxlWidth + x] != TRANSPARENT_INDEX)
+                        if(getPixelClrIdx(x, y, palette) != color || tex_pdata.get(x, y) != TRANSPARENT_INDEX)
                             break;
                     }
                     image[target] = count + 0xC0;
@@ -299,7 +307,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
     // Daten schreiben
     fs << starts << image;
 
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -309,7 +317,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc(int16_t width, int16_t hei
 {
     ArchivItem_BitmapBase::tex_alloc(width, height, format);
 
-    tex_pdata.resize(getWidth() * getHeight(), TRANSPARENT_INDEX);
+    tex_pdata = PixelBufferPaletted(getWidth(), getHeight());
 }
 
 /**
@@ -342,7 +350,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::tex_clear()
  *  @param[in]     color         Grundfarbindex der benutzt werden soll
  *
  */
-bool libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
+int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
         uint16_t height,
         const uint8_t* buffer,
         uint16_t buffer_width,
@@ -352,11 +360,11 @@ bool libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
         uint8_t color)
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
-        return false;
+        return ErrorCode::INVALID_BUFFER;
     if(!palette)
         palette = getPalette();
     if(!palette)
-        return false;
+        return ErrorCode::PALETTE_MISSING;
 
     // Texturspeicher anfordern
     tex_alloc(width, height, buffer_format);
@@ -372,7 +380,6 @@ bool libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
         for(uint32_t x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
             size_t posBuffer  = (y2 * buffer_width + x2) * bpp;
-            size_t posPlayerTex = y * texWidth + x;
             size_t posTex = (y * texWidth + x) * texBpp;
             // und Pixel setzen
             switch(buffer_format)
@@ -384,7 +391,7 @@ bool libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
                     {
                         uint8_t c = palette->lookup(clr);
                         if(c >= color && c <= color + 3) // Spielerfarbe
-                            tex_pdata[posPlayerTex] = c - color;
+                            tex_pdata.set(x, y, c - color);
                     }
                     clr.toBGRA(&getData()[posTex]);
                 } break;
@@ -393,10 +400,10 @@ bool libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
                     uint8_t c = buffer[posBuffer];
                     if(c >= color && c <= color + 3) // Spielerfarbe
                     {
-                        tex_pdata[posPlayerTex] = c - color;
+                        tex_pdata.set(x, y, c - color);
                         c = TRANSPARENT_INDEX;
                     }
-                    setPixel(x, y, c, palette);
+                    setPixel(x, y, c);
                 } break;
                 default:
                     break;
@@ -405,7 +412,7 @@ bool libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
     }
 
     // Alles ok
-    return true;
+    return ErrorCode::NONE;
 }
 
 /**
@@ -433,7 +440,7 @@ bool libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
+int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
         TexturFormat buffer_format,
@@ -448,16 +455,16 @@ bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
         bool only_player) const
 {
     if(buffer_width == 0 || buffer_height == 0)
-        return true;
+        return ErrorCode::NONE;
     if(!buffer)
-        return false;
+        return ErrorCode::INVALID_BUFFER;
     if(palette == NULL)
         palette = getPalette();
     if(palette == NULL)
-        return false;
+        return ErrorCode::PALETTE_MISSING;
 
     if(from_x >= getWidth() || from_y >= getHeight() || to_x >= buffer_width || to_y >= buffer_height)
-        return true;
+        return ErrorCode::NONE;
 
     if(from_w == 0 || from_x + from_w > getWidth())
         from_w = getWidth() - from_x;
@@ -475,7 +482,6 @@ bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
         {
             size_t posBuffer = (y2 * buffer_width + x2) * bpp;
             size_t posTexture = (y * texWidth + x) * texBpp;
-            size_t posPlayerTex = (y * texWidth + x) * 1;
             switch(texBpp)
             {
                 case 1: // Textur ist Paletted
@@ -485,10 +491,10 @@ bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
                         case 1:
                         {
                             // Ziel ist auch Paletted
-                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
+                            if(tex_pdata.get(x, y) != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                buffer[posBuffer] = tex_pdata[posPlayerTex] + color;
+                                buffer[posBuffer] = tex_pdata.get(x, y) + color;
                             } else if(!only_player && pxlData[posTexture] != TRANSPARENT_INDEX)
                             {
                                 buffer[posBuffer] = pxlData[posTexture];
@@ -497,10 +503,10 @@ bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
                         case 4:
                         {
                             // Ziel ist RGB+A
-                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
+                            if(tex_pdata.get(x, y) != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                ColorARGB(palette->get(tex_pdata[posPlayerTex] + color)).toBGRA(&buffer[posBuffer]);
+                                ColorARGB(palette->get(tex_pdata.get(x, y) + color)).toBGRA(&buffer[posBuffer]);
                             } else if(!only_player && pxlData[posTexture] != TRANSPARENT_INDEX)
                             {
                                 // normale Pixel setzen
@@ -516,10 +522,10 @@ bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
                         case 1:
                         {
                             // Ziel ist Paletted
-                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
+                            if(tex_pdata.get(x, y) != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                buffer[posBuffer] = tex_pdata[posPlayerTex] + color;
+                                buffer[posBuffer] = tex_pdata.get(x, y) + color;
                             } else if(!only_player && pxlData[posTexture + 3] != 0)
                             {
                                 // normale Pixel setzen
@@ -529,10 +535,10 @@ bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
                         case 4:
                         {
                             // Ziel ist auch RGB+A
-                            if(tex_pdata[posPlayerTex] != TRANSPARENT_INDEX)
+                            if(tex_pdata.get(x, y) != TRANSPARENT_INDEX)
                             {
                                 // Playerfarbe setzen
-                                ColorARGB(palette->get(tex_pdata[posPlayerTex] + color), pxlData[posTexture + 3]).toBGRA(&buffer[posBuffer]);
+                                ColorARGB(palette->get(tex_pdata.get(x, y) + color), pxlData[posTexture + 3]).toBGRA(&buffer[posBuffer]);
                             } else if(!only_player && pxlData[posTexture + 3] != 0)
                                 *reinterpret_cast<ColorARGB*>(&buffer[posBuffer]) = *reinterpret_cast<const ColorARGB*>(&pxlData[posTexture]);
                         } break;
@@ -543,7 +549,7 @@ bool libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
     }
 
     // Alles ok
-    return true;
+    return ErrorCode::NONE;
 }
 
 void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
@@ -567,7 +573,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
     {
         for(y = 0; y < height; ++y)
         {
-            if((tex_pdata[width * y + x] != TRANSPARENT_INDEX) ||
+            if((tex_pdata.get(x, y) != TRANSPARENT_INDEX) ||
                 (texBpp == 1 && pxlData[width * y + x] != TRANSPARENT_INDEX) ||
                 (texBpp == 4 && pxlData[((width * y + x) * 4) + 3] != 0x00))
             {
@@ -585,7 +591,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
     {
         for(y = 0; y < height; ++y)
         {
-            if((tex_pdata[width * y + x] != TRANSPARENT_INDEX) ||
+            if((tex_pdata.get(x, y) != TRANSPARENT_INDEX) ||
                 (texBpp == 1 && pxlData[width * y + x] != TRANSPARENT_INDEX) ||
                 (texBpp == 4 && pxlData[((width * y + x) * 4) + 3] != 0x00))
             {
@@ -603,7 +609,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
     {
         for(x = 0; x < width; ++x)
         {
-            if((tex_pdata[width * y + x] != TRANSPARENT_INDEX) ||
+            if((tex_pdata.get(x, y) != TRANSPARENT_INDEX) ||
                 (texBpp == 1 && pxlData[width * y + x] != TRANSPARENT_INDEX) ||
                 (texBpp == 4 && pxlData[((width * y + x) * 4) + 3] != 0x00))
             {
@@ -621,7 +627,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int
     {
         for(x = 0; x < width; ++x)
         {
-            if((tex_pdata[width * y + x] != TRANSPARENT_INDEX) ||
+            if((tex_pdata.get(x, y) != TRANSPARENT_INDEX) ||
                 (texBpp == 1 && pxlData[width * y + x] != TRANSPARENT_INDEX) ||
                 (texBpp == 4 && pxlData[((width * y + x) * 4) + 3] != 0x00))
             {

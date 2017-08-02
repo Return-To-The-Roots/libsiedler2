@@ -18,6 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Text.h"
 #include "oem.h"
+#include "ErrorCodes.h"
 #include <iostream>
 #include <vector>
 #include <limits>
@@ -74,7 +75,7 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversio
 int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint32_t length)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     std::vector<char> text;
     if(length)
@@ -83,7 +84,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
         text.reserve(length + 1);
         text.resize(length);
         if(!file.read(&text.front(), length))
-            return 2;
+            return ErrorCode::UNEXPECTED_EOF;
     }else
     {
         // Read all that is there
@@ -117,7 +118,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
     setName(this->text_);
 
     // Alles OK
-    return 0;
+    return ErrorCode::NONE;
 }
 
 /**
@@ -131,17 +132,17 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
 int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     // Wenn Länge 0, nix schreiben, ist ja kein Fehler!
     if(text_.empty())
-        return 0;
+        return ErrorCode::NONE;
 
     std::string convText = getFileText(conversion);
     if(!file.write(&convText[0], convText.size()))
-        return 2;
+        return ErrorCode::UNEXPECTED_EOF;
 
-    return 0;
+    return ErrorCode::NONE;
 }
 
 /**

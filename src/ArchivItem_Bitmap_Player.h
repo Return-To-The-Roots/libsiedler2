@@ -21,7 +21,7 @@
 
 #include "ArchivItem_BitmapBase.h"
 #include "enumTypes.h"
-
+#include "PixelBufferPaletted.h"
 #include <vector>
 #include <iosfwd>
 #include <stdint.h>
@@ -63,7 +63,7 @@ namespace libsiedler2
             void getVisibleArea(int& vx, int& vy, int& vw, int& vh) override;
 
             /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
-            bool print(uint8_t* buffer,
+            int print(uint8_t* buffer,
                       uint16_t buffer_width,
                       uint16_t buffer_height,
                       TexturFormat buffer_format,
@@ -78,7 +78,7 @@ namespace libsiedler2
                       bool only_player = false) const;
 
             /// erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
-            bool create(uint16_t width,
+            int create(uint16_t width,
                        uint16_t height,
                        const uint8_t* buffer,
                        uint16_t buffer_width,
@@ -88,7 +88,7 @@ namespace libsiedler2
                        uint8_t color = 128);
 
         protected:
-            std::vector<uint8_t> tex_pdata; /// Die Spielerfarbedaten.
+            PixelBufferPaletted tex_pdata; /// Die Spielerfarbedaten.
     };
 
 }

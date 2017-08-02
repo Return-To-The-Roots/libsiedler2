@@ -19,6 +19,7 @@
 #include "ArchivItem_BitmapBase.h"
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
+#include "ErrorCodes.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include <stdexcept>
@@ -86,27 +87,21 @@ ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapB
  *  @param[in] color   Farbe des Pixels
  *  @param[in] palette Grundpalette
  */
-void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y,
-    uint8_t colorIdx,
-    const ArchivItem_Palette* palette)
+void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, uint8_t colorIdx)
 {
-    if(palette == NULL)
-        palette = this->palette_;
-    if(palette == NULL)
-        throw std::runtime_error("No palette found");
-    if(x >= width_ || y >= height_)
-        throw std::out_of_range("Invalid index");
+    assert(x < width_ && y < height_);
 
     uint32_t position = (y * width_ + x) * getBBP();
     if(getFormat() == FORMAT_PALETTED)
         data_[position] = colorIdx;
     else
     {
+        assert(palette_);
         // RGB+A setzen
         if(colorIdx == TRANSPARENT_INDEX) // Transparenz
             data_[position + 3] = 0x00;
         else
-            ColorARGB(palette->get(colorIdx)).toBGRA(&data_[position]);
+            ColorARGB(palette_->get(colorIdx)).toBGRA(&data_[position]);
     }
 }
 
@@ -122,10 +117,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y,
  */
 void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorARGB clr)
 {
-    if(getFormat() == FORMAT_PALETTED && palette_ == NULL)
-        throw std::runtime_error("No palette");
-    if(x >= width_ || y >= height_)
-        throw std::out_of_range("Invalid index");
+    assert(x < width_ && y < height_);
 
     uint32_t position = (y * width_ + x) * getBBP();
     if(getFormat() == FORMAT_PALETTED)
@@ -148,28 +140,39 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorARGB clr
  *
  *  @return liefert die Farbe des Pixels
  */
-uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y,
-    const ArchivItem_Palette* palette) const
+uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y) const
 {
-    if(palette == NULL)
-        palette = this->palette_;
-    if(palette == NULL)
-        throw std::runtime_error("No palette");
-    if(x >= width_ || y >= height_)
-        throw std::out_of_range("Invalid index");
+    return getPixelClrIdx(x, y, palette_);
+}
+
+ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const
+ {
+     assert(x < width_ && y < height_);
+
+     uint32_t position = (y * width_ + x) * getBBP();
+     if(getFormat() == FORMAT_PALETTED)
+         return data_[position];
+     else
+     {
+         assert(palette);
+         ColorARGB clr = ColorARGB::fromBGRA(&data_[position]);
+         // Index von RGB+A liefern
+         if(data_[position + 3] == 0x00) // Transparenz
+             return TRANSPARENT_INDEX;
+         else
+             return palette->lookup(clr);
+     }
+ }
+
+libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) const
+{
+    assert(x < width_ && y < height_);
 
     uint32_t position = (y * width_ + x) * getBBP();
     if(getFormat() == FORMAT_PALETTED)
-        return data_[position];
+        return palette_->get(data_[position]);
     else
-    {
-        ColorARGB clr = ColorARGB::fromBGRA(&data_[position]);
-        // Index von RGB+A liefern
-        if(data_[position + 3] == 0x00) // Transparenz
-            return TRANSPARENT_INDEX;
-        else
-            return palette->lookup(clr);
-    }
+        return ColorARGB::fromBGRA(&data_[position]);
 }
 
 /**

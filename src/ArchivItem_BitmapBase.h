@@ -44,11 +44,15 @@ namespace libsiedler2
         ArchivItem_BitmapBase& operator=(const ArchivItem_BitmapBase& item);
 
         /// setzt einen Pixel auf einen bestimmten Wert.
-        virtual void setPixel(uint16_t x, uint16_t y, uint8_t colorIdx, const ArchivItem_Palette* palette = NULL);
-        virtual void setPixel(uint16_t x, uint16_t y, const ColorARGB clr);
+        void setPixel(uint16_t x, uint16_t y, uint8_t colorIdx);
+        void setPixel(uint16_t x, uint16_t y, const ColorARGB clr);
 
-        /// liefert einen Pixel an einem bestimmten Punkt.
-        uint8_t getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette = NULL) const;
+        /// Return the color index at the given position using the current palette for ARGB conversion
+        uint8_t getPixelClrIdx(uint16_t x, uint16_t y) const;
+        /// Return the color index at the given position using the given palette for ARGB conversion. Otherwise not required
+        uint8_t getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const;
+        /// Return the color at the given position using the current palette for paletted bmps
+        ColorARGB getPixel(uint16_t x, uint16_t y) const;
 
         /// lädt die Bilddaten aus einer Datei.
         virtual int load(std::istream& file, const ArchivItem_Palette* palette) = 0;

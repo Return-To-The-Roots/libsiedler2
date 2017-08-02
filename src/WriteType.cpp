@@ -26,9 +26,10 @@
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Palette.h"
 #include "ArchivItem_Sound.h"
+#include "ErrorCodes.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <stdexcept>
-#include <ostream>
+#include <iostream>
 
 /**
  *  schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
@@ -43,7 +44,7 @@
 int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& file, const ArchivItem_Palette* palette, const ArchivItem& item)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     try{
         switch(bobtype)
@@ -54,8 +55,8 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& file, const Ar
                 libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
                 const long sizePos = fs.getPosition();
                 fs << uint32_t(0);
-                if(i.write(file) != 0)
-                    return 2;
+                if(int ec = i.write(file))
+                    return ec;
                 const long curPos = fs.getPosition();
                 fs.setPosition(sizePos);
                 fs << uint32_t(curPos - sizePos);
@@ -65,63 +66,65 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& file, const Ar
             {
                 const baseArchivItem_Bitmap_RLE& i = dynamic_cast<const baseArchivItem_Bitmap_RLE&>(item);
 
-                if(i.write(file, palette) != 0)
-                    return 3;
+                if(int ec = i.write(file, palette))
+                    return ec;
             } break;
             case BOBTYPE_FONT: // Font
             {
                 const ArchivItem_Font& i = dynamic_cast<const ArchivItem_Font&>(item);
 
-                if(i.write(file, palette) != 0)
-                    return 4;
+                if(int ec = i.write(file, palette))
+                    return ec;
             } break;
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
             {
                 const ArchivItem_Bitmap_Player& i = dynamic_cast<const ArchivItem_Bitmap_Player&>(item);
 
-                if(i.write(file, palette) != 0)
-                    return 5;
+                if(int ec = i.write(file, palette))
+                    return ec;
             } break;
             case BOBTYPE_PALETTE: // Palette
             {
                 const ArchivItem_Palette& i = dynamic_cast<const ArchivItem_Palette&>(item);
 
-                if(i.write(file) != 0)
-                    return 6;
+                if(int ec = i.write(file))
+                    return ec;
             } break;
             case BOBTYPE_BITMAP_SHADOW: // Schatten
             {
                 const baseArchivItem_Bitmap_Shadow& i = dynamic_cast<const baseArchivItem_Bitmap_Shadow&>(item);
 
-                if(i.write(file, palette) != 0)
-                    return 7;
+                if(int ec = i.write(file, palette))
+                    return ec;
             } break;
             case BOBTYPE_BOB: // Bobfile
             {
                 const ArchivItem_Bob& i = dynamic_cast<const ArchivItem_Bob&>(item);
 
-                if(i.write(file, palette) != 0)
-                    return 8;
+                if(int ec = i.write(file, palette))
+                    return ec;
             } break;
             case BOBTYPE_MAP: // Mapfile
             {
                 const ArchivItem_Map& i = dynamic_cast<const ArchivItem_Map&>(item);
 
-                if(i.write(file) != 0)
-                    return 9;
+                if(int ec = i.write(file))
+                    return ec;
             } break;
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
                 const baseArchivItem_Bitmap_Raw& i = dynamic_cast<const baseArchivItem_Bitmap_Raw&>(item);
 
-                if(i.write(file, palette) != 0)
-                    return 10;
+                if(int ec = i.write(file, palette))
+                    return ec;
             } break;
             default:
-                return 0;
+                return ErrorCode::NONE;
         }
-    }catch(std::runtime_error&){
-        return 999;
+    } catch(std::exception& e){
+        // Mostly error on reading (e.g. unexpected end of file)
+        std::cerr << "Error while reading: " << e.what() << std::endl;
+        return ErrorCode::CUSTOM;
     }
-    return 0;
+    return ErrorCode::NONE;
 }

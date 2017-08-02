@@ -18,11 +18,9 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 #include "libendian/src/EndianIStreamAdapter.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
-#include <iostream>
 
 /**
  *  lädt eine LST-File in ein ArchivInfo.
@@ -35,46 +33,31 @@
  */
 int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
 {
-    uint16_t header;
-    uint32_t count;
+    MMStream mmapStream;
+    if(int ec = openMemoryStream(file, mmapStream))
+        return ec;
 
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStream(mmapFile);
     libendian::EndianIStreamAdapter<false, MMStream& > lst(mmapStream);
 
-    // hat das geklappt?
-    if(!lst)
-        return 2;
+    uint16_t header;
+    uint32_t count;
 
     // Header einlesen
     lst >> header;
 
     // ist es eine GER/ENG-File? (Header 0xE7FD)
     if(header == 0xFDE7)
-    {
         return LoadTXT(file, items);
-    }
 
     // ist es eine LST-File? (Header 0x204E)
     if(header != 0x4E20)
-        return 4;
+        return ErrorCode::WRONG_HEADER;
 
     // Anzahl einlesen
     lst >> count;
 
     if(!lst)
-        return 99;
+        return ErrorCode::WRONG_FORMAT;
 
     items.clear();
 
@@ -85,12 +68,12 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
         int16_t bobtype_s;
 
         // use-Flag einlesen
-        lst >> used;
+        if(!(lst >> used))
+            return ErrorCode::UNEXPECTED_EOF;
 
         // ist das Item benutzt?
-        if(used != 0x0001)
+        if(used != 1)
         {
-            //fprintf(stderr, "unused %04X\n", used);
             items.push(NULL);
             continue;
         }
@@ -98,15 +81,13 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
         // bobtype des Items einlesen
         lst >> bobtype_s;
         BobType bobtype = static_cast<BobType>(bobtype_s);
-        //fprintf(stderr, "bobtype %d\n", bobtype);
 
         // Daten von Item auswerten
         ArchivItem* item;
-        if(LoadType(bobtype, lst.getStream(), palette, item) != 0)
-            return 8;
+        if(int ec = LoadType(bobtype, lst.getStream(), palette, item))
+            return ec;
         items.push(item);
     }
 
-    // alles ok
-    return 0;
+    return ErrorCode::NONE;
 }

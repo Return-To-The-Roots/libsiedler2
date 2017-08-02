@@ -18,6 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Font.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -54,18 +55,23 @@ libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(), ArchivInfo(), dx
  */
 int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Palette* palette)
 {
-    if(!file || palette == NULL)
-        return 1;
+    if(!file)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+    if(!palette)
+        return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Spacing einlesen
-    fs >> dx >> dy;
+    if(!(fs >> dx >> dy))
+        return ErrorCode::UNEXPECTED_EOF;
 
     isUnicode = (dx == 255 && dy == 255);
     uint32_t numChars;
     if(isUnicode)
     {
         fs >> numChars >> dx >> dy;
+        if(!fs)
+            return ErrorCode::UNEXPECTED_EOF;
     } else
         numChars = 256;
 
@@ -78,7 +84,8 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
         int16_t bobtype_s;
 
         // bobtype des Items einlesen
-        fs >> bobtype_s;
+        if(!(fs >> bobtype_s))
+            return ErrorCode::UNEXPECTED_EOF;
         BobType bobtype = static_cast<BobType>(bobtype_s);
 
         if(bobtype == BOBTYPE_NONE)
@@ -86,15 +93,16 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
 
         // Daten von Item auswerten
         ArchivItem* item;
-        if(loader::LoadType(bobtype, file, palette, item) != 0)
-            return 5;
+        int ec = loader::LoadType(bobtype, file, palette, item);
+        if(ec)
+            return ec;
         std::stringstream name;
         name << "U+" << std::hex << i;
         item->setName(name.str());
         set(i, item);
     }
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -107,8 +115,10 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
  */
 int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
-    if(!file || palette == NULL)
-        return 1;
+    if(!file)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+    if(!palette)
+        return ErrorCode::PALETTE_MISSING;
 
     size_t numChars = size();
     if(numChars > 256 && !isUnicode)
@@ -117,7 +127,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     
     if(isUnicode)
-        fs << static_cast<uint16_t>(0xFFFF) << static_cast<uint32_t>(size());
+        fs << uint16_t(0xFFFF) << static_cast<uint32_t>(size());
     else
         numChars = 256;
     // Spacing schreiben
@@ -139,33 +149,9 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
             continue;
 
         // Daten von Item auswerten
-        if(loader::WriteType(bobtype, file, palette, *item) != 0)
-            return 5;
+        if(int ec = loader::WriteType(bobtype, file, palette, *item))
+            return ec;
     }
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
-
-/**
- *  liefert den X-Buchstabenabstand.
- *
- *  @return liefert den X-Buchstabenabstand.
- */
-
-/**
- *  liefert den Y-Buchstabenabstand.
- *
- *  @return liefert den Y-Buchstabenabstand.
- */
-
-/**
- *  setzt den X-Buchstabenabstand.
- *
- *  @param[in] dx X-Buchstabenabstand
- */
-
-/**
- *  setzt den Y-Buchstabenabstand.
- *
- *  @param[in] dy Y-Buchstabenabstand
- */

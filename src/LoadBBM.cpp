@@ -22,11 +22,11 @@
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include "libendian/src/EndianIStreamAdapter.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem.hpp>
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
+#include "OpenMemoryStream.h"
+#include <boost/filesystem/path.hpp>
 #include <sstream>
-#include <iostream>
 
 /**
  *  lädt eine BBM-File in ein ArchivInfo.
@@ -38,34 +38,20 @@
  */
 int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
 {
+    MMStream mmStream;
+    if(int ec = openMemoryStream(file, mmStream))
+        return ec;
+
     char header[4], pbm[4], chunk[4];
     uint32_t i = 0;
 
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStream(mmapFile);
-    libendian::EndianIStreamAdapter<true, MMStream&> fs(mmapStream);
-
-    // hat das geklappt?
-    if(!fs)
-        return 2;
-
+    libendian::EndianIStreamAdapter<true, MMStream&> fs(mmStream);
     // Header einlesen
     fs >> header;
 
     // ist es eine BBM-File? (Header "FORM")
-    if(strncmp(header, "FORM", 4) != 0)
-        return 4;
+    if(!fs || !isChunk(header, "FORM"))
+        return ErrorCode::WRONG_HEADER;
 
     // Länge einlesen
     uint32_t length;
@@ -75,13 +61,13 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
     fs >> pbm;
 
     // ist es eine BBM-File? (Typ "PBM ")
-    if(strncmp(pbm, "PBM ", 4) != 0)
-        return 7;
+    if(!fs || !isChunk(pbm, "PBM "))
+        return ErrorCode::WRONG_HEADER;
 
     // Chunks einlesen
     while(!!(fs >> chunk))
     {
-        if(strncmp(chunk, "CMAP", 4) == 0)
+        if(isChunk(chunk, "CMAP"))
         {
             fs >> length;
 
@@ -91,7 +77,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
 
             // Ist Länge wirklich so groß wie Farbtabelle?
             if(length != 256 * 3)
-                return 10;
+                return ErrorCode::WRONG_FORMAT;
 
             // Daten von Item auswerten
             ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
@@ -105,7 +91,8 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
                 palette->setName(rName.str());
             }
 
-            palette->load(fs.getStream(), false);
+            if(int ec = palette->load(fs.getStream(), false))
+                return ec;
 
             ++i;
         }else
@@ -121,8 +108,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
     }
 
     if(items.empty() || !fs.eof())
-        return 14;
+        return ErrorCode::UNEXPECTED_EOF;
 
-    // alles ok
-    return 0;
+    return ErrorCode::NONE;
 }

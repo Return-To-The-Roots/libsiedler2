@@ -36,7 +36,7 @@ namespace libsiedler2
             XMIDI_Track();
 	        ~XMIDI_Track();
 	
-	        bool read(std::istream& file, size_t length);
+	        int read(std::istream& file, size_t length);
 	        void clear();
 
             const std::vector<uint8_t>& getData() const { return data_; }

@@ -21,10 +21,8 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
-#include <iostream>
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 
 /**
  *  lädt eine MAP-File in ein ArchivInfo.
@@ -36,32 +34,18 @@
  */
 int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, bool only_header)
 {
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream map(mmapFile);
-
-    // hat das geklappt?
-    if(!map)
-        return 2;
+    MMStream map;
+    if(int ec = openMemoryStream(file, map))
+        return ec;
 
     ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP));
-    if(item->load(map, only_header) != 0){
+    if(int ec = item->load(map, only_header)){
         delete item;
-        return 3;
+        return ec;
     }
 
     items.clear();
     items.push(item);
 
-    return 0;
+    return ErrorCode::NONE;
 }

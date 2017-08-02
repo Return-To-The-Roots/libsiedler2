@@ -17,9 +17,9 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "oem.h"
-#include <cstring>
 
 #ifndef _WIN32
+#include <cstring>
 
 /** @name AnsiToOem
  *

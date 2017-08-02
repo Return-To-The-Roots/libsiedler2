@@ -18,17 +18,18 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Map_Header.h"
 #include "oem.h"
-#include <iostream>
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
-#include <cstring>
+#include <iostream>
 
 /** @class libsiedler2::ArchivItem_Map_Header
  *
  *  Klasse für einen Mapheader.
  */
 
-const char VALID_ID[10] = { 'W', 'O', 'R', 'L', 'D', '_', 'V', '1', '.', '0' };
+const char VALID_ID[11] = "WORLD_V1.0";
 
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
     : ArchivItem(),
@@ -51,7 +52,7 @@ libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header()
 int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     char id[10];
 
@@ -60,8 +61,8 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     fs >> id;
 
     // und prüfen
-    if(memcmp(id, VALID_ID, 10) != 0)
-        return 3;
+    if(!fs || !isChunk(id, VALID_ID))
+        return ErrorCode::WRONG_HEADER;
 
     // Name einlesen
     char name[24];
@@ -96,19 +97,15 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     }else
         hasExtraWord_ = false;
     if(headerSig != 0x2711)
-        return 4;
+        return ErrorCode::WRONG_FORMAT;
 
     uint32_t unknown; // Might be switch for int16_t or long header blocks in WORLD#.DAT files
     fs >> unknown;
     assert(unknown == 0);
 
-    // Breite einlesen
-    fs >> width;
+    fs >> width >> height;
 
-    // Höhe einlesen
-    fs >> height;
-
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -121,11 +118,13 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
 int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     // Signatur
-    fs << VALID_ID;
+    char id[10];
+    setChunkId(id, VALID_ID);
+    fs << id;
 
     // Name einlesen
     char name[24];
@@ -163,7 +162,7 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     // Höhe einlesen
     fs << height;
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**

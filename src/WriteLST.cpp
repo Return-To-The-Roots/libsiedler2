@@ -18,6 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 #include <limits>
@@ -33,38 +34,35 @@
  */
 int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
+    if(file.empty())
+        return ErrorCode::INVALID_BUFFER;
+
+    // Datei zum schreiben öffnen
+    libendian::EndianOStreamAdapter<false, bfs::ofstream> fs(file, std::ios_base::binary);
+
+    // hat das geklappt?
+    if(!fs)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+
     int16_t header = 0x4E20;
     assert(items.size() < std::numeric_limits<uint32_t>::max());
     uint32_t count = static_cast<uint32_t>(items.size());
 
-    if(file.empty())
-        return 1;
-
-    // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, bfs::ofstream> lst(file, std::ios_base::binary);
-
-    // hat das geklappt?
-    if(!lst)
-        return 2;
-
     // Header schreiben
-    lst << header;
-
-    // Anzahl schreiben
-    lst << count;
+    fs << header << count;
 
     // items schreiben
     for(uint32_t i = 0; i < count; ++i)
     {
         uint16_t used = 0x0001;
 
-        const ArchivItem* item = items.get(i);
+        const ArchivItem* item = items[i];
 
-        if(item == NULL)
+        if(!item)
             used = 0x0000;
 
         // use-Flag schreiben
-        lst << used;
+        fs << used;
 
         if(!item)
             continue;
@@ -72,13 +70,12 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         BobType bobtype = item->getBobType();
 
         // bobtype des Items schreiben
-        lst << (int16_t)bobtype;
+        fs << (int16_t)bobtype;
 
         // Daten von Item schreiben
-        if(WriteType(bobtype, lst.getStream(), palette, *item) != 0)
-            return 8;
+        if(int ec = WriteType(bobtype, fs.getStream(), palette, *item))
+            return ec;
     }
 
-    // alles ok
-    return (!lst) ? 99 : 0;;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;;
 }

@@ -19,6 +19,7 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 
@@ -33,54 +34,40 @@
 int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& items)
 {
     char header[4] = {'F', 'O', 'R', 'M'}, pbm[4] = {'P', 'B', 'M', ' '}, cmap[4] = {'C', 'M', 'A', 'P'};
-    uint32_t count = 0;
-    uint32_t length = 0;
 
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
+    uint32_t numPalettes = 0;
     // Anzahl Paletten in ArchivInfo suchen
     for(size_t i = 0; i < items.size(); ++i)
     {
-        if(!items.get(i))
-            continue;
-        if(items.get(i)->getBobType() == BOBTYPE_PALETTE)
-            ++count;
+        if(dynamic_cast<const ArchivItem_Palette*>(items[i]))
+            ++numPalettes;
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<true, bfs::ofstream> bbm(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<true, bfs::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
-    if(!bbm)
-        return 2;
+    if(!fs)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    // Header schreiben
-    bbm << header;
+    uint32_t length = 4 + numPalettes * (256 * 3 + 8);
 
-    // Länge schreiben
-    length = 4 + count * (256 * 3 + 8);
-    bbm << length;
-
-    // Typ schreiben
-    bbm << pbm;
+    fs << header << length << pbm;
 
     for(size_t i = 0; i < items.size(); ++i)
     {
-        ArchivItem_Palette* palette = (ArchivItem_Palette*)items.get(i);
-        if(palette->getBobType() == BOBTYPE_PALETTE)
+        const ArchivItem_Palette* palette = dynamic_cast<const ArchivItem_Palette*>(items[i]);
+        if(palette)
         {
-            // Chunk schreiben
-            bbm << cmap;
+            fs << cmap << uint32_t(256 * 3);
 
-            // Länge schreiben
-            length = 256 * 3;
-            bbm << length;
-
-            palette->write(bbm.getStream(), false);
+            if(int ec = palette->write(fs.getStream(), false))
+                return ec;
         }
     }
 
-    // alles ok
-    return (!bbm) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

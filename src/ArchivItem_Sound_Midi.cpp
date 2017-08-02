@@ -18,18 +18,14 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Midi.h"
 #include "MIDI_Header.h"
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
-#include <cstring>
 #include <stdexcept>
 
 namespace libsiedler2{
-
-inline bool isChunk(const char lhs[4], const char rhs[5])
-{
-    return strncmp(lhs, rhs, 4) == 0;
-}
 
 /** @class baseArchivItem_Sound_Midi
  *
@@ -67,24 +63,26 @@ baseArchivItem_Sound_Midi& baseArchivItem_Sound_Midi::operator=(const baseArchiv
 
 int baseArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
 {
-    if(!file || length == 0)
-        return 1;
+    if(!file)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+    if(length < sizeof(MIDI_Header))
+        return ErrorCode::WRONG_HEADER;
 
     libendian::EndianIStreamAdapter<true, std::istream&> fs(file);
     const long itemEndPos = fs.getPosition() + length;
 
     MIDI_Header header;
     if(!fs.readRaw(&header, 1))
-        return 2;
+        return ErrorCode::WRONG_HEADER;
     // ist es eine MIDI-File? (Header "MThd")
     if(!isChunk(header.id, "MThd"))
-        return 3;
+        return ErrorCode::WRONG_HEADER;
 
     numTracks = header.numTracks;
     ppqs = header.ppqs;
 
     if(numTracks == 0 || numTracks > 256)
-        return 8;
+        return ErrorCode::WRONG_FORMAT;
 
     uint16_t curTrack = 0;
     while(curTrack < numTracks)
@@ -92,45 +90,46 @@ int baseArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
         char chunk[4];
         uint32_t chunkLen;
         if(!(fs >> chunk >> chunkLen))
-            return 9;
+            return ErrorCode::UNEXPECTED_EOF;
         if(isChunk(chunk, "MTrk"))
         {
             fs.setPositionRel(-8);
             chunkLen += 8;
 
-            if(!tracklist[curTrack].read(file, chunkLen))
-                return 11;
+            int ec = tracklist[curTrack].read(file, chunkLen);
+            if(ec)
+                return ec;
 
             ++curTrack;
         } else
-            return 12;
+            return ErrorCode::WRONG_FORMAT;
     }
 
     assert(fs.getPosition() == itemEndPos);
     // auf jeden Fall kompletten Datensatz überspringen
     fs.setPosition(itemEndPos);
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 int baseArchivItem_Sound_Midi::write(std::ostream& file) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianOStreamAdapter<true, std::ostream&> fs(file);
 
     MIDI_Header header;
-    strncpy(header.id, "MThd", 4);
+    setChunkId(header.id, "MThd");
     header.headerSize = 6;
     header.format = numTracks == 1 ? 0 : 1;
     header.numTracks = numTracks;
     header.ppqs = ppqs;
     if(!fs.writeRaw(&header, 1))
-        return 2;
+        return ErrorCode::UNEXPECTED_EOF;
     for(uint16_t i = 0; i < numTracks; ++i)
         fs.write(tracklist[i].getMid(), tracklist[i].getMidLength());
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 void baseArchivItem_Sound_Midi::addTrack(const MIDI_Track& track)

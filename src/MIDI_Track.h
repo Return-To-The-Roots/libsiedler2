@@ -33,7 +33,7 @@ namespace libsiedler2
             MIDI_Track(const std::vector<uint8_t>& data);
             ~MIDI_Track();
 	
-            bool read(std::istream& file, size_t length);
+            int read(std::istream& file, size_t length);
 	        void clear();
 	
 	        const uint8_t* getMid() const;

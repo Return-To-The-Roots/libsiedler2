@@ -19,10 +19,8 @@
 #include "ArchivItem_Sound.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
-#include <iostream>
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 
 /**
  *  lädt eine Sounddatei in ein ArchivInfo. (midi, xmidi, wave)
@@ -34,35 +32,21 @@
  */
 int libsiedler2::loader::LoadSND(const std::string& file, ArchivInfo& items)
 {
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    } catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream snd(mmapFile);
-
-    // hat das geklappt?
-    if(!snd)
-        return 2;
+    MMStream snd;
+    if(int ec = openMemoryStream(file, snd))
+        return ec;
 
     baseArchivItem_Sound* sound = baseArchivItem_Sound::findSubType(snd);
 
     if(!sound)
-        return 3;
+        return ErrorCode::WRONG_HEADER;
 
     size_t size = getIStreamSize(snd);
-    if(sound->load(snd, static_cast<uint32_t>(size)) != 0)
-        return 4;
+    if(int ec = sound->load(snd, static_cast<uint32_t>(size)))
+        return ec;
 
     items.clear();
     items.push(sound);
 
-    return 0;
+    return ErrorCode::NONE;
 }

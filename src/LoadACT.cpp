@@ -21,10 +21,8 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
-#include <iostream>
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 
 /**
  *  lädt eine ACT-File in ein ArchivInfo.
@@ -36,33 +34,19 @@
  */
 int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
 {
-     if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-     boost::iostreams::mapped_file_source mmapFile;
-     try{
-         mmapFile.open(bfs::path(file));
-     }catch(std::exception& e){
-         std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-         return 2;
-     }
-     typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-     MMStream act(mmapFile);
-
-    // hat das geklappt?
-    if(!act)
-        return 2;
+    MMStream act;
+    if(int ec = openMemoryStream(file, act))
+        return ec;
 
     size_t size = getIStreamSize(act);
     // sind es 256*3 Bytes, also somit 8bit-RGB?
     if(size != 256*3)
-        return 3;
+        return ErrorCode::WRONG_HEADER;
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
-    if(palette->load(act, false) != 0){
+    if(int ec = palette->load(act, false)){
         delete palette;
-        return 4;
+        return ec;
     }
 
     // einlesen
@@ -70,5 +54,5 @@ int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
     items.push(palette);
 
     // Alles OK
-    return 0;
+    return ErrorCode::NONE;
 }

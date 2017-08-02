@@ -21,12 +21,10 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "ErrorCodes.h"
+#include "OpenMemoryStream.h"
 #include "libendian/src/EndianIStreamAdapter.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
 #include <vector>
-#include <iostream>
 
 /**
  *  lädt eine GER/ENG-File in ein ArchivInfo.
@@ -41,24 +39,10 @@
  */
 int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, bool conversion)
 {
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStream(mmapFile);
+    MMStream mmapStream;
+    if(int ec = openMemoryStream(file, mmapStream))
+        return ec;
     libendian::EndianIStreamAdapter<false, MMStream& > fs(mmapStream);
-
-    // hat das geklappt?
-    if(!fs)
-        return 2;
 
     const size_t fileSize = getIStreamSize(fs.getStream());
     assert(fileSize < std::numeric_limits<uint32_t>::max());
@@ -66,7 +50,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     int16_t header;
     // Header einlesen
     if(!(fs >> header))
-        return 99;
+        return ErrorCode::WRONG_HEADER;
 
     items.clear();
 
@@ -77,8 +61,9 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         fs.setPositionRel(-2);
 
         ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
-        item->load(fs.getStream(), conversion);
-
+        int ec = item->load(fs.getStream(), conversion);
+        if(ec)
+            return ec;
         items.push(item);
     }
     else
@@ -90,38 +75,33 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         BOOST_CONSTEXPR_OR_CONST size_t headerSize = sizeof(header) + sizeof(count) + sizeof(unknown) + sizeof(size);
 
         if(!(fs >> count >> unknown >> size))
-            return 99;
+            return ErrorCode::WRONG_HEADER;
 
         if(size == 0)
             size = static_cast<uint32_t>(fileSize) - headerSize;
         if(size < count * sizeof(uint32_t))
-            return 89;
+            return ErrorCode::WRONG_FORMAT;
 
         std::vector<uint32_t> starts(count);
+        if(!(fs >> starts))
+            return ErrorCode::UNEXPECTED_EOF;
 
         // Starts einlesen
         uint16_t lastStart = 0;
         for(uint16_t x = 0; x < count; ++x)
         {
-            uint32_t s;
-            fs >> s;
-
-            if(!fs)
-                return 99;
-            if(s != 0)
+            if(starts[x] != 0)
             {
-                // Contiguous values
-                if(s < lastStart)
-                    return 98;
-                lastStart = s;
-                starts[x] = s + headerSize;
+                // Contiguous values and offset must be after the starts
+                if(starts[x] < lastStart || starts[x] < count * sizeof(uint32_t))
+                    return ErrorCode::WRONG_FORMAT;
+                lastStart = starts[x];
+                starts[x] += headerSize;
             }
         }
 
         // Add value for getting end position
         starts.push_back(size + headerSize);
-
-        const size_t pos = fs.getPosition();
 
         for(uint16_t x = 0; x < count; ++x)
         {
@@ -129,23 +109,15 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
 
             if(itemPos != 0)
             {
-                // No jump back
-                if(itemPos < pos)
-                    return 99;
-
-                bool sizeFound = false;
                 uint32_t itemSize = 0;
                 for(uint16_t j = x + 1; j <= count; ++j)
                 {
                     if(starts[j])
                     {
                         itemSize = starts[j] - itemPos;
-                        sizeFound = true;
                         break;
                     }
                 }
-                if(!sizeFound)
-                    return 98;
                 // An Start springen
                 fs.setPosition(itemPos);
 
@@ -153,7 +125,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
                 ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
                 int res = item->load(fs.getStream(), conversion, itemSize);
                 if(res)
-                    return res + 100;
+                    return res;
 
                 items.push(item);
             }
@@ -162,6 +134,5 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         }
     }
 
-    // alles ok
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

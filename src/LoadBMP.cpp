@@ -24,15 +24,12 @@
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include "BmpHeader.h"
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
+#include "OpenMemoryStream.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
 #include <vector>
-#include <cmath>
-#include <iostream>
-
 /**
  *  liest eine Bitmapzeile
  */
@@ -75,42 +72,27 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
  */
 int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 {
-    bool bottomup = false;
-
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStream(mmapFile);
+    MMStream mmapStream;
+    if(int ec = openMemoryStream(file, mmapStream))
+        return ec;
     libendian::EndianIStreamAdapter<false, MMStream& > bmpFs(mmapStream);
-
-    // hat das geklappt?
-    if(!bmpFs)
-        return 2;
 
     BmpFileHeader bmhd;
 
     if(!bmpFs.readRaw(&bmhd, 1))
-        return 3;
+        return ErrorCode::WRONG_HEADER;
 
-    if(bmhd.header[0] != 'B' || bmhd.header[1] != 'M')
-        return 4;
+    if(!isChunk(bmhd.header, "BM"))
+        return ErrorCode::WRONG_HEADER;
 
     BitmapInfoHeader bmih;
     if(!bmpFs.readRaw(&bmih, 1))
-        return 5;
+        return ErrorCode::WRONG_HEADER;
 
     if(bmih.headerSize != sizeof(bmih))
-        return 6;
+        return ErrorCode::WRONG_HEADER;
 
+    bool bottomup = false;
     if(bmih.height >= 0)
         bottomup = true;
     else
@@ -118,14 +100,14 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 
     // nur eine Ebene
     if(bmih.planes != 1)
-        return 6;
+        return ErrorCode::WRONG_FORMAT;
 
     boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setName(file);
 
     // keine Kompression
     if(bmih.compression != 0)
-        return 8;
+        return ErrorCode::WRONG_FORMAT;
 
     // Einträge in der Farbtabelle
     if(bmih.clrused == 0)
@@ -137,7 +119,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
         // Farbpalette lesen
         uint8_t colors[256][4];
         if(!bmpFs.read(colors[0], bmih.clrused * 4))
-            return 99;
+            return ErrorCode::UNEXPECTED_EOF;
 
         pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
         for(int i = 0; i < bmih.clrused; ++i)
@@ -146,7 +128,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 
     uint8_t bbp = (bmih.bpp / 8);
     if(bbp != 1 && bbp != 3)
-        return 10;
+        return ErrorCode::WRONG_FORMAT;
     std::vector<uint8_t> buffer(bmih.height * bmih.width * (bbp == 1 ? 1 : 4));
     std::vector<uint8_t> tmpBuffer(bmih.width * bbp);
 
@@ -166,14 +148,16 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
             LoadBMP_ReadLine(bmpFs, y, bmih.width, bbp, buffer, tmpBuffer);
     }
 
-    if(!bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
+    if(!bmpFs)
+        return ErrorCode::UNEXPECTED_EOF;
+
+    if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
         (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal))
-        return 22;
+        return ec;
 
     // Bitmap zuweisen
     image.push(bitmap.release());
 
-    // alles ok
-    return (!bmpFs) ? 99 : 0;
+    return (!bmpFs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 

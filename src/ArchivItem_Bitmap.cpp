@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
+#include "ErrorCodes.h"
 #include <cstddef>
 #include <vector>
 
@@ -41,29 +42,29 @@ namespace libsiedler2{
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-bool baseArchivItem_Bitmap::print(uint8_t* buffer,
+int baseArchivItem_Bitmap::print(uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
         TexturFormat buffer_format,
-        const ArchivItem_Palette* palette,
-        uint16_t to_x,
-        uint16_t to_y,
-        uint16_t from_x,
-        uint16_t from_y,
-        uint16_t from_w,
-        uint16_t from_h) const
+        const ArchivItem_Palette* palette /*= NULL*/,
+        uint16_t to_x /*= 0*/,
+        uint16_t to_y /*= 0*/,
+        uint16_t from_x /*= 0*/,
+        uint16_t from_y /*= 0*/,
+        uint16_t from_w /*= 0*/,
+        uint16_t from_h /*= 0*/) const
 {
     if(buffer_width == 0 || buffer_height == 0)
-        return true;
+        return ErrorCode::NONE;
     if(!buffer)
-        return false;
+        return ErrorCode::INVALID_BUFFER;
     if(!palette)
         palette = getPalette();
     if(!palette && buffer_format == FORMAT_PALETTED)
-        return false;
+        return ErrorCode::PALETTE_MISSING;
 
     if(from_x >= getWidth() || from_y >= getHeight() || to_x >= buffer_width || to_y >= buffer_height)
-        return true;
+        return ErrorCode::NONE;
 
     if(from_w == 0 || from_x + from_w > getWidth())
         from_w = getWidth() - from_x;
@@ -100,7 +101,7 @@ bool baseArchivItem_Bitmap::print(uint8_t* buffer,
     }
 
     // Alles ok
-    return true;
+    return ErrorCode::NONE;
 }
 
 /**
@@ -118,20 +119,20 @@ bool baseArchivItem_Bitmap::print(uint8_t* buffer,
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
  */
-bool baseArchivItem_Bitmap::create(uint16_t width,
+int baseArchivItem_Bitmap::create(uint16_t width,
         uint16_t height,
         const uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
         TexturFormat buffer_format,
-        const ArchivItem_Palette* palette)
+        const ArchivItem_Palette* palette /*= NULL*/)
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
-        return false;
+        return ErrorCode::INVALID_BUFFER;
     if(!palette)
         palette = getPalette();
     if(!palette && buffer_format == FORMAT_PALETTED)
-        return false;
+        return ErrorCode::PALETTE_MISSING;
 
     // Texturspeicher anfordern
     tex_alloc(width, height, buffer_format);
@@ -154,7 +155,7 @@ bool baseArchivItem_Bitmap::create(uint16_t width,
     }
 
     // Alles ok
-    return true;
+    return ErrorCode::NONE;
 }
 
 } // namespace libsiedler2

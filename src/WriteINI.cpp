@@ -19,6 +19,7 @@
 #include "ArchivItem_Ini.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
 #include <boost/filesystem/fstream.hpp>
 
 /**
@@ -32,29 +33,26 @@
 int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& items)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
     // Datei zum schreiben öffnen
-    bfs::ofstream ini(file, std::ios_base::binary);
-    if (!ini)
-        return 2;
+    bfs::ofstream fs(file, std::ios_base::binary);
+    if (!fs)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     bool first = true;
     for(size_t i = 0; i < items.size(); ++i)
     {
         const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
-
-        if(item)
-        {
-            if(!first)
-                ini << "\r\n";
-            else
-                first = false;
-            if(item->write(ini) != 0)
-                return 99;
-        }
+        if(!item)
+            return ErrorCode::WRONG_ARCHIV;
+        if(!first)
+            fs << "\r\n";
+        else
+            first = false;
+        if(int ec = item->write(fs))
+            return ec;
     }
 
-    // alles ok
-    return 0;
+    return ErrorCode::NONE;
 }

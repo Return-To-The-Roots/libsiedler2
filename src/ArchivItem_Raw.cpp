@@ -17,9 +17,10 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Raw.h"
-#include <iostream>
+#include "ErrorCodes.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <iostream>
 
 /** @class libsiedler2::baseArchivItem_Raw
  *
@@ -52,20 +53,21 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
 int libsiedler2::baseArchivItem_Raw::load(std::istream& file, uint32_t length)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     clear();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     if(length == 0xFFFFFFFF)
     {
-        fs >> length;
+        if(!(fs >> length))
+            return ErrorCode::UNEXPECTED_EOF;
     }
 
     data.resize(length);
     fs >> data;
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -79,7 +81,7 @@ int libsiedler2::baseArchivItem_Raw::load(std::istream& file, uint32_t length)
 int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     if(with_length)
@@ -90,7 +92,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
 
     fs << data;
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**

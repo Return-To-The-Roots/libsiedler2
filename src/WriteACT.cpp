@@ -19,6 +19,7 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
 #include <boost/filesystem/fstream.hpp>
 
 /**
@@ -26,48 +27,24 @@
  *
  *  @param[in] file    Dateiname der ACT-File
  *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
- *  @param[in] nr      Nummer der Palette die geschrieben werden soll
-                       (@p -1 erste Palette die gefunden wird)
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& items, long nr)
+int libsiedler2::loader::WriteACT(const std::string& file, const ArchivInfo& items)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
-    if(nr == -1)
-    {
-        // Palette in ArchivInfo suchen, erste Palette wird geschrieben
-        for(size_t i = 0; i < items.size(); ++i)
-        {
-            if(!items.get(i))
-                continue;
-            if(items.get(i)->getBobType() == BOBTYPE_PALETTE)
-            {
-                nr = static_cast<long>(i);
-                break;
-            }
-
-        }
-    }
-
-    // Haben wir eine gefunden?
-    if(nr == -1)
-        return 2;
+    const ArchivItem_Palette* palette = dynamic_cast<const ArchivItem_Palette*>(items[0]);
+    if(!palette)
+        return ErrorCode::WRONG_ARCHIV;
 
     // Datei zum schreiben öffnen
-    bfs::ofstream act(file, std::ios_base::binary);
+    bfs::ofstream fs(file, std::ios_base::binary);
 
     // hat das geklappt?
-    if(!act)
-        return 3;
+    if(!fs)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    // Farben schreiben
-    ArchivItem_Palette* palette = (ArchivItem_Palette*)items.get(nr);
-    if(palette->write(act, false) != 0)
-        return 4;
-
-    // alles ok
-    return 0;
+    return palette->write(fs, false);
 }

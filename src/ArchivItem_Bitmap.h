@@ -35,7 +35,7 @@ namespace libsiedler2
         public:
 
             /// schreibt das Bitmap in einen Puffer.
-            bool print(uint8_t* buffer,
+            int print(uint8_t* buffer,
                       uint16_t buffer_width,
                       uint16_t buffer_height,
                       TexturFormat buffer_format,
@@ -48,7 +48,7 @@ namespace libsiedler2
                       uint16_t from_h = 0) const;
 
             /// erzeugt ein Bitmap aus einem Puffer.
-            bool create(uint16_t width,
+            int create(uint16_t width,
                        uint16_t height,
                        const uint8_t* buffer,
                        uint16_t buffer_width,

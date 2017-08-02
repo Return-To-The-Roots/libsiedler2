@@ -23,10 +23,11 @@
 #include "ArchivInfo.h"
 #include "prototypen.h"
 #include "BmpHeader.h"
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 #include <vector>
-#include <cstring>
 
 /**
  *  schreibt ein ArchivInfo in eine BMP-File.
@@ -34,43 +35,26 @@
  *  @param[in] file    Dateiname der BMP-File
  *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
  *  @param[in] palette Palette die für das Bitmap verwendet werden soll
- *  @param[in] nr      Nummer des Bitmaps das geschrieben werden soll
-                       (@p -1 erste Bitmap das gefunden wird)
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls schreiben.
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items, long nr)
+int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
-    if(nr == -1)
-    {
-        // Bitmap in ArchivInfo suchen, erstes Bitmap wird geschrieben
-        for(size_t i = 0; i < items.size(); ++i)
-        {
-            const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(i));
-            if(bitmap)
-            {
-                nr = static_cast<long>(i);
-                break;
-            }
-        }
-    }
-
-    // Haben wir eine gefunden?
-    if(nr == -1)
-        return 2;
-    const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items.get(nr));
+    const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items[0]);
+    if(!bitmap)
+        return ErrorCode::WRONG_ARCHIV;
 
     if(!palette && bitmap->getFormat() == FORMAT_PALETTED)
         palette = bitmap->getPalette();
 
     BmpFileHeader bmpHd;
     BitmapInfoHeader bmih;
-    bmpHd.header[0] = 'B'; bmpHd.header[1] = 'M';
+    setChunkId(bmpHd.header, "BM");
     bmpHd.reserved = 0;
     bmih.headerSize = sizeof(bmih);
     bmih.width = bitmap->getWidth();
@@ -100,12 +84,10 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 
     // hat das geklappt?
     if(!fs)
-        return 3;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    if(!fs.writeRaw(&bmpHd, 1))
-        return 4;
-    if(!fs.writeRaw(&bmih, 1))
-        return 5;
+    if(!fs.writeRaw(&bmpHd, 1) || !fs.writeRaw(&bmih, 1))
+        return ErrorCode::UNEXPECTED_EOF;
 
     if(bmih.clrused > 0)
     {
@@ -119,11 +101,11 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        if(!dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
-            return 7;
+        if(int ec = dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
+            return ec;
     }
-    else if(!dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
-        return 7;
+    else if(int ec = dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
+        return ec;
 
     std::vector<uint8_t> lineAlignBytes(numLineAlignBytes);
 
@@ -152,6 +134,5 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
 
     assert(fs.getPosition() == bmpHd.fileSize);
 
-    // alles ok
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

@@ -20,7 +20,9 @@
 #include "ArchivItem_Text.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "ErrorCodes.h"
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <stdexcept>
 #include <sstream>
 
@@ -54,65 +56,48 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : Archiv
 int libsiedler2::ArchivItem_Ini::load(std::istream& file)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     std::string section;
     if(!std::getline(file, section))
-        return file.eof() ? 0 : 2;
-
-    size_t lr = section.find('\r');
-    if (lr != std::string::npos) section.erase(lr, 1);
-    size_t ln = section.find('\n');
-    if (ln != std::string::npos) section.erase(ln, 1);
+        return file.eof() ? ErrorCode::NONE : ErrorCode::UNEXPECTED_EOF;
 
     if(!section.empty())
     {
-        size_t pos = section.find('[');
-        if(pos == std::string::npos)
-            throw std::runtime_error("Invalid section");
-        section = section.substr(pos + 1);
-        pos = section.find(']');
-        if(pos == std::string::npos)
-            throw std::runtime_error("Invalid section");
-        section = section.substr(0, pos);
+        size_t posStart = section.find('[');
+        size_t posEnd = section.find_last_of(']');
+        if(posStart == std::string::npos || posEnd == std::string::npos || posStart > posEnd)
+            return ErrorCode::WRONG_FORMAT;
+        section = section.substr(posStart + 1, posEnd - posStart - 1);
     }
-    if(section.empty() && !file.eof())
-        return 4;
+    if(section.empty())
+        return ErrorCode::WRONG_HEADER;
 
     setName(section);
-
-    if(!file)
-        return 0;
 
     while(true)
     {
         std::string entry;
         if(!std::getline(file, entry))
             break;
-        lr = entry.find('\r');
-        if (lr != std::string::npos) entry.erase(lr, 1);
-        ln = section.find('\n');
-        if (ln != std::string::npos) entry.erase(ln, 1);
+        size_t posNl = entry.find_first_of("\r\n");
+        if(posNl != std::string::npos) entry.erase(posNl);
         if(entry.empty())
             break;
 
         size_t pos = entry.find('=');
         if(pos == std::string::npos)
-            throw std::runtime_error("Invalid value");
+            return ErrorCode::WRONG_FORMAT;
         std::string name = entry.substr(0, pos);
         std::string value = entry.substr(pos + 1);
 
         if(name.empty() || value.empty())
             continue;
 
-        ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT) );
-        item->setText(value);
-        item->setName(name);
-
-        push(item);
+        addValue(name, value);
     }
 
-    return 0;
+    return ErrorCode::NONE;
 }
 
 /**
@@ -125,7 +110,7 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
 int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     file << "[" << getName() << "]\r\n";
 
@@ -135,7 +120,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
         file << item->getName() << "=" << item->getText() << "\r\n";
     }
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -187,17 +172,5 @@ void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::s
 void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, int value)
 {
     std::string temp = boost::lexical_cast<std::string>(value);
-
-    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
-    if(item)
-    {
-        // setText überschreibt Namen, daher nochmals setzen
-        item->setText(temp);
-        item->setName(name);
-    }
-    else
-    {
-        // nicht gefunden, also hinzufügen
-        addValue(name, temp);
-    }
+    setValue(name, temp);
 }

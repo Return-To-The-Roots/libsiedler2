@@ -15,29 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Sound.h"
-#include "ArchivInfo.h"
-#include "prototypen.h"
-#include "ErrorCodes.h"
-#include <boost/filesystem/fstream.hpp>
+#pragma once
 
-int libsiedler2::loader::WriteSND(const std::string& file, const ArchivInfo& items)
+#ifndef OpenMemoryStream_h__
+#define OpenMemoryStream_h__
+
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <string>
+
+namespace libsiedler2
 {
-    if(file.empty())
-        return ErrorCode::INVALID_BUFFER;
-
-    // Can only write single sounds
-    if(items.size() != 1)
-        return ErrorCode::WRONG_ARCHIV;
-
-    const ArchivItem_Sound* snd = dynamic_cast<const ArchivItem_Sound*>(items[0]);
-    if(!snd)
-        return ErrorCode::WRONG_ARCHIV;
-
-    bfs::ofstream fs(file, std::ios_base::binary);
-    if(!fs)
-        return ErrorCode::FILE_NOT_ACCESSIBLE;
-
-    return snd->write(fs);
+	typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+	
+    /// Open the given memory stream from a file and return an ErrorCode
+    /// Writes exceptions to stderr
+    int openMemoryStream(const std::string& file, MMStream& stream);
 }
+
+#endif // OpenMemoryStream_h__

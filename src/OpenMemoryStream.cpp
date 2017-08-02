@@ -16,28 +16,28 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Sound.h"
-#include "ArchivInfo.h"
-#include "prototypen.h"
+#include "OpenMemoryStream.h"
 #include "ErrorCodes.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <iostream>
 
-int libsiedler2::loader::WriteSND(const std::string& file, const ArchivInfo& items)
+namespace libsiedler2
 {
-    if(file.empty())
-        return ErrorCode::INVALID_BUFFER;
+	int openMemoryStream(const std::string& file, MMStream& stream)
+	{
+	    if(file.empty())
+	        return ErrorCode::INVALID_BUFFER;
+	
+	    if(!bfs::exists(file))
+	        return ErrorCode::FILE_NOT_FOUND;
+	
+	    try{
+	        stream.open(bfs::path(file));
+	    } catch(std::exception& e){
+	        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
+	        return ErrorCode::FILE_NOT_ACCESSIBLE;
+	    }
 
-    // Can only write single sounds
-    if(items.size() != 1)
-        return ErrorCode::WRONG_ARCHIV;
-
-    const ArchivItem_Sound* snd = dynamic_cast<const ArchivItem_Sound*>(items[0]);
-    if(!snd)
-        return ErrorCode::WRONG_ARCHIV;
-
-    bfs::ofstream fs(file, std::ios_base::binary);
-    if(!fs)
-        return ErrorCode::FILE_NOT_ACCESSIBLE;
-
-    return snd->write(fs);
+        return (!stream) ? ErrorCode::FILE_NOT_ACCESSIBLE : ErrorCode::NONE;
+	}
 }

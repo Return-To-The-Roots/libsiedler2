@@ -19,8 +19,8 @@
 #include "ArchivItem_Sound.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
-#include <cstring>
 #include <iostream>
 
 /** @class libsiedler2::ArchivItem_Sound
@@ -64,39 +64,33 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
     long oldpos = fs.getPosition();
     baseArchivItem_Sound* item = NULL;
 
-    char header[4];
-    uint32_t length;
-
-    // Header einlesen
+    char header[4] = "\0\0\0";
     fs >> header;
 
     // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
-    if(strncmp(header, "FORM", 4) == 0 || strncmp(header, "RIFF", 4) == 0)
+    if(isChunk(header, "FORM") || isChunk(header, "RIFF"))
     {
-        // Länge einlesen
-        fs >> length;
+        uint32_t length;
+        fs >> length >> header;
 
-        // Typ einlesen
-        fs >> header;
-
-        if(strncmp(header, "XMID", 4) == 0 || strncmp(header, "XDIR", 4) == 0)
+        if(isChunk(header, "XMID") || isChunk(header, "XDIR"))
         {
             // xmidi
             item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_XMIDI));
         }
-        else if(strncmp(header, "WAVE", 4) == 0)
+        else if(isChunk(header, "WAVE"))
         {
             // wave-format inkl-header
             item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
         }
     }
-    else if(strncmp(header, "MThd", 4) == 0)
+    else if(isChunk(header, "MThd"))
     {
         // midi
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_MIDI));
     }
-    else if(strncmp(header, "OggS", 4) == 0 || strncmp(header, "ID3", 3) == 0 ||
-        (static_cast<uint8_t>(header[0]) == 0xFF && static_cast<uint8_t>(header[1]) == 0xFB) )
+    else if(isChunk(header, "OggS") || isChunk(header, "ID3") ||
+        (static_cast<int8_t>(header[0]) == 0xFF && static_cast<int8_t>(header[1]) == 0xFB) )
     {
         // ogg, mp3 (id3tag, ohne),
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_OTHER));

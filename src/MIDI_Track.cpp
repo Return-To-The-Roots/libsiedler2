@@ -17,8 +17,8 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "MIDI_Track.h"
+#include "ErrorCodes.h"
 #include <iostream>
-#include <cstring>
 #include <limits>
 
 namespace libsiedler2
@@ -32,16 +32,16 @@ namespace libsiedler2
 	MIDI_Track::~MIDI_Track()
 	{}
 	
-    bool MIDI_Track::read(std::istream& file, size_t length)
+    int MIDI_Track::read(std::istream& file, size_t length)
 	{
 	    clear();
 	    if(length == 0)
-	        return true;
+	        return ErrorCode::NONE;
 	
         mid_data.resize(length);
 	    if(!file.read(reinterpret_cast<char*>(&mid_data[0]), length))
-	        return false;
-	    return true;
+	        return ErrorCode::UNEXPECTED_EOF;
+	    return ErrorCode::NONE;
 	}
 	
 	void MIDI_Track::clear()

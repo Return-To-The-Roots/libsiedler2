@@ -18,10 +18,11 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Wave.h"
 #include "WAV_Header.h"
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
-#include <cstring>
 
 /** @class libsiedler2::baseArchivItem_Sound_Wave
  *
@@ -46,29 +47,34 @@ libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
  */
 int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, uint32_t length)
 {
-    if(!file || length == 0)
-        return 1;
+    if(!file)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
 
-    // Header einlesen
-    char headerId[4];
-    fs >> headerId;
-    fs.setPositionRel(-4);
+    bool hasHeader = false;
+    if(length >= sizeof(header))
+    {
+        char headerId[4];
+        if(!(fs >> headerId))
+            return ErrorCode::UNEXPECTED_EOF;
+        fs.setPositionRel(-4);
+        if(isChunk(headerId, "FORM") || isChunk(headerId, "RIFF"))
+            hasHeader = true;
+    }
 
     // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
-    bool hasHeader = false;
-    if(strncmp(headerId, "FORM", 4) == 0 || strncmp(headerId, "RIFF", 4) == 0)
+    if(hasHeader)
     {
         if(!fs.readRaw(&header, 1))
-            return 2;
+            return ErrorCode::WRONG_HEADER;
         length -= sizeof(header);
     } else
     {
-        strncpy(header.RIFF_ID, "RIFF", 4);
-        strncpy(header.WAVE_ID, "WAVE", 4);
-        strncpy(header.fmt_ID, "fmt ", 4);
-        strncpy(header.data_ID, "data", 4);
+        setChunkId(header.RIFF_ID, "RIFF");
+        setChunkId(header.WAVE_ID, "WAVE");
+        setChunkId(header.fmt_ID, "fmt ");
+        setChunkId(header.data_ID, "data");
         header.fmtTag = 1;
         header.numChannels = 1;
         header.samplesPerSec = 11025;
@@ -83,7 +89,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, uint32_t le
     data.resize(length);
     fs >> data;
 
-    return (!fs) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -97,7 +103,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, uint32_t le
 int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool stripheader) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
 
@@ -106,7 +112,7 @@ int libsiedler2::baseArchivItem_Sound_Wave::write(std::ostream& file, bool strip
 
     fs << data;
 
-    return (!fs) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**

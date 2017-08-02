@@ -18,11 +18,13 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Palette.h"
+#include "ErrorCodes.h"
 #include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 #include <vector>
+#include "PixelBufferPaletted.h"
 
 /** @class libsiedler2::baseArchivItem_Bitmap_RLE
  *
@@ -72,25 +74,26 @@ libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE()
 int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const ArchivItem_Palette* palette)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
         palette = getPalette();
     else
         setPalette(*palette);
     if(palette == NULL)
-        return 2;
+        return ErrorCode::PALETTE_MISSING;
 
     tex_clear();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
-    uint16_t width, height;
-    char unknown1[4], unknown2[2];
-    uint32_t length;
+    uint16_t width, height, unknown2;
+    uint32_t unknown1, length;
 
     fs >> nx_ >> ny_ >> unknown1 >> width >> height >> unknown2 >> length;
 
     if(!fs)
-        return 3;
+        return ErrorCode::UNEXPECTED_EOF;
+    if(unknown1 != 0 || unknown2 != 1)
+        return ErrorCode::WRONG_HEADER;
 
     std::vector<uint8_t> data(length);
     // Daten einlesen
@@ -130,10 +133,10 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
         ++position;
 
         if(position != length)
-            return 8;
+            return ErrorCode::WRONG_FORMAT;
     }
 
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -150,11 +153,11 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
 int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
         palette = getPalette();
     if(palette == NULL)
-        return 2;
+        return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     char unknown[4] = { 0x00, 0x00, 0x00, 0x00 };
@@ -163,6 +166,10 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
 
     fs << nx_ << ny_ << unknown << width << height << unknown2;
 
+    PixelBufferPaletted buffer(width, height);
+    int ec = print(buffer.getPixelPtr(), width, height, FORMAT_PALETTED, palette);
+    if(ec)
+        return ec;
     // maximale größe von RLE: width*height*2
     std::vector<uint8_t> image(width * height * 2);
 
@@ -190,7 +197,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
             // farbige Pixel schreiben
             for(count = 0; count < width - x; ++count)
             {
-                color = getPixelClrIdx(x + count, y, palette);
+                color = buffer.get(x + count, y);
                 if(color == TRANSPARENT_INDEX)
                     break;
                 image[position + 1 + count] = color;
@@ -205,7 +212,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
             // transparente Pixel schreiben
             for(count = 0; count < width - x; ++count)
             {
-                color = getPixelClrIdx(x + count, y, palette);
+                color = buffer.get(x + count, y);
                 if(color != TRANSPARENT_INDEX || count == 0xFF)
                     break;
             }
@@ -226,5 +233,5 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
     // Daten schreiben
     fs << starts << image;
 
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

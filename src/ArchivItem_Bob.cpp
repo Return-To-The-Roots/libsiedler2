@@ -20,6 +20,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "ErrorCodes.h"
 #include <iostream>
 #include "libendian/src/EndianIStreamAdapter.h"
 
@@ -60,17 +61,21 @@ libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
  */
 int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 {
-    if(!file || palette == NULL)
-        return 1;
+    if(!file)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+    if(!palette)
+        return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Größe des ersten Farbblocks auslesen
     uint16_t size;
-    fs >> size;
+    if(!(fs >> size))
+        return ErrorCode::WRONG_HEADER;
 
     // Farbblock auslesen
     std::vector<uint8_t> raw_base(size);
-    fs >> raw_base;
+    if(!(fs >> raw_base))
+        return ErrorCode::WRONG_HEADER;
 
     // Einzelner Bilder auslesen ( untere Körper ): 8 Animation Steps, 6 directions, 2 types (Fat, Non-Fat) = 96
     alloc(96);
@@ -79,24 +84,26 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         uint16_t id;
         uint8_t height;
         if(!(fs >> id >> height))
-            return 4;
+            return ErrorCode::UNEXPECTED_EOF;
 
         // stimmt die ID? (ID 0xF401)
         if(id != 0x01F4)
-            return 5;
+            return (i == 0) ? ErrorCode::WRONG_HEADER : ErrorCode::WRONG_FORMAT;
 
         std::vector<uint16_t> starts(height);
         uint8_t ny;
         if(!(fs >> starts >> ny))
-            return 6;
+            return ErrorCode::UNEXPECTED_EOF;
 
         ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
         image->setNx(16);
         image->setNy(ny);
 
-        if(image->load(32, height, raw_base, starts, true, palette) != 0){
+        int ec = image->load(32, height, raw_base, starts, true, palette);
+        if(ec)
+        {
             delete image;
-            return 9;
+            return ec;
         }
 
         set(i, image);
@@ -109,11 +116,11 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     {
         uint16_t id, size;
         if(!(fs >> id >> size))
-            return 7;
+            return ErrorCode::UNEXPECTED_EOF;
 
         // stimmt die ID? (ID 0xF401)
         if(id != 0x01F5)
-            return 10;
+            return ErrorCode::WRONG_FORMAT;
 
         raw[i].resize(size);
         fs >> raw[i];
@@ -134,11 +141,11 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     {
         uint16_t id;
         if(!(fs >> id >> heights[i]))
-            return 14;
+            return ErrorCode::UNEXPECTED_EOF;
 
         // stimmt die ID? (ID 0xF401)
         if(id != 0x01F4)
-            return 15;
+            return ErrorCode::WRONG_FORMAT;
 
         starts[i].resize(heights[i]);
         fs >> starts[i] >> ny[i];
@@ -150,7 +157,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     // with the appropriate body
     uint16_t item_count;
     if(!(fs >> item_count))
-        return 16;
+        return ErrorCode::UNEXPECTED_EOF;
 
     links.resize(item_count);
 
@@ -158,7 +165,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     {
         uint16_t unknown;
         if(!(fs >> links[i] >> unknown))
-            return 22;
+            return ErrorCode::UNEXPECTED_EOF;
 
         if(loaded[links[i]])
             continue;
@@ -168,16 +175,18 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         image->setNx(16);
         image->setNy(ny[links[i]]);
 
-        if(image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, palette) != 0){
+        int ec = image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, palette);
+        if(ec)
+        {
             delete image;
-            return 21;
+            return ec;
         }
 
         set(96 + links[i], image);
         loaded[links[i]] = true;
     }
 
-    return (!fs) ? 99 : 0;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -190,10 +199,5 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
  */
 int libsiedler2::ArchivItem_Bob::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
-    if(!file || palette == NULL)
-        return 1;
-
-    /// @todo Schreiben der Bobdaten.
-
-    return 254;
+    return ErrorCode::UNSUPPORTED_FORMAT;
 }

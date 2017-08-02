@@ -22,13 +22,11 @@
 #include "prototypen.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "ErrorCodes.h"
+#include "fileFormatHelpers.h"
+#include "OpenMemoryStream.h"
 #include "libendian/src/EndianIStreamAdapter.h"
-#include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/stream.hpp>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
-#include <boost/filesystem/path.hpp> // For UTF8 support
-#include <iostream>
-#include <stdexcept>
 
 /**
  *  lädt eine LBM-File in ein ArchivInfo.
@@ -40,90 +38,54 @@
  */
 int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 {
-    if(file.empty())
-        return 1;
-
-    // Datei zum lesen öffnen
-    boost::iostreams::mapped_file_source mmapFile;
-    try{
-        mmapFile.open(bfs::path(file));
-    }catch(std::exception& e){
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-        return 2;
-    }
-    typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-    MMStream mmapStream(mmapFile);
+    MMStream mmapStream;
+    if(int ec = openMemoryStream(file, mmapStream))
+        return ec;
     libendian::EndianIStreamAdapter<true, MMStream& > lbm(mmapStream);
 
-    // hat das geklappt?
-    if(!lbm)
-        return 2;
-
     char header[4], pbm[4];
+    uint32_t length;
     // Header einlesen
-    lbm >> header;
+    lbm >> header >> length >> pbm;
 
     // ist es eine LBM-File? (Header "FORM")
-    if(strncmp(header, "FORM", 4) != 0)
-        return 4;
-
-    // Länge einlesen
-    uint32_t length;
-    lbm >> length;
-
-    // Typ einlesen
-    lbm >> pbm;
-
-    // ist es eine LBM-File? (Typ "PBM ")
-    if(strncmp(pbm, "PBM ", 4) != 0)
-        return 7;
+    if(!lbm || !isChunk(header, "FORM") || !isChunk(pbm, "PBM "))
+        return ErrorCode::WRONG_HEADER;
 
     boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
 
     uint16_t width = 0, height = 0;
     uint16_t compression;
-    uint32_t chunk;
+    char chunk[4];
     // Chunks einlesen
-    while(lbm.read(chunk))
+    while(lbm.read(chunk, 4))
     {
-        switch(chunk)
+        if(isChunk(chunk, "BMHD"))
         {
-            case 0x424D4844: // "BHMD"
-            {
+            uint32_t unknown;
+            uint16_t depth;
+            // Länge einlesen
+            lbm >> length;
 
-                // Länge einlesen
-                lbm >> length;
+            // Bei ungerader Zahl aufrunden
+            if(length & 1)
+                ++length;
 
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
+            lbm >> width >> height >> unknown >> depth >> compression;
 
-                lbm >> width >> height;
+            // Nur 256 Farben und nicht mehr!
+            if(depth != 256 * 8)
+                return ErrorCode::WRONG_FORMAT;
 
-                // Unbekannte Daten ( 4 Byte ) berspringen
-                lbm.ignore(4);
+            // Keine bekannte Kompressionsart?
+            if(compression != 0 && compression != 256)
+                return ErrorCode::WRONG_FORMAT;
 
-                // Farbtiefe einlesen
-                uint16_t depth;
-                lbm >> depth;
+            length -= 12;
 
-                // Nur 256 Farben und nicht mehr!
-                if(depth != 256 * 8)
-                    return 13;
-
-                // Kompressionflag lesen
-                lbm >> compression;
-
-                // Keine bekannte Kompressionsart?
-                if(compression != 0 && compression != 256)
-                    return 15;
-
-                length -= 12;
-
-                // Rest überspringen
-                lbm.ignore(length);
-            } break;
-            case 0x434D4150: // "CMAP"
+            // Rest überspringen
+            lbm.ignore(length);
+        }else if(isChunk(chunk, "CMAP"))
             {
                 // Länge einlesen
                 lbm >> length;
@@ -134,118 +96,112 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 
                 // Ist Länge wirklich so groß wie Farbtabelle?
                 if(length != 256 * 3)
-                    return 17;
+                    return ErrorCode::WRONG_FORMAT;
 
                 // Daten von Item auswerten
                 ArchivItem_Palette* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
                 bitmap->setPalette(palette);
-                if(palette->load(lbm.getStream(), false) != 0)
-                    return 18;
-            } break;
-            case 0x424F4459: // "BODY"
+                if(int ec = palette->load(lbm.getStream(), false))
+                    return ec;
+        } else if(isChunk(chunk, "BODY"))
+        {
+            // Länge einlesen
+            lbm >> length;
+
+            // Bei ungerader Zahl aufrunden
+            if(length & 1)
+                ++length;
+
+            // haben wir eine Palette erhalten?
+            if(bitmap->getPalette() == NULL)
+                return ErrorCode::PALETTE_MISSING;
+
+            bitmap->tex_alloc(width, height, FORMAT_PALETTED);
+
+            if(compression == 0) // unkomprimiert
             {
-                // Länge einlesen
-                lbm >> length;
-
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
-
-                // haben wir eine Palette erhalten?
-                if(bitmap->getPalette() == NULL)
-                    return 20;
-
-                bitmap->tex_alloc(width, height, FORMAT_PALETTED);
-
-                switch(compression)
+                if(length != static_cast<uint32_t>(width * height))
+                    return ErrorCode::WRONG_FORMAT;
+                for(int y = 0; y < height; ++y)
                 {
-                    case 0: // unkomprimiert
+                    for(int x = 0; x < width; ++x)
                     {
-                        if(length != static_cast<uint32_t>(width * height))
-                            return 222;
-                        for(int y = 0; y<height; ++y)
-                            for(int x = 0; x<width; ++x)
-                            {
-                                uint8_t color;
-                                lbm >> color;
-                                bitmap->setPixel(x, y, color);
-                            }
-                    } break;
-                    case 256: // komprimiert (RLE?)
-                    {
-                        // Welcher Pixel ist dran?
-                        uint16_t x = 0, y = 0;
+                        uint8_t color;
+                        lbm >> color;
+                        bitmap->setPixel(x, y, color);
+                    }
+                }
+            } else // komprimiert (RLE?)
+            {
+                // Welcher Pixel ist dran?
+                uint16_t x = 0, y = 0;
 
-                        // Solange einlesen, bis Block zuende bzw. Datei zuende ist
-                        while(length > 0 && !lbm.eof())
+                // Solange einlesen, bis Block zuende bzw. Datei zuende ist
+                while(length > 0 && !lbm.eof())
+                {
+                    // Typ lesen
+                    int8_t ctype;
+                    lbm >> ctype;
+                    --length;
+                    if(length == 0)
+                        continue;
+
+                    if(ctype > 0) // unkomprimierte Pixel
+                    {
+                        int16_t count = 1 + static_cast<int16_t>(ctype);
+
+                        for(int16_t i = 0; i < count; ++i)
                         {
-                            // Typ lesen
-                            int8_t ctype;
-                            lbm >> ctype;
+                            // Farbe auslesen
+                            uint8_t color;
+                            lbm >> color;
                             --length;
-                            if(length == 0)
-                                continue;
 
-                            if(ctype > 0) // unkomprimierte Pixel
+                            bitmap->setPixel(x++, y, color);
+                            if(x >= width)
                             {
-                                int16_t count = 1 + static_cast<int16_t>(ctype);
-
-                                for(int16_t i = 0; i < count; ++i)
-                                {
-                                    // Farbe auslesen
-                                    uint8_t color;
-                                    lbm >> color;
-                                    --length;
-
-                                    bitmap->setPixel(x++, y, color);
-                                    if(x >= width)
-                                    {
-                                        ++y;
-                                        x = 0;
-                                    }
-                                }
-                            }
-                            else // komprimierte Pixel
-                            {
-                                int16_t count = 1 - static_cast<int16_t>(ctype);
-
-                                // Farbe auslesen
-                                uint8_t color;
-                                lbm >> color;
-                                --length;
-
-                                for(uint16_t i = 0; i < count; ++i)
-                                {
-                                    bitmap->setPixel(x++, y, color);
-                                    if(x >= width)
-                                    {
-                                        ++y;
-                                        x = 0;
-                                    }
-                                }
+                                ++y;
+                                x = 0;
                             }
                         }
-                    } break;
+                    } else // komprimierte Pixel
+                    {
+                        int16_t count = 1 - static_cast<int16_t>(ctype);
+
+                        // Farbe auslesen
+                        uint8_t color;
+                        lbm >> color;
+                        --length;
+
+                        for(uint16_t i = 0; i < count; ++i)
+                        {
+                            bitmap->setPixel(x++, y, color);
+                            if(x >= width)
+                            {
+                                ++y;
+                                x = 0;
+                            }
+                        }
+                    }
                 }
-                items.push(bitmap.release());
-            } break;
-            default:
-            {
-                // Länge einlesen
-                lbm >> length;
+            }
+            items.push(bitmap.release());
+        } else
+        {
+            // Länge einlesen
+            lbm >> length;
 
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
+            // Bei ungerader Zahl aufrunden
+            if(length & 1)
+                ++length;
 
-                // Rest überspringen
-                lbm.ignore(length);
-            } break;
+            // Rest überspringen
+            lbm.ignore(length);
         }
     }
 
     if(items.empty() || !lbm.eof())
-        return 25;
+        return ErrorCode::WRONG_FORMAT;
 
-    return 0;
+    return ErrorCode::NONE;
 }

@@ -21,6 +21,7 @@
 #include "ArchivItem_Raw.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
+#include "ErrorCodes.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -53,22 +54,24 @@ libsiedler2::ArchivItem_Map::~ArchivItem_Map()
 int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     clear();
 
     ArchivItem_Map_Header* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
 
-    if(header->load(file) != 0){
+    int ec = header->load(file);
+    if(ec)
+    {
         delete header;
-        return 2;
+        return ec;
     }
 
     push(header);
 
     // nur der Header?
     if(only_header)
-        return 0;
+        return ErrorCode::NONE;
 
     const uint16_t w = header->getWidth();
     const uint16_t h = header->getHeight();
@@ -82,13 +85,13 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         if(bHeader.id != 0x2710 || bHeader.unknown != 0)
         {
             assert(false);
-            return 3;
+            return ErrorCode::WRONG_FORMAT;
         }
         // Blocksize must match extents
         if(bHeader.blockLength != static_cast<uint32_t>(w)*static_cast<uint32_t>(h))
         {
             assert(false);
-            return 4;
+            return ErrorCode::WRONG_FORMAT;
         }
         // Multiplier of 0 means unused block and implies no data
         if(bHeader.multiplier == 0)
@@ -101,7 +104,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         if(bHeader.w != w || bHeader.h != h)
         {
             assert(false);
-            return 5;
+            return ErrorCode::WRONG_FORMAT;
         }
 
         if(i == 1 && header->hasExtraWord())
@@ -111,9 +114,11 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         }
 
         ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
-        if(layer->load(file, bHeader.blockLength) != 0){
+        ec = layer->load(file, bHeader.blockLength);
+        if(ec)
+        {
             delete layer;
-            return 6;
+            return ec;
         }
         push(layer);
     }
@@ -130,7 +135,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         extraInfo.push_back(info);
     }
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -143,14 +148,15 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
 int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     const ArchivItem_Map_Header* header = dynamic_cast<const ArchivItem_Map_Header*>(get(0));
 
     if(!header)
-        return 2;
-    if(header->write(file) != 0)
-        return 3;
+        return ErrorCode::WRONG_ARCHIV;
+    int ec = header->write(file);
+    if(ec)
+        return ec;
 
     BlockHeader bHeader;
     bHeader.id = 0x2710;
@@ -171,8 +177,9 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
             fs << uint16_t(1);
             assert(layer->getData().size() == size_t(header->getWidth()) * size_t(header->getHeight()));
             // Size is written in layer
-            if(layer->write(file, true) != 0)
-                return 4 + i;
+            ec = layer->write(file, true);
+            if(ec)
+                return ec;
         } else
             fs << bHeader.multiplier << bHeader.blockLength;
     }
@@ -183,5 +190,5 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     }
     fs << uint8_t(0xFF);
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

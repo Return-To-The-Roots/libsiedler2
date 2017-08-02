@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "XMIDI_Track.h"
+#include "ErrorCodes.h"
 #include <iostream>
 
 namespace libsiedler2
@@ -27,12 +28,12 @@ namespace libsiedler2
     XMIDI_Track::~XMIDI_Track()
 	{}
 	
-    bool XMIDI_Track::read(std::istream& file, size_t length)
+    int XMIDI_Track::read(std::istream& file, size_t length)
 	{
 	    data_.resize(length);
 	    if(!file.read(reinterpret_cast<char*>(&data_.front()), length))
-	        return false;
-	    return true;
+	        return ErrorCode::UNEXPECTED_EOF;
+	    return ErrorCode::NONE;
 	}
 	
 	void XMIDI_Track::clear()

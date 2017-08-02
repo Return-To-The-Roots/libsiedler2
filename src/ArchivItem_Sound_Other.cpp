@@ -17,9 +17,10 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Other.h"
-#include <iostream>
+#include "ErrorCodes.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
+#include <iostream>
 
 /** @class libsiedler2::baseArchivItem_Sound_Other
  *
@@ -44,15 +45,17 @@ libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()
  */
 int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, uint32_t length)
 {
-    if(!file || length == 0)
-        return 1;
+    if(!file)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+    if(length == 0)
+        return ErrorCode::WRONG_HEADER;
 
     data.resize(length);
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
 
     fs >> data;
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**
@@ -65,12 +68,12 @@ int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, uint32_t l
 int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
 {
     if(!file)
-        return 1;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     fs << data;
 
-    return (!file) ? 99 : 0;
+    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
 /**

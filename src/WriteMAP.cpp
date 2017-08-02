@@ -19,6 +19,7 @@
 #include "ArchivItem_Map.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
 #include <boost/filesystem/fstream.hpp>
 
 /**
@@ -29,41 +30,21 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteMAP(const std::string& file, const ArchivInfo& items, long nr)
+int libsiedler2::loader::WriteMAP(const std::string& file, const ArchivInfo& items)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
-    if(nr == -1)
-    {
-        // Palette in ArchivInfo suchen, erste Palette wird geschrieben
-        for(size_t i = 0; i < items.size(); ++i)
-        {
-            if(!items.get(i))
-                continue;
-            if(items.get(i)->getBobType() == BOBTYPE_MAP)
-            {
-                nr = static_cast<long>(i);
-                break;
-            }
-
-        }
-    }
-
-    // Haben wir eine gefunden?
-    if(nr == -1)
-        return 2;
+    const ArchivItem_Map* item = dynamic_cast<const ArchivItem_Map*>(items[0]);
+    if(!item)
+        return ErrorCode::WRONG_ARCHIV;
 
     // Datei zum lesen öffnen
-    bfs::ofstream map(file, std::ios_base::binary);
+    bfs::ofstream fs(file, std::ios_base::binary);
 
     // hat das geklappt?
-    if(!map)
-        return 2;
+    if(!fs)
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    const ArchivItem_Map* item = dynamic_cast<const ArchivItem_Map*>(items.get(nr));
-    if(item->write(map) != 0)
-        return 3;
-
-    return 0;
+    return item->write(fs);
 }

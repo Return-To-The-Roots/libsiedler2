@@ -19,6 +19,7 @@
 #include "ArchivItem_Text.h"
 #include "ArchivInfo.h"
 #include "prototypen.h"
+#include "ErrorCodes.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 
@@ -34,19 +35,14 @@
 int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& items, bool conversion)
 {
     if(file.empty())
-        return 1;
+        return ErrorCode::INVALID_BUFFER;
 
-    if(items.empty())
-        return 2;
-
+    // All entries have to be texts or empty
     for(size_t i = 0; i < items.size(); ++i)
     {
-        const ArchivItem* item = items.get(i);
-        if(item)
-        {
-            if(item->getBobType() != BOBTYPE_TEXT)
-                return 3;
-        }
+        const ArchivItem* item = items[i];
+        if(item && !dynamic_cast<const ArchivItem_Text*>(item))
+            return ErrorCode::WRONG_ARCHIV;
     }
 
     // Datei zum lesen öffnen
@@ -54,37 +50,26 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
 
     // hat das geklappt?
     if(!fs)
-        return 2;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     // Plain-Text ?
     if(items.size() == 1)
-    {
-        const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(0));
-        if(item->write(fs.getStream(), conversion) != 0)
-            return 4;
-    }
+        return dynamic_cast<const ArchivItem_Text*>(items[0])->write(fs.getStream(), conversion);
     else
     {
         // "archiviert"
         uint16_t header = 0xFDE7;
         uint16_t count = (uint16_t)items.size();
-        uint16_t unknown = 0x0001;
+        uint16_t unknown = 1;
 
-        // Header schreiben
-        fs << header;
-
-        // Anzahl schreiben
-        fs << count;
-
-        // Unbekannte Bytes schreiben
-        fs << unknown;
+        fs << header << count << unknown;
 
         std::vector<uint32_t> starts(count);
 
         uint32_t size = count * sizeof(uint32_t);
         for(uint32_t i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(i));
+            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items[i]);
 
             if(item && !item->getText().empty())
             {
@@ -93,22 +78,20 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
             }
         }
 
-        // Größe schreiben
-        fs << size;
-        fs << starts;
+        fs << size << starts;
 
         // Texte schreiben
         for(uint32_t i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items.get(i));
+            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items[i]);
 
             if(item)
             {
-                if(item->write(fs.getStream(), conversion) != 0)
-                    return 10;
+                if(int ec = item->write(fs.getStream(), conversion))
+                    return ec;
             }
         }
     }
 
-    return (!fs) ? 99 : 0;;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;;
 }
