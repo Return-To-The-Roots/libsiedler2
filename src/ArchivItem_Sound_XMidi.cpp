@@ -97,7 +97,8 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
         // Little endian track count
         fsLE >> numTracks;
 
-        assert(fs.getPosition() == headerEndPos);
+        if(fs.getPosition() != headerEndPos)
+            return ErrorCode::WRONG_FORMAT;
 
         fs >> chunkId;
         if(!isChunk(chunkId, "CAT "))
@@ -160,9 +161,8 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
         ++track_nr;
     }
 
-    assert(fs.getPosition() == endPos);
-    // auf jeden Fall kompletten Datensatz überspringen
-    fs.setPosition(endPos);
+    if(fs.getPosition() != endPos)
+        return ErrorCode::WRONG_FORMAT;
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 

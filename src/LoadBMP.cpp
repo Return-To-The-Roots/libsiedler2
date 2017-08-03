@@ -111,7 +111,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
 
     // Einträge in der Farbtabelle
     if(bmih.clrused == 0)
-        bmih.clrused = (int)pow(2.0, bmih.bpp);
+        bmih.clrused = 1u << uint32_t(bmih.bpp); // 2^n
 
     ArchivItem_Palette* pal = NULL;
     if(bmih.bpp == 8)

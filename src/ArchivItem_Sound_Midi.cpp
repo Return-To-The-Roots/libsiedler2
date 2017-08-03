@@ -93,9 +93,8 @@ int baseArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
             return ErrorCode::WRONG_FORMAT;
     }
 
-    assert(fs.getPosition() == itemEndPos);
-    // auf jeden Fall kompletten Datensatz überspringen
-    fs.setPosition(itemEndPos);
+    if(fs.getPosition() != itemEndPos)
+        return ErrorCode::WRONG_FORMAT;
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 

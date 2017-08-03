@@ -90,7 +90,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     // Daten einlesen
     fs >> data >> nx_ >> ny_ >> width >> height;
 
-    if(length != width * height)
+    if(length != static_cast<uint32_t>(width * height))
         return ErrorCode::WRONG_FORMAT;
 
     // Speicher anlegen

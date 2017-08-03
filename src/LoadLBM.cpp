@@ -63,7 +63,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
         if(isChunk(chunk, "BMHD"))
         {
             uint32_t unknown;
-            uint16_t depth;
+            uint8_t numPlanes, mask;
             // Länge einlesen
             lbm >> length;
 
@@ -71,10 +71,10 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
             if(length & 1)
                 ++length;
 
-            lbm >> width >> height >> unknown >> depth >> compression;
+            lbm >> width >> height >> unknown >> numPlanes >> mask >> compression;
 
             // Nur 256 Farben und nicht mehr!
-            if(depth != 256 * 8)
+            if(numPlanes != 8 || mask != 0)
                 return ErrorCode::WRONG_FORMAT;
 
             // Keine bekannte Kompressionsart?
@@ -85,24 +85,24 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
 
             // Rest überspringen
             lbm.ignore(length);
-        }else if(isChunk(chunk, "CMAP"))
-            {
-                // Länge einlesen
-                lbm >> length;
+        } else if(isChunk(chunk, "CMAP"))
+        {
+            // Länge einlesen
+            lbm >> length;
 
-                // Bei ungerader Zahl aufrunden
-                if(length & 1)
-                    ++length;
+            // Bei ungerader Zahl aufrunden
+            if(length & 1)
+                ++length;
 
-                // Ist Länge wirklich so groß wie Farbtabelle?
-                if(length != 256 * 3)
-                    return ErrorCode::WRONG_FORMAT;
+            // Ist Länge wirklich so groß wie Farbtabelle?
+            if(length != 256 * 3)
+                return ErrorCode::WRONG_FORMAT;
 
-                // Daten von Item auswerten
-                ArchivItem_Palette* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
-                bitmap->setPalette(palette);
-                if(int ec = palette->load(lbm.getStream(), false))
-                    return ec;
+            // Daten von Item auswerten
+            ArchivItem_Palette* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
+            bitmap->setPalette(palette);
+            if(int ec = palette->load(lbm.getStream(), false))
+                return ec;
         } else if(isChunk(chunk, "BODY"))
         {
             // Länge einlesen
