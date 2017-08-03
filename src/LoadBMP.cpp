@@ -70,7 +70,7 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp,
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls einlesen.
  */
-int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
+int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette /*= NULL*/)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))
@@ -154,6 +154,11 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image)
     if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
         (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal))
         return ec;
+    if(getTextureFormat() != bitmap->getFormat())
+    {
+        if(int ec = bitmap->convertFormat(getTextureFormat(), palette))
+            return ec;
+    }
 
     // Bitmap zuweisen
     image.push(bitmap.release());

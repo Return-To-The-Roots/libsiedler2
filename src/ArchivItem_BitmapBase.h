@@ -95,6 +95,8 @@ namespace libsiedler2
         void removePalette();
 
         TexturFormat getFormat() const { return format_; }
+        /// Convert the bitmap to the new format using the internal palette or the given palette if no internal palette found
+        virtual int convertFormat(TexturFormat newFormat, const ArchivItem_Palette* palette = NULL);
 
         virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
@@ -114,6 +116,11 @@ namespace libsiedler2
 
         const ArchivItem_Palette* palette_; /// Die Palette.
         TexturFormat format_; /// Das Texturformat.
+
+        /// Return the pixel at the given position assuming the bitmap is paletted
+        uint8_t getPalettedPixel(uint16_t x, uint16_t y) const;
+        /// Return the pixel at the given position assuming the bitmap is ARGB
+        ColorARGB getARGBPixel(uint16_t x, uint16_t y) const;
     };
 
     // Define inline in header to allow optimizations

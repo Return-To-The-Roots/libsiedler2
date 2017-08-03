@@ -60,16 +60,17 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     // Chunks einlesen
     while(lbm.read(chunk, 4))
     {
+        uint32_t chunkLen;
+        lbm >> chunkLen;
+
+        // Bei ungerader Zahl aufrunden
+        if(chunkLen & 1)
+            ++chunkLen;
+
         if(isChunk(chunk, "BMHD"))
         {
             uint32_t unknown;
             uint8_t numPlanes, mask;
-            // Länge einlesen
-            lbm >> length;
-
-            // Bei ungerader Zahl aufrunden
-            if(length & 1)
-                ++length;
 
             lbm >> width >> height >> unknown >> numPlanes >> mask >> compression;
 
@@ -81,21 +82,14 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
             if(compression != 0 && compression != 256)
                 return ErrorCode::WRONG_FORMAT;
 
-            length -= 12;
+            chunkLen -= 12;
 
             // Rest überspringen
-            lbm.ignore(length);
+            lbm.ignore(chunkLen);
         } else if(isChunk(chunk, "CMAP"))
         {
-            // Länge einlesen
-            lbm >> length;
-
-            // Bei ungerader Zahl aufrunden
-            if(length & 1)
-                ++length;
-
             // Ist Länge wirklich so groß wie Farbtabelle?
-            if(length != 256 * 3)
+            if(chunkLen != 256 * 3)
                 return ErrorCode::WRONG_FORMAT;
 
             // Daten von Item auswerten
@@ -105,22 +99,15 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                 return ec;
         } else if(isChunk(chunk, "BODY"))
         {
-            // Länge einlesen
-            lbm >> length;
-
-            // Bei ungerader Zahl aufrunden
-            if(length & 1)
-                ++length;
-
             // haben wir eine Palette erhalten?
             if(bitmap->getPalette() == NULL)
                 return ErrorCode::PALETTE_MISSING;
 
-            bitmap->tex_alloc(width, height, FORMAT_PALETTED);
+            bitmap->tex_alloc(width, height, getTextureFormat());
 
             if(compression == 0) // unkomprimiert
             {
-                if(length != static_cast<uint32_t>(width * height))
+                if(chunkLen != static_cast<uint32_t>(width * height))
                     return ErrorCode::WRONG_FORMAT;
                 for(int y = 0; y < height; ++y)
                 {
@@ -137,13 +124,13 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                 uint16_t x = 0, y = 0;
 
                 // Solange einlesen, bis Block zuende bzw. Datei zuende ist
-                while(length > 0 && !lbm.eof())
+                while(chunkLen > 0 && !lbm.eof())
                 {
                     // Typ lesen
                     int8_t ctype;
                     lbm >> ctype;
-                    --length;
-                    if(length == 0)
+                    --chunkLen;
+                    if(chunkLen == 0)
                         continue;
 
                     if(ctype > 0) // unkomprimierte Pixel
@@ -155,7 +142,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                             // Farbe auslesen
                             uint8_t color;
                             lbm >> color;
-                            --length;
+                            --chunkLen;
 
                             bitmap->setPixel(x++, y, color);
                             if(x >= width)
@@ -171,7 +158,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
                         // Farbe auslesen
                         uint8_t color;
                         lbm >> color;
-                        --length;
+                        --chunkLen;
 
                         for(uint16_t i = 0; i < count; ++i)
                         {
@@ -188,15 +175,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
             items.push(bitmap.release());
         } else
         {
-            // Länge einlesen
-            lbm >> length;
-
-            // Bei ungerader Zahl aufrunden
-            if(length & 1)
-                ++length;
-
-            // Rest überspringen
-            lbm.ignore(length);
+            // Skip this chunk
+            lbm.ignore(chunkLen);
         }
     }
 

@@ -73,7 +73,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const ArchivItem_Pale
 
     const long size = fs.getPosition();
     fs.setPosition(lenPos);
-    fs << uint32_t(lenPos - 4);
+    fs << uint32_t(size - 4);
 
     return ErrorCode::NONE;
 }

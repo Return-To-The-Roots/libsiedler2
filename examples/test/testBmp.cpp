@@ -107,20 +107,62 @@ BOOST_AUTO_TEST_CASE(ReadWriteBmp)
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
-BOOST_AUTO_TEST_CASE(DefaultTextureFormat)
-{
-    std::vector<std::string> testFilenames;
-}
-
 BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
 {
     std::string bmpPath = "testFiles/pal.bmp";
     std::string bmpOutPath = testOutputPath + "/outPal.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
-    ArchivInfo bmp;
-    BOOST_REQUIRE_EQUAL(Load(bmpPath, bmp), 0);
-    BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp), 0);
+    ArchivInfo archiv;
+    BOOST_REQUIRE_EQUAL(Load(bmpPath, archiv), 0);
+    ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase *>(archiv[0]);
+    BOOST_REQUIRE(bmp);
+    BOOST_REQUIRE(bmp->getPalette());
+    // We want to write as paletted again
+    BOOST_REQUIRE_EQUAL(bmp->convertFormat(FORMAT_PALETTED), 0);
+    BOOST_REQUIRE_EQUAL(Write(bmpOutPath, archiv), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
+}
+
+struct FormatSetter
+{
+    const TexturFormat orig;
+    FormatSetter(TexturFormat newFmt): orig(setTextureFormat(newFmt)){}
+    ~FormatSetter(){ setTextureFormat(orig); }
+};
+
+BOOST_AUTO_TEST_CASE(DefaultTextureFormat)
+{
+    std::vector<std::string> testFilenames;
+    testFilenames.push_back("bmpPlayer.lst");      // Player bitmap
+    testFilenames.push_back("bmpRaw.lst");         // Raw bitmap in lst
+    testFilenames.push_back("bmpShadow.lst");      // Shadow bitmap
+    testFilenames.push_back("bmpRLE.lst");         // RLE bitmap
+    testFilenames.push_back("rawWithPalClrs.bmp"); // Raw bitmap
+    testFilenames.push_back("pal.bmp");            // Paletted raw bitmap
+    testFilenames.push_back("test.lbm");           // Paletted bitmap with palette included in lbm
+
+    // Try both formats with all possible bmp types. BGRA first
+    TexturFormat curFmt = FORMAT_BGRA;
+    for(int i = 0; i < 2; i++)
+    {
+        FormatSetter fmtSetter(curFmt);
+        BOOST_FOREACH(const std::string& filename, testFilenames)
+        {
+            ArchivInfo archiv;
+            BOOST_REQUIRE_EQUAL(Load("testFiles/" + filename, archiv, palette), 0);
+            // Get the first bmp
+            const ArchivItem_BitmapBase* bmp = NULL;
+            for(unsigned j = 0; j < archiv.size(); j++)
+            {
+                bmp = dynamic_cast<const ArchivItem_BitmapBase*>(archiv[j]);
+                if(bmp)
+                    break;
+            }
+            BOOST_REQUIRE(bmp);
+            BOOST_REQUIRE_EQUAL(bmp->getFormat(), curFmt);
+        }
+        curFmt = FORMAT_PALETTED;
+    }
 }
 
 BOOST_AUTO_TEST_CASE(CreatePrintBitmap)

@@ -65,7 +65,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, const ArchivItem_Pa
     // Platz für items anlegen
     items.alloc(count);
 
-    const uint32_t datFileSize = getIStreamSize(dat.getStream());
+    const uint32_t datFileSize = static_cast<uint32_t>(getIStreamSize(dat.getStream()));
 
     // items einlesen
     for(uint32_t i = 0; i < count; ++i)

@@ -37,7 +37,7 @@ namespace libsiedler2
         PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue);
         uint16_t getWidth() const { return width_; }
         uint16_t getHeight() const { return height_; }
-        uint32_t getSize() const { return pixels_.size() * sizeof(T_Pixel); }
+        uint32_t getSize() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
         uint8_t* getPixelPtr() { return reinterpret_cast<uint8_t*>(&pixels_[0]); }
         const uint8_t* getPixelPtr() const { return reinterpret_cast<const uint8_t*>(&pixels_[0]); }
         std::vector<T_Pixel>& getPixels() { return pixels_; }

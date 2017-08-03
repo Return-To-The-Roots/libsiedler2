@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap_Shadow.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
+#include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -133,6 +134,9 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
         if(position != length )
             return ErrorCode::WRONG_FORMAT;
         int ec = create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette);
+        if(ec)
+            return ec;
+        ec = convertFormat(getTextureFormat(), palette);
         if(ec)
             return ec;
     }

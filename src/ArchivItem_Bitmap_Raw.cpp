@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap_Raw.h"
 #include "ErrorCodes.h"
 #include "ArchivItem_Palette.h"
+#include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -99,7 +100,11 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
         int ec = create(width, height, &data[0], width, height, FORMAT_PALETTED, palette);
         if(ec)
             return ec;
-    }
+        ec = convertFormat(getTextureFormat(), palette);
+        if(ec)
+            return ec;
+    } else
+        tex_alloc(0, 0, getTextureFormat());
 
     // Unbekannte Daten überspringen
     fs.ignore(8);

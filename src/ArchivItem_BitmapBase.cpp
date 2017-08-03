@@ -20,6 +20,8 @@
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
 #include "ErrorCodes.h"
+#include "PixelBufferARGB.h"
+#include "PixelBufferPaletted.h"
 #include "libsiedler2.h"
 #include "IAllocator.h"
 #include <stdexcept>
@@ -126,15 +128,14 @@ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y) const
  {
      assert(x < width_ && y < height_);
 
-     uint32_t position = (y * width_ + x) * getBBP();
      if(getFormat() == FORMAT_PALETTED)
-         return data_[position];
+         return getPalettedPixel(x, y);
      else
      {
          assert(palette);
-         ColorARGB clr = ColorARGB::fromBGRA(&data_[position]);
+         ColorARGB clr = getARGBPixel(x, y);
          // Index von RGB+A liefern
-         if(data_[position + 3] == 0x00) // Transparenz
+         if(clr.getAlpha() == 0) // Transparenz
              return TRANSPARENT_INDEX;
          else
              return palette->lookup(clr);
@@ -145,11 +146,22 @@ libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) c
 {
     assert(x < width_ && y < height_);
 
-    uint32_t position = (y * width_ + x) * getBBP();
     if(getFormat() == FORMAT_PALETTED)
-        return palette_->get(data_[position]);
+        return palette_->get(getPalettedPixel(x, y));
     else
-        return ColorARGB::fromBGRA(&data_[position]);
+        return getARGBPixel(x, y);
+}
+
+uint8_t ArchivItem_BitmapBase::getPalettedPixel(uint16_t x, uint16_t y) const
+{
+    assert(format_ == FORMAT_PALETTED);
+    return data_[y * width_ + x];
+}
+
+ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
+{
+    assert(format_ == FORMAT_BGRA);
+    return ColorARGB::fromBGRA(&data_[(y * width_ + x) * 4u]);
 }
 
 /**
@@ -221,6 +233,44 @@ void ArchivItem_BitmapBase::setNx(int16_t nx)
 void ArchivItem_BitmapBase::setNy(int16_t ny)
 {
     this->ny_ = ny;
+}
+
+int ArchivItem_BitmapBase::convertFormat(TexturFormat newFormat, const ArchivItem_Palette* palette)
+{
+    // Nothing to do
+    if(newFormat == format_)
+        return ErrorCode::NONE;
+    if(palette_)
+        palette = palette_;
+    if(!palette)
+        return ErrorCode::PALETTE_MISSING;
+    if(newFormat == FORMAT_BGRA)
+    {
+        PixelBufferARGB newBuffer(width_, height_);
+        for(unsigned y = 0; y < height_; y++)
+        {
+            for(unsigned x = 0; x < width_; x++)
+            {
+                uint8_t clrIdx = getPalettedPixel(x, y);
+                newBuffer.set(x, y, clrIdx == TRANSPARENT_INDEX ? ColorARGB(0, 0, 0, 0) : ColorARGB(palette->get(clrIdx)));
+            }
+        }
+        data_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
+    } else
+    {
+        PixelBufferPaletted newBuffer(width_, height_);
+        for(unsigned y = 0; y < height_; y++)
+        {
+            for(unsigned x = 0; x < width_; x++)
+            {
+                ColorARGB clr = getARGBPixel(x, y);
+                newBuffer.set(x, y, clr.getAlpha() == 0 ? TRANSPARENT_INDEX : palette->lookup(clr));
+            }
+        }
+        data_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
+    }
+    format_ = newFormat;
+    return ErrorCode::NONE;
 }
 
 void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)

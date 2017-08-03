@@ -63,7 +63,7 @@ namespace libsiedler2
 		int WriteDATIDX(const std::string& file, const ArchivItem_Palette *palette, const ArchivInfo& items);
 
 		/// lädt eine BMP-File in ein ArchivInfo.
-		int LoadBMP(const std::string& file, ArchivInfo& image);
+		int LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette = NULL);
 
 		/// schreibt ein ArchivInfo in eine BMP-File.
 		int WriteBMP(const std::string& file, const ArchivItem_Palette *palette, const ArchivInfo& items);
