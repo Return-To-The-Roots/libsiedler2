@@ -38,12 +38,12 @@
 
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE()
 {
-    setBobType(BOBTYPE_BITMAP_RLE);
+    bobtype_ = BOBTYPE_BITMAP_RLE;
 }
 
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item) : baseArchivItem_Bitmap(item)
 {
-    setBobType(BOBTYPE_BITMAP_RLE);
+    bobtype_ = BOBTYPE_BITMAP_RLE;
 }
 
 /**
@@ -55,7 +55,7 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArch
  */
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
-    setBobType(BOBTYPE_BITMAP_RLE);
+    bobtype_ = BOBTYPE_BITMAP_RLE;
     load(file, palette);
 }
 

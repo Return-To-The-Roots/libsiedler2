@@ -49,7 +49,7 @@
 
 libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
 {
-    setBobType(BOBTYPE_BITMAP_PLAYER);
+    bobtype_ = BOBTYPE_BITMAP_PLAYER;
 }
 
 /**
@@ -61,7 +61,7 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
  */
 libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem_BitmapBase()
 {
-    setBobType(BOBTYPE_BITMAP_PLAYER);
+    bobtype_ = BOBTYPE_BITMAP_PLAYER;
 
     load(file, palette);
 }
@@ -242,7 +242,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
 
     // Startadressen
     std::vector<uint16_t> starts(height);
-    const unsigned pxlWidth = getWidth();
 
     uint16_t position = 0;
     for(uint16_t y = 0; y < height; ++y)

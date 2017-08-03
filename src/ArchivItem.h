@@ -32,9 +32,6 @@ namespace libsiedler2
 
             virtual ~ArchivItem();
 
-            /// setzt den Bobtype des Items.
-            void setBobType(BobType bobtype) { bobtype_ = bobtype; }
-
             /// liefert den Bobtype des Items.
             BobType getBobType() const { return bobtype_; }
 

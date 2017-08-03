@@ -36,7 +36,7 @@ struct BlockHeader{ //-V802
 
 libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
 {
-    setBobType(BOBTYPE_MAP);
+    bobtype_ = BOBTYPE_MAP;
 }
 
 libsiedler2::ArchivItem_Map::~ArchivItem_Map()

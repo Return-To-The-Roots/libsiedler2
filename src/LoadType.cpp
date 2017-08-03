@@ -155,9 +155,6 @@ int libsiedler2::loader::LoadType(BobType bobtype, std::istream& file, const Arc
                 item = NULL;
                 return ErrorCode::WRONG_FORMAT;
         }
-
-        if(item != NULL)
-            item->setBobType(bobtype);
     }catch(std::exception& e){
         // Mostly error on reading (e.g. unexpected end of file)
         std::cerr << "Error while reading: " << e.what() << std::endl;

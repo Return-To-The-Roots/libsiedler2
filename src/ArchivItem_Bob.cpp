@@ -31,7 +31,7 @@
 
 libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), numGoodImgs(0)
 {
-    setBobType(BOBTYPE_BOB);
+    bobtype_ = BOBTYPE_BOB;
 }
 
 /**
@@ -43,7 +43,7 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), numG
  */
 libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), numGoodImgs(0)
 {
-    setBobType(BOBTYPE_BOB);
+    bobtype_ = BOBTYPE_BOB;
 
     load(file, palette);
 }

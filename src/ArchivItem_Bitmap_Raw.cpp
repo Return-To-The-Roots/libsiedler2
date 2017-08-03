@@ -36,12 +36,12 @@ namespace libsiedler2 { class ArchivItem_Palette; }
 
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw()
 {
-    setBobType(BOBTYPE_BITMAP_RAW);
+    bobtype_ = BOBTYPE_BITMAP_RAW;
 }
 
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item) : baseArchivItem_Bitmap(item)
 {
-    setBobType(BOBTYPE_BITMAP_RAW);
+    bobtype_ = BOBTYPE_BITMAP_RAW;
 }
 
 /**
@@ -53,7 +53,7 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArch
  */
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
-    setBobType(BOBTYPE_BITMAP_RAW);
+    bobtype_ = BOBTYPE_BITMAP_RAW;
     load(file, palette);
 }
 

@@ -36,12 +36,12 @@
 
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow()
 {
-    setBobType(BOBTYPE_BITMAP_SHADOW);
+    bobtype_ = BOBTYPE_BITMAP_SHADOW;
 }
 
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item) : baseArchivItem_Bitmap(item)
 {
-    setBobType(BOBTYPE_BITMAP_SHADOW);
+    bobtype_ = BOBTYPE_BITMAP_SHADOW;
 }
 
 /**
@@ -53,7 +53,7 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const ba
  */
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
 {
-    setBobType(BOBTYPE_BITMAP_SHADOW);
+    bobtype_ = BOBTYPE_BITMAP_SHADOW;
     load(file, palette);
 }
 

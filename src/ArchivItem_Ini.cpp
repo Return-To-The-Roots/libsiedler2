@@ -33,13 +33,13 @@
 
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(), ArchivInfo()
 {
-    setBobType(BOBTYPE_INI);
+    bobtype_ = BOBTYPE_INI;
 }
 
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(), ArchivInfo()
 {
     setName(name);
-    setBobType(BOBTYPE_INI);
+    bobtype_ = BOBTYPE_INI;
 }
 
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : ArchivItem( info ), ArchivInfo( info )

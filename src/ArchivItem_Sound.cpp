@@ -30,7 +30,7 @@
 
 libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound() : ArchivItem()
 {
-    setBobType(BOBTYPE_SOUND);
+    bobtype_ = BOBTYPE_SOUND;
     setType(SOUNDTYPE_NONE);
 }
 

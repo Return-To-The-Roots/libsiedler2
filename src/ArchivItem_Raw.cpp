@@ -30,13 +30,13 @@
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<uint8_t>& initialData)
     : ArchivItem(), data(initialData)
 {
-    setBobType(BOBTYPE_RAW);
+    bobtype_ = BOBTYPE_RAW;
 }
 
 libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
     : ArchivItem()
 {
-    setBobType(BOBTYPE_RAW);
+    bobtype_ = BOBTYPE_RAW;
 }
 
 libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()

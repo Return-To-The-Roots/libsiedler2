@@ -40,7 +40,7 @@
 
 libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem()
 {
-    setBobType(BOBTYPE_TEXT);
+    bobtype_ = BOBTYPE_TEXT;
 }
 
 libsiedler2::ArchivItem_Text::~ArchivItem_Text()
@@ -56,7 +56,7 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
  */
 libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, uint32_t length) : ArchivItem()
 {
-    setBobType(BOBTYPE_TEXT);
+    bobtype_ = BOBTYPE_TEXT;
 
     load(file, conversion, length);
 }

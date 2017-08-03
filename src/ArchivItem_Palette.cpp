@@ -37,7 +37,7 @@
 
 libsiedler2::ArchivItem_Palette::ArchivItem_Palette()
 {
-    setBobType(BOBTYPE_PALETTE);
+    bobtype_ = BOBTYPE_PALETTE;
 }
 
 libsiedler2::ArchivItem_Palette::~ArchivItem_Palette()

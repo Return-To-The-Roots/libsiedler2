@@ -35,7 +35,7 @@ libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
     : ArchivItem(),
       width(0), height(0), gfxset(0), player(0), isInvalid(0), hasExtraWord_(false)
 {
-    setBobType(BOBTYPE_MAP_HEADER);
+    bobtype_ = BOBTYPE_MAP_HEADER;
 }
 
 libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header()
