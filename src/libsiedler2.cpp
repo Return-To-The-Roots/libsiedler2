@@ -225,6 +225,8 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteINI(file, items);
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
             ret = loader::WriteSND(file, items);
+        else if(extension == "lbm")
+            ret = loader::WriteLBM(file, palette, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     }catch(std::exception& error)

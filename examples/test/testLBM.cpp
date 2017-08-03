@@ -22,6 +22,7 @@
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
+#include "../../src/ArchivItem_Bitmap.h"
 
 BOOST_FIXTURE_TEST_SUITE(LbmFiles, LoadPalette)
 
@@ -44,6 +45,26 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
     BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(0, 0), 124u);
     BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(123, 65), 77u);
     BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(255, 255), 240u);
+}
+
+BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
+{
+    std::string inPathBmp = "testFiles/pal.bmp";
+    std::string outPath = testOutputPath + "/out.lbm";
+    // Load a paletted bmp and write it in lbm format
+    libsiedler2::ArchivInfo arBmp;
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathBmp, arBmp, palette), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, arBmp, palette), 0);
+    // Load lbm and check if bitmaps are equal
+    libsiedler2::ArchivInfo arLbm;
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(outPath, arLbm, palette), 0);
+    const libsiedler2::ArchivItem_Bitmap* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arBmp[0]);
+    const libsiedler2::ArchivItem_Bitmap* bmpLbm = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arLbm[0]);
+    BOOST_REQUIRE(bmp);
+    BOOST_REQUIRE(bmpLbm);
+    BOOST_REQUIRE_EQUAL(bmp->getWidth(), bmpLbm->getWidth());
+    BOOST_REQUIRE_EQUAL(bmp->getHeight(), bmpLbm->getHeight());
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(bmp->getData(), bmpLbm->getData());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

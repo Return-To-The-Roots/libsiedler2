@@ -107,6 +107,11 @@ BOOST_AUTO_TEST_CASE(ReadWriteBmp)
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
+BOOST_AUTO_TEST_CASE(DefaultTextureFormat)
+{
+    std::vector<std::string> testFilenames;
+}
+
 BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
 {
     std::string bmpPath = "testFiles/pal.bmp";

@@ -84,7 +84,7 @@ namespace libsiedler2
 		int LoadLBM(const std::string& file, ArchivInfo& items);
 
 		/// schreibt ein ArchivInfo in eine LBM-File.
-		int WriteLBM(const std::string& file, const ArchivInfo& items);
+		int WriteLBM(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items);
 
 		/// lädt eine SWD/WSD-File in ein ArchivInfo.
 		int LoadMAP(const std::string& file, ArchivInfo& items, bool only_header = false);
