@@ -38,9 +38,6 @@ namespace libsiedler2
 
             ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& other): ArchivItem_BitmapBase(other), tex_pdata(other.tex_pdata) {}
 
-            /// Konstruktor von @p baseArchivItem_Bitmap_Player mit Laden der Bilddaten aus einer Datei.
-            ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette);
-
             ~ArchivItem_Bitmap_Player() override;
 
             /// lädt die Bilddaten aus einer Datei.
@@ -53,7 +50,7 @@ namespace libsiedler2
             int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
 
             /// alloziert Bildspeicher für die gewünschte Größe.
-            void tex_alloc(int16_t width, int16_t height, TexturFormat format) override;
+            void tex_alloc(int16_t width, int16_t height, TextureFormat format) override;
 
             /// räumt den Bildspeicher auf.
             void tex_clear() override;
@@ -64,7 +61,7 @@ namespace libsiedler2
             int print(uint8_t* buffer,
                       uint16_t buffer_width,
                       uint16_t buffer_height,
-                      TexturFormat buffer_format,
+                      TextureFormat buffer_format,
                       const ArchivItem_Palette* palette = NULL,
                       uint8_t color = 128,
                       uint16_t to_x = 0,
@@ -81,7 +78,7 @@ namespace libsiedler2
                        const uint8_t* buffer,
                        uint16_t buffer_width,
                        uint16_t buffer_height,
-                       TexturFormat buffer_format,
+                       TextureFormat buffer_format,
                        const ArchivItem_Palette* palette,
                        uint8_t color = 128);
 

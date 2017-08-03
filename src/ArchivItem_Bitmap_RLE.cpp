@@ -46,19 +46,6 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArch
     bobtype_ = BOBTYPE_BITMAP_RLE;
 }
 
-/**
- *  Konstruktor von @p baseArchivItem_Bitmap_Raw mit Laden der Bilddaten aus
- *  einer Datei.
- *
- *  @param[in] file    Dateihandle der Datei
- *  @param[in] palette Grundpalette
- */
-libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
-{
-    bobtype_ = BOBTYPE_BITMAP_RLE;
-    load(file, palette);
-}
-
 libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE()
 {
 }
@@ -100,7 +87,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
     fs >> data;
 
     // Speicher anlegen
-    tex_alloc(width, height, getTextureFormat());
+    tex_alloc(width, height, getGlobalTextureFormat());
 
     if(length != 0)
     {

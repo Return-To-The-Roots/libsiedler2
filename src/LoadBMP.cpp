@@ -154,9 +154,9 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, con
     if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
         (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal))
         return ec;
-    if(getTextureFormat() != bitmap->getFormat())
+    if(getGlobalTextureFormat() != bitmap->getFormat())
     {
-        if(int ec = bitmap->convertFormat(getTextureFormat(), palette))
+        if(int ec = bitmap->convertFormat(getGlobalTextureFormat(), palette))
             return ec;
     }
 

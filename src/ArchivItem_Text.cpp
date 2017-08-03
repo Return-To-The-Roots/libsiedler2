@@ -47,21 +47,6 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text()
 {}
 
 /**
- *  Konstruktor von @p ArchivItem_Text mit Laden des Textes aus
- *  einer Datei.
- *
- *  @param[in] file       Dateihandle aus denen die Farbwerte geladen werden sollen
- *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
- *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
- */
-libsiedler2::ArchivItem_Text::ArchivItem_Text(std::istream& file, bool conversion, uint32_t length) : ArchivItem()
-{
-    bobtype_ = BOBTYPE_TEXT;
-
-    load(file, conversion, length);
-}
-
-/**
  *  liest den Text aus einer Datei.
  *
  *  @param[in] file       Dateihandle aus denen der Text geladen werden sollen

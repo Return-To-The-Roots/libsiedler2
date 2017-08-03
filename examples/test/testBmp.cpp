@@ -125,9 +125,9 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
 
 struct FormatSetter
 {
-    const TexturFormat orig;
-    FormatSetter(TexturFormat newFmt): orig(setTextureFormat(newFmt)){}
-    ~FormatSetter(){ setTextureFormat(orig); }
+    const TextureFormat orig;
+    FormatSetter(TextureFormat newFmt): orig(setGlobalTextureFormat(newFmt)){}
+    ~FormatSetter(){ setGlobalTextureFormat(orig); }
 };
 
 BOOST_AUTO_TEST_CASE(DefaultTextureFormat)
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(DefaultTextureFormat)
     testFilenames.push_back("test.lbm");           // Paletted bitmap with palette included in lbm
 
     // Try both formats with all possible bmp types. BGRA first
-    TexturFormat curFmt = FORMAT_BGRA;
+    TextureFormat curFmt = FORMAT_BGRA;
     for(int i = 0; i < 2; i++)
     {
         FormatSetter fmtSetter(curFmt);

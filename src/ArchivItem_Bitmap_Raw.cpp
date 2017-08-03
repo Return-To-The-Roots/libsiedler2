@@ -45,19 +45,6 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArch
     bobtype_ = BOBTYPE_BITMAP_RAW;
 }
 
-/**
- *  Konstruktor von @p baseArchivItem_Bitmap_Raw mit Laden der Bilddaten aus
- *  einer Datei.
- *
- *  @param[in] file    Dateihandle der Datei
- *  @param[in] palette Grundpalette
- */
-libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
-{
-    bobtype_ = BOBTYPE_BITMAP_RAW;
-    load(file, palette);
-}
-
 libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw()
 {
 }
@@ -100,11 +87,11 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
         int ec = create(width, height, &data[0], width, height, FORMAT_PALETTED, palette);
         if(ec)
             return ec;
-        ec = convertFormat(getTextureFormat(), palette);
+        ec = convertFormat(getGlobalTextureFormat(), palette);
         if(ec)
             return ec;
     } else
-        tex_alloc(0, 0, getTextureFormat());
+        tex_alloc(0, 0, getGlobalTextureFormat());
 
     // Unbekannte Daten überspringen
     fs.ignore(8);

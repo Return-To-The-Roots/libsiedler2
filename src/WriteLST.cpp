@@ -32,7 +32,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
+int libsiedler2::loader::WriteLST(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -73,7 +73,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivItem_Pale
         fs << (int16_t)bobtype;
 
         // Daten von Item schreiben
-        if(int ec = WriteType(bobtype, fs.getStream(), palette, *item))
+        if(int ec = WriteType(bobtype, fs.getStream(), *item, palette))
             return ec;
     }
 

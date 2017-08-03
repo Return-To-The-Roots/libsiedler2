@@ -77,9 +77,9 @@ int main(int argc, char* argv[])
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-    TexturFormat format = FORMAT_BGRA;
+    TextureFormat format = FORMAT_BGRA;
 
-    setTextureFormat(format);
+    setGlobalTextureFormat(format);
 
     if(bfs::is_regular_file(inputPath))
     {

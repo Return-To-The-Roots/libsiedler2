@@ -36,9 +36,6 @@ namespace libsiedler2
 
             baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item);
 
-            /// Konstruktor von @p baseArchivItem_Bitmap_Shadow mit Laden der Bilddaten aus einer Datei.
-            baseArchivItem_Bitmap_Shadow(std::istream& file, const ArchivItem_Palette* palette);
-
             ~baseArchivItem_Bitmap_Shadow() override;
 
             /// lädt die Bilddaten aus einer Datei.

@@ -41,9 +41,9 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& file, const ArchivItem_Palette* palette, const ArchivItem& item)
+int libsiedler2::loader::WriteType(BobType bobtype, std::ostream&lst, const ArchivItem& item, const ArchivItem_Palette* palette)
 {
-    if(!file)
+    if(!lst)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     try{
@@ -52,10 +52,10 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& file, const Ar
             case BOBTYPE_SOUND: // WAVs, MIDIs
             {
                 const baseArchivItem_Sound& i = dynamic_cast<const baseArchivItem_Sound&>(item);
-                libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
+                libendian::EndianOStreamAdapter<false, std::ostream&> fs(lst);
                 const long sizePos = fs.getPosition();
                 fs << uint32_t(0);
-                if(int ec = i.write(file))
+                if(int ec = i.write(lst))
                     return ec;
                 const long curPos = fs.getPosition();
                 fs.setPosition(sizePos);
@@ -66,56 +66,56 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& file, const Ar
             {
                 const baseArchivItem_Bitmap_RLE& i = dynamic_cast<const baseArchivItem_Bitmap_RLE&>(item);
 
-                if(int ec = i.write(file, palette))
+                if(int ec = i.write(lst, palette))
                     return ec;
             } break;
             case BOBTYPE_FONT: // Font
             {
                 const ArchivItem_Font& i = dynamic_cast<const ArchivItem_Font&>(item);
 
-                if(int ec = i.write(file, palette))
+                if(int ec = i.write(lst, palette))
                     return ec;
             } break;
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
             {
                 const ArchivItem_Bitmap_Player& i = dynamic_cast<const ArchivItem_Bitmap_Player&>(item);
 
-                if(int ec = i.write(file, palette))
+                if(int ec = i.write(lst, palette))
                     return ec;
             } break;
             case BOBTYPE_PALETTE: // Palette
             {
                 const ArchivItem_Palette& i = dynamic_cast<const ArchivItem_Palette&>(item);
 
-                if(int ec = i.write(file))
+                if(int ec = i.write(lst))
                     return ec;
             } break;
             case BOBTYPE_BITMAP_SHADOW: // Schatten
             {
                 const baseArchivItem_Bitmap_Shadow& i = dynamic_cast<const baseArchivItem_Bitmap_Shadow&>(item);
 
-                if(int ec = i.write(file, palette))
+                if(int ec = i.write(lst, palette))
                     return ec;
             } break;
             case BOBTYPE_BOB: // Bobfile
             {
                 const ArchivItem_Bob& i = dynamic_cast<const ArchivItem_Bob&>(item);
 
-                if(int ec = i.write(file, palette))
+                if(int ec = i.write(lst, palette))
                     return ec;
             } break;
             case BOBTYPE_MAP: // Mapfile
             {
                 const ArchivItem_Map& i = dynamic_cast<const ArchivItem_Map&>(item);
 
-                if(int ec = i.write(file))
+                if(int ec = i.write(lst))
                     return ec;
             } break;
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
                 const baseArchivItem_Bitmap_Raw& i = dynamic_cast<const baseArchivItem_Bitmap_Raw&>(item);
 
-                if(int ec = i.write(file, palette))
+                if(int ec = i.write(lst, palette))
                     return ec;
             } break;
             default:

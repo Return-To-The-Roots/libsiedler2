@@ -80,7 +80,7 @@ namespace libsiedler2
         void setNy(int16_t ny);
 
         /// alloziert Bildspeicher für die gewünschte Größe.
-        virtual void tex_alloc(int16_t width, int16_t height, TexturFormat format);
+        virtual void tex_alloc(int16_t width, int16_t height, TextureFormat format);
 
         /// räumt den Bildspeicher auf.
         virtual void tex_clear();
@@ -94,14 +94,14 @@ namespace libsiedler2
         /// Remove the currently used palette
         void removePalette();
 
-        TexturFormat getFormat() const { return format_; }
+        TextureFormat getFormat() const { return format_; }
         /// Convert the bitmap to the new format using the internal palette or the given palette if no internal palette found
-        virtual int convertFormat(TexturFormat newFormat, const ArchivItem_Palette* palette = NULL);
+        virtual int convertFormat(TextureFormat newFormat, const ArchivItem_Palette* palette = NULL);
 
         virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
         /// Return the bytes per pixel for a given format
-        static uint32_t getBBP(TexturFormat format);
+        static uint32_t getBBP(TextureFormat format);
         uint32_t getBBP() const { return getBBP(getFormat()); }
     protected:
         std::vector<uint8_t>& getData() { return data_; }
@@ -115,7 +115,7 @@ namespace libsiedler2
         std::vector<uint8_t> data_;    /// Die Texturdaten.
 
         const ArchivItem_Palette* palette_; /// Die Palette.
-        TexturFormat format_; /// Das Texturformat.
+        TextureFormat format_; /// Das Texturformat.
 
         /// Return the pixel at the given position assuming the bitmap is paletted
         uint8_t getPalettedPixel(uint16_t x, uint16_t y) const;
@@ -124,7 +124,7 @@ namespace libsiedler2
     };
 
     // Define inline in header to allow optimizations
-    inline uint32_t ArchivItem_BitmapBase::getBBP(TexturFormat format)
+    inline uint32_t ArchivItem_BitmapBase::getBBP(TextureFormat format)
     {
         return (format == FORMAT_PALETTED) ? 1 : 4;
     }

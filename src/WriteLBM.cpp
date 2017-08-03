@@ -25,7 +25,7 @@
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 
-int libsiedler2::loader::WriteLBM(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
+int libsiedler2::loader::WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;

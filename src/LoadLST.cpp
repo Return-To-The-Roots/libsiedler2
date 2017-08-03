@@ -31,7 +31,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
+int libsiedler2::loader::LoadLST(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))
@@ -84,7 +84,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, const ArchivItem_Palet
 
         // Daten von Item auswerten
         ArchivItem* item;
-        if(int ec = LoadType(bobtype, lst.getStream(), palette, item))
+        if(int ec = LoadType(bobtype, lst.getStream(), item, palette))
             return ec;
         items.push(item);
     }

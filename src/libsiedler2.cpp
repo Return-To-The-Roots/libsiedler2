@@ -44,7 +44,7 @@ namespace libsiedler2{
      *
      *  @ingroup textureformat
      */
-    static TexturFormat texturformat;
+    static TextureFormat texturformat;
 
     /**
      *  Der gesetzte Item-Allokator.
@@ -59,7 +59,7 @@ namespace {
         {
             assert(libsiedler2::allocator == NULL);
             libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
-            libsiedler2::setTextureFormat(libsiedler2::FORMAT_BGRA);
+            libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
         }
         ~Initializer()
         {
@@ -85,10 +85,10 @@ namespace libsiedler2{
  *
  *  @return liefert das vorherige Texturausgabeformat zurück
  */
-TexturFormat setTextureFormat(TexturFormat format)
+TextureFormat setGlobalTextureFormat(TextureFormat format)
 {
     // altes Texturformat sichern
-    TexturFormat old = texturformat;
+    TextureFormat old = texturformat;
 
     // Neues setzen
     texturformat = format;
@@ -102,7 +102,7 @@ TexturFormat setTextureFormat(TexturFormat format)
  *
  *  @return liefert das Texturausgabeformat zurück
  */
-TexturFormat getTextureFormat()
+TextureFormat getGlobalTextureFormat()
 {
     // Aktuelles zurückliefern
     return texturformat;
@@ -156,16 +156,16 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
         else if(extension == "bmp")
             ret = loader::LoadBMP(file, items, palette);
         else if(extension == "bob")
-            ret = loader::LoadBOB(file, palette, items);
+            ret = loader::LoadBOB(file, items, palette);
         else if(extension == "dat" || extension == "idx")
         {
-            ret = loader::LoadDATIDX(file, palette, items);
+            ret = loader::LoadDATIDX(file, items, palette);
             if(ret && extension == "dat")
                 ret = loader::LoadSND(file, items);
         } else if(extension == "lbm")
             ret = loader::LoadLBM(file, items);
         else if(extension == "lst")
-            ret = loader::LoadLST(file, palette, items);
+            ret = loader::LoadLST(file, items, palette);
         else if(extension == "swd" || extension == "wld")
             ret = loader::LoadMAP(file, items);
         else if(extension == "ger" || extension == "eng")
@@ -214,9 +214,9 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
         else if(extension == "bbm")
             ret = loader::WriteBBM(file, items);
         else if(extension == "bmp")
-            ret = loader::WriteBMP(file, palette, items);
+            ret = loader::WriteBMP(file, items, palette);
         else if(extension == "lst")
-            ret = loader::WriteLST(file, palette, items);
+            ret = loader::WriteLST(file, items, palette);
         else if(extension == "swd" || extension == "wld")
             ret = loader::WriteMAP(file, items);
         else if(extension == "ger" || extension == "eng")
@@ -226,7 +226,7 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
             ret = loader::WriteSND(file, items);
         else if(extension == "lbm")
-            ret = loader::WriteLBM(file, palette, items);
+            ret = loader::WriteLBM(file, items, palette);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     }catch(std::exception& error)

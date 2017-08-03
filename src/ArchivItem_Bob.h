@@ -35,9 +35,6 @@ namespace libsiedler2
         public:
             ArchivItem_Bob();
 
-            /// Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten.
-            ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette);
-
             ~ArchivItem_Bob() override;
 
             /// lädt die Bobdaten aus einer Datei.

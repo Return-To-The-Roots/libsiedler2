@@ -40,7 +40,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items)
+int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette *palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -97,7 +97,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivItem_Pale
     }
 
     std::vector<uint8_t> buffer(bmih.width * bmih.height * (palette ? 1 : 4), palette ? TRANSPARENT_INDEX : 0);
-    TexturFormat bufFmt = palette ? FORMAT_PALETTED : FORMAT_BGRA;
+    TextureFormat bufFmt = palette ? FORMAT_PALETTED : FORMAT_BGRA;
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {

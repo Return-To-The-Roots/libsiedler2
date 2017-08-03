@@ -34,20 +34,6 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), numG
     bobtype_ = BOBTYPE_BOB;
 }
 
-/**
- *  Konstruktor von @p ArchivItem_Bob mit Laden der Bob-Daten aus
- *  einer Datei.
- *
- *  @param[in] file    Dateihandle aus denen die Bob-Daten geladen werden sollen
- *  @param[in] palette Grundpalette
- */
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem(), ArchivInfo(), numGoodImgs(0)
-{
-    bobtype_ = BOBTYPE_BOB;
-
-    load(file, palette);
-}
-
 libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
 {}
 

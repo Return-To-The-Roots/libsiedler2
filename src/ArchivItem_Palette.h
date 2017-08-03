@@ -39,7 +39,7 @@ namespace libsiedler2
         public:
             ArchivItem_Palette();
 
-            ~ArchivItem_Palette();
+            ~ArchivItem_Palette() override;
 
             /// liest die Farbwerte aus einer Datei.
             int load(std::istream& file, bool skip = true);

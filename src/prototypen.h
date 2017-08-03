@@ -33,16 +33,16 @@ namespace libsiedler2
 	namespace loader
 	{
 		/// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-		int LoadType(BobType bobtype, std::istream&lst, const ArchivItem_Palette* palette, ArchivItem *&item);
+		int LoadType(BobType bobtype, std::istream&lst, ArchivItem *&item, const ArchivItem_Palette* palette);
 
 		/// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-		int WriteType(BobType bobtype, std::ostream&lst, const ArchivItem_Palette* palette, const ArchivItem& item);
+		int WriteType(BobType bobtype, std::ostream&lst, const ArchivItem& item, const ArchivItem_Palette* palette);
 
 		/// lädt eine LST-File in ein ArchivInfo.
-		int LoadLST(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items);
+		int LoadLST(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
 
 		/// schreibt ein ArchivInfo eine LST-File.
-		int WriteLST(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items);
+		int WriteLST(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
 
 		/// lädt eine BBM-File in ein ArchivInfo.
 		int LoadBBM(const std::string& file, ArchivInfo& items);
@@ -57,16 +57,13 @@ namespace libsiedler2
 		int WriteACT(const std::string& file, const ArchivInfo& items);
 
 		/// lädt eine DAT/IDX-File in ein ArchivInfo.
-		int LoadDATIDX(const std::string& file, const ArchivItem_Palette *palette, ArchivInfo& items);
-
-		/// schreibt ein ArchivInfo in eine DAT/IDX-File.
-		int WriteDATIDX(const std::string& file, const ArchivItem_Palette *palette, const ArchivInfo& items);
+		int LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette *palette);
 
 		/// lädt eine BMP-File in ein ArchivInfo.
 		int LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette = NULL);
 
 		/// schreibt ein ArchivInfo in eine BMP-File.
-		int WriteBMP(const std::string& file, const ArchivItem_Palette *palette, const ArchivInfo& items);
+		int WriteBMP(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette *palette);
 
 		/// lädt eine GER/ENG-File in ein ArchivInfo.
 		int LoadTXT(const std::string& file, ArchivInfo& items, bool conversion = true);
@@ -84,7 +81,7 @@ namespace libsiedler2
 		int LoadLBM(const std::string& file, ArchivInfo& items);
 
 		/// schreibt ein ArchivInfo in eine LBM-File.
-		int WriteLBM(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items);
+		int WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
 
 		/// lädt eine SWD/WSD-File in ein ArchivInfo.
 		int LoadMAP(const std::string& file, ArchivInfo& items, bool only_header = false);
@@ -99,10 +96,7 @@ namespace libsiedler2
 #		define WriteWSD WriteMAP
 
 		/// lädt eine BOB-File in ein ArchivInfo.
-		int LoadBOB(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items);
-
-		/// schreibt ein ArchivInfo in eine BOB-File.
-		int WriteBOB(const std::string& file, const ArchivItem_Palette* palette, const ArchivInfo& items);
+		int LoadBOB(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
 
 		int LoadSND(const std::string& file, ArchivInfo& items);
 

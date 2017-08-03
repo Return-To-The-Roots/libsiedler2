@@ -33,7 +33,7 @@ namespace libsiedler2{
  */
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(): ArchivItem(), nx_(0), ny_(0), width_(0), height_(0),
-    palette_(NULL), format_(getTextureFormat())
+    palette_(NULL), format_(getGlobalTextureFormat())
 {}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem( item )
@@ -167,7 +167,7 @@ ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
  */
-void ArchivItem_BitmapBase::tex_alloc(int16_t width, int16_t height, TexturFormat format)
+void ArchivItem_BitmapBase::tex_alloc(int16_t width, int16_t height, TextureFormat format)
 {
     tex_clear();
     // Consistency: width == 0 <=> height == 0
@@ -235,7 +235,7 @@ void ArchivItem_BitmapBase::setNy(int16_t ny)
     this->ny_ = ny;
 }
 
-int ArchivItem_BitmapBase::convertFormat(TexturFormat newFormat, const ArchivItem_Palette* palette)
+int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat, const ArchivItem_Palette* palette)
 {
     // Nothing to do
     if(newFormat == format_)

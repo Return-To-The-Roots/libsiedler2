@@ -36,9 +36,6 @@ namespace libsiedler2
 
             baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item);
 
-            /// Konstruktor von @p baseArchivItem_Bitmap_RLE mit Laden der Bilddaten aus einer Datei.
-            baseArchivItem_Bitmap_RLE(std::istream& file, const ArchivItem_Palette* palette);
-
             ~baseArchivItem_Bitmap_RLE() override;
 
             /// lädt die Bilddaten aus einer Datei.

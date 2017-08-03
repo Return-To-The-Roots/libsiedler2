@@ -23,7 +23,7 @@
 namespace libsiedler2
 {
     /** Supported texture formats */
-    enum TexturFormat
+    enum TextureFormat
     {
         FORMAT_PALETTED = 1,
         FORMAT_BGRA = 4

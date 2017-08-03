@@ -52,20 +52,6 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
     bobtype_ = BOBTYPE_BITMAP_PLAYER;
 }
 
-/**
- *  Konstruktor von @p ArchivItem_Bitmap_Player mit Laden der Bilddaten aus
- *  einer Datei.
- *
- *  @param[in] file    Dateihandle der Datei
- *  @param[in] palette Grundpalette
- */
-libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(std::istream& file, const ArchivItem_Palette* palette) : ArchivItem_BitmapBase()
-{
-    bobtype_ = BOBTYPE_BITMAP_PLAYER;
-
-    load(file, palette);
-}
-
 libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player()
 {}
 
@@ -139,7 +125,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
 int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
 {
     // Speicher anlegen
-    tex_alloc(width, height, getTextureFormat());
+    tex_alloc(width, height, getGlobalTextureFormat());
     if(palette)
         setPalette(*palette);
 
@@ -302,7 +288,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
  */
-void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc(int16_t width, int16_t height, TexturFormat format)
+void libsiedler2::ArchivItem_Bitmap_Player::tex_alloc(int16_t width, int16_t height, TextureFormat format)
 {
     ArchivItem_BitmapBase::tex_alloc(width, height, format);
 
@@ -344,7 +330,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
         const uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
-        TexturFormat buffer_format,
+        TextureFormat buffer_format,
         const ArchivItem_Palette* palette,
         uint8_t color)
 {
@@ -432,7 +418,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width,
 int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
         uint16_t buffer_width,
         uint16_t buffer_height,
-        TexturFormat buffer_format,
+        TextureFormat buffer_format,
         const ArchivItem_Palette* palette,
         uint8_t color,
         uint16_t to_x,

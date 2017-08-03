@@ -45,19 +45,6 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const ba
     bobtype_ = BOBTYPE_BITMAP_SHADOW;
 }
 
-/**
- *  Konstruktor von @p baseArchivItem_Bitmap_Raw mit Laden der Bilddaten aus
- *  einer Datei.
- *
- *  @param[in] file    Dateihandle der Datei
- *  @param[in] palette Grundpalette
- */
-libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(std::istream& file, const ArchivItem_Palette* palette) : baseArchivItem_Bitmap()
-{
-    bobtype_ = BOBTYPE_BITMAP_SHADOW;
-    load(file, palette);
-}
-
 libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow()
 {
 }
@@ -136,7 +123,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
         int ec = create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette);
         if(ec)
             return ec;
-        ec = convertFormat(getTextureFormat(), palette);
+        ec = convertFormat(getGlobalTextureFormat(), palette);
         if(ec)
             return ec;
     }

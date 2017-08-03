@@ -34,7 +34,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadBOB(const std::string& file, const ArchivItem_Palette* palette, ArchivInfo& items)
+int libsiedler2::loader::LoadBOB(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette)
 {
     if(palette == NULL)
         return ErrorCode::PALETTE_MISSING;

@@ -38,7 +38,7 @@ namespace libsiedler2
             int print(uint8_t* buffer,
                       uint16_t buffer_width,
                       uint16_t buffer_height,
-                      TexturFormat buffer_format,
+                      TextureFormat buffer_format,
                       const ArchivItem_Palette* palette = NULL,
                       uint16_t to_x = 0,
                       uint16_t to_y = 0,
@@ -53,7 +53,7 @@ namespace libsiedler2
                        const uint8_t* buffer,
                        uint16_t buffer_width,
                        uint16_t buffer_height,
-                       TexturFormat buffer_format,
+                       TextureFormat buffer_format,
                        const ArchivItem_Palette* palette = NULL);
 
     };

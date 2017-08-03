@@ -35,9 +35,9 @@ int main(int argc, char* argv[])
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
 
-    TexturFormat format = FORMAT_PALETTED;
+    TextureFormat format = FORMAT_PALETTED;
 
-    setTextureFormat(format);
+    setGlobalTextureFormat(format);
 
     Load("DATA/RESOURCE.DAT", lst, palette);
 
