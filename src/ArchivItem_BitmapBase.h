@@ -41,8 +41,6 @@ namespace libsiedler2
         ArchivItem_BitmapBase(const ArchivItem_BitmapBase&);
         ~ArchivItem_BitmapBase() override;
 
-        ArchivItem_BitmapBase& operator=(const ArchivItem_BitmapBase& item);
-
         /// setzt einen Pixel auf einen bestimmten Wert.
         void setPixel(uint16_t x, uint16_t y, uint8_t colorIdx);
         void setPixel(uint16_t x, uint16_t y, const ColorARGB clr);

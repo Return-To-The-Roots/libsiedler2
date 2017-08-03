@@ -20,6 +20,7 @@
 #pragma once
 
 #include "enumTypes.h"
+#include <boost/config.hpp>
 #include <string>
 
 namespace libsiedler2
@@ -44,6 +45,7 @@ namespace libsiedler2
         protected:
             BobType bobtype_; /// Bobtype des Elements.
             std::string name_; /// Name des Elements.
+            BOOST_DELETED_FUNCTION(ArchivItem& operator=(const ArchivItem&));
     };
 }
 

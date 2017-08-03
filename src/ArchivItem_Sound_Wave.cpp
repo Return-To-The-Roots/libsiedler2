@@ -31,7 +31,7 @@
 
 libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave() : baseArchivItem_Sound()
 {
-    setType(SOUNDTYPE_WAVE);
+    soundType_ = SOUNDTYPE_WAVE;
 }
 
 libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()

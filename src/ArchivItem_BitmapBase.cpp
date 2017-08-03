@@ -56,29 +56,6 @@ ArchivItem_BitmapBase::~ArchivItem_BitmapBase()
     palette_ = NULL;
 }
 
-ArchivItem_BitmapBase& ArchivItem_BitmapBase::operator=(const ArchivItem_BitmapBase& item)
-{
-    if(this == &item)
-        return *this;
-
-    ArchivItem::operator=(item);
-
-    nx_ = item.nx_;
-    ny_ = item.ny_;
-
-    width_ = item.width_;
-    height_ = item.height_;
-
-    data_ = item.data_;
-
-    palette_ = NULL;
-    if(item.palette_)
-        setPalette(*item.palette_);
-    format_ = item.format_;
-
-    return *this;
-}
-
 /**
  *  setzt einen Pixel auf einen bestimmten Wert.
  *

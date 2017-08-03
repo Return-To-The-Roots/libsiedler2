@@ -36,8 +36,6 @@ namespace libsiedler2
 
             ~baseArchivItem_Sound_Midi() override;
 
-            baseArchivItem_Sound_Midi& operator=(const baseArchivItem_Sound_Midi& item);
-
             int load(std::istream& file, uint32_t length) override;
             int write(std::ostream& file) const override;
 

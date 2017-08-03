@@ -29,7 +29,7 @@
 
 libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other() : baseArchivItem_Sound()
 {
-    setType(SOUNDTYPE_OTHER);
+    soundType_ = SOUNDTYPE_OTHER;
 }
 
 libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()

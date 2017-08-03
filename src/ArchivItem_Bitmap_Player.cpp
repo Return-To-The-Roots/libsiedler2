@@ -69,16 +69,6 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player(std::istream& fi
 libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player()
 {}
 
-libsiedler2::ArchivItem_Bitmap_Player& libsiedler2::ArchivItem_Bitmap_Player::operator=(const ArchivItem_Bitmap_Player& other)
- {
-     if(&other == this)
-         return *this;
-
-     ArchivItem_BitmapBase::operator=(other);
-     tex_pdata = other.tex_pdata;
-     return *this;
- }
-
 /**
  *  lädt die Bilddaten aus einer Datei.
  *

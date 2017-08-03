@@ -43,8 +43,6 @@ namespace libsiedler2
 
             ~ArchivItem_Bitmap_Player() override;
 
-            ArchivItem_Bitmap_Player& operator=(const ArchivItem_Bitmap_Player& other);
-
             /// lädt die Bilddaten aus einer Datei.
             int load(std::istream& file, const ArchivItem_Palette* palette) override;
 

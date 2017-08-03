@@ -34,7 +34,7 @@ namespace libsiedler2{
 
 baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound(), numTracks(0), ppqs(0)
 {
-    setType(SOUNDTYPE_XMIDI);
+    soundType_ = SOUNDTYPE_XMIDI;
 }
 
 baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound( item )
@@ -47,18 +47,6 @@ baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Soun
 
 baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi()
 {
-}
-
-baseArchivItem_Sound_XMidi& baseArchivItem_Sound_XMidi::operator=(const baseArchivItem_Sound_XMidi& item)
-{
-    if(this == &item)
-        return *this;
-    baseArchivItem_Sound::operator=(item);
-    numTracks = item.numTracks;
-    ppqs = item.ppqs;
-    tracklist = item.tracklist;
-    midiTracklist = item.midiTracklist;
-    return *this;
 }
 
 int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)

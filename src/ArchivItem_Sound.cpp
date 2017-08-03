@@ -28,24 +28,13 @@
  *  Basisklasse für Sounditems.
  */
 
-libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound() : ArchivItem()
+libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound() : ArchivItem(), soundType_(SOUNDTYPE_NONE)
 {
     bobtype_ = BOBTYPE_SOUND;
-    setType(SOUNDTYPE_NONE);
 }
 
 libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
 {
-}
-
-/**
- *  setzt den Typ des Sounds.
- *
- *  @param[in] type Der Typ der gesetzt werden soll
- */
-void libsiedler2::baseArchivItem_Sound::setType(SoundType type)
-{
-    this->type_ = type;
 }
 
 /**
@@ -55,7 +44,7 @@ void libsiedler2::baseArchivItem_Sound::setType(SoundType type)
  */
 libsiedler2::SoundType libsiedler2::baseArchivItem_Sound::getType() const
 {
-    return type_;
+    return soundType_;
 }
 
 libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubType(std::istream& file)
@@ -89,8 +78,7 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         // midi
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_MIDI));
     }
-    else if(isChunk(header, "OggS") || isChunk(header, "ID3") ||
-        (static_cast<int8_t>(header[0]) == 0xFF && static_cast<int8_t>(header[1]) == 0xFB) )
+    else if(isChunk(header, "OggS") || isChunk(header, "ID3") || isChunk(header, "\xFF\xFB"))
     {
         // ogg, mp3 (id3tag, ohne),
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_OTHER));
