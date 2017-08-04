@@ -215,7 +215,7 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
-libsiedler2::MIDI_Track* baseArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
+const MIDI_Track* baseArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
 {
     const XMIDI_Track* origTrack = getTrack(trackIdx);
     if(!origTrack)

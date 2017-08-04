@@ -130,6 +130,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteXMid)
     libsiedler2::ArchivItem_Sound_XMidi* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
+    for(unsigned i = 0; i < snd->getTrackCount(); i++)
+        BOOST_REQUIRE(snd->getMidiTrack(i));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));
 }
