@@ -857,7 +857,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
         Rect vis2;
         // Test empty bmp
         BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
-        bmp.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
+        bmpRaw.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
         BOOST_REQUIRE_EQUAL(vis2, Rect(0, 0, 0, 0));
     }
 
@@ -888,7 +888,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
 
             BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
             Rect visRaw;
-            bmp.getVisibleArea(visRaw.x, visRaw.y, visRaw.w, visRaw.h);
+            bmpRaw.getVisibleArea(visRaw.x, visRaw.y, visRaw.w, visRaw.h);
             BOOST_REQUIRE_EQUAL(visRaw, rect);
 
             inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
@@ -903,9 +903,9 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
             bmp2.getVisibleArea(vis2.x, vis2.y, vis2.w, vis2.h);
             BOOST_REQUIRE_EQUAL(vis2, rect);
 
-            BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+            BOOST_REQUIRE_EQUAL(bmpRaw.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA), 0);
             Rect visRaw2;
-            bmp.getVisibleArea(visRaw2.x, visRaw2.y, visRaw2.w, visRaw2.h);
+            bmpRaw.getVisibleArea(visRaw2.x, visRaw2.y, visRaw2.w, visRaw2.h);
             BOOST_REQUIRE_EQUAL(visRaw2, rect);
             inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
         }
