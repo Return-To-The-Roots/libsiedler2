@@ -156,7 +156,9 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, con
         return ec;
     if(getGlobalTextureFormat() != bitmap->getFormat())
     {
-        if(int ec = bitmap->convertFormat(getGlobalTextureFormat(), palette))
+        if(!bitmap->getPalette() && palette)
+            bitmap->setPaletteCopy(*palette);
+        if(int ec = bitmap->convertFormat(getGlobalTextureFormat()))
             return ec;
     }
 

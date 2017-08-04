@@ -186,3 +186,13 @@ void libsiedler2::ArchivItem_Palette::copy(uint8_t* buffer, size_t bufSize, bool
         buffer[TRANSPARENT_INDEX * 4 + 3] = 0x00;
     }
 }
+
+bool libsiedler2::ArchivItem_Palette::isEqual(const ArchivItem_Palette& other) const
+{
+    for(int i = 0; i < 256; i++)
+    {
+        if(colors[i] != other.colors[i])
+            return false;
+    }
+    return true;
+}

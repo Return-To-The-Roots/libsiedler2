@@ -20,6 +20,7 @@
 #ifndef LoadPalette_h__
 #define LoadPalette_h__
 
+#include "ColorOutput.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
@@ -29,11 +30,23 @@ struct LoadPalette
 {
     libsiedler2::ArchivInfo paletteArchiv;
     libsiedler2::ArchivItem_Palette* palette;
+    libsiedler2::ArchivItem_Palette* modPal;
+    BOOST_STATIC_CONSTEXPR uint8_t modClr1 = 22;
+    BOOST_STATIC_CONSTEXPR uint8_t modClr2 = 44;
     LoadPalette()
     {
         BOOST_REQUIRE_EQUAL(libsiedler2::Load("pal5.act", paletteArchiv), 0);
         palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(0));
         BOOST_REQUIRE(palette);
+        modPal = new libsiedler2::ArchivItem_Palette(*palette);
+        BOOST_REQUIRE_NE(modPal->get(modClr1), modPal->get(modClr1 + 1));
+        BOOST_REQUIRE_NE(modPal->get(modClr2), modPal->get(modClr2 + 1));
+        libsiedler2::ColorRGB clr = modPal->get(modClr1);
+        modPal->set(modClr1, modPal->get(modClr1 + 1));
+        modPal->set(modClr1 + 1, clr);
+        clr = modPal->get(modClr2);
+        modPal->set(modClr2, modPal->get(modClr2 + 1));
+        modPal->set(modClr2 + 1, clr);
     }
 };
 

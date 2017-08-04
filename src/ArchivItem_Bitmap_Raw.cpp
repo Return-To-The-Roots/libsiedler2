@@ -62,8 +62,6 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
-        palette = getPalette();
-    if(palette == NULL)
         return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
@@ -87,11 +85,13 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
         int ec = create(width, height, &data[0], width, height, FORMAT_PALETTED, palette);
         if(ec)
             return ec;
-        ec = convertFormat(getGlobalTextureFormat(), palette);
+        ec = convertFormat(getGlobalTextureFormat());
         if(ec)
             return ec;
+        if(getFormat() == FORMAT_BGRA)
+            removePalette();
     } else
-        tex_alloc(0, 0, getGlobalTextureFormat());
+        init(0, 0, getGlobalTextureFormat(), getGlobalTextureFormat() == FORMAT_PALETTED ? palette : NULL);
 
     // Unbekannte Daten überspringen
     fs.ignore(8);
@@ -126,9 +126,8 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
             return ec;
     }
 
-    char unknown[2] = {0x01, 0x00};
     uint8_t unknown2[8] = { 0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00 };
-    fs << unknown << length << buffer << nx_ << ny_ << width << height << unknown2;
+    fs << uint16_t(1) << length << buffer << nx_ << ny_ << width << height << unknown2;
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

@@ -129,18 +129,11 @@ int baseArchivItem_Bitmap::create(uint16_t width,
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;
-    if(!palette)
-        palette = getPalette();
     if(!palette && buffer_format == FORMAT_PALETTED)
         return ErrorCode::PALETTE_MISSING;
 
     // Texturspeicher anfordern
-    tex_alloc(width, height, buffer_format);
-    // Save the used palette
-    if(palette)
-        setPalette(*palette);
-    else
-        setPalette(NULL);
+    init(width, height, buffer_format, palette);
 
     const unsigned bpp = getBBP();
     uint16_t copyWidth = std::min(buffer_width, width);

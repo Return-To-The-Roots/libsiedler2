@@ -63,7 +63,7 @@ namespace libsiedler2
 		int LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette = NULL);
 
 		/// schreibt ein ArchivInfo in eine BMP-File.
-		int WriteBMP(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette *palette);
+		int WriteBMP(const std::string& file, const ArchivInfo& items);
 
 		/// lädt eine GER/ENG-File in ein ArchivInfo.
 		int LoadTXT(const std::string& file, ArchivInfo& items, bool conversion = true);

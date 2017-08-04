@@ -79,24 +79,31 @@ namespace libsiedler2
         /// setzt den Y-Nullpunkt.
         void setNy(int16_t ny);
 
-        /// alloziert Bildspeicher für die gewünschte Größe.
-        virtual void tex_alloc(int16_t width, int16_t height, TextureFormat format);
+        /// Allocates memory for the given size and format and initializes it to transparent
+        /// using the currently set palette
+        virtual void init(int16_t width, int16_t height, TextureFormat format);
+        /// Allocates memory for the given size and format and initializes it to transparent
+        /// newPal will replace the existing palette by copy or remove it if it is NULL
+        /// newPal is required for paletted format
+        void init(int16_t width, int16_t height, TextureFormat format, const ArchivItem_Palette* newPal);
 
         /// räumt den Bildspeicher auf.
-        virtual void tex_clear();
+        virtual void clear();
 
         /// Return the currently used palette
         const ArchivItem_Palette* getPalette() const { return palette_; }
+        /// Check if the given palette can be used for this bitmap. That is all ARGB colors are in the palette
+        bool checkPalette(const ArchivItem_Palette& palette) const;
         /// Set the palette passing ownership
         void setPalette(ArchivItem_Palette* palette);
         /// Set the palette NOT passing ownership
-        void setPalette(const ArchivItem_Palette& palette);
+        void setPaletteCopy(const ArchivItem_Palette& palette);
         /// Remove the currently used palette
         void removePalette();
 
         TextureFormat getFormat() const { return format_; }
-        /// Convert the bitmap to the new format using the internal palette or the given palette if no internal palette found
-        virtual int convertFormat(TextureFormat newFormat, const ArchivItem_Palette* palette = NULL);
+        /// Convert the bitmap to the new format using the internal palette
+        virtual int convertFormat(TextureFormat newFormat);
 
         virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
 
@@ -104,6 +111,14 @@ namespace libsiedler2
         static uint32_t getBBP(TextureFormat format);
         uint32_t getBBP() const { return getBBP(getFormat()); }
     protected:
+        /// Return a pointer to the start of the given pixel
+        uint8_t* getPixelPtr(uint16_t x, uint16_t y);
+        const uint8_t* getPixelPtr(uint16_t x, uint16_t y) const;
+        /// Return the pixel at the given position assuming the bitmap is paletted
+        uint8_t getPalettedPixel(uint16_t x, uint16_t y) const;
+        /// Return the pixel at the given position assuming the bitmap is ARGB
+        ColorARGB getARGBPixel(uint16_t x, uint16_t y) const;
+
         std::vector<uint8_t>& getData() { return data_; }
 
         int16_t nx_;                   /// X-Nullpunkt.
@@ -116,11 +131,6 @@ namespace libsiedler2
 
         const ArchivItem_Palette* palette_; /// Die Palette.
         TextureFormat format_; /// Das Texturformat.
-
-        /// Return the pixel at the given position assuming the bitmap is paletted
-        uint8_t getPalettedPixel(uint16_t x, uint16_t y) const;
-        /// Return the pixel at the given position assuming the bitmap is ARGB
-        ColorARGB getARGBPixel(uint16_t x, uint16_t y) const;
     };
 
     // Define inline in header to allow optimizations

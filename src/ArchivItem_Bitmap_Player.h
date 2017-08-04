@@ -34,6 +34,8 @@ namespace libsiedler2
     class ArchivItem_Bitmap_Player : public virtual ArchivItem_BitmapBase
     {
         public:
+            BOOST_STATIC_CONSTEXPR uint8_t numPlayerClrs = 4;
+
             ArchivItem_Bitmap_Player();
 
             ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& other): ArchivItem_BitmapBase(other), tex_pdata(other.tex_pdata) {}
@@ -49,11 +51,12 @@ namespace libsiedler2
             /// schreibt die Bilddaten in eine Datei.
             int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
 
-            /// alloziert Bildspeicher für die gewünschte Größe.
-            void tex_alloc(int16_t width, int16_t height, TextureFormat format) override;
+            /// Creates a new texture and initializes it to transparent
+            void init(int16_t width, int16_t height, TextureFormat format) override;
+            using ArchivItem_BitmapBase::init;
 
             /// räumt den Bildspeicher auf.
-            void tex_clear() override;
+            void clear() override;
 
             void getVisibleArea(int& vx, int& vy, int& vw, int& vh) override;
 
@@ -63,7 +66,7 @@ namespace libsiedler2
                       uint16_t buffer_height,
                       TextureFormat buffer_format,
                       const ArchivItem_Palette* palette = NULL,
-                      uint8_t color = 128,
+                      uint8_t plClrStartIdx = 128,
                       uint16_t to_x = 0,
                       uint16_t to_y = 0,
                       uint16_t from_x = 0,
@@ -72,7 +75,8 @@ namespace libsiedler2
                       uint16_t from_h = 0,
                       bool only_player = false) const;
 
-            /// erzeugt ein Bitmap inkl. festgelegter Spielerfarbe aus einem Puffer.
+            /// Create a bitmap with player colors.
+            /// All colors with palette index in [plClrStartIdx, plClrStartIdx + numPlayerClrs) are considered to be player colors
             int create(uint16_t width,
                        uint16_t height,
                        const uint8_t* buffer,
@@ -80,7 +84,7 @@ namespace libsiedler2
                        uint16_t buffer_height,
                        TextureFormat buffer_format,
                        const ArchivItem_Palette* palette,
-                       uint8_t color = 128);
+                       uint8_t plClrStartIdx = 128);
 
         protected:
             PixelBufferPaletted tex_pdata; /// Die Spielerfarbedaten.

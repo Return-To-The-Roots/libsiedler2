@@ -70,6 +70,9 @@ namespace libsiedler2
             /// otherwise a true transparency (all 0) is written
             void copy(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency = false) const;
 
+            /// Return true iff the 2 palettes specify the same colors
+            bool isEqual(const ArchivItem_Palette& other) const;
+
         protected:
             boost::array<ColorRGB, 256> colors; //-V730_NOINIT
     };

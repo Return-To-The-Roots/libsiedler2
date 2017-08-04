@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePlayerBitmap)
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     ArchivInfo bmp;
-    BOOST_REQUIRE_EQUAL(Load(bmpPath, bmp, palette), 0);
+    BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRawBitmap)
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     ArchivInfo bmp;
-    BOOST_REQUIRE_EQUAL(Load(bmpPath, bmp, palette), 0);
+    BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     ArchivInfo bmp;
-    BOOST_REQUIRE_EQUAL(Load(bmpPath, bmp, palette), 0);
+    BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     ArchivInfo bmp;
-    BOOST_REQUIRE_EQUAL(Load(bmpPath, bmp, palette), 0);
+    BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteBmp)
     std::string bmpOutPath = testOutputPath + "/outLogo.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     ArchivInfo bmp;
-    BOOST_REQUIRE_EQUAL(Load(bmpPath, bmp), 0);
+    BOOST_REQUIRE(testLoad(0, bmpPath, bmp));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
     std::string bmpOutPath = testOutputPath + "/outPal.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     ArchivInfo archiv;
-    BOOST_REQUIRE_EQUAL(Load(bmpPath, archiv), 0);
+    BOOST_REQUIRE(testLoad(0, bmpPath, archiv));
     ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase *>(archiv[0]);
     BOOST_REQUIRE(bmp);
     BOOST_REQUIRE(bmp->getPalette());
@@ -130,39 +130,337 @@ struct FormatSetter
     ~FormatSetter(){ setGlobalTextureFormat(orig); }
 };
 
-BOOST_AUTO_TEST_CASE(DefaultTextureFormat)
+// Defines some bitmap files for testing and their properties
+struct TestBitmaps
 {
-    std::vector<std::string> testFilenames;
-    testFilenames.push_back("bmpPlayer.lst");      // Player bitmap
-    testFilenames.push_back("bmpRaw.lst");         // Raw bitmap in lst
-    testFilenames.push_back("bmpShadow.lst");      // Shadow bitmap
-    testFilenames.push_back("bmpRLE.lst");         // RLE bitmap
-    testFilenames.push_back("rawWithPalClrs.bmp"); // Raw bitmap
-    testFilenames.push_back("pal.bmp");            // Paletted raw bitmap
-    testFilenames.push_back("test.lbm");           // Paletted bitmap with palette included in lbm
+    struct Info
+    {
+        std::string filename;
+        bool isPaletted, containsPalette, supportsBoth;
+        Info(){}
+        Info(const std::string& filename, bool isPaletted, bool containsPalette, bool supportsBoth = false):
+            filename(filename), isPaletted(isPaletted), containsPalette(containsPalette), supportsBoth(supportsBoth){}
+    };
+    std::vector<Info> files;
+    TestBitmaps(){
+        files.push_back(Info("bmpPlayer.lst", true, false));             // Player bitmap
+        files.push_back(Info("bmpRaw.lst", true, false));                // Raw bitmap in lst
+        files.push_back(Info("bmpShadow.lst", true, false));             // Shadow bitmap
+        files.push_back(Info("bmpRLE.lst", true, false));                // RLE bitmap
+        files.push_back(Info("rawWithPalClrs.bmp", false, false, true)); // Raw bitmap
+        files.push_back(Info("pal.bmp", true, true, true));              // Paletted raw bitmap
+        files.push_back(Info("test.lbm", true, true));                   // Paletted bitmap with palette included in lbm
+    }
+
+};
+
+ArchivItem_BitmapBase* getFirstBitmap(ArchivInfo& archiv)
+{
+    for(unsigned j = 0; j < archiv.size(); j++)
+    {
+        ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase*>(archiv[j]);
+        if(bmp)
+            return bmp;
+    }
+    return NULL;
+}
+
+BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
+{
+    const TestBitmaps testFiles;
+    // Try both formats with all possible bmp types. BGRA first
+    TextureFormat curFmt = FORMAT_BGRA;
+    for(int i = 0; i < 2; i++)
+    {
+        FormatSetter fmtSetter(curFmt);
+        BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
+        {
+            ArchivInfo archiv;
+            int ec = Load("testFiles/" + testFile.filename, archiv, palette);
+            BOOST_REQUIRE_MESSAGE(ec == 0, "Error " << getErrorString(ec) << " loading " << testFile.filename);
+            const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
+            BOOST_REQUIRE(bmp);
+            BOOST_REQUIRE_EQUAL(bmp->getFormat(), curFmt);
+        }
+        curFmt = FORMAT_PALETTED;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
+{
+    const TestBitmaps testFiles;
+    ArchivItem_Palette emptyPal;
 
     // Try both formats with all possible bmp types. BGRA first
     TextureFormat curFmt = FORMAT_BGRA;
     for(int i = 0; i < 2; i++)
     {
         FormatSetter fmtSetter(curFmt);
-        BOOST_FOREACH(const std::string& filename, testFilenames)
+        BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
         {
             ArchivInfo archiv;
-            BOOST_REQUIRE_EQUAL(Load("testFiles/" + filename, archiv, palette), 0);
-            // Get the first bmp
-            const ArchivItem_BitmapBase* bmp = NULL;
-            for(unsigned j = 0; j < archiv.size(); j++)
+            if((curFmt == FORMAT_PALETTED && !testFile.containsPalette) ||
+                (curFmt == FORMAT_BGRA && testFile.isPaletted && !testFile.containsPalette))
             {
-                bmp = dynamic_cast<const ArchivItem_BitmapBase*>(archiv[j]);
-                if(bmp)
-                    break;
+                // Conversion required but no palette
+                BOOST_REQUIRE(testLoad(ErrorCode::PALETTE_MISSING, "testFiles/" + testFile.filename, archiv));
+            } else
+            {
+                // No conversion or use file palette
+                BOOST_REQUIRE(testLoad(0, "testFiles/" + testFile.filename, archiv));
+                // For paletted bitmaps we must have a palette, the others must not have one
+                if(curFmt == FORMAT_PALETTED || testFile.containsPalette)
+                    BOOST_REQUIRE_MESSAGE(getFirstBitmap(archiv)->getPalette(), "No palette found for " << testFile.filename << " fmt=" << curFmt);
+                else
+                    BOOST_REQUIRE_MESSAGE(!getFirstBitmap(archiv)->getPalette(), "Palette found for " << testFile.filename << " fmt=" << curFmt);
             }
-            BOOST_REQUIRE(bmp);
-            BOOST_REQUIRE_EQUAL(bmp->getFormat(), curFmt);
+            const ArchivItem_Palette* usedPalette;
+            // Use the empty pal to detect if it was used for conversion
+            if(curFmt == FORMAT_BGRA && testFile.containsPalette)
+                usedPalette = &emptyPal;
+            else
+                usedPalette = modPal; // Files are saved with palette, so use another one to detect difference
+            archiv.clear();
+            BOOST_REQUIRE(testLoad(0, "testFiles/" + testFile.filename, archiv, usedPalette));
+            const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
+            if(curFmt == FORMAT_PALETTED)
+            {
+                // Paletted formats must have a palette
+                BOOST_REQUIRE(bmp->getPalette());
+                // If the file contains a palette, it has to be used, otherwise the default shall be used
+                if(testFile.containsPalette)
+                    BOOST_REQUIRE(!usedPalette->isEqual(*bmp->getPalette()));
+                else
+                    BOOST_REQUIRE(usedPalette->isEqual(*bmp->getPalette()));
+            } else if(testFile.containsPalette)
+            {
+                // If the file contains a palette, it has to be used, otherwise no palette
+                BOOST_REQUIRE(bmp->getPalette());
+                BOOST_REQUIRE(!usedPalette->isEqual(*bmp->getPalette()));
+                // If the empty palette is used, we will only find transparent and black pixels. Check that this did not happen
+                bool clrFound = false;
+                for(unsigned y = 0; y < bmp->getHeight(); y++)
+                {
+                    for(unsigned x = 0; x < bmp->getWidth(); x++)
+                    {
+                        ColorARGB clr = bmp->getPixel(x, y);
+                        if(clr.getAlpha() != 0 && clr.getBlue() != 0)
+                        {
+                            clrFound = true;
+                            break;
+                        }
+                    }
+                }
+                BOOST_REQUIRE(clrFound);
+            } else
+                BOOST_REQUIRE_MESSAGE(!bmp->getPalette(), "Palette found for " << testFile.filename << " fmt=" << curFmt);
         }
         curFmt = FORMAT_PALETTED;
     }
+}
+
+BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
+{
+    const TestBitmaps testFiles;
+    ArchivItem_Palette emptyPal;
+
+    // Try both formats with all possible bmp types. BGRA first
+    TextureFormat curFmt = FORMAT_BGRA;
+    for(int i = 0; i < 2; i++)
+    {
+        FormatSetter fmtSetter(curFmt);
+        BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
+        {
+            ArchivInfo archiv;
+            std::string inFilepath = "testFiles/" + testFile.filename;
+            std::string outFilepathRef = testOutputPath + "/reference_" + testFile.filename;
+            std::string outFilepath = testOutputPath + "/" + testFile.filename;
+            BOOST_REQUIRE(testLoad(0, inFilepath, archiv, palette));
+            ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
+            // Not modified when writing with same palette
+            BOOST_REQUIRE(testWrite(0, outFilepathRef, archiv, palette));
+            if(testFile.supportsBoth && !testFile.isPaletted && curFmt == FORMAT_PALETTED)
+                BOOST_REQUIRE(!testFilesEqual(outFilepathRef, inFilepath)); // Stored as paletted
+            else
+                BOOST_REQUIRE(testFilesEqual(outFilepathRef, inFilepath));
+
+            // a) no palette
+            if(curFmt == FORMAT_BGRA)
+            {
+                bmp->removePalette();
+                // If conversion is required -> error
+                if(testFile.isPaletted && !testFile.supportsBoth)
+                    BOOST_REQUIRE(testWrite(ErrorCode::PALETTE_MISSING, outFilepath, archiv));
+                else
+                {
+                    BOOST_REQUIRE(testWrite(0, outFilepath, archiv));
+                    if(testFile.supportsBoth && testFile.isPaletted)
+                        BOOST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef)); // Stored as RGB
+                    else
+                        BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
+                }
+                BOOST_REQUIRE(testWrite(0, outFilepath, archiv, palette));
+                if(testFile.supportsBoth && testFile.isPaletted)
+                    BOOST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef)); // Still stored as RGB
+                else
+                    BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
+            }
+            // b) use bitmaps palette if none passed
+            bmp->setPaletteCopy(*palette);
+            BOOST_REQUIRE(testWrite(0, outFilepath, archiv));
+            if(testFile.supportsBoth && !testFile.isPaletted && curFmt != FORMAT_PALETTED)
+            {
+                // Non-paletted file is written as paletted because it now contains a palette
+                // If the format is paletted, then the reference is already paletted -> other branch
+                BOOST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef));
+                // Take the paletted as new reference
+                bfs::copy_file(outFilepath, outFilepathRef, bfs::copy_option::overwrite_if_exists);
+            }else
+                BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
+            // c) Passed palette is used unless file contains one (or may)
+            // So if it doesn't contain one we make the bitmaps palette invalid otherwise the argument palette is invalid
+            ArchivItem_Palette *bmpPal = modPal, *argPal = palette;
+            if(testFile.containsPalette || testFile.supportsBoth)
+                std::swap(bmpPal, argPal);
+            bmp->setPaletteCopy(*bmpPal);
+            BOOST_REQUIRE(testWrite(0, outFilepath, archiv, argPal));
+            BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
+        }
+        curFmt = FORMAT_PALETTED;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(PaletteAfterCreateBitmap)
+{
+    ArchivItem_Bitmap_Raw bmp;
+    ArchivItem_Bitmap_Player bmpPl;
+    unsigned w = 10, h = 14;
+    std::vector<uint8_t> inBuffer(w * h * 4);
+    // Paletted
+    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmp.getFormat(), FORMAT_PALETTED);
+    BOOST_REQUIRE(bmp.getPalette());
+    BOOST_REQUIRE(bmp.getPalette()->isEqual(*palette));
+    BOOST_REQUIRE_EQUAL(bmpPl.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.getFormat(), FORMAT_PALETTED);
+    BOOST_REQUIRE(bmpPl.getPalette());
+    BOOST_REQUIRE(bmpPl.getPalette()->isEqual(*palette));
+    // ARGB
+    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE_EQUAL(bmp.getFormat(), FORMAT_BGRA);
+    BOOST_REQUIRE(!bmp.getPalette());
+    BOOST_REQUIRE_EQUAL(bmpPl.create(w, h, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.getFormat(), FORMAT_BGRA);
+    BOOST_REQUIRE(!bmpPl.getPalette());
+}
+
+BOOST_AUTO_TEST_CASE(PaletteUsageForPrint)
+{
+    ArchivItem_Bitmap_Raw bmp;
+    ArchivItem_Bitmap_Player bmpPl;
+    unsigned w = 10, h = 14;
+    std::vector<uint8_t> inBuffer(w * h, modClr1);
+    std::vector<uint8_t> inBufferPl(w * h, modClr2);
+    // Swap colors to check palette usage
+    // Paletted
+    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.create(w, h, &inBufferPl[0], w, h, FORMAT_PALETTED, palette), 0);
+    // Can't remove palette
+    BOOST_REQUIRE_THROW(bmp.removePalette(), std::runtime_error);
+    BOOST_REQUIRE_THROW(bmp.setPalette(NULL), std::runtime_error);
+    // Set mod pal to detect its use:
+    bmp.setPaletteCopy(*modPal);
+    bmpPl.setPaletteCopy(*modPal);
+    // Paletted -> Paletted: No palette used, plain copy
+    std::vector<uint8_t> outBuffer(inBuffer.size(), 42);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferPl);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferPl);
+
+    // Paletted -> ARGB: Prefer contained
+    bmp.setPaletteCopy(*palette);
+    bmpPl.setPaletteCopy(*palette);
+    outBuffer.resize(inBuffer.size() * 4, 42);
+    std::vector<uint8_t> outBuffer2(outBuffer.size(), 42);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_PALETTED, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_PALETTED, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+
+    // ARGB
+    BOOST_REQUIRE_EQUAL(bmp.convertFormat(FORMAT_BGRA), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.convertFormat(FORMAT_BGRA), 0);
+    bmp.removePalette();
+    bmpPl.removePalette();
+
+    // ARGB -> ARGB: Plain copy
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    // Same if palette is set
+    bmp.setPaletteCopy(*modPal);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    bmpPl.setPaletteCopy(*modPal);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+
+    // ARGB -> Palette: Prefer passed palette
+    outBuffer2.resize(inBuffer.size());
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_PALETTED, palette), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBuffer);
+    bmp.setPaletteCopy(*palette);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBuffer);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_PALETTED, palette), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBufferPl);
+    bmpPl.setPaletteCopy(*palette);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBufferPl);
+
+    // Error when no palette
+    bmp.removePalette();
+    bmpPl.removePalette();
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED), ErrorCode::PALETTE_MISSING);
+    BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED), ErrorCode::PALETTE_MISSING);
+}
+
+BOOST_AUTO_TEST_CASE(CheckPalette)
+{
+    ArchivItem_Bitmap_Raw bmp;
+    unsigned w = 10, h = 14;
+    std::vector<uint8_t> inBuffer(w * h, 22);
+    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmp.convertFormat(FORMAT_BGRA), 0);
+    ArchivItem_Palette wrongPal;
+    BOOST_REQUIRE(bmp.checkPalette(*palette));
+    BOOST_REQUIRE(!bmp.checkPalette(wrongPal));
+    // Let it find the color (only 1 used)
+    ArchivItem_Palette okPal(wrongPal);
+    okPal.set(22, palette->get(22));
+    BOOST_REQUIRE(bmp.checkPalette(okPal));
+    // All palettes are fine for transparent colors
+    bmp.init(w, h, FORMAT_BGRA);
+    BOOST_REQUIRE(bmp.checkPalette(*palette));
+    BOOST_REQUIRE(bmp.checkPalette(wrongPal));
+    // Colored pixel but alpha == 0 -> Still transparent
+    bmp.setPixel(0, 0, ColorARGB(0, 1, 2, 3));
+    BOOST_REQUIRE(bmp.checkPalette(*palette));
+    BOOST_REQUIRE(bmp.checkPalette(wrongPal));
+    // Colored pixel -> wrong
+    bmp.setPixel(0, 0, ColorARGB(1, 1, 2, 3));
+    BOOST_REQUIRE(!bmp.checkPalette(wrongPal));
 }
 
 BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
@@ -323,7 +621,7 @@ BOOST_AUTO_TEST_CASE(TransparentTex)
 
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
-    BOOST_REQUIRE_EQUAL(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE_EQUAL(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_BGRA, palette), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
 }
 
@@ -385,23 +683,23 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     // Now write to paletted buffer
     // Fail on NULL
     BOOST_REQUIRE_EQUAL(bmpPal.print(NULL, w, h, FORMAT_PALETTED, NULL, playerClrStart), ErrorCode::INVALID_BUFFER);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to RGBA buffer
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
 
     // Test partial write
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42u);
     std::fill(outBuffer.begin(), outBuffer.end(), 42u);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
     for(unsigned y = 0; y < h; y++)
     {
         for(unsigned x = 0; x < w; x++)
@@ -431,9 +729,9 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     BOOST_REQUIRE_EQUAL(bmp.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmp.getHeight(), bh);
 
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 }
 
@@ -510,26 +808,26 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     ArchivItem_Bitmap_Player bmp;
     BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
     // Write to paletted
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
     // Write to BGRA
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     // recolored paletted
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart2), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal2);
     // Same for BGRA
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart2), 0);
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer2);
 
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
     std::fill(outBuffer.begin(), outBuffer.end(), 42);
     // Player colors only
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, NULL, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
+    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);

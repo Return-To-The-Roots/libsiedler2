@@ -33,7 +33,7 @@ namespace libsiedler2{
  */
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(): ArchivItem(), nx_(0), ny_(0), width_(0), height_(0),
-    palette_(NULL), format_(getGlobalTextureFormat())
+    palette_(NULL), format_(FORMAT_BGRA)
 {}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem( item )
@@ -48,7 +48,7 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
 
     palette_ = NULL;
     if(item.palette_)
-        setPalette(*item.palette_);
+        setPaletteCopy(*item.palette_);
     format_ = item.format_;
 }
 
@@ -152,6 +152,16 @@ libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) c
         return getARGBPixel(x, y);
 }
 
+uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y)
+{
+    return &data_[(y * width_ + x) * getBBP()];
+}
+
+const boost::uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y) const
+{
+    return &data_[(y * width_ + x) * getBBP()];
+}
+
 uint8_t ArchivItem_BitmapBase::getPalettedPixel(uint16_t x, uint16_t y) const
 {
     assert(format_ == FORMAT_PALETTED);
@@ -164,31 +174,45 @@ ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
     return ColorARGB::fromBGRA(&data_[(y * width_ + x) * 4u]);
 }
 
-/**
- *  alloziert Bildspeicher für die gewünschte Größe.
- */
-void ArchivItem_BitmapBase::tex_alloc(int16_t width, int16_t height, TextureFormat format)
+void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat format)
 {
-    tex_clear();
+    clear();
     // Consistency: width == 0 <=> height == 0
     if(width == 0)
         height = 0;
     else if(height == 0)
         width = 0;
 
+    if(format == FORMAT_PALETTED && !palette_)
+        throw std::runtime_error("Palette is missing");
+
     width_ = width;
     height_ = height;
     format_ = format;
 
-    uint8_t clear = (getFormat() == FORMAT_PALETTED) ? TRANSPARENT_INDEX : 0;
+    uint8_t clear = (format == FORMAT_PALETTED) ? TRANSPARENT_INDEX : 0;
 
     data_.resize(width_ * height_ * getBBP(), clear);
+}
+
+void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat format, const ArchivItem_Palette* newPal)
+{
+    if(format == FORMAT_PALETTED && !newPal)
+        throw std::runtime_error("Palette is missing");
+    // Set new format to BGRA to allow removing of palette 
+    if(format == FORMAT_BGRA)
+        format_ = FORMAT_BGRA;
+    if(newPal)
+        setPaletteCopy(*newPal);
+    else
+        removePalette();
+    init(width, height, format);
 }
 
 /**
  *  räumt den Bildspeicher auf.
  */
-void ArchivItem_BitmapBase::tex_clear()
+void ArchivItem_BitmapBase::clear()
 {
     width_ = 0;
     height_ = 0;
@@ -235,14 +259,13 @@ void ArchivItem_BitmapBase::setNy(int16_t ny)
     this->ny_ = ny;
 }
 
-int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat, const ArchivItem_Palette* palette)
+int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
 {
     // Nothing to do
     if(newFormat == format_)
         return ErrorCode::NONE;
-    if(palette_)
-        palette = palette_;
-    if(!palette)
+
+    if(!palette_)
         return ErrorCode::PALETTE_MISSING;
     if(newFormat == FORMAT_BGRA)
     {
@@ -252,7 +275,7 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat, const ArchivIt
             for(unsigned x = 0; x < width_; x++)
             {
                 uint8_t clrIdx = getPalettedPixel(x, y);
-                newBuffer.set(x, y, clrIdx == TRANSPARENT_INDEX ? ColorARGB(0, 0, 0, 0) : ColorARGB(palette->get(clrIdx)));
+                newBuffer.set(x, y, clrIdx == TRANSPARENT_INDEX ? ColorARGB(0, 0, 0, 0) : ColorARGB(palette_->get(clrIdx)));
             }
         }
         data_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
@@ -264,7 +287,7 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat, const ArchivIt
             for(unsigned x = 0; x < width_; x++)
             {
                 ColorARGB clr = getARGBPixel(x, y);
-                newBuffer.set(x, y, clr.getAlpha() == 0 ? TRANSPARENT_INDEX : palette->lookup(clr));
+                newBuffer.set(x, y, clr.getAlpha() == 0 ? TRANSPARENT_INDEX : palette_->lookup(clr));
             }
         }
         data_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
@@ -373,6 +396,23 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
     vh = ly + 1 - vy;
 }
 
+bool ArchivItem_BitmapBase::checkPalette(const ArchivItem_Palette& palette) const
+{
+    if(format_ == FORMAT_PALETTED)
+        return true;
+    for(unsigned y = 0; y < height_; y++)
+    {
+        for(unsigned x = 0; x < width_; x++)
+        {
+            ColorARGB clr = getARGBPixel(x, y);
+            uint8_t dummyIdx;
+            if(clr.getAlpha() != 0 && !palette.lookup(clr, dummyIdx))
+                return false;
+        }
+    }
+    return true;
+}
+
 /**
  *  setzt die Grundpalette.
  *
@@ -389,9 +429,9 @@ void ArchivItem_BitmapBase::setPalette(ArchivItem_Palette* palette)
     palette_ = palette;
 }
 
-void ArchivItem_BitmapBase::setPalette(const ArchivItem_Palette& palette)
+void ArchivItem_BitmapBase::setPaletteCopy(const ArchivItem_Palette& palette)
 {
-    palette_ = dynamic_cast<ArchivItem_Palette*>(getAllocator().clone(palette));
+    setPalette(dynamic_cast<ArchivItem_Palette*>(getAllocator().clone(palette)));
 }
 
 void ArchivItem_BitmapBase::removePalette()

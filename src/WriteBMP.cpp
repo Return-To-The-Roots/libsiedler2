@@ -40,7 +40,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette *palette)
+int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& items)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -48,9 +48,6 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& ite
     const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items[0]);
     if(!bitmap)
         return ErrorCode::WRONG_ARCHIV;
-
-    if(!palette && bitmap->getFormat() == FORMAT_PALETTED)
-        palette = bitmap->getPalette();
 
     BmpFileHeader bmpHd;
     BitmapInfoHeader bmih;
@@ -65,6 +62,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& ite
     bmih.xppm = bmih.yppm = 2834;
     bmih.clrimp = 0;
 
+    const ArchivItem_Palette* palette = bitmap->getPalette();
     if(palette)
     {
         bmih.clrused = 256;
@@ -92,7 +90,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& ite
     if(bmih.clrused > 0)
     {
         uint8_t colors[256][4];
-        palette->copy(&colors[0][0], sizeof(colors), true);
+        bitmap->getPalette()->copy(&colors[0][0], sizeof(colors), true);
         fs.write(colors[0], bmih.clrused * 4);
     }
 

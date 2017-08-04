@@ -16,17 +16,42 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "cmpFiles.h"
+#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/src/ErrorCodes.h"
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 namespace bfs = boost::filesystem;
+
+template<typename T_Func>
+boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+{
+    int ec = func(file, items, palette);
+    if(ec == expectedResult)
+        return true;
+    boost::test_tools::predicate_result result(false);
+    result.message() << libsiedler2::getErrorString(ec)
+        << " != " << libsiedler2::getErrorString(expectedResult)
+        << " for " << file;
+    return result;
+}
+
+boost::test_tools::predicate_result testLoad(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+{
+    return testLoadWrite(libsiedler2::Load, expectedResult, file, items, palette);
+}
+
+boost::test_tools::predicate_result testWrite(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+{
+    return testLoadWrite(libsiedler2::Write, expectedResult, file, items, palette);
+}
 
 boost::test_tools::predicate_result testFilesEqual(const std::string& fileToCheck, const std::string& expectedFile)
 {
     if(bfs::file_size(fileToCheck) != bfs::file_size(expectedFile))
     {
         boost::test_tools::predicate_result result(false);
-        result.message() << "File size mismatch: " << bfs::file_size(fileToCheck) << "!=" << bfs::file_size(expectedFile);
+        result.message() << fileToCheck << ": File size mismatch: " << bfs::file_size(fileToCheck) << "!=" << bfs::file_size(expectedFile);
         return result;
     }
 
@@ -42,7 +67,7 @@ boost::test_tools::predicate_result testFilesEqual(const std::string& fileToChec
         if(*b1 != *b2)
         {
             boost::test_tools::predicate_result result(false);
-            result.message() << "Mismatch at pos " << pos << ": " << std::hex << unsigned(*b1) << " != " << unsigned(*b2);
+            result.message() << fileToCheck << ": Mismatch at pos " << pos << ": " << std::hex << unsigned(*b1) << " != " << unsigned(*b2);
             return result;
         }
     }

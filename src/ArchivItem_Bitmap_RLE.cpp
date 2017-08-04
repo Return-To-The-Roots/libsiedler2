@@ -63,13 +63,9 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
-        palette = getPalette();
-    else
-        setPalette(*palette);
-    if(palette == NULL)
         return ErrorCode::PALETTE_MISSING;
 
-    tex_clear();
+    clear();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     uint16_t width, height, unknown2;
@@ -87,7 +83,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
     fs >> data;
 
     // Speicher anlegen
-    tex_alloc(width, height, getGlobalTextureFormat());
+    init(width, height, getGlobalTextureFormat(), palette);
 
     if(length != 0)
     {
@@ -122,6 +118,8 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
         if(position != length)
             return ErrorCode::WRONG_FORMAT;
     }
+    if(getFormat() == FORMAT_BGRA)
+        removePalette();
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

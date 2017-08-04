@@ -62,11 +62,9 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
-        palette = getPalette();
-    if(palette == NULL)
         return ErrorCode::PALETTE_MISSING;
 
-    tex_clear();
+    clear();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     uint16_t width, height, unknown2;
@@ -82,7 +80,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     fs >> data;
 
     // Speicher anlegen
-    tex_alloc(width, height, FORMAT_PALETTED);
+    init(width, height, FORMAT_PALETTED, palette);
 
     uint8_t gray = palette->lookup(ColorRGB(255, 255, 255));
 
@@ -123,9 +121,11 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
         int ec = create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette);
         if(ec)
             return ec;
-        ec = convertFormat(getGlobalTextureFormat(), palette);
+        ec = convertFormat(getGlobalTextureFormat());
         if(ec)
             return ec;
+        if(getFormat() == FORMAT_BGRA)
+            removePalette();
     }
 
     return ErrorCode::NONE;
@@ -145,7 +145,8 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
         return ErrorCode::FILE_NOT_ACCESSIBLE;
     if(palette == NULL)
         palette = this->getPalette();
-    assert(palette);
+    if(!palette)
+        return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     const uint16_t width = getWidth(), height = getHeight();
