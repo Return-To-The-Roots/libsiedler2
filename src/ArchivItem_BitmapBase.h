@@ -105,7 +105,7 @@ namespace libsiedler2
         /// Convert the bitmap to the new format using the internal palette
         virtual int convertFormat(TextureFormat newFormat);
 
-        virtual void getVisibleArea(int& vx, int& vy, int& vw, int& vh);
+        virtual void getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh);
 
         /// Return the bytes per pixel for a given format
         static uint32_t getBBP(TextureFormat format);

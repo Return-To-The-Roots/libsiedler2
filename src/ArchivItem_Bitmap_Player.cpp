@@ -512,7 +512,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer,
     return ErrorCode::NONE;
 }
 
-void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
+void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh)
 {
     int x, y, lx, ly;
 

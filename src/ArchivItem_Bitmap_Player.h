@@ -58,7 +58,7 @@ namespace libsiedler2
             /// räumt den Bildspeicher auf.
             void clear() override;
 
-            void getVisibleArea(int& vx, int& vy, int& vw, int& vh) override;
+            void getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh) override;
 
             /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
             int print(uint8_t* buffer,

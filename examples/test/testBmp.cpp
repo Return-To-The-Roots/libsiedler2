@@ -33,9 +33,10 @@
 
 struct Rect
 {
-    int x, y, w, h;
+    int x, y;
+    unsigned w, h;
     Rect(){}
-    Rect(int x, int y, int w, int h): x(x), y(y), w(w), h(h){}
+    Rect(int x, int y, unsigned w, unsigned h): x(x), y(y), w(w), h(h){}
     bool operator==(const Rect& rhs) const
     {
         return x == rhs.x && y == rhs.y && w == rhs.w && h == rhs.h;

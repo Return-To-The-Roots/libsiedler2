@@ -296,7 +296,7 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
     return ErrorCode::NONE;
 }
 
-void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, int& vw, int& vh)
+void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh)
 {
     int x, y, lx, ly;
 
