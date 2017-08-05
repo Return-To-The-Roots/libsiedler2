@@ -64,30 +64,28 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
         from_h = getHeight() - from_y;
 
     const unsigned bufBpp = getBBP(buffer_format);
-    const unsigned texBpp = getBBP();
-    const std::vector<uint8_t>& pxlData = getData();
     for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
     {
         for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
             size_t posBuf = (y2 * buffer_width + x2) * bufBpp;
-            size_t posTex = (y * getWidth() + x) * texBpp;
+            const uint8_t* pxlPtr = getPixelPtr(x, y);
             if(getFormat() == FORMAT_PALETTED)
             {
-                if(pxlData[posTex] == TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
+                if(*pxlPtr == TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
-                    buffer[posBuf] = pxlData[posTex];
+                    buffer[posBuf] = *pxlPtr;
                 else
-                    ColorARGB(palette->get(pxlData[posTex])).toBGRA(&buffer[posBuf]);
+                    ColorARGB(palette->get(*pxlPtr)).toBGRA(&buffer[posBuf]);
             } else
             {
-                if(pxlData[posTex + 3] == 0) // bei Transparenz wird buffer nicht verändert
+                if(pxlPtr[3] == 0) // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
                     buffer[posBuf] = getPixelClrIdx(x, y, palette);
                 else
-                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(&pxlData[posTex]);
+                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(pxlPtr);
             }
         }
     }

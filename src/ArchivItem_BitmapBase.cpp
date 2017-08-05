@@ -70,17 +70,17 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, uint8_t colorIdx)
 {
     assert(x < width_ && y < height_);
 
-    uint32_t position = (y * width_ + x) * getBBP();
+    uint8_t* pxlPtr = getPixelPtr(x, y);
     if(getFormat() == FORMAT_PALETTED)
-        data_[position] = colorIdx;
+        *pxlPtr = colorIdx;
     else
     {
         assert(palette_);
         // RGB+A setzen
         if(colorIdx == TRANSPARENT_INDEX) // Transparenz
-            data_[position + 3] = 0x00;
+            pxlPtr[3] = 0x00;
         else
-            ColorARGB(palette_->get(colorIdx)).toBGRA(&data_[position]);
+            ColorARGB(palette_->get(colorIdx)).toBGRA(pxlPtr);
     }
 }
 
@@ -98,16 +98,16 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorARGB clr
 {
     assert(x < width_ && y < height_);
 
-    uint32_t position = (y * width_ + x) * getBBP();
+    uint8_t* pxlPtr = getPixelPtr(x, y);
     if(getFormat() == FORMAT_PALETTED)
     {
         // Palettenindex setzen
         if(clr.getAlpha() == 0)
-            data_[position] = TRANSPARENT_INDEX;
+            *pxlPtr = TRANSPARENT_INDEX;
         else
-            data_[position] = palette_->lookup(clr);
+            *pxlPtr = palette_->lookup(clr);
     } else
-        clr.toBGRA(&data_[position]);
+        clr.toBGRA(pxlPtr);
 }
 
 /**
@@ -313,11 +313,11 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     {
         for(y = 0; y < height_; ++y)
         {
-            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (*getPixelPtr(x, y) != TRANSPARENT_INDEX))
             {
                 vx = x;
                 break;
-            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
             {
                 vx = x;
                 break;
@@ -333,11 +333,11 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     {
         for(y = 0; y < height_; ++y)
         {
-            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (*getPixelPtr(x, y) != TRANSPARENT_INDEX))
             {
                 lx = x;
                 break;
-            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
             {
                 lx = x;
                 break;
@@ -353,11 +353,11 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     {
         for(x = 0; x < width_; ++x)
         {
-            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (*getPixelPtr(x, y) != TRANSPARENT_INDEX))
             {
                 vy = y;
                 break;
-            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
             {
                 vy = y;
                 break;
@@ -373,11 +373,11 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     {
         for(x = 0; x < width_; ++x)
         {
-            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (*getPixelPtr(x, y) != TRANSPARENT_INDEX))
             {
                 ly = y;
                 break;
-            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
             {
                 ly = y;
                 break;
