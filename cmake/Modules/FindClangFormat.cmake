@@ -39,30 +39,52 @@ find_package_handle_standard_args(ClangFormat
 
 if(ClangFormat_FOUND)
     set(ClangFormat_FILES "" CACHE INTERNAL "")
-    set(ClangFormat_SRC_EXTENSIONS "*.cpp *.h *.hpp *.c *.tpp" CACHE STRING "Extensions to consider for add_ClangFormat_folder")
+    set(ClangFormat_SRC_EXTENSIONS "*.cpp;*.h;*.hpp;*.c;*.tpp" CACHE STRING "Extensions to consider for add_ClangFormat_folder")
     mark_as_advanced(ClangFormat_SRC_EXTENSIONS)
-    macro(add_ClangFormat_files _files)
+    function(add_ClangFormat_files _files)
         foreach(curFile ${ARGN})
             set(ClangFormat_FILES ${ClangFormat_FILES} "${curFile}" CACHE INTERNAL "")
         endforeach()
-    endmacro()
-    macro(add_ClangFormat_folder _folder _recursive)
+    endfunction()
+    function(add_ClangFormat_folder _folder _recursive)
+        set(_tmpGLOB "")
+        string(REPLACE " " ";" _exts ${ClangFormat_SRC_EXTENSIONS})
+        foreach(_ext ${_exts})
+            list(APPEND _tmpGLOB "${_folder}/${_ext}")
+        endforeach()
         if(_recursive)
-            file(GLOB_RECURSE _NewClangFormatFiles ${_folder} ${ClangFormat_SRC_EXTENSIONS})
+            file(GLOB_RECURSE _NewClangFormatFiles ${_tmpGLOB})
         else()
-            file(GLOB _NewClangFormatFiles ${_folder} ${ClangFormat_SRC_EXTENSIONS})
+            file(GLOB _NewClangFormatFiles ${_tmpGLOB})
         endif()
         add_ClangFormat_files(${_NewClangFormatFiles})
-    endmacro()
-    macro(print_ClangFormat_files)
+    endfunction()
+    function(print_ClangFormat_files)
         message(STATUS "Files for clang-format: ${ClangFormat_FILES}")
-    endmacro()
-    macro(add_ClangFormat_target _style)
-        add_custom_target(clangFormat
-            COMMAND ${ClangFormat_BINARY}
-            -style=${_style}
-            -i
-            ${ClangFormat_FILES}
-        )
-    endmacro()
+    endfunction()
+    function(add_ClangFormat_target _style)
+        set(_sources "")
+        foreach (_source ${ClangFormat_FILES})
+            if (NOT TARGET ${_source})
+                get_filename_component(_source_file ${_source} NAME)
+                get_source_file_property(_clang_loc "${_source}" LOCATION)
+ 
+                set(_format_file clangFormat_${_source_file}.format)
+ 
+                add_custom_command(OUTPUT ${_format_file}
+                        DEPENDS ${_source}
+                        COMMENT "Clang-Format ${_source}"
+                        COMMAND ${ClangFormat_BINARY} -style=${_style} -i ${_clang_loc}
+                        COMMAND ${CMAKE_COMMAND} -E touch ${_format_file})
+ 
+                list(APPEND _sources ${_format_file})
+            endif ()
+        endforeach ()
+ 
+        if (_sources)
+            add_custom_target(clangFormat
+                    SOURCES ${_sources}
+                    COMMENT "Clang-Format for target ${_target}")
+        endif ()
+    endfunction()
 endif()
