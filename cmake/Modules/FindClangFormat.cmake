@@ -69,7 +69,7 @@ if(ClangFormat_FOUND)
                 get_filename_component(_source_file ${_source} NAME)
                 get_source_file_property(_clang_loc "${_source}" LOCATION)
  
-                set(_format_file clangFormat_${_source_file}.format)
+                set(_format_file clangFormat/${_source_file}.format)
  
                 add_custom_command(OUTPUT ${_format_file}
                         DEPENDS ${_source}
