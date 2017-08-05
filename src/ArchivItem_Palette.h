@@ -26,56 +26,55 @@
 #include <iosfwd>
 #include <stdint.h>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Index des Transparenzwertes
+const uint8_t TRANSPARENT_INDEX = 254;
+
+const ColorRGB TRANSPARENT_COLOR(0xff, 0, 0x8f);
+
+/// Klasse für Paletten.
+class ArchivItem_Palette : public ArchivItem
 {
-    /// Index des Transparenzwertes
-    const uint8_t TRANSPARENT_INDEX = 254;
-    
-    const ColorRGB TRANSPARENT_COLOR(0xff, 0, 0x8f);
+public:
+    ArchivItem_Palette();
 
-    /// Klasse für Paletten.
-    class ArchivItem_Palette : public ArchivItem
-    {
-        public:
-            ArchivItem_Palette();
+    ~ArchivItem_Palette() override;
 
-            ~ArchivItem_Palette() override;
+    /// liest die Farbwerte aus einer Datei.
+    int load(std::istream& file, bool skip = true);
 
-            /// liest die Farbwerte aus einer Datei.
-            int load(std::istream& file, bool skip = true);
+    /// schreibt die Farbwerte in eine Datei.
+    int write(std::ostream& file, bool skip = true) const;
 
-            /// schreibt die Farbwerte in eine Datei.
-            int write(std::ostream& file, bool skip = true) const;
+    /// setzt einen Farbwert am entsprechenden Index.
+    void set(uint8_t index, ColorRGB clr);
 
-            /// setzt einen Farbwert am entsprechenden Index.
-            void set(uint8_t index, ColorRGB clr);
+    /// liefert einen Farbwert am entsprechenden Index.
+    ColorRGB get(uint8_t index) const { return (*this)[index]; }
 
-            /// liefert einen Farbwert am entsprechenden Index.
-            ColorRGB get(uint8_t index) const { return (*this)[index]; }
+    /// Write the index with the given color into clrIdx. Returns true iff color found
+    /// If color is not found, then clrIdx is NOT changed
+    bool lookup(const ColorRGB& clr, uint8_t& clrIdx) const;
+    /// Return the index with the given color. Throws an exception if not found
+    uint8_t lookup(const ColorRGB& clr) const;
 
-            /// Write the index with the given color into clrIdx. Returns true iff color found
-            /// If color is not found, then clrIdx is NOT changed
-            bool lookup(const ColorRGB& clr, uint8_t& clrIdx) const;
-            /// Return the index with the given color. Throws an exception if not found
-            uint8_t lookup(const ColorRGB& clr) const;
+    /// Return the (first) index with the given color or defaultVal if none found
+    uint8_t lookupOrDef(const ColorRGB& clr, uint8_t defaultVal = 0) const;
 
-            /// Return the (first) index with the given color or defaultVal if none found
-            uint8_t lookupOrDef(const ColorRGB& clr, uint8_t defaultVal = 0) const;
+    /// Index-Operator von @p ArchivItem_Palette.
+    const ColorRGB& operator[](unsigned index) const;
 
-            /// Index-Operator von @p ArchivItem_Palette.
-            const ColorRGB& operator[](unsigned index) const;
+    /// Copy palette to the buffer as BGRA
+    /// If writeFakeTransparency is true, then the pseudo transparency color is written
+    /// otherwise a true transparency (all 0) is written
+    void copy(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency = false) const;
 
-            /// Copy palette to the buffer as BGRA
-            /// If writeFakeTransparency is true, then the pseudo transparency color is written
-            /// otherwise a true transparency (all 0) is written
-            void copy(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency = false) const;
+    /// Return true iff the 2 palettes specify the same colors
+    bool isEqual(const ArchivItem_Palette& other) const;
 
-            /// Return true iff the 2 palettes specify the same colors
-            bool isEqual(const ArchivItem_Palette& other) const;
-
-        protected:
-            boost::array<ColorRGB, 256> colors; //-V730_NOINIT
-    };
-}
+protected:
+    boost::array<ColorRGB, 256> colors; //-V730_NOINIT
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_PALETTE_H_INCLUDED

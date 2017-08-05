@@ -20,43 +20,42 @@
 #ifndef ImageBufferARGB_h__
 #define ImageBufferARGB_h__
 
-#include "PixelBuffer.h"
 #include "ColorARGB.h"
+#include "PixelBuffer.h"
 
-namespace libsiedler2
+namespace libsiedler2 {
+
+class PixelBufferARGB : public PixelBuffer<uint32_t>
 {
+public:
+    PixelBufferARGB() {}
+    PixelBufferARGB(uint16_t width, uint16_t height) : PixelBuffer<uint32_t>(width, height, 0) {}
+    ColorARGB get(uint16_t x, uint16_t y) const;
+    ColorARGB get(uint32_t idx) const;
+    void set(uint16_t x, uint16_t y, ColorARGB clr);
+    void set(uint32_t idx, ColorARGB clr);
+};
 
-    class PixelBufferARGB: public PixelBuffer<uint32_t>
-    {
-    public:
-        PixelBufferARGB(){}
-        PixelBufferARGB(uint16_t width, uint16_t height): PixelBuffer<uint32_t>(width, height, 0){}
-        ColorARGB get(uint16_t x, uint16_t y) const;
-        ColorARGB get(uint32_t idx) const;
-        void set(uint16_t x, uint16_t y, ColorARGB clr);
-        void set(uint32_t idx, ColorARGB clr);
-    };
-
-    inline ColorARGB PixelBufferARGB::get(uint16_t x, uint16_t y) const
-    {
-        return get(calcIdx(x, y));
-    }
-
-    inline libsiedler2::ColorARGB PixelBufferARGB::get(uint32_t idx) const
-    {
-        return ColorARGB::fromBGRA(&pixels_[idx]);
-    }
-
-    inline void PixelBufferARGB::set(uint16_t x, uint16_t y, ColorARGB clr)
-    {
-        return set(calcIdx(x, y), clr);
-    }
-
-    void PixelBufferARGB::set(uint32_t idx, ColorARGB clr)
-    {
-        return clr.toBGRA(&pixels_[idx]);
-    }
-
+inline ColorARGB PixelBufferARGB::get(uint16_t x, uint16_t y) const
+{
+    return get(calcIdx(x, y));
 }
+
+inline libsiedler2::ColorARGB PixelBufferARGB::get(uint32_t idx) const
+{
+    return ColorARGB::fromBGRA(&pixels_[idx]);
+}
+
+inline void PixelBufferARGB::set(uint16_t x, uint16_t y, ColorARGB clr)
+{
+    return set(calcIdx(x, y), clr);
+}
+
+void PixelBufferARGB::set(uint32_t idx, ColorARGB clr)
+{
+    return clr.toBGRA(&pixels_[idx]);
+}
+
+} // namespace libsiedler2
 
 #endif // ImageBufferARGB_h__

@@ -19,34 +19,33 @@
 
 #pragma once
 
-#include <vector>
 #include <iosfwd>
 #include <stdint.h>
+#include <vector>
 
-namespace libsiedler2
+namespace libsiedler2 {
+
+class XMIDI_Track
 {
-    
-	class XMIDI_Track
-	{
-	    public:
-            struct Timbre
-            {
-                uint8_t patch, bank;
-            };
-            XMIDI_Track();
-	        ~XMIDI_Track();
-	
-	        int read(std::istream& file, size_t length);
-	        void clear();
+public:
+    struct Timbre
+    {
+        uint8_t patch, bank;
+    };
+    XMIDI_Track();
+    ~XMIDI_Track();
 
-            const std::vector<uint8_t>& getData() const { return data_; }
-            std::vector<Timbre>& getTimbres() { return timbres_; }
-            const std::vector<Timbre>& getTimbres() const { return timbres_; }
+    int read(std::istream& file, size_t length);
+    void clear();
 
-	    protected:
-	        std::vector<uint8_t> data_;
-            std::vector<Timbre> timbres_;
-	};
-}
+    const std::vector<uint8_t>& getData() const { return data_; }
+    std::vector<Timbre>& getTimbres() { return timbres_; }
+    const std::vector<Timbre>& getTimbres() const { return timbres_; }
+
+protected:
+    std::vector<uint8_t> data_;
+    std::vector<Timbre> timbres_;
+};
+} // namespace libsiedler2
 
 #endif // XMIDI_TRACK_H_INCLUDED

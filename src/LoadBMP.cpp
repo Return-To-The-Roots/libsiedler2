@@ -19,14 +19,14 @@
 #include "ArchivInfo.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
-#include "prototypen.h"
-#include "ColorARGB.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
 #include "BmpHeader.h"
+#include "ColorARGB.h"
 #include "ErrorCodes.h"
-#include "fileFormatHelpers.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "fileFormatHelpers.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <vector>
@@ -34,11 +34,7 @@
  *  liest eine Bitmapzeile
  */
 template<class T_FStream>
-static inline void LoadBMP_ReadLine(T_FStream& bmp,
-                                    uint16_t y,
-                                    uint32_t width,
-                                    uint8_t bbp,
-                                    std::vector<uint8_t>& buffer,
+static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, uint8_t bbp, std::vector<uint8_t>& buffer,
                                     std::vector<uint8_t>& tmpBuffer)
 {
     if(bbp == 1)
@@ -75,7 +71,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, con
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))
         return ec;
-    libendian::EndianIStreamAdapter<false, MMStream& > bmpFs(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream&> bmpFs(mmapStream);
 
     BmpFileHeader bmhd;
 
@@ -102,7 +98,8 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, con
     if(bmih.planes != 1)
         return ErrorCode::WRONG_FORMAT;
 
-    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    boost::interprocess::unique_ptr<baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(
+      dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setName(file);
 
     // keine Kompression
@@ -140,8 +137,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, con
         // Bottom-Up, "von unten nach oben"
         for(int y = bmih.height - 1; y >= 0; --y)
             LoadBMP_ReadLine(bmpFs, y, bmih.width, bbp, buffer, tmpBuffer);
-    }
-    else
+    } else
     {
         // Top-Down, "von oben nach unten"
         for(int y = 0; y < bmih.height; ++y)
@@ -151,8 +147,8 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, con
     if(!bmpFs)
         return ErrorCode::UNEXPECTED_EOF;
 
-    if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
-        (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal))
+    if(int ec =
+         bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height, (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal))
         return ec;
     if(getGlobalTextureFormat() != bitmap->getFormat())
     {
@@ -167,4 +163,3 @@ int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, con
 
     return (!bmpFs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
-

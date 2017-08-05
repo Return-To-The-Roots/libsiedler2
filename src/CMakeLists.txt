@@ -29,4 +29,8 @@ ADD_LIBRARY(siedler2 STATIC ${SRC_FILES})
 
 TARGET_LINK_LIBRARIES(siedler2 ${Boost_LIBRARIES})
 
+if(ClangFormat_FOUND)
+    add_clangFormat_files(${SRC_FILES})
+endif()
+
 #################################################################################

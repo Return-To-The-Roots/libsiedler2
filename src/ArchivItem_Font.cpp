@@ -17,8 +17,8 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Font.h"
-#include "prototypen.h"
 #include "ErrorCodes.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -125,7 +125,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
         throw std::runtime_error("Trying to save a non-unicode font with more than 256 glyphs");
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    
+
     if(isUnicode)
         fs << uint16_t(0xFFFF) << static_cast<uint32_t>(size());
     else

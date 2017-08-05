@@ -15,14 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
+#include "../../src/ArchivItem_Bitmap.h"
 #include "LoadPalette.h"
+#include "config.h"
 #include "libsiedler2/src/ArchivInfo.h"
-#include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
+#include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
-#include "../../src/ArchivItem_Bitmap.h"
 
 BOOST_FIXTURE_TEST_SUITE(LbmFiles, LoadPalette)
 

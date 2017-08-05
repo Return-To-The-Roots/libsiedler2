@@ -17,9 +17,9 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Map_Header.h"
-#include "oem.h"
 #include "ErrorCodes.h"
 #include "fileFormatHelpers.h"
+#include "oem.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
@@ -32,8 +32,7 @@
 const char VALID_ID[11] = "WORLD_V1.0";
 
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
-    : ArchivItem(),
-      width(0), height(0), gfxset(0), player(0), isInvalid(0), hasExtraWord_(false)
+    : ArchivItem(), width(0), height(0), gfxset(0), player(0), isInvalid(0), hasExtraWord_(false)
 {
     bobtype_ = BOBTYPE_MAP_HEADER;
 }
@@ -94,7 +93,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     {
         fs >> headerSig;
         hasExtraWord_ = true;
-    }else
+    } else
         hasExtraWord_ = false;
     if(headerSig != 0x2711)
         return ErrorCode::WRONG_FORMAT;

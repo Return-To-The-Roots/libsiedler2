@@ -16,15 +16,15 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
+#include "ArchivInfo.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
-#include "ArchivInfo.h"
-#include "prototypen.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
 #include "ErrorCodes.h"
-#include "fileFormatHelpers.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "fileFormatHelpers.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
@@ -41,7 +41,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))
         return ec;
-    libendian::EndianIStreamAdapter<true, MMStream& > lbm(mmapStream);
+    libendian::EndianIStreamAdapter<true, MMStream&> lbm(mmapStream);
 
     char header[4], pbm[4];
     uint32_t length;
@@ -52,7 +52,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, ArchivInfo& items)
     if(!lbm || !isChunk(header, "FORM") || !isChunk(pbm, "PBM "))
         return ErrorCode::WRONG_HEADER;
 
-    boost::interprocess::unique_ptr< baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    boost::interprocess::unique_ptr<baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(
+      dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
 
     uint16_t width = 0, height = 0;
     uint16_t compression;

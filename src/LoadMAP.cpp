@@ -16,13 +16,13 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Map.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
+#include "ArchivItem_Map.h"
 #include "ErrorCodes.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
 
 /**
  *  lädt eine MAP-File in ein ArchivInfo.
@@ -39,7 +39,8 @@ int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, boo
         return ec;
 
     ArchivItem_Map* item = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP));
-    if(int ec = item->load(map, only_header)){
+    if(int ec = item->load(map, only_header))
+    {
         delete item;
         return ec;
     }

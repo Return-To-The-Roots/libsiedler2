@@ -19,30 +19,29 @@
 
 #pragma once
 
-#include <vector>
 #include <iosfwd>
 #include <stdint.h>
+#include <vector>
 
-namespace libsiedler2
+namespace libsiedler2 {
+
+class MIDI_Track
 {
-    
-	class MIDI_Track
-	{
-	    public:
-            MIDI_Track();
-            MIDI_Track(const std::vector<uint8_t>& data);
-            ~MIDI_Track();
-	
-            int read(std::istream& file, size_t length);
-	        void clear();
-	
-	        const uint8_t* getMid() const;
-	        uint32_t getMidLength() const;
-            const std::vector<uint8_t>& getData() const { return mid_data; }
+public:
+    MIDI_Track();
+    MIDI_Track(const std::vector<uint8_t>& data);
+    ~MIDI_Track();
 
-	    protected:
-	        std::vector<uint8_t> mid_data;
-	};
-}
+    int read(std::istream& file, size_t length);
+    void clear();
+
+    const uint8_t* getMid() const;
+    uint32_t getMidLength() const;
+    const std::vector<uint8_t>& getData() const { return mid_data; }
+
+protected:
+    std::vector<uint8_t> mid_data;
+};
+} // namespace libsiedler2
 
 #endif // !MIDI_TRACK_H_INCLUDED

@@ -17,15 +17,15 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Midi.h"
-#include "MIDI_Header.h"
 #include "ErrorCodes.h"
+#include "MIDI_Header.h"
 #include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 #include <stdexcept>
 
-namespace libsiedler2{
+namespace libsiedler2 {
 
 /** @class baseArchivItem_Sound_Midi
  *
@@ -39,7 +39,7 @@ baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi() : baseArchivItem_Sound()
     numTracks = 0;
 }
 
-baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item) : baseArchivItem_Sound( item )
+baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item) : baseArchivItem_Sound(item)
 {
     numTracks = item.numTracks;
     tracklist = item.tracklist;

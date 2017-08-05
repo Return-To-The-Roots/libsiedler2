@@ -16,10 +16,10 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Text.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
+#include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
+#include "prototypen.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 
@@ -93,5 +93,6 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& ite
         }
     }
 
-    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
+    ;
 }

@@ -15,14 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
-#include "cmpFiles.h"
 #include "ColorOutput.h"
+#include "cmpFiles.h"
+#include "config.h"
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
-#include "libsiedler2/src/libsiedler2.h"
-#include "libsiedler2/src/ColorRGB.h"
 #include "libsiedler2/src/ColorARGB.h"
+#include "libsiedler2/src/ColorRGB.h"
+#include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -52,7 +52,7 @@ void createBBM(const std::string& palPath, const std::string& palOutPath)
 
 BOOST_AUTO_TEST_CASE(ReadWriteBBM)
 {
-    //createBBM("pal5.act", "testFiles/pal.bbm");
+    // createBBM("pal5.act", "testFiles/pal.bbm");
     std::string palPath = "testFiles/pal.bbm";
     std::string palOutPath = testOutputPath + "/palOut.bbm";
     BOOST_REQUIRE(bfs::exists(palPath));
@@ -111,7 +111,5 @@ BOOST_AUTO_TEST_CASE(GetColor)
     // BGRA buffer:
     BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[libsiedler2::TRANSPARENT_INDEX * 4]), libsiedler2::TRANSPARENT_COLOR);
 }
-
-
 
 BOOST_AUTO_TEST_SUITE_END()

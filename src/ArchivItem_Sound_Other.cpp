@@ -33,7 +33,8 @@ libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other() : baseArch
 }
 
 libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()
-{}
+{
+}
 
 /**
  *  lädt die Daten aus einer Datei.

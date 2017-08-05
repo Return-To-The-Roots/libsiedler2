@@ -17,14 +17,14 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "libsiedler2.h"
-#include "StandardAllocator.h"
-#include "prototypen.h"
 #include "ArchivInfo.h"
 #include "ErrorCodes.h"
+#include "StandardAllocator.h"
+#include "prototypen.h"
 #include <boost/filesystem.hpp>
 #include <algorithm>
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 /** @mainpage libsiedler2
  *
@@ -36,38 +36,36 @@
  *
  */
 
-namespace libsiedler2{
+namespace libsiedler2 {
 
-    /**
-     *  Das gewählte Texturformat.
+/**
+ *  Das gewählte Texturformat.
 
-     *
-     *  @ingroup textureformat
-     */
-    static TextureFormat texturformat;
+ *
+ *  @ingroup textureformat
+ */
+static TextureFormat texturformat;
 
-    /**
-     *  Der gesetzte Item-Allokator.
-     */
-    static IAllocator* allocator = NULL;
+/**
+ *  Der gesetzte Item-Allokator.
+ */
+static IAllocator* allocator = NULL;
 
-}
+} // namespace libsiedler2
 
 namespace {
-    struct Initializer{
-        Initializer()
-        {
-            assert(libsiedler2::allocator == NULL);
-            libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
-            libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
-        }
-        ~Initializer()
-        {
-            libsiedler2::setAllocator(NULL);
-        }
-    };
-    static Initializer initializer__;
-}
+struct Initializer
+{
+    Initializer()
+    {
+        assert(libsiedler2::allocator == NULL);
+        libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
+        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
+    }
+    ~Initializer() { libsiedler2::setAllocator(NULL); }
+};
+static Initializer initializer__;
+} // namespace
 
 /** @namespace libsiedler2
  *
@@ -76,7 +74,7 @@ namespace {
  *  Enthält alle Klassen und exportierten Funktionen von @p libsiedler2.
  */
 
-namespace libsiedler2{
+namespace libsiedler2 {
 
 /**
  *  Setzt das verwendete Texturausgabeformat.
@@ -107,7 +105,6 @@ TextureFormat getGlobalTextureFormat()
     // Aktuelles zurückliefern
     return texturformat;
 }
-
 
 const IAllocator& getAllocator()
 {
@@ -147,7 +144,8 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
-    try{
+    try
+    {
         // Datei laden
         if(extension == "act")
             ret = loader::LoadACT(file, items);
@@ -176,7 +174,8 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
             ret = loader::LoadSND(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
-    }catch(std::exception& error){
+    } catch(std::exception& error)
+    {
         std::cerr << "Error while reading: " << error.what() << std::endl;
         // Mostly error on reading (e.g. unexpected end of file)
         return ErrorCode::CUSTOM;
@@ -207,7 +206,8 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
-    try{
+    try
+    {
         // Datei schreiben
         if(extension == "act")
             ret = loader::WriteACT(file, items);
@@ -229,7 +229,7 @@ int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Pal
             ret = loader::WriteLBM(file, items, palette);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
-    }catch(std::exception& error)
+    } catch(std::exception& error)
     {
         std::cerr << "Error while writing: " << error.what() << std::endl;
         // Mostly error on write to file

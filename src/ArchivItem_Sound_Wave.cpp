@@ -17,8 +17,8 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_Wave.h"
-#include "WAV_Header.h"
 #include "ErrorCodes.h"
+#include "WAV_Header.h"
 #include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
@@ -35,7 +35,8 @@ libsiedler2::baseArchivItem_Sound_Wave::baseArchivItem_Sound_Wave() : baseArchiv
 }
 
 libsiedler2::baseArchivItem_Sound_Wave::~baseArchivItem_Sound_Wave()
-{}
+{
+}
 
 /**
  *  lädt die Wave-Daten aus einer Datei.

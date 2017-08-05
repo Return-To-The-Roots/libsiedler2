@@ -18,11 +18,11 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bob.h"
 #include "ArchivItem_Bitmap_Player.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
 #include "ErrorCodes.h"
-#include <iostream>
+#include "IAllocator.h"
+#include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
+#include <iostream>
 
 /** @class libsiedler2::ArchivItem_Bob
  *
@@ -35,7 +35,8 @@ libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(), ArchivInfo(), numG
 }
 
 libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
-{}
+{
+}
 
 /**
  *  lädt die Bobdaten aus einer Datei.
@@ -120,7 +121,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     std::vector<bool> loaded(numGoodImgs, false);
 
     std::vector<uint8_t> heights(numGoodImgs);
-    std::vector< std::vector<uint16_t> > starts(numGoodImgs);
+    std::vector<std::vector<uint16_t> > starts(numGoodImgs);
     std::vector<uint8_t> ny(numGoodImgs);
 
     for(uint16_t i = 0; i < numGoodImgs; ++i)

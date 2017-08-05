@@ -20,20 +20,20 @@
 
 #include "enumTypes.h"
 
-namespace libsiedler2
+namespace libsiedler2 {
+class ArchivItem;
+
+/**
+ *  @brief Abstract ArchivItem factory
+ */
+class IAllocator
 {
-    class ArchivItem;
+public:
+    virtual ~IAllocator() {}
+    virtual ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
+    virtual ArchivItem* clone(const ArchivItem& item) const = 0;
+};
 
-    /**
-     *  @brief Abstract ArchivItem factory
-     */
-    class IAllocator{
-    public:
-        virtual ~IAllocator(){}
-        virtual ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
-        virtual ArchivItem* clone(const ArchivItem& item) const = 0;
-    };
+} // namespace libsiedler2
 
-}
-
-#endif //IALLOCATOR_H_INCLUDED
+#endif // IALLOCATOR_H_INCLUDED

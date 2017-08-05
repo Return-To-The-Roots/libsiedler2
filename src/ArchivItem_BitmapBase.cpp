@@ -20,23 +20,23 @@
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
 #include "ErrorCodes.h"
+#include "IAllocator.h"
 #include "PixelBufferARGB.h"
 #include "PixelBufferPaletted.h"
 #include "libsiedler2.h"
-#include "IAllocator.h"
 #include <stdexcept>
 
-namespace libsiedler2{
+namespace libsiedler2 {
 /** @class ArchivItem_BitmapBase
  *
  *  Basis-Basisklasse für Bitmapitems.
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase(): ArchivItem(), nx_(0), ny_(0), width_(0), height_(0),
-    palette_(NULL), format_(FORMAT_BGRA)
-{}
+ArchivItem_BitmapBase::ArchivItem_BitmapBase() : ArchivItem(), nx_(0), ny_(0), width_(0), height_(0), palette_(NULL), format_(FORMAT_BGRA)
+{
+}
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem( item )
+ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem(item)
 {
     nx_ = item.nx_;
     ny_ = item.ny_;
@@ -124,23 +124,23 @@ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y) const
     return getPixelClrIdx(x, y, palette_);
 }
 
- uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const
- {
-     assert(x < width_ && y < height_);
+uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const
+{
+    assert(x < width_ && y < height_);
 
-     if(getFormat() == FORMAT_PALETTED)
-         return getPalettedPixel(x, y);
-     else
-     {
-         assert(palette);
-         ColorARGB clr = getARGBPixel(x, y);
-         // Index von RGB+A liefern
-         if(clr.getAlpha() == 0) // Transparenz
-             return TRANSPARENT_INDEX;
-         else
-             return palette->lookup(clr);
-     }
- }
+    if(getFormat() == FORMAT_PALETTED)
+        return getPalettedPixel(x, y);
+    else
+    {
+        assert(palette);
+        ColorARGB clr = getARGBPixel(x, y);
+        // Index von RGB+A liefern
+        if(clr.getAlpha() == 0) // Transparenz
+            return TRANSPARENT_INDEX;
+        else
+            return palette->lookup(clr);
+    }
+}
 
 libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) const
 {
@@ -199,7 +199,7 @@ void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat fo
 {
     if(format == FORMAT_PALETTED && !newPal)
         throw std::runtime_error("Palette is missing");
-    // Set new format to BGRA to allow removing of palette 
+    // Set new format to BGRA to allow removing of palette
     if(format == FORMAT_BGRA)
         format_ = FORMAT_BGRA;
     if(newPal)
@@ -303,92 +303,88 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     vx = vy = 0;
     lx = ly = -1;
 
-    if ((width_ == 0) || (height_ == 0))
+    if((width_ == 0) || (height_ == 0))
     {
         return;
     }
 
     // find empty rows at left
-    for (x = 0; x < width_; ++x)
+    for(x = 0; x < width_; ++x)
     {
-        for (y = 0; y < height_; ++y)
+        for(y = 0; y < height_; ++y)
         {
-            if ((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
             {
                 vx = x;
                 break;
-            }
-            else if ((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
             {
                 vx = x;
                 break;
             }
         }
 
-        if (y != height_)
+        if(y != height_)
             break;
     }
 
     // find empty rows at bottom
-    for (x = width_ - 1; x >= 0; --x)
+    for(x = width_ - 1; x >= 0; --x)
     {
-        for (y = 0; y < height_; ++y)
+        for(y = 0; y < height_; ++y)
         {
-            if ((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
             {
                 lx = x;
                 break;
-            }
-            else if ((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
             {
                 lx = x;
                 break;
             }
         }
 
-        if (y != height_)
+        if(y != height_)
             break;
     }
 
     // find empty rows at top
-    for (y = 0; y < height_; ++y)
+    for(y = 0; y < height_; ++y)
     {
-        for (x = 0; x < width_; ++x)
+        for(x = 0; x < width_; ++x)
         {
-            if ((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
             {
                 vy = y;
                 break;
-            }
-            else if ((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
             {
                 vy = y;
                 break;
             }
         }
 
-        if (x != width_)
+        if(x != width_)
             break;
     }
 
     // find empty rows at bottom
-    for (y = height_ - 1; y >= 0; --y)
+    for(y = height_ - 1; y >= 0; --y)
     {
-        for (x = 0; x < width_; ++x)
+        for(x = 0; x < width_; ++x)
         {
-            if ((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
+            if((getBBP() == 1) && (data_[width_ * y + x] != TRANSPARENT_INDEX))
             {
                 ly = y;
                 break;
-            }
-            else if ((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
+            } else if((getBBP() == 4) && (data_[((width_ * y + x) * 4) + 3] != 0x00))
             {
                 ly = y;
                 break;
             }
         }
 
-        if (x != width_)
+        if(x != width_)
             break;
     }
 

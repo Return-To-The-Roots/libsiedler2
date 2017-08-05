@@ -16,12 +16,12 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "ColorOutput.h"
-#include "libsiedler2/src/ColorRGB.h"
 #include "libsiedler2/src/ColorARGB.h"
-#include <boost/test/unit_test.hpp>
+#include "libsiedler2/src/ColorRGB.h"
 #include <boost/array.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/endian/conversion.hpp>
+#include <boost/static_assert.hpp>
+#include <boost/test/unit_test.hpp>
 #include <algorithm>
 
 using libsiedler2::ColorARGB;

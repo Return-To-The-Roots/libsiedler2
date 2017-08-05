@@ -20,60 +20,59 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include <string>
 #include <iosfwd>
 #include <stdint.h>
+#include <string>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Klasse für einen Mapheader.
+class ArchivItem_Map_Header : public ArchivItem
 {
-    /// Klasse für einen Mapheader.
-    class ArchivItem_Map_Header : public ArchivItem
-    {
-        public:
-            ArchivItem_Map_Header();
-            ~ArchivItem_Map_Header() override;
+public:
+    ArchivItem_Map_Header();
+    ~ArchivItem_Map_Header() override;
 
-            /// lädt den Mapheader aus einer Datei.
-            int load(std::istream& file);
-            /// schreibt den Mapheader in eine Datei.
-            int write(std::ostream& file) const;
+    /// lädt den Mapheader aus einer Datei.
+    int load(std::istream& file);
+    /// schreibt den Mapheader in eine Datei.
+    int write(std::ostream& file) const;
 
-            const std::string& getName() const;
-            void setName(const std::string& name);
+    const std::string& getName() const;
+    void setName(const std::string& name);
 
-            uint16_t getWidth() const;
-            void setWidth(uint16_t width);
+    uint16_t getWidth() const;
+    void setWidth(uint16_t width);
 
-            uint16_t getHeight() const;
-            void setHeight(uint16_t height);
+    uint16_t getHeight() const;
+    void setHeight(uint16_t height);
 
-            uint8_t getGfxSet() const;
-            void setGfxSet(uint8_t gfxset);
+    uint8_t getGfxSet() const;
+    void setGfxSet(uint8_t gfxset);
 
-            uint8_t getPlayer() const;
-            void setPlayer(uint8_t player);
+    uint8_t getPlayer() const;
+    void setPlayer(uint8_t player);
 
-            const std::string& getAuthor() const;
-            void setAuthor(const std::string& author);
-        
-            void setPlayerHQ(const uint32_t player, const uint16_t x, const uint16_t y);
-            void getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y);
-        
-            bool hasExtraWord() const { return hasExtraWord_; }
+    const std::string& getAuthor() const;
+    void setAuthor(const std::string& author);
 
-        private:
-            std::string name_;
-            uint16_t width;
-            uint16_t height;
-            uint8_t gfxset;
-            uint8_t player;
-            std::string author_;
-            uint16_t playerHQx[7], playerHQy[7];
-            uint8_t isInvalid;
-            uint8_t playerFaces[7];
-            uint8_t areaInfos[250 * 9]; // 250 entries with: uint8 Type(0:Unused, 1:water, 2:land), uint16 x,y, uint32 size
-            bool hasExtraWord_;
-    };
-}
+    void setPlayerHQ(const uint32_t player, const uint16_t x, const uint16_t y);
+    void getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y);
+
+    bool hasExtraWord() const { return hasExtraWord_; }
+
+private:
+    std::string name_;
+    uint16_t width;
+    uint16_t height;
+    uint8_t gfxset;
+    uint8_t player;
+    std::string author_;
+    uint16_t playerHQx[7], playerHQy[7];
+    uint8_t isInvalid;
+    uint8_t playerFaces[7];
+    uint8_t areaInfos[250 * 9]; // 250 entries with: uint8 Type(0:Unused, 1:water, 2:land), uint16 x,y, uint32 size
+    bool hasExtraWord_;
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_MAP_HEADER_H_INCLUDED

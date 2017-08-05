@@ -21,35 +21,37 @@
 
 #include "ArchivItem_Bitmap.h"
 
-namespace libsiedler2
+namespace libsiedler2 {
+class ArchivItem_Palette;
+
+/// Basisklasse für Raw-Bitmaps.
+class baseArchivItem_Bitmap_Raw : public virtual baseArchivItem_Bitmap
 {
-    class ArchivItem_Palette;
+public:
+    baseArchivItem_Bitmap_Raw();
 
-    /// Basisklasse für Raw-Bitmaps.
-    class baseArchivItem_Bitmap_Raw : public virtual baseArchivItem_Bitmap
+    baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item);
+
+    ~baseArchivItem_Bitmap_Raw() override;
+
+    /// lädt die Bilddaten aus einer Datei.
+    int load(std::istream& file, const ArchivItem_Palette* palette) override;
+
+    /// schreibt die Bilddaten in eine Datei.
+    int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
+};
+
+/// Klasse für Raw-Bitmaps.
+class ArchivItem_Bitmap_Raw : public baseArchivItem_Bitmap_Raw, public ArchivItem_Bitmap
+{
+public:
+    ArchivItem_Bitmap_Raw() {}
+
+    ArchivItem_Bitmap_Raw(const ArchivItem_Bitmap_Raw& item)
+        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Raw(item)
     {
-        public:
-            baseArchivItem_Bitmap_Raw();
-
-            baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item);
-
-            ~baseArchivItem_Bitmap_Raw() override;
-
-            /// lädt die Bilddaten aus einer Datei.
-            int load(std::istream& file, const ArchivItem_Palette* palette) override;
-
-            /// schreibt die Bilddaten in eine Datei.
-            int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
-    };
-
-    /// Klasse für Raw-Bitmaps.
-    class ArchivItem_Bitmap_Raw : public baseArchivItem_Bitmap_Raw, public ArchivItem_Bitmap
-    {
-        public:
-            ArchivItem_Bitmap_Raw() {}
-
-            ArchivItem_Bitmap_Raw(const ArchivItem_Bitmap_Raw& item) : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Raw(item) {}
-    };
-}
+    }
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_BITMAP_RAW_H_INCLUDED

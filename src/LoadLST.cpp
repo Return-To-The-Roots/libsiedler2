@@ -17,9 +17,9 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
-#include "prototypen.h"
 #include "ErrorCodes.h"
 #include "OpenMemoryStream.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 
 /**
@@ -37,7 +37,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, ArchivInfo& items, con
     if(int ec = openMemoryStream(file, mmapStream))
         return ec;
 
-    libendian::EndianIStreamAdapter<false, MMStream& > lst(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream&> lst(mmapStream);
 
     uint16_t header;
     uint32_t count;

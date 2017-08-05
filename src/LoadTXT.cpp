@@ -16,13 +16,13 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Text.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
+#include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <vector>
 
@@ -42,7 +42,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))
         return ec;
-    libendian::EndianIStreamAdapter<false, MMStream& > fs(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream&> fs(mmapStream);
 
     const size_t fileSize = getIStreamSize(fs.getStream());
     assert(fileSize < std::numeric_limits<uint32_t>::max());
@@ -55,7 +55,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
     items.clear();
 
     // ist es eine TXT-File? (Header 0xE7FD)
-    if( header != (int16_t)0xFDE7 )
+    if(header != (int16_t)0xFDE7)
     {
         // den Header zurückspringen
         fs.setPositionRel(-2);
@@ -65,8 +65,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
         if(ec)
             return ec;
         items.push(item);
-    }
-    else
+    } else
     {
         // "archiviert"
         uint16_t count, unknown;
@@ -128,8 +127,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, boo
                     return res;
 
                 items.push(item);
-            }
-            else
+            } else
                 items.push(NULL);
         }
     }

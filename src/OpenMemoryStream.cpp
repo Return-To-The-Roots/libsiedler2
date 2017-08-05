@@ -21,23 +21,24 @@
 #include <boost/filesystem/operations.hpp>
 #include <iostream>
 
-namespace libsiedler2
+namespace libsiedler2 {
+int openMemoryStream(const std::string& file, MMStream& stream)
 {
-	int openMemoryStream(const std::string& file, MMStream& stream)
-	{
-	    if(file.empty())
-	        return ErrorCode::INVALID_BUFFER;
-	
-	    if(!bfs::exists(file))
-	        return ErrorCode::FILE_NOT_FOUND;
-	
-	    try{
-	        stream.open(bfs::path(file));
-	    } catch(std::exception& e){
-	        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
-	        return ErrorCode::FILE_NOT_ACCESSIBLE;
-	    }
+    if(file.empty())
+        return ErrorCode::INVALID_BUFFER;
 
-        return (!stream) ? ErrorCode::FILE_NOT_ACCESSIBLE : ErrorCode::NONE;
-	}
+    if(!bfs::exists(file))
+        return ErrorCode::FILE_NOT_FOUND;
+
+    try
+    {
+        stream.open(bfs::path(file));
+    } catch(std::exception& e)
+    {
+        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
+        return ErrorCode::FILE_NOT_ACCESSIBLE;
+    }
+
+    return (!stream) ? ErrorCode::FILE_NOT_ACCESSIBLE : ErrorCode::NONE;
 }
+} // namespace libsiedler2

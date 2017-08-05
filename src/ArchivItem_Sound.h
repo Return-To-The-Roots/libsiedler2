@@ -24,34 +24,33 @@
 #include <iosfwd>
 #include <stdint.h>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Basis-Basisklasse für Sounditems.
+class baseArchivItem_Sound : public ArchivItem
 {
-    /// Basis-Basisklasse für Sounditems.
-    class baseArchivItem_Sound : public ArchivItem
-    {
-        public:
-            baseArchivItem_Sound();
-            ~baseArchivItem_Sound() override;
+public:
+    baseArchivItem_Sound();
+    ~baseArchivItem_Sound() override;
 
-            /// liefert den Typ des Sounds.
-            SoundType getType() const;
+    /// liefert den Typ des Sounds.
+    SoundType getType() const;
 
-            /// lädt die Sound-Daten aus einer Datei.
-            virtual int load(std::istream& file, uint32_t length) = 0;
+    /// lädt die Sound-Daten aus einer Datei.
+    virtual int load(std::istream& file, uint32_t length) = 0;
 
-            /// schreibt die Sound-Daten in eine Datei.
-            virtual int write(std::ostream& file) const = 0;
+    /// schreibt die Sound-Daten in eine Datei.
+    virtual int write(std::ostream& file) const = 0;
 
-            static baseArchivItem_Sound* findSubType(std::istream& file);
+    static baseArchivItem_Sound* findSubType(std::istream& file);
 
-        protected:
-            SoundType soundType_;
-    };
+protected:
+    SoundType soundType_;
+};
 
-    /// Basisklasse für Sounditems.
-    class ArchivItem_Sound : public virtual baseArchivItem_Sound
-    {
-    };
-}
+/// Basisklasse für Sounditems.
+class ArchivItem_Sound : public virtual baseArchivItem_Sound
+{
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_H_INCLUDED

@@ -16,10 +16,10 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
+#include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
+#include "prototypen.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 

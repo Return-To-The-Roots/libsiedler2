@@ -16,7 +16,6 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "prototypen.h"
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Bitmap_Raw.h"
@@ -28,8 +27,9 @@
 #include "ArchivItem_Sound.h"
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
-#include "libsiedler2.h"
 #include "IAllocator.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <iostream>
 #include <stdexcept>
@@ -44,12 +44,13 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadType(BobType bobtype, std::istream&lst, ArchivItem *&item, const ArchivItem_Palette* palette)
+int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette)
 {
     if(!lst)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    try{
+    try
+    {
         switch(bobtype)
         {
             case BOBTYPE_SOUND: // WAVs, MIDIs
@@ -61,101 +62,119 @@ int libsiedler2::loader::LoadType(BobType bobtype, std::istream&lst, ArchivItem 
                 baseArchivItem_Sound* nitem = baseArchivItem_Sound::findSubType(lst);
                 if(!nitem)
                     return ErrorCode::WRONG_HEADER;
-                if(int ec = nitem->load(lst, length)){
+                if(int ec = nitem->load(lst, length))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
             {
                 baseArchivItem_Bitmap_RLE* nitem = dynamic_cast<baseArchivItem_Bitmap_RLE*>(getAllocator().create(BOBTYPE_BITMAP_RLE));
-                if(int ec = nitem->load(lst, palette)){
+                if(int ec = nitem->load(lst, palette))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_FONT: // Font
             {
                 ArchivItem_Font* nitem = dynamic_cast<ArchivItem_Font*>(getAllocator().create(BOBTYPE_FONT));
-                if(int ec = nitem->load(lst, palette)){
+                if(int ec = nitem->load(lst, palette))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
             {
                 ArchivItem_Bitmap_Player* nitem = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
-                if(int ec = nitem->load(lst, palette)){
+                if(int ec = nitem->load(lst, palette))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_PALETTE: // Palette
             {
-                ArchivItem_Palette* nitem =  dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
-                if(int ec = nitem->load(lst)){
+                ArchivItem_Palette* nitem = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
+                if(int ec = nitem->load(lst))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_BOB: // Bobfile
             {
                 ArchivItem_Bob* nitem = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
-                if(int ec = nitem->load(lst, palette)){
+                if(int ec = nitem->load(lst, palette))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_BITMAP_SHADOW: // Schatten
             {
-                baseArchivItem_Bitmap_Shadow* nitem = dynamic_cast<baseArchivItem_Bitmap_Shadow*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW));
-                if(int ec = nitem->load(lst, palette)){
+                baseArchivItem_Bitmap_Shadow* nitem =
+                  dynamic_cast<baseArchivItem_Bitmap_Shadow*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW));
+                if(int ec = nitem->load(lst, palette))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_MAP: // Mapfile
             {
                 ArchivItem_Map* nitem = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP));
-                if(int ec = nitem->load(lst, false)){
+                if(int ec = nitem->load(lst, false))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_TEXT: // Textfile
             {
-                ArchivItem_Text* nitem =  dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
-                if(int ec = nitem->load(lst)){
+                ArchivItem_Text* nitem = dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
+                if(int ec = nitem->load(lst))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
+            }
+            break;
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
                 baseArchivItem_Bitmap_Raw* nitem = dynamic_cast<baseArchivItem_Bitmap_Raw*>(getAllocator().create(BOBTYPE_BITMAP_RAW));
-                if(int ec = nitem->load(lst, palette)){
+                if(int ec = nitem->load(lst, palette))
+                {
                     delete nitem;
                     return ec;
                 }
                 item = nitem;
-            } break;
-            case BOBTYPE_NONE:
-                item = NULL;
-                break;
-            default:
-                item = NULL;
-                return ErrorCode::WRONG_FORMAT;
+            }
+            break;
+            case BOBTYPE_NONE: item = NULL; break;
+            default: item = NULL; return ErrorCode::WRONG_FORMAT;
         }
-    }catch(std::exception& e){
+    } catch(std::exception& e)
+    {
         // Mostly error on reading (e.g. unexpected end of file)
         std::cerr << "Error while reading: " << e.what() << std::endl;
         return ErrorCode::CUSTOM;

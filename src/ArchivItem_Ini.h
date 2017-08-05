@@ -19,43 +19,42 @@
 
 #pragma once
 
-#include "ArchivItem.h"
 #include "ArchivInfo.h"
+#include "ArchivItem.h"
 #include <iosfwd>
 #include <string>
 
-namespace libsiedler2
-{
+namespace libsiedler2 {
 
 /// Klasse für INI-Dateien (genauergesagt eine Sektion).
-    class ArchivItem_Ini : public ArchivItem, public ArchivInfo
-    {
-        public:
-            ArchivItem_Ini();
+class ArchivItem_Ini : public ArchivItem, public ArchivInfo
+{
+public:
+    ArchivItem_Ini();
 
-            ArchivItem_Ini(const std::string& name);
+    ArchivItem_Ini(const std::string& name);
 
-            ArchivItem_Ini(const ArchivItem_Ini& item);
+    ArchivItem_Ini(const ArchivItem_Ini& item);
 
-            /// lädt die INI-Daten aus einer Datei.
-            int load(std::istream& file);
+    /// lädt die INI-Daten aus einer Datei.
+    int load(std::istream& file);
 
-            /// schreibt die INI-Daten in eine Datei.
-            int write(std::ostream& file) const;
+    /// schreibt die INI-Daten in eine Datei.
+    int write(std::ostream& file) const;
 
-            /// liest einen Wert aus der Ini
-            std::string getValue(const std::string& name) const;
+    /// liest einen Wert aus der Ini
+    std::string getValue(const std::string& name) const;
 
-            int getValueI(const std::string& name) const;
+    int getValueI(const std::string& name) const;
 
-            /// fügt einen Eintrag hinzu.
-            void addValue(const std::string& name, const std::string& value);
+    /// fügt einen Eintrag hinzu.
+    void addValue(const std::string& name, const std::string& value);
 
-            /// schreibt einen Wert in die Ini
-            void setValue(const std::string& name, const std::string& value);
-            void setValue(const std::string& name, int value);
-    };
+    /// schreibt einen Wert in die Ini
+    void setValue(const std::string& name, const std::string& value);
+    void setValue(const std::string& name, int value);
+};
 
-}
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_INI_H_INCLUDED

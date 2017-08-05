@@ -20,24 +20,25 @@
 #include "ErrorCodes.h"
 #include <iostream>
 
-namespace libsiedler2
+namespace libsiedler2 {
+XMIDI_Track::XMIDI_Track()
 {
-	XMIDI_Track::XMIDI_Track()
-	{}
-	
-    XMIDI_Track::~XMIDI_Track()
-	{}
-	
-    int XMIDI_Track::read(std::istream& file, size_t length)
-	{
-	    data_.resize(length);
-	    if(!file.read(reinterpret_cast<char*>(&data_.front()), length))
-	        return ErrorCode::UNEXPECTED_EOF;
-	    return ErrorCode::NONE;
-	}
-	
-	void XMIDI_Track::clear()
-	{
-	    data_.clear();
-	}
 }
+
+XMIDI_Track::~XMIDI_Track()
+{
+}
+
+int XMIDI_Track::read(std::istream& file, size_t length)
+{
+    data_.resize(length);
+    if(!file.read(reinterpret_cast<char*>(&data_.front()), length))
+        return ErrorCode::UNEXPECTED_EOF;
+    return ErrorCode::NONE;
+}
+
+void XMIDI_Track::clear()
+{
+    data_.clear();
+}
+} // namespace libsiedler2

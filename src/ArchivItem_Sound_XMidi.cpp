@@ -17,15 +17,15 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound_XMidi.h"
-#include "XMIDI_TrackConverter.h"
 #include "ErrorCodes.h"
+#include "XMIDI_TrackConverter.h"
 #include "fileFormatHelpers.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 #include <stdexcept>
 
-namespace libsiedler2{
+namespace libsiedler2 {
 
 /** @class baseArchivItem_Sound_XMidi
  *
@@ -37,7 +37,7 @@ baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound(
     soundType_ = SOUNDTYPE_XMIDI;
 }
 
-baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound( item )
+baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound(item)
 {
     numTracks = item.numTracks;
     ppqs = item.ppqs;
@@ -56,7 +56,7 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
     if(length == 0)
         return ErrorCode::WRONG_HEADER;
 
-    libendian::EndianIStreamAdapter<true, std::istream &> fs(file);
+    libendian::EndianIStreamAdapter<true, std::istream&> fs(file);
     libendian::EndianIStreamAdapter<false, std::istream&> fsLE(file);
     // Position after the current item
     long endPos = fs.getPosition() + length;

@@ -17,14 +17,16 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Raw.h"
-#include "ErrorCodes.h"
 #include "ArchivItem_Palette.h"
+#include "ErrorCodes.h"
 #include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 #include <vector>
-namespace libsiedler2 { class ArchivItem_Palette; }
+namespace libsiedler2 {
+class ArchivItem_Palette;
+}
 /** @class libsiedler2::baseArchivItem_Bitmap_Raw
  *
  *  Basisklasse für Raw-Bitmaps.
@@ -126,7 +128,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
             return ec;
     }
 
-    uint8_t unknown2[8] = { 0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00 };
+    uint8_t unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
     fs << uint16_t(1) << length << buffer << nx_ << ny_ << width << height << unknown2;
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;

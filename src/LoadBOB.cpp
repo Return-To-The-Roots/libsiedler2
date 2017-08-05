@@ -16,13 +16,13 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Bob.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
+#include "ArchivItem_Bob.h"
 #include "ErrorCodes.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/filesystem/path.hpp>
 
@@ -42,7 +42,7 @@ int libsiedler2::loader::LoadBOB(const std::string& file, ArchivInfo& items, con
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))
         return ec;
-    libendian::EndianIStreamAdapter<false, MMStream& > bob(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream&> bob(mmapStream);
 
     // Header einlesen
     uint32_t header;
@@ -59,7 +59,8 @@ int libsiedler2::loader::LoadBOB(const std::string& file, ArchivInfo& items, con
     if(filePath.has_filename())
         item->setName(filePath.filename().string());
 
-    if(int ec = item->load(bob.getStream(), palette)){
+    if(int ec = item->load(bob.getStream(), palette))
+    {
         delete item;
         return ec;
     }

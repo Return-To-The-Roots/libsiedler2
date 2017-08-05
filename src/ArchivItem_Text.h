@@ -20,36 +20,35 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include <string>
 #include <stdint.h>
+#include <string>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Klasse für Texte.
+class ArchivItem_Text : public ArchivItem
 {
-    /// Klasse für Texte.
-    class ArchivItem_Text : public ArchivItem
-    {
-        public:
-            ArchivItem_Text();
+public:
+    ArchivItem_Text();
 
-            ~ArchivItem_Text() override;
+    ~ArchivItem_Text() override;
 
-            /// liest den Text aus einer Datei.
-            int load(std::istream& file, bool conversion = true, uint32_t length = 0);
+    /// liest den Text aus einer Datei.
+    int load(std::istream& file, bool conversion = true, uint32_t length = 0);
 
-            /// schreibt den Text in eine Datei.
-            int write(std::ostream& file, bool conversion = true) const;
+    /// schreibt den Text in eine Datei.
+    int write(std::ostream& file, bool conversion = true) const;
 
-            // liefert den Text.
-            const std::string& getText() const;
-            // Get the text as it will be written to file
-            std::string getFileText(bool convertToOem) const;
+    // liefert den Text.
+    const std::string& getText() const;
+    // Get the text as it will be written to file
+    std::string getFileText(bool convertToOem) const;
 
-            // setzt den Text.
-            void setText(const std::string& text);
+    // setzt den Text.
+    void setText(const std::string& text);
 
-        private:
-            std::string text_;          /// Der Textspeicher.
-    };
-}
+private:
+    std::string text_; /// Der Textspeicher.
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_TEXT_H_INCLUDED

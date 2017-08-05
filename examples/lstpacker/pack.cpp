@@ -15,25 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Siedler II.5 RTTR. If not, see <http://www.gnu.org/licenses/>.
 
-
 #include "pack.h"
 #include "util.h"
 
 #include "libsiedler2/src/ArchivInfo.h"
-#include "libsiedler2/src/ArchivItem_Font.h"
+#include "libsiedler2/src/ArchivItem_Bitmap.h"
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
-#include "libsiedler2/src/ArchivItem_Bitmap.h"
-#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/src/ArchivItem_Font.h"
 #include "libsiedler2/src/IAllocator.h"
+#include "libsiedler2/src/libsiedler2.h"
 
 #include <boost/filesystem.hpp>
-#include <iostream>
-#include <vector>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
+#include <vector>
 
-namespace libsiedler2 { class ArchivItem_Palette; }
+namespace libsiedler2 {
+class ArchivItem_Palette;
+}
 namespace bfs = boost::filesystem;
 
 using namespace std;
@@ -41,7 +42,7 @@ using namespace libsiedler2;
 
 struct fileentry
 {
-    fileentry() : bobtype(BOBTYPE_NONE), nx(0), ny(0) { }
+    fileentry() : bobtype(BOBTYPE_NONE), nx(0), ny(0) {}
     string file;
     string path;
     BobType bobtype;
@@ -50,7 +51,7 @@ struct fileentry
     string type;
 };
 
-bool stringCompare( const fileentry& left, const fileentry& right )
+bool stringCompare(const fileentry& left, const fileentry& right)
 {
     int a, b;
 
@@ -61,7 +62,8 @@ bool stringCompare( const fileentry& left, const fileentry& right )
 
     if(!(aa >> a) || !(bb >> b))
     {
-        for(string::const_iterator lit = left.file.begin(), rit = right.file.begin(); lit != left.file.end() && rit != right.file.end(); ++lit, ++rit)
+        for(string::const_iterator lit = left.file.begin(), rit = right.file.begin(); lit != left.file.end() && rit != right.file.end();
+            ++lit, ++rit)
             if(tolower(*lit) < tolower(*rit))
                 return true;
             else if(tolower(*lit) > tolower(*rit))
@@ -104,7 +106,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
         string whole_file = curPath.filename().string();
         file.path = curPath.string();
 
-        transform ( whole_file.begin(), whole_file.end(), whole_file.begin(), ::tolower );
+        transform(whole_file.begin(), whole_file.end(), whole_file.begin(), ::tolower);
 
         vector<string> wf = explode(whole_file, '.');
         if(wf.back() == "db") // do not add "Thumbs.db"
@@ -163,13 +165,13 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
         std::stringstream nrs;
         int nr = -1;
         nrs << it->file;
-        if(! (nrs >> nr) )
+        if(!(nrs >> nr))
             nr = -1;
 
         ArchivInfo items;
 
         cout << "Reading file " << whole_path;
-        if( nr >= 0 )
+        if(nr >= 0)
             cout << " to " << nr;
         std::cout << ": ";
 
@@ -187,19 +189,16 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                 if((unsigned)nr >= lst->size())
                     lst->alloc_inc(nr - lst->size() + 1);
                 lst->setC(nr, font);
-            }
-            else
+            } else
                 lst->pushC(font);
-        }
-        else if(it->type == "empty" || Load(whole_path, items, palette) != 0)
+        } else if(it->type == "empty" || Load(whole_path, items, palette) != 0)
         {
             lst->alloc_inc(1); // add empty item
             if(it->type == "empty")
                 cout << "ignored" << endl;
             else
                 cout << "failed" << endl;
-        }
-        else
+        } else
         {
             cout << "done" << endl;
             // todo: andere typen als pal und bmp haben evtl mehr items!
@@ -232,14 +231,17 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                     case BOBTYPE_BITMAP_SHADOW:
                     case BOBTYPE_BITMAP_RAW:
                     {
-                        dynamic_cast<ArchivItem_Bitmap*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA, palette);
-                    } break;
+                        dynamic_cast<ArchivItem_Bitmap*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA,
+                                                                    palette);
+                    }
+                    break;
                     case BOBTYPE_BITMAP_PLAYER:
                     {
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA, palette, 128);
-                    } break;
-                    default:
-                        cerr << "Unknown type for " << it->path << endl;
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA,
+                                                                           palette, 128);
+                    }
+                    break;
+                    default: cerr << "Unknown type for " << it->path << endl;
                 }
 
                 neu = n;
@@ -251,8 +253,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
                 if((unsigned)nr >= lst->size())
                     lst->alloc_inc(nr - lst->size() + 1);
                 lst->setC(nr, *neu);
-            }
-            else
+            } else
                 lst->pushC(*neu);
         }
     }
@@ -267,4 +268,3 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
             cout << "done" << endl;
     }
 }
-

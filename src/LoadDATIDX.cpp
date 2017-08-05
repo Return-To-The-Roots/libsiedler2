@@ -17,9 +17,9 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
-#include "prototypen.h"
 #include "ErrorCodes.h"
 #include "OpenMemoryStream.h"
+#include "prototypen.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/filesystem.hpp>
 
@@ -32,7 +32,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette *palette)
+int libsiedler2::loader::LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -54,8 +54,8 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, ArchivInfo& items, 
     if(int ec = openMemoryStream(idxFilepath.string(), mmapStreamIdx))
         return ec;
 
-    libendian::EndianIStreamAdapter<false, MMStream& > dat(mmapStream);
-    libendian::EndianIStreamAdapter<false, MMStream& > idx(mmapStreamIdx);
+    libendian::EndianIStreamAdapter<false, MMStream&> dat(mmapStream);
+    libendian::EndianIStreamAdapter<false, MMStream&> idx(mmapStreamIdx);
 
     // Anzahl einlesen
     uint32_t count;

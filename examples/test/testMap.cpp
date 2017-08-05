@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
 #include "cmpFiles.h"
+#include "config.h"
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>

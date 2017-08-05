@@ -24,38 +24,42 @@
 #include <boost/array.hpp>
 #include <stdint.h>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Basisklasse für MIDI-Sounds.
+class baseArchivItem_Sound_Midi : public virtual baseArchivItem_Sound
 {
-    /// Basisklasse für MIDI-Sounds.
-    class baseArchivItem_Sound_Midi : public virtual baseArchivItem_Sound
+public:
+    baseArchivItem_Sound_Midi();
+
+    baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item);
+
+    ~baseArchivItem_Sound_Midi() override;
+
+    int load(std::istream& file, uint32_t length) override;
+    int write(std::ostream& file) const override;
+
+    const MIDI_Track* getTrack(uint16_t track) const
     {
-        public:
-            baseArchivItem_Sound_Midi();
+        if(track < numTracks)
+            return &tracklist[track];
+        return NULL;
+    }
+    uint16_t getTrackCount() const { return numTracks; }
+    void addTrack(const MIDI_Track& track);
 
-            baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item);
+protected:
+    uint16_t numTracks, ppqs;
+    boost::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
+};
 
-            ~baseArchivItem_Sound_Midi() override;
+/// Klasse für MIDI-Sounds.
+class ArchivItem_Sound_Midi : public virtual baseArchivItem_Sound_Midi, public ArchivItem_Sound
+{
+public:
+    ArchivItem_Sound_Midi() : baseArchivItem_Sound_Midi() {}
 
-            int load(std::istream& file, uint32_t length) override;
-            int write(std::ostream& file) const override;
-
-            const MIDI_Track* getTrack(uint16_t track) const { if(track < numTracks) return &tracklist[track]; return NULL; }
-            uint16_t getTrackCount() const { return numTracks; }
-            void addTrack(const MIDI_Track& track);
-
-        protected:
-            uint16_t numTracks, ppqs;
-            boost::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
-    };
-
-    /// Klasse für MIDI-Sounds.
-    class ArchivItem_Sound_Midi : public virtual baseArchivItem_Sound_Midi, public ArchivItem_Sound
-    {
-        public:
-            ArchivItem_Sound_Midi() : baseArchivItem_Sound_Midi() {}
-
-            ArchivItem_Sound_Midi(const ArchivItem_Sound_Midi& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Midi(item) {}
-    };
-}
+    ArchivItem_Sound_Midi(const ArchivItem_Sound_Midi& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Midi(item) {}
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_MIDI_H_INCLUDED

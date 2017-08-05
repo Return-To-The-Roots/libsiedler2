@@ -21,8 +21,8 @@
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/static_assert.hpp>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 /** @var TRANSPARENT_INDEX
@@ -41,7 +41,8 @@ libsiedler2::ArchivItem_Palette::ArchivItem_Palette()
 }
 
 libsiedler2::ArchivItem_Palette::~ArchivItem_Palette()
-{}
+{
+}
 
 /**
  *  liest die Farbwerte aus einer Datei.

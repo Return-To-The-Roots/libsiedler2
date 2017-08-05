@@ -20,49 +20,56 @@
 #ifndef PixelBuffer_h__
 #define PixelBuffer_h__
 
-#include <vector>
-#include <stdint.h>
 #include <cassert>
+#include <stdint.h>
+#include <vector>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Describes a buffer of pixels
+template<typename T_Pixel>
+class PixelBuffer
 {
-	/// Describes a buffer of pixels
-    template<typename T_Pixel>
-    class PixelBuffer
+public:
+    typedef T_Pixel PixelType;
+
+    PixelBuffer() : width_(0), height_(0) {}
+    PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue);
+    uint16_t getWidth() const { return width_; }
+    uint16_t getHeight() const { return height_; }
+    uint32_t getSize() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
+    uint8_t* getPixelPtr() { return reinterpret_cast<uint8_t*>(&pixels_[0]); }
+    const uint8_t* getPixelPtr() const { return reinterpret_cast<const uint8_t*>(&pixels_[0]); }
+    std::vector<T_Pixel>& getPixels() { return pixels_; }
+    const std::vector<T_Pixel>& getPixels() const { return pixels_; }
+    void clear();
+
+protected:
+    uint32_t calcIdx(uint32_t x, uint32_t y) const
     {
-    public:
-        typedef T_Pixel PixelType;
-
-        PixelBuffer(): width_(0), height_(0){}
-        PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue);
-        uint16_t getWidth() const { return width_; }
-        uint16_t getHeight() const { return height_; }
-        uint32_t getSize() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
-        uint8_t* getPixelPtr() { return reinterpret_cast<uint8_t*>(&pixels_[0]); }
-        const uint8_t* getPixelPtr() const { return reinterpret_cast<const uint8_t*>(&pixels_[0]); }
-        std::vector<T_Pixel>& getPixels() { return pixels_; }
-        const std::vector<T_Pixel>& getPixels() const { return pixels_; }
-        void clear();
-    protected:
-        uint32_t calcIdx(uint32_t x, uint32_t y) const { assert(x < width_ && y < height_); return y * width_ + x; }
-    private:
-        uint16_t width_, height_;
-    protected:
-        std::vector<T_Pixel> pixels_;
-    };
-
-    template<typename T_Pixel>
-    inline PixelBuffer<T_Pixel>::PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue): width_(width), height_(height),
-        pixels_(static_cast<uint32_t>(width) * height, defValue)
-    {}
-
-    template<typename T_Pixel>
-    inline void libsiedler2::PixelBuffer<T_Pixel>::clear()
-    {
-        pixels_.clear();
-        width_ = height_ = 0;
+        assert(x < width_ && y < height_);
+        return y * width_ + x;
     }
 
+private:
+    uint16_t width_, height_;
+
+protected:
+    std::vector<T_Pixel> pixels_;
+};
+
+template<typename T_Pixel>
+inline PixelBuffer<T_Pixel>::PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue)
+    : width_(width), height_(height), pixels_(static_cast<uint32_t>(width) * height, defValue)
+{
 }
+
+template<typename T_Pixel>
+inline void libsiedler2::PixelBuffer<T_Pixel>::clear()
+{
+    pixels_.clear();
+    width_ = height_ = 0;
+}
+
+} // namespace libsiedler2
 
 #endif // PixelBuffer_h__

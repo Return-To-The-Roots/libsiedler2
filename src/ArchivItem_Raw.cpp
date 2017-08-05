@@ -27,20 +27,19 @@
  *  Basisklasse für Rawdaten.
  */
 
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<uint8_t>& initialData)
-    : ArchivItem(), data(initialData)
+libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<uint8_t>& initialData) : ArchivItem(), data(initialData)
 {
     bobtype_ = BOBTYPE_RAW;
 }
 
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw()
-    : ArchivItem()
+libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw() : ArchivItem()
 {
     bobtype_ = BOBTYPE_RAW;
 }
 
 libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
-{}
+{
+}
 
 /**
  *  lädt die Rawdaten aus einer Datei.

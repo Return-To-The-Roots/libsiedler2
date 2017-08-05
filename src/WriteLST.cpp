@@ -17,8 +17,8 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
-#include "prototypen.h"
 #include "ErrorCodes.h"
+#include "prototypen.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 #include <limits>
@@ -77,5 +77,6 @@ int libsiedler2::loader::WriteLST(const std::string& file, const ArchivInfo& ite
             return ec;
     }
 
-    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;;
+    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
+    ;
 }

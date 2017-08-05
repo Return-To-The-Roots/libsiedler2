@@ -23,7 +23,7 @@
 #include <cstddef>
 #include <vector>
 
-namespace libsiedler2{
+namespace libsiedler2 {
 
 /**
  *  schreibt das Bitmap in einen Puffer.
@@ -42,17 +42,9 @@ namespace libsiedler2{
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::print(uint8_t* buffer,
-        uint16_t buffer_width,
-        uint16_t buffer_height,
-        TextureFormat buffer_format,
-        const ArchivItem_Palette* palette /*= NULL*/,
-        uint16_t to_x /*= 0*/,
-        uint16_t to_y /*= 0*/,
-        uint16_t from_x /*= 0*/,
-        uint16_t from_y /*= 0*/,
-        uint16_t from_w /*= 0*/,
-        uint16_t from_h /*= 0*/) const
+int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
+                                 const ArchivItem_Palette* palette /*= NULL*/, uint16_t to_x /*= 0*/, uint16_t to_y /*= 0*/,
+                                 uint16_t from_x /*= 0*/, uint16_t from_y /*= 0*/, uint16_t from_w /*= 0*/, uint16_t from_h /*= 0*/) const
 {
     if(buffer_width == 0 || buffer_height == 0)
         return ErrorCode::NONE;
@@ -82,7 +74,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
             size_t posTex = (y * getWidth() + x) * texBpp;
             if(getFormat() == FORMAT_PALETTED)
             {
-                if(pxlData[posTex] == TRANSPARENT_INDEX)  // bei Transparenz wird buffer nicht verändert
+                if(pxlData[posTex] == TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
                     buffer[posBuf] = pxlData[posTex];
@@ -90,7 +82,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
                     ColorARGB(palette->get(pxlData[posTex])).toBGRA(&buffer[posBuf]);
             } else
             {
-                if(pxlData[posTex + 3] == 0)  // bei Transparenz wird buffer nicht verändert
+                if(pxlData[posTex + 3] == 0) // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
                     buffer[posBuf] = getPixelClrIdx(x, y, palette);
@@ -119,13 +111,8 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer,
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::create(uint16_t width,
-        uint16_t height,
-        const uint8_t* buffer,
-        uint16_t buffer_width,
-        uint16_t buffer_height,
-        TextureFormat buffer_format,
-        const ArchivItem_Palette* palette /*= NULL*/)
+int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
+                                  TextureFormat buffer_format, const ArchivItem_Palette* palette /*= NULL*/)
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;

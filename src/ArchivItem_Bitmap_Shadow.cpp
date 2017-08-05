@@ -40,7 +40,8 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow()
     bobtype_ = BOBTYPE_BITMAP_SHADOW;
 }
 
-libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item) : baseArchivItem_Bitmap(item)
+libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item)
+    : baseArchivItem_Bitmap(item)
 {
     bobtype_ = BOBTYPE_BITMAP_SHADOW;
 }
@@ -116,7 +117,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
         // FF überspringen
         ++position;
 
-        if(position != length )
+        if(position != length)
             return ErrorCode::WRONG_FORMAT;
         int ec = create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette);
         if(ec)

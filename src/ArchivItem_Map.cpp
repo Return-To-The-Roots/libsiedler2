@@ -19,15 +19,16 @@
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Map_Header.h"
 #include "ArchivItem_Raw.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
 #include "ErrorCodes.h"
+#include "IAllocator.h"
+#include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 
-struct BlockHeader{ //-V802
-    uint16_t id; // Must be 0x2710
+struct BlockHeader
+{                     //-V802
+    uint16_t id;      // Must be 0x2710
     uint32_t unknown; // Always 0
     uint16_t w, h;
     uint16_t multiplier; // Not sure, always 1
@@ -88,7 +89,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return ErrorCode::WRONG_FORMAT;
         }
         // Blocksize must match extents
-        if(bHeader.blockLength != static_cast<uint32_t>(w)*static_cast<uint32_t>(h))
+        if(bHeader.blockLength != static_cast<uint32_t>(w) * static_cast<uint32_t>(h))
         {
             assert(false);
             return ErrorCode::WRONG_FORMAT;

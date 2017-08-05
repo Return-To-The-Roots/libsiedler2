@@ -21,44 +21,46 @@
 #include <iostream>
 #include <limits>
 
-namespace libsiedler2
+namespace libsiedler2 {
+MIDI_Track::MIDI_Track()
 {
-	MIDI_Track::MIDI_Track()
-	{}
-
-    MIDI_Track::MIDI_Track(const std::vector<uint8_t>& data): mid_data(data)
-    {}
-	
-	MIDI_Track::~MIDI_Track()
-	{}
-	
-    int MIDI_Track::read(std::istream& file, size_t length)
-	{
-	    clear();
-	    if(length == 0)
-	        return ErrorCode::NONE;
-	
-        mid_data.resize(length);
-	    if(!file.read(reinterpret_cast<char*>(&mid_data[0]), length))
-	        return ErrorCode::UNEXPECTED_EOF;
-	    return ErrorCode::NONE;
-	}
-	
-	void MIDI_Track::clear()
-	{
-	    mid_data.clear();
-	}
-	
-	const uint8_t* MIDI_Track::getMid() const
-	{
-	    if(mid_data.empty())
-	        return NULL;
-        return &mid_data[0];
-	}
-	
-	uint32_t MIDI_Track::getMidLength() const
-	{
-	    assert(mid_data.size() < std::numeric_limits<uint32_t>::max());
-	    return static_cast<uint32_t>(mid_data.size());
-	}
 }
+
+MIDI_Track::MIDI_Track(const std::vector<uint8_t>& data) : mid_data(data)
+{
+}
+
+MIDI_Track::~MIDI_Track()
+{
+}
+
+int MIDI_Track::read(std::istream& file, size_t length)
+{
+    clear();
+    if(length == 0)
+        return ErrorCode::NONE;
+
+    mid_data.resize(length);
+    if(!file.read(reinterpret_cast<char*>(&mid_data[0]), length))
+        return ErrorCode::UNEXPECTED_EOF;
+    return ErrorCode::NONE;
+}
+
+void MIDI_Track::clear()
+{
+    mid_data.clear();
+}
+
+const uint8_t* MIDI_Track::getMid() const
+{
+    if(mid_data.empty())
+        return NULL;
+    return &mid_data[0];
+}
+
+uint32_t MIDI_Track::getMidLength() const
+{
+    assert(mid_data.size() < std::numeric_limits<uint32_t>::max());
+    return static_cast<uint32_t>(mid_data.size());
+}
+} // namespace libsiedler2

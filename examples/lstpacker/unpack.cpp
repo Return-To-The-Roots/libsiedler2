@@ -17,19 +17,19 @@
 
 #include "unpack.h"
 #include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/ArchivItem_BitmapBase.h"
+#include "libsiedler2/src/ArchivItem_Bob.h"
+#include "libsiedler2/src/ArchivItem_Font.h"
 #include "libsiedler2/src/ArchivItem_Sound.h"
 #include "libsiedler2/src/ArchivItem_Sound_Wave.h"
-#include "libsiedler2/src/ArchivItem_Font.h"
-#include "libsiedler2/src/ArchivItem_Bob.h"
 #include "libsiedler2/src/ArchivItem_Text.h"
-#include "libsiedler2/src/ArchivItem_BitmapBase.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
-#include <iostream>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <vector>
-#include <iomanip>
 
 using namespace std;
 using namespace libsiedler2;
@@ -62,7 +62,6 @@ void checkTxtExtraction(const string& directory, const ArchivInfo& lst)
                 fTxt << " [error]";
             else if(!txt->getText().empty())
                 fTxt.seekp(-1, std::ios_base::cur); // Remove NULL terminator
-
         }
         fTxt << char('\n');
     }
@@ -86,7 +85,6 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             newfile << std::hex << std::setfill('0') << std::setw(4);
         newfile << i << std::dec << ".";
 
-
         switch(item->getBobType())
         {
             case BOBTYPE_SOUND: // WAVs, MIDIs
@@ -99,9 +97,7 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
 
                 switch(subtype)
                 {
-                    case SOUNDTYPE_NONE:
-                        cerr << "Unsupported sound ignored: " << newfile.str() << endl;
-                        break;
+                    case SOUNDTYPE_NONE: cerr << "Unsupported sound ignored: " << newfile.str() << endl; break;
                     case SOUNDTYPE_MIDI: // MIDI
                         cerr << "Unsupported midi sound ignored: " << newfile.str() << endl;
                         break;
@@ -116,10 +112,10 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                         if(fwave && wave && wave->write(fwave, false) == 0)
                         {
                             cout << "done" << endl;
-                        }
-                        else
+                        } else
                             cout << "failed" << endl;
-                    } break;
+                    }
+                    break;
                     case SOUNDTYPE_XMIDI: // XMIDI
                         cerr << "Unsupported xmidi sound ignored: " << newfile.str() << endl;
                         break;
@@ -127,7 +123,8 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                         cerr << "Unsupported other sound ignored: " << newfile.str() << endl;
                         break;
                 }
-            } break;
+            }
+            break;
             case BOBTYPE_FONT: // Font
             {
                 cout << "extracting " << newfile.str() << ": ";
@@ -141,7 +138,8 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                     newfile << "fon";
 
                 unpack(newfile.str(), *font, palette, font->isUnicode ? "U+" : "");
-            } break;
+            }
+            break;
             case BOBTYPE_PALETTE: // Palette
             {
                 ArchivInfo items;
@@ -154,12 +152,14 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
-            } break;
+            }
+            break;
             case BOBTYPE_BOB: // Bobfiles
             {
                 const ArchivItem_Bob* bob = dynamic_cast<const ArchivItem_Bob*>(item);
                 unpack(directory, *bob, palette);
-            } break;
+            }
+            break;
             case BOBTYPE_MAP: // Mapfiles
                 cerr << "MapFile is not supported. Ignored: " << newfile.str() << endl;
                 break;
@@ -175,8 +175,8 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                     cout << "done" << endl;
                 } else
                     cout << "failed" << endl;
-
-            } break;
+            }
+            break;
             case BOBTYPE_RAW: // Raw-Item
                 cerr << "Raw item is not supported. Ignored: " << newfile.str() << endl;
                 break;
@@ -189,21 +189,21 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                     newfile << "rle.";
                     filenameAdjusted = true;
                 }
-                //no break
+            // no break
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
                 if(!filenameAdjusted)
                 {
                     newfile << "player.";
                     filenameAdjusted = true;
                 }
-                //no break
+            // no break
             case BOBTYPE_BITMAP_SHADOW: // Schatten
                 if(!filenameAdjusted)
                 {
                     newfile << "shadow.";
                     filenameAdjusted = true;
                 }
-                //no break
+            // no break
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
                 ArchivInfo items;
@@ -218,9 +218,9 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
-            } break;
-            default:
-                cerr << "Unhandled bobtype: " << item->getBobType() << endl;
+            }
+            break;
+            default: cerr << "Unhandled bobtype: " << item->getBobType() << endl;
         }
     }
 

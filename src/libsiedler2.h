@@ -22,27 +22,25 @@
 #include "enumTypes.h"
 #include <string>
 
-namespace libsiedler2
-{
-    // Fwd decl
-    class ArchivInfo;
-    class ArchivItem_Palette;
-    class IAllocator;
+namespace libsiedler2 {
+// Fwd decl
+class ArchivInfo;
+class ArchivItem_Palette;
+class IAllocator;
 
-    /// Setzt das verwendete Texturausgabeformat.
-    TextureFormat setGlobalTextureFormat(TextureFormat format);
-    /// liefert das verwendete Texturausgabeformat.
-    TextureFormat getGlobalTextureFormat();
+/// Setzt das verwendete Texturausgabeformat.
+TextureFormat setGlobalTextureFormat(TextureFormat format);
+/// liefert das verwendete Texturausgabeformat.
+TextureFormat getGlobalTextureFormat();
 
+const IAllocator& getAllocator();
+/// Setzt den Item-Allocator.
+void setAllocator(IAllocator* newAllocator);
 
-    const IAllocator& getAllocator();
-    /// Setzt den Item-Allocator.
-    void setAllocator(IAllocator* newAllocator);
-
-    /// Lädt die Datei im Format ihrer Endung.
-    int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
-    /// Schreibt die Datei im Format ihrer Endung.
-    int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
-}
+/// Lädt die Datei im Format ihrer Endung.
+int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+/// Schreibt die Datei im Format ihrer Endung.
+int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+} // namespace libsiedler2
 
 #endif // !LIBSIEDLER2_H_INCLUDED

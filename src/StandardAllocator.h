@@ -20,16 +20,16 @@
 
 #include "IAllocator.h"
 
-namespace libsiedler2
-{
-    class ArchivItem;
+namespace libsiedler2 {
+class ArchivItem;
 
-    class StandardAllocator: public IAllocator{
-    public:
-        ~StandardAllocator() override{}
-        ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const override;
-        ArchivItem* clone(const ArchivItem& item) const override;
-    };
+class StandardAllocator : public IAllocator
+{
+public:
+    ~StandardAllocator() override {}
+    ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const override;
+    ArchivItem* clone(const ArchivItem& item) const override;
+};
 
 } // namespace libsiedler2
 

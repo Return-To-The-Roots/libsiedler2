@@ -16,13 +16,13 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
+#include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
 
 /**
  *  lädt eine ACT-File in ein ArchivInfo.
@@ -40,11 +40,12 @@ int libsiedler2::loader::LoadACT(const std::string& file, ArchivInfo& items)
 
     size_t size = getIStreamSize(act);
     // sind es 256*3 Bytes, also somit 8bit-RGB?
-    if(size != 256*3)
+    if(size != 256 * 3)
         return ErrorCode::WRONG_HEADER;
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
-    if(int ec = palette->load(act, false)){
+    if(int ec = palette->load(act, false))
+    {
         delete palette;
         return ec;
     }

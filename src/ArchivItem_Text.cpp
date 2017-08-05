@@ -17,11 +17,11 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Text.h"
-#include "oem.h"
 #include "ErrorCodes.h"
+#include "oem.h"
 #include <iostream>
-#include <vector>
 #include <limits>
+#include <vector>
 
 /** @class libsiedler2::ArchivItem_Text
  *
@@ -44,7 +44,8 @@ libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem()
 }
 
 libsiedler2::ArchivItem_Text::~ArchivItem_Text()
-{}
+{
+}
 
 /**
  *  liest den Text aus einer Datei.
@@ -70,12 +71,10 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
         text.resize(length);
         if(!file.read(&text.front(), length))
             return ErrorCode::UNEXPECTED_EOF;
-    }else
+    } else
     {
         // Read all that is there
-        text.assign(
-            std::istreambuf_iterator<char>(file), 
-            std::istreambuf_iterator<char>());
+        text.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     }
 
     // Add NULL terminator if it is missing

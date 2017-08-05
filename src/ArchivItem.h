@@ -23,30 +23,29 @@
 #include <boost/config.hpp>
 #include <string>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Basisklasse der Archivelemente.
+class ArchivItem
 {
-    /// Basisklasse der Archivelemente.
-    class ArchivItem
-    {
-        public:
-            ArchivItem();
+public:
+    ArchivItem();
 
-            virtual ~ArchivItem();
+    virtual ~ArchivItem();
 
-            /// liefert den Bobtype des Items.
-            BobType getBobType() const { return bobtype_; }
+    /// liefert den Bobtype des Items.
+    BobType getBobType() const { return bobtype_; }
 
-            /// setzt den Namen des Items.
-            void setName(const std::string& name) { name_ = name; }
+    /// setzt den Namen des Items.
+    void setName(const std::string& name) { name_ = name; }
 
-            /// liefert den Namen des Items.
-            std::string getName() const { return name_; }
+    /// liefert den Namen des Items.
+    std::string getName() const { return name_; }
 
-        protected:
-            BobType bobtype_; /// Bobtype des Elements.
-            std::string name_; /// Name des Elements.
-            BOOST_DELETED_FUNCTION(ArchivItem& operator=(const ArchivItem&));
-    };
-}
+protected:
+    BobType bobtype_;  /// Bobtype des Elements.
+    std::string name_; /// Name des Elements.
+    BOOST_DELETED_FUNCTION(ArchivItem& operator=(const ArchivItem&));
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_H_INCLUDED

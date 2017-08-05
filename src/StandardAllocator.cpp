@@ -35,126 +35,121 @@
 #include "ArchivItem_Sound_XMidi.h"
 #include "ArchivItem_Text.h"
 
-namespace libsiedler2
+namespace libsiedler2 {
+
+/**
+ *  Der Standard-Item-Allocator.
+ *
+ *  @param[in] type    Der Typ des Items
+ *  @param[in] subtype Der Subtyp des Items
+ *
+ */
+ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
 {
-
-    /**
-     *  Der Standard-Item-Allocator.
-     *
-     *  @param[in] type    Der Typ des Items
-     *  @param[in] subtype Der Subtyp des Items
-     *
-     */
-    ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
+    switch(type)
     {
-        switch(type)
+        case BOBTYPE_SOUND: // WAVs, MIDIs
         {
-            case BOBTYPE_SOUND: // WAVs, MIDIs
+            switch(subtype)
             {
-                switch(subtype)
-                {
-                    case SOUNDTYPE_NONE:
-                        return NULL;
-                    case SOUNDTYPE_MIDI: // MIDI
-                        return new ArchivItem_Sound_Midi();
-                    case SOUNDTYPE_WAVE: // WAV
-                        return new ArchivItem_Sound_Wave();
-                    case SOUNDTYPE_XMIDI: // XMIDI
-                        return new ArchivItem_Sound_XMidi();
-                    case SOUNDTYPE_OTHER: // Andere
-                        return new ArchivItem_Sound_Other();
-                }
-                break;
+                case SOUNDTYPE_NONE: return NULL;
+                case SOUNDTYPE_MIDI: // MIDI
+                    return new ArchivItem_Sound_Midi();
+                case SOUNDTYPE_WAVE: // WAV
+                    return new ArchivItem_Sound_Wave();
+                case SOUNDTYPE_XMIDI: // XMIDI
+                    return new ArchivItem_Sound_XMidi();
+                case SOUNDTYPE_OTHER: // Andere
+                    return new ArchivItem_Sound_Other();
             }
-            case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
-                return new ArchivItem_Bitmap_RLE();
-            case BOBTYPE_FONT: // Font
-                return new ArchivItem_Font();
-            case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
-                return new ArchivItem_Bitmap_Player();
-            case BOBTYPE_PALETTE: // Palette
-                return new ArchivItem_Palette();
-            case BOBTYPE_BOB: // Bobfiles
-                return new ArchivItem_Bob();
-            case BOBTYPE_BITMAP_SHADOW: // Schatten
-                return new ArchivItem_Bitmap_Shadow();
-            case BOBTYPE_MAP: // Mapfiles
-                return new ArchivItem_Map();
-            case BOBTYPE_TEXT: // Text
-                return new ArchivItem_Text();
-            case BOBTYPE_RAW: // Raw-Item
-                return new ArchivItem_Raw();
-            case BOBTYPE_MAP_HEADER: // Mapheader-Item
-                return new ArchivItem_Map_Header();
-            case BOBTYPE_INI: // INI-Datei-Item
-                return new ArchivItem_Ini();
-            case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-                return new ArchivItem_Bitmap_Raw();
-            default:
-                return NULL;
+            break;
         }
-        return NULL;
+        case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
+            return new ArchivItem_Bitmap_RLE();
+        case BOBTYPE_FONT: // Font
+            return new ArchivItem_Font();
+        case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
+            return new ArchivItem_Bitmap_Player();
+        case BOBTYPE_PALETTE: // Palette
+            return new ArchivItem_Palette();
+        case BOBTYPE_BOB: // Bobfiles
+            return new ArchivItem_Bob();
+        case BOBTYPE_BITMAP_SHADOW: // Schatten
+            return new ArchivItem_Bitmap_Shadow();
+        case BOBTYPE_MAP: // Mapfiles
+            return new ArchivItem_Map();
+        case BOBTYPE_TEXT: // Text
+            return new ArchivItem_Text();
+        case BOBTYPE_RAW: // Raw-Item
+            return new ArchivItem_Raw();
+        case BOBTYPE_MAP_HEADER: // Mapheader-Item
+            return new ArchivItem_Map_Header();
+        case BOBTYPE_INI: // INI-Datei-Item
+            return new ArchivItem_Ini();
+        case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
+            return new ArchivItem_Bitmap_Raw();
+        default: return NULL;
     }
+    return NULL;
+}
 
-    /**
-     *  Der Standard-Item-Allocator.
-     *
-     *  @param[in] item    Das zu kopierende Item
-     *
-     */
-    ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
+/**
+ *  Der Standard-Item-Allocator.
+ *
+ *  @param[in] item    Das zu kopierende Item
+ *
+ */
+ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
+{
+    BobType type = static_cast<BobType>(item.getBobType());
+
+    switch(type)
     {
-        BobType type = static_cast<BobType>(item.getBobType());
-
-        switch(type)
+        case BOBTYPE_SOUND: // WAVs, MIDIs
         {
-            case BOBTYPE_SOUND: // WAVs, MIDIs
-            {
-                SoundType subtype = static_cast<SoundType>(dynamic_cast<const ArchivItem_Sound&>(item).getType());
+            SoundType subtype = static_cast<SoundType>(dynamic_cast<const ArchivItem_Sound&>(item).getType());
 
-                switch(subtype)
-                {
-                    case SOUNDTYPE_NONE:
-                        return NULL;
-                    case SOUNDTYPE_MIDI: // MIDI
-                        return new ArchivItem_Sound_Midi( dynamic_cast<const ArchivItem_Sound_Midi&>(item) );
-                    case SOUNDTYPE_WAVE: // WAV
-                        return new ArchivItem_Sound_Wave( dynamic_cast<const ArchivItem_Sound_Wave&>(item) );
-                    case SOUNDTYPE_XMIDI: // XMIDI
-                        return new ArchivItem_Sound_XMidi( dynamic_cast<const ArchivItem_Sound_XMidi&>(item) );
-                    case SOUNDTYPE_OTHER: // Andere
-                        return new ArchivItem_Sound_Other( dynamic_cast<const ArchivItem_Sound_Other&>(item) );
-                }
-                break;
+            switch(subtype)
+            {
+                case SOUNDTYPE_NONE: return NULL;
+                case SOUNDTYPE_MIDI: // MIDI
+                    return new ArchivItem_Sound_Midi(dynamic_cast<const ArchivItem_Sound_Midi&>(item));
+                case SOUNDTYPE_WAVE: // WAV
+                    return new ArchivItem_Sound_Wave(dynamic_cast<const ArchivItem_Sound_Wave&>(item));
+                case SOUNDTYPE_XMIDI: // XMIDI
+                    return new ArchivItem_Sound_XMidi(dynamic_cast<const ArchivItem_Sound_XMidi&>(item));
+                case SOUNDTYPE_OTHER: // Andere
+                    return new ArchivItem_Sound_Other(dynamic_cast<const ArchivItem_Sound_Other&>(item));
             }
-            case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
-                return new ArchivItem_Bitmap_RLE( dynamic_cast<const ArchivItem_Bitmap_RLE&>(item) );
-            case BOBTYPE_FONT: // Font
-                return new ArchivItem_Font( dynamic_cast<const ArchivItem_Font&>(item) );
-            case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
-                return new ArchivItem_Bitmap_Player( dynamic_cast<const ArchivItem_Bitmap_Player&>(item) );
-            case BOBTYPE_PALETTE: // Palette
-                return new ArchivItem_Palette( dynamic_cast<const ArchivItem_Palette&>(item) );
-            case BOBTYPE_BOB: // Bobfiles
-                return new ArchivItem_Bob( dynamic_cast<const ArchivItem_Bob&>(item) );
-            case BOBTYPE_BITMAP_SHADOW: // Schatten
-                return new ArchivItem_Bitmap_Shadow( dynamic_cast<const ArchivItem_Bitmap_Shadow&>(item) );
-            case BOBTYPE_MAP: // Mapfiles
-                return new ArchivItem_Map( dynamic_cast<const ArchivItem_Map&>(item) );
-            case BOBTYPE_TEXT: // Text
-                return new ArchivItem_Text( dynamic_cast<const ArchivItem_Text&>(item) );
-            case BOBTYPE_RAW: // Raw-Item
-                return new ArchivItem_Raw( dynamic_cast<const ArchivItem_Raw&>(item) );
-            case BOBTYPE_MAP_HEADER: // Mapheader-Item
-                return new ArchivItem_Map_Header( dynamic_cast<const ArchivItem_Map_Header&>(item) );
-            case BOBTYPE_INI: // INI-Datei-Item
-                return new ArchivItem_Ini( dynamic_cast<const ArchivItem_Ini&>(item) );
-            case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-                return new ArchivItem_Bitmap_Raw( dynamic_cast<const ArchivItem_Bitmap_Raw&>(item) );
-            default:
-                return NULL;
+            break;
         }
-        return NULL;
+        case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
+            return new ArchivItem_Bitmap_RLE(dynamic_cast<const ArchivItem_Bitmap_RLE&>(item));
+        case BOBTYPE_FONT: // Font
+            return new ArchivItem_Font(dynamic_cast<const ArchivItem_Font&>(item));
+        case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
+            return new ArchivItem_Bitmap_Player(dynamic_cast<const ArchivItem_Bitmap_Player&>(item));
+        case BOBTYPE_PALETTE: // Palette
+            return new ArchivItem_Palette(dynamic_cast<const ArchivItem_Palette&>(item));
+        case BOBTYPE_BOB: // Bobfiles
+            return new ArchivItem_Bob(dynamic_cast<const ArchivItem_Bob&>(item));
+        case BOBTYPE_BITMAP_SHADOW: // Schatten
+            return new ArchivItem_Bitmap_Shadow(dynamic_cast<const ArchivItem_Bitmap_Shadow&>(item));
+        case BOBTYPE_MAP: // Mapfiles
+            return new ArchivItem_Map(dynamic_cast<const ArchivItem_Map&>(item));
+        case BOBTYPE_TEXT: // Text
+            return new ArchivItem_Text(dynamic_cast<const ArchivItem_Text&>(item));
+        case BOBTYPE_RAW: // Raw-Item
+            return new ArchivItem_Raw(dynamic_cast<const ArchivItem_Raw&>(item));
+        case BOBTYPE_MAP_HEADER: // Mapheader-Item
+            return new ArchivItem_Map_Header(dynamic_cast<const ArchivItem_Map_Header&>(item));
+        case BOBTYPE_INI: // INI-Datei-Item
+            return new ArchivItem_Ini(dynamic_cast<const ArchivItem_Ini&>(item));
+        case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
+            return new ArchivItem_Bitmap_Raw(dynamic_cast<const ArchivItem_Bitmap_Raw&>(item));
+        default: return NULL;
     }
+    return NULL;
+}
 
 } // namespace libsiedler2

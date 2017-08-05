@@ -24,35 +24,39 @@
 
 #include <iosfwd>
 
-namespace libsiedler2 { class ArchivItem_Palette; }
-
-namespace libsiedler2
-{
-    /// Basisklasse für Shadow-Bitmaps.
-    class baseArchivItem_Bitmap_Shadow : public virtual baseArchivItem_Bitmap
-    {
-        public:
-            baseArchivItem_Bitmap_Shadow();
-
-            baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item);
-
-            ~baseArchivItem_Bitmap_Shadow() override;
-
-            /// lädt die Bilddaten aus einer Datei.
-            int load(std::istream& file, const ArchivItem_Palette* palette) override;
-
-            /// schreibt die Bilddaten in eine Datei.
-            int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
-    };
-
-    /// Klasse für Shadow-Bitmaps.
-    class ArchivItem_Bitmap_Shadow : public baseArchivItem_Bitmap_Shadow, public ArchivItem_Bitmap
-    {
-        public:
-            ArchivItem_Bitmap_Shadow() {}
-
-            ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item) : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item) {}
-    };
+namespace libsiedler2 {
+class ArchivItem_Palette;
 }
+
+namespace libsiedler2 {
+/// Basisklasse für Shadow-Bitmaps.
+class baseArchivItem_Bitmap_Shadow : public virtual baseArchivItem_Bitmap
+{
+public:
+    baseArchivItem_Bitmap_Shadow();
+
+    baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item);
+
+    ~baseArchivItem_Bitmap_Shadow() override;
+
+    /// lädt die Bilddaten aus einer Datei.
+    int load(std::istream& file, const ArchivItem_Palette* palette) override;
+
+    /// schreibt die Bilddaten in eine Datei.
+    int write(std::ostream& file, const ArchivItem_Palette* palette) const override;
+};
+
+/// Klasse für Shadow-Bitmaps.
+class ArchivItem_Bitmap_Shadow : public baseArchivItem_Bitmap_Shadow, public ArchivItem_Bitmap
+{
+public:
+    ArchivItem_Bitmap_Shadow() {}
+
+    ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item)
+        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item)
+    {
+    }
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_BITMAP_SHADOW_H_INCLUDED

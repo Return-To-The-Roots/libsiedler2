@@ -15,32 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
-#include "cmpFiles.h"
-#include "LoadPalette.h"
 #include "ColorOutput.h"
+#include "LoadPalette.h"
+#include "cmpFiles.h"
+#include "config.h"
 #include "libsiedler2/src/ArchivInfo.h"
-#include "libsiedler2/src/libsiedler2.h"
-#include "libsiedler2/src/ArchivItem_Bitmap_Raw.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
+#include "libsiedler2/src/ArchivItem_Bitmap_Raw.h"
 #include "libsiedler2/src/ColorARGB.h"
 #include "libsiedler2/src/ErrorCodes.h"
-#include <boost/filesystem.hpp>
-#include <boost/test/unit_test.hpp>
+#include "libsiedler2/src/libsiedler2.h"
 #include <boost/assign/std/vector.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
+#include <boost/test/unit_test.hpp>
 #include <algorithm>
 
 struct Rect
 {
     int x, y;
     unsigned w, h;
-    Rect(){}
-    Rect(int x, int y, unsigned w, unsigned h): x(x), y(y), w(w), h(h){}
-    bool operator==(const Rect& rhs) const
-    {
-        return x == rhs.x && y == rhs.y && w == rhs.w && h == rhs.h;
-    }
+    Rect() {}
+    Rect(int x, int y, unsigned w, unsigned h) : x(x), y(y), w(w), h(h) {}
+    bool operator==(const Rect& rhs) const { return x == rhs.x && y == rhs.y && w == rhs.w && h == rhs.h; }
 };
 
 std::ostream& operator<<(std::ostream& os, const Rect& rect)
@@ -115,7 +112,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
     BOOST_REQUIRE(bfs::exists(bmpPath));
     ArchivInfo archiv;
     BOOST_REQUIRE(testLoad(0, bmpPath, archiv));
-    ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase *>(archiv[0]);
+    ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase*>(archiv[0]);
     BOOST_REQUIRE(bmp);
     BOOST_REQUIRE(bmp->getPalette());
     // We want to write as paletted again
@@ -127,8 +124,8 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
 struct FormatSetter
 {
     const TextureFormat orig;
-    FormatSetter(TextureFormat newFmt): orig(setGlobalTextureFormat(newFmt)){}
-    ~FormatSetter(){ setGlobalTextureFormat(orig); }
+    FormatSetter(TextureFormat newFmt) : orig(setGlobalTextureFormat(newFmt)) {}
+    ~FormatSetter() { setGlobalTextureFormat(orig); }
 };
 
 // Defines some bitmap files for testing and their properties
@@ -138,12 +135,15 @@ struct TestBitmaps
     {
         std::string filename;
         bool isPaletted, containsPalette, supportsBoth;
-        Info(){}
-        Info(const std::string& filename, bool isPaletted, bool containsPalette, bool supportsBoth = false):
-            filename(filename), isPaletted(isPaletted), containsPalette(containsPalette), supportsBoth(supportsBoth){}
+        Info() {}
+        Info(const std::string& filename, bool isPaletted, bool containsPalette, bool supportsBoth = false)
+            : filename(filename), isPaletted(isPaletted), containsPalette(containsPalette), supportsBoth(supportsBoth)
+        {
+        }
     };
     std::vector<Info> files;
-    TestBitmaps(){
+    TestBitmaps()
+    {
         files.push_back(Info("bmpPlayer.lst", true, false));             // Player bitmap
         files.push_back(Info("bmpRaw.lst", true, false));                // Raw bitmap in lst
         files.push_back(Info("bmpShadow.lst", true, false));             // Shadow bitmap
@@ -152,7 +152,6 @@ struct TestBitmaps
         files.push_back(Info("pal.bmp", true, true, true));              // Paletted raw bitmap
         files.push_back(Info("test.lbm", true, true));                   // Paletted bitmap with palette included in lbm
     }
-
 };
 
 ArchivItem_BitmapBase* getFirstBitmap(ArchivInfo& archiv)
@@ -200,8 +199,8 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
         BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
         {
             ArchivInfo archiv;
-            if((curFmt == FORMAT_PALETTED && !testFile.containsPalette) ||
-                (curFmt == FORMAT_BGRA && testFile.isPaletted && !testFile.containsPalette))
+            if((curFmt == FORMAT_PALETTED && !testFile.containsPalette)
+               || (curFmt == FORMAT_BGRA && testFile.isPaletted && !testFile.containsPalette))
             {
                 // Conversion required but no palette
                 BOOST_REQUIRE(testLoad(ErrorCode::PALETTE_MISSING, "testFiles/" + testFile.filename, archiv));
@@ -211,9 +210,11 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
                 BOOST_REQUIRE(testLoad(0, "testFiles/" + testFile.filename, archiv));
                 // For paletted bitmaps we must have a palette, the others must not have one
                 if(curFmt == FORMAT_PALETTED || testFile.containsPalette)
-                    BOOST_REQUIRE_MESSAGE(getFirstBitmap(archiv)->getPalette(), "No palette found for " << testFile.filename << " fmt=" << curFmt);
+                    BOOST_REQUIRE_MESSAGE(getFirstBitmap(archiv)->getPalette(),
+                                          "No palette found for " << testFile.filename << " fmt=" << curFmt);
                 else
-                    BOOST_REQUIRE_MESSAGE(!getFirstBitmap(archiv)->getPalette(), "Palette found for " << testFile.filename << " fmt=" << curFmt);
+                    BOOST_REQUIRE_MESSAGE(!getFirstBitmap(archiv)->getPalette(),
+                                          "Palette found for " << testFile.filename << " fmt=" << curFmt);
             }
             const ArchivItem_Palette* usedPalette;
             // Use the empty pal to detect if it was used for conversion
@@ -316,7 +317,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
                 BOOST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef));
                 // Take the paletted as new reference
                 bfs::copy_file(outFilepath, outFilepathRef, bfs::copy_option::overwrite_if_exists);
-            }else
+            } else
                 BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
             // c) Passed palette is used unless file contains one (or may)
             // So if it doesn't contain one we make the bitmaps palette invalid otherwise the argument palette is invalid
@@ -542,7 +543,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     {
         for(unsigned x = 0; x < w; x++)
         {
-            unsigned idxPal = x + y*w;
+            unsigned idxPal = x + y * w;
             unsigned idx = idxPal * 4;
             if(x < xStart || y < yStart || x >= xStart + partW || y >= yStart + partH)
             {
@@ -699,13 +700,15 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42u);
     std::fill(outBuffer.begin(), outBuffer.end(), 42u);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+    BOOST_REQUIRE_EQUAL(
+      bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+    BOOST_REQUIRE_EQUAL(
+      bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
     for(unsigned y = 0; y < h; y++)
     {
         for(unsigned x = 0; x < w; x++)
         {
-            unsigned idxPal = x + y*w;
+            unsigned idxPal = x + y * w;
             unsigned idx = idxPal * 4;
             if(x < xStart || y < yStart || x >= xStart + partW || y >= yStart + partH)
             {
@@ -796,7 +799,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
     for(unsigned i = 0; i < 4; i++)
     {
         BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i*4]), ColorARGB::fromARGB(&inBufferRGB2[i*4]));
+        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB::fromARGB(&inBufferRGB2[i * 4]));
     }
     for(unsigned i = 4; i < outBufferPal.size(); i++)
     {
@@ -863,17 +866,16 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
     }
 
     std::vector<Rect> testRects;
-    //                  left-top          top               right-top           
+    //                  left-top          top               right-top
     testRects += Rect(0, 0, 1, 1), Rect(2, 0, 1, 1), Rect(w - 1, 0, 1, 1),
-        //left            middle            right           
-        Rect(0, 3, 1, 1), Rect(3, 2, 1, 1), Rect(w - 1, 3, 1, 1),
-        //left-bottom     bottom-middle     bottom-right           
-        Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1),
-    // doublePixelRects;
-        Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1),
-        Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(3, 2, 3, 1), Rect(3, 2, 1, 3),
-        Rect(0, h - 3, 2, 1), Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3), Rect(w - 4, h - 3, 4, 3),
-        Rect(0, 0, w, h);
+      // left            middle            right
+      Rect(0, 3, 1, 1), Rect(3, 2, 1, 1), Rect(w - 1, 3, 1, 1),
+      // left-bottom     bottom-middle     bottom-right
+      Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1),
+      // doublePixelRects;
+      Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1),
+      Rect(3, 2, 3, 1), Rect(3, 2, 1, 3), Rect(0, h - 3, 2, 1), Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3),
+      Rect(w - 4, h - 3, 4, 3), Rect(0, 0, w, h);
 
     BOOST_FOREACH(const Rect& rect, testRects)
     {

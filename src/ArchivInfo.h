@@ -20,100 +20,78 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include <vector>
 #include <cstddef>
-#include <string>
 #include <stdint.h>
+#include <string>
+#include <vector>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Klasse für Archivdateien.
+class ArchivInfo
 {
-    /// Klasse für Archivdateien.
-    class ArchivInfo
-    {
-        public:
-            ArchivInfo();
+public:
+    ArchivInfo();
 
-            ArchivInfo(const ArchivInfo& info);
+    ArchivInfo(const ArchivInfo& info);
 
-            /// Destruktor von @p ArchivInfo, räumt automatisch auf.
-            virtual ~ArchivInfo();
+    /// Destruktor von @p ArchivInfo, räumt automatisch auf.
+    virtual ~ArchivInfo();
 
-            /// erstellt den Datensatz in einer bestimmten Größe.
-            void alloc(size_t count);
+    /// erstellt den Datensatz in einer bestimmten Größe.
+    void alloc(size_t count);
 
-            /**
-             *  vergrößert den Datensatz um eine bestimmten Größe.
-             *
-             *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
-            */
-            void alloc_inc(size_t increment);
+    /**
+     *  vergrößert den Datensatz um eine bestimmten Größe.
+     *
+     *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
+     */
+    void alloc_inc(size_t increment);
 
-            /// gibt die angelegten Daten wieder frei.
-            void clear();
+    /// gibt die angelegten Daten wieder frei.
+    void clear();
 
-            /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
-            /// Transfers ownership!
-            void set(size_t index, ArchivItem* item);
+    /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
+    /// Transfers ownership!
+    void set(size_t index, ArchivItem* item);
 
-            /// kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
-            void setC(size_t index, const ArchivItem& item);
+    /// kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
+    void setC(size_t index, const ArchivItem& item);
 
-            /// Deletes the item at the given index
-            void clearItem(size_t index);
+    /// Deletes the item at the given index
+    void clearItem(size_t index);
 
-            /// Adds an element to the end. Transfers ownership!
-            void push(ArchivItem* item)
-            {
-                data.push_back(item);
-            }
+    /// Adds an element to the end. Transfers ownership!
+    void push(ArchivItem* item) { data.push_back(item); }
 
-            /// fügt ein Element hinten an und kopiert die Daten von @p item.
-            void pushC(const ArchivItem& item);
+    /// fügt ein Element hinten an und kopiert die Daten von @p item.
+    void pushC(const ArchivItem& item);
 
-            /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
-            ArchivItem* get(size_t index)
-            {
-                return (index < size()) ? data[index] : NULL;
-            }
+    /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
+    ArchivItem* get(size_t index) { return (index < size()) ? data[index] : NULL; }
 
-            /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
-            const ArchivItem* get(size_t index) const
-            {
-                return (index < size()) ? data[index] : NULL;
-            }
+    /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
+    const ArchivItem* get(size_t index) const { return (index < size()) ? data[index] : NULL; }
 
-            /// liefert das erste Item mit entsprechenden Namen
-            ArchivItem* find(const std::string& name);
+    /// liefert das erste Item mit entsprechenden Namen
+    ArchivItem* find(const std::string& name);
 
-            /// liefert das erste Item mit entsprechenden Namen
-            const ArchivItem* find(const std::string& name) const;
+    /// liefert das erste Item mit entsprechenden Namen
+    const ArchivItem* find(const std::string& name) const;
 
-            /// liefert die Größe des Archivs.
-            size_t size() const
-            {
-                return data.size();
-            }
+    /// liefert die Größe des Archivs.
+    size_t size() const { return data.size(); }
 
-            bool empty() const
-            {
-                return data.empty();
-            }
+    bool empty() const { return data.empty(); }
 
-            const ArchivItem* operator[](size_t index) const
-            {
-                return get(index);
-            }
+    const ArchivItem* operator[](size_t index) const { return get(index); }
 
-            ArchivItem* operator[](size_t index)
-            {
-                return get(index);
-            }
+    ArchivItem* operator[](size_t index) { return get(index); }
 
-            ArchivInfo& operator=(const ArchivInfo& info);
+    ArchivInfo& operator=(const ArchivInfo& info);
 
-        private:
-            std::vector<ArchivItem*> data;   /// die Elemente.
-    };
-}
+private:
+    std::vector<ArchivItem*> data; /// die Elemente.
+};
+} // namespace libsiedler2
 
 #endif // ARCHIVINFO_H_INCLUDED

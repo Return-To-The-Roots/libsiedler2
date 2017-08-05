@@ -27,20 +27,20 @@
 
 #include "ArchivItem_Sound.h"
 #include "ArchivItem_Sound_Midi.h"
-#include "ArchivItem_Sound_XMidi.h"
-#include "ArchivItem_Sound_Wave.h"
 #include "ArchivItem_Sound_Other.h"
+#include "ArchivItem_Sound_Wave.h"
+#include "ArchivItem_Sound_XMidi.h"
 
 #include "ArchivItem_Bitmap.h"
-#include "ArchivItem_Bitmap_RLE.h"
-#include "ArchivItem_Bitmap_Shadow.h"
 #include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Bitmap_Raw.h"
+#include "ArchivItem_Bitmap_Shadow.h"
 
-#include "ArchivItem_Font.h"
-#include "ArchivItem_Text.h"
 #include "ArchivItem_Bob.h"
+#include "ArchivItem_Font.h"
 #include "ArchivItem_Raw.h"
+#include "ArchivItem_Text.h"
 
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Map_Header.h"

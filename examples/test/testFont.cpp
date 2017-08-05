@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
-#include "cmpFiles.h"
 #include "LoadPalette.h"
+#include "cmpFiles.h"
+#include "config.h"
 #include "libsiedler2/src/ArchivInfo.h"
-#include "libsiedler2/src/libsiedler2.h"
 #include "libsiedler2/src/ArchivItem_Font.h"
+#include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 

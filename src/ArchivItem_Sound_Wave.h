@@ -21,50 +21,46 @@
 
 #include "ArchivItem_Sound.h"
 #include "WAV_Header.h"
-#include <vector>
 #include <stdint.h>
+#include <vector>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Basisklasse für WAVE-Sounds.
+class baseArchivItem_Sound_Wave : public virtual baseArchivItem_Sound
 {
-    /// Basisklasse für WAVE-Sounds.
-    class baseArchivItem_Sound_Wave : public virtual baseArchivItem_Sound
-    {
-        public:
-            baseArchivItem_Sound_Wave();
+public:
+    baseArchivItem_Sound_Wave();
 
-            ~baseArchivItem_Sound_Wave() override;
+    ~baseArchivItem_Sound_Wave() override;
 
-            /// lädt die Wave-Daten aus einer Datei.
-            int load(std::istream& file, uint32_t length) override;
+    /// lädt die Wave-Daten aus einer Datei.
+    int load(std::istream& file, uint32_t length) override;
 
-            /// schreibt die Wave-Daten in eine Datei.
-            int write(std::ostream& file) const override { return write(file, false); }
-            int write(std::ostream& file, bool stripheader) const;
+    /// schreibt die Wave-Daten in eine Datei.
+    int write(std::ostream& file) const override { return write(file, false); }
+    int write(std::ostream& file, bool stripheader) const;
 
-            /// räumt den Soundspeicher auf.
-            void clear();
+    /// räumt den Soundspeicher auf.
+    void clear();
 
-            void setData(const std::vector<uint8_t>& data)
-            {
-                this->data = data;
-            }
+    void setData(const std::vector<uint8_t>& data) { this->data = data; }
 
-            const std::vector<uint8_t>& getData() { return data; }
-            uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
+    const std::vector<uint8_t>& getData() { return data; }
+    uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
 
-        protected:
-            WAV_Header header;
-            std::vector<uint8_t> data;
-    };
+protected:
+    WAV_Header header;
+    std::vector<uint8_t> data;
+};
 
-    /// Klasse für WAVE-Sounds.
-    class ArchivItem_Sound_Wave : public virtual baseArchivItem_Sound_Wave, public ArchivItem_Sound
-    {
-        public:
-            ArchivItem_Sound_Wave() : baseArchivItem_Sound_Wave() {}
+/// Klasse für WAVE-Sounds.
+class ArchivItem_Sound_Wave : public virtual baseArchivItem_Sound_Wave, public ArchivItem_Sound
+{
+public:
+    ArchivItem_Sound_Wave() : baseArchivItem_Sound_Wave() {}
 
-            ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Wave(item) {}
-    };
-}
+    ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Wave(item) {}
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_WAVE_H_INCLUDED

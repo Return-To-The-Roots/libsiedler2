@@ -16,10 +16,10 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Ini.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
+#include "ArchivItem_Ini.h"
 #include "ErrorCodes.h"
+#include "prototypen.h"
 #include <boost/filesystem/fstream.hpp>
 
 /**
@@ -37,7 +37,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const ArchivInfo& ite
 
     // Datei zum schreiben öffnen
     bfs::ofstream fs(file, std::ios_base::binary);
-    if (!fs)
+    if(!fs)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     bool first = true;

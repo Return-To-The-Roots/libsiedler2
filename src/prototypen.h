@@ -22,96 +22,94 @@
 #include "enumTypes.h"
 #include <string>
 
-namespace libsiedler2
-{
-    //Fwd decl
-    class ArchivItem_Palette;
-    class ArchivItem;
-    class ArchivInfo;
+namespace libsiedler2 {
+// Fwd decl
+class ArchivItem_Palette;
+class ArchivItem;
+class ArchivInfo;
 
-	/// Die verschiedenen Lade-/Schreibfunktionen der Dateien
-	namespace loader
-	{
-		/// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-		int LoadType(BobType bobtype, std::istream&lst, ArchivItem *&item, const ArchivItem_Palette* palette);
+/// Die verschiedenen Lade-/Schreibfunktionen der Dateien
+namespace loader {
+    /// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
+    int LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette);
 
-		/// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-		int WriteType(BobType bobtype, std::ostream&lst, const ArchivItem& item, const ArchivItem_Palette* palette);
+    /// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
+    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette);
 
-		/// lädt eine LST-File in ein ArchivInfo.
-		int LoadLST(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
+    /// lädt eine LST-File in ein ArchivInfo.
+    int LoadLST(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
 
-		/// schreibt ein ArchivInfo eine LST-File.
-		int WriteLST(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
+    /// schreibt ein ArchivInfo eine LST-File.
+    int WriteLST(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
 
-		/// lädt eine BBM-File in ein ArchivInfo.
-		int LoadBBM(const std::string& file, ArchivInfo& items);
+    /// lädt eine BBM-File in ein ArchivInfo.
+    int LoadBBM(const std::string& file, ArchivInfo& items);
 
-		/// schreibt ein ArchivInfo in eine BBM-File.
-		int WriteBBM(const std::string& file, const ArchivInfo& items);
+    /// schreibt ein ArchivInfo in eine BBM-File.
+    int WriteBBM(const std::string& file, const ArchivInfo& items);
 
-		/// lädt eine ACT-File in ein ArchivInfo.
-		int LoadACT(const std::string& file, ArchivInfo& items);
+    /// lädt eine ACT-File in ein ArchivInfo.
+    int LoadACT(const std::string& file, ArchivInfo& items);
 
-		/// schreibt ein ArchivInfo in eine ACT-File.
-		int WriteACT(const std::string& file, const ArchivInfo& items);
+    /// schreibt ein ArchivInfo in eine ACT-File.
+    int WriteACT(const std::string& file, const ArchivInfo& items);
 
-		/// lädt eine DAT/IDX-File in ein ArchivInfo.
-		int LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette *palette);
+    /// lädt eine DAT/IDX-File in ein ArchivInfo.
+    int LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
 
-		/// lädt eine BMP-File in ein ArchivInfo.
-		int LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette = NULL);
+    /// lädt eine BMP-File in ein ArchivInfo.
+    int LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette = NULL);
 
-		/// schreibt ein ArchivInfo in eine BMP-File.
-		int WriteBMP(const std::string& file, const ArchivInfo& items);
+    /// schreibt ein ArchivInfo in eine BMP-File.
+    int WriteBMP(const std::string& file, const ArchivInfo& items);
 
-		/// lädt eine GER/ENG-File in ein ArchivInfo.
-		int LoadTXT(const std::string& file, ArchivInfo& items, bool conversion = true);
+    /// lädt eine GER/ENG-File in ein ArchivInfo.
+    int LoadTXT(const std::string& file, ArchivInfo& items, bool conversion = true);
 
-#		define LoadGER LoadTXT
-#		define LoadENG LoadTXT
+#define LoadGER LoadTXT
+#define LoadENG LoadTXT
 
-		/// schreibt eine GER/ENG-File aus einem ArchivInfo.
-		int WriteTXT(const std::string& file, const ArchivInfo& items, bool conversion = true);
+    /// schreibt eine GER/ENG-File aus einem ArchivInfo.
+    int WriteTXT(const std::string& file, const ArchivInfo& items, bool conversion = true);
 
-#		define WriteGER WriteTXT
-#		define WriteENG WriteTXT
+#define WriteGER WriteTXT
+#define WriteENG WriteTXT
 
-		/// lädt eine LBM-File in ein ArchivInfo.
-		int LoadLBM(const std::string& file, ArchivInfo& items);
+    /// lädt eine LBM-File in ein ArchivInfo.
+    int LoadLBM(const std::string& file, ArchivInfo& items);
 
-		/// schreibt ein ArchivInfo in eine LBM-File.
-		int WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
+    /// schreibt ein ArchivInfo in eine LBM-File.
+    int WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
 
-		/// lädt eine SWD/WSD-File in ein ArchivInfo.
-		int LoadMAP(const std::string& file, ArchivInfo& items, bool only_header = false);
+    /// lädt eine SWD/WSD-File in ein ArchivInfo.
+    int LoadMAP(const std::string& file, ArchivInfo& items, bool only_header = false);
 
-#		define LoadSWD LoadMAP
-#		define LoadWSD LoadMAP
+#define LoadSWD LoadMAP
+#define LoadWSD LoadMAP
 
-		/// schreibt ein ArchivInfo in eine SWD/WSD-File.
-		int WriteMAP(const std::string& file, const ArchivInfo& items);
+    /// schreibt ein ArchivInfo in eine SWD/WSD-File.
+    int WriteMAP(const std::string& file, const ArchivInfo& items);
 
-#		define WriteSWD WriteMAP
-#		define WriteWSD WriteMAP
+#define WriteSWD WriteMAP
+#define WriteWSD WriteMAP
 
-		/// lädt eine BOB-File in ein ArchivInfo.
-		int LoadBOB(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
+    /// lädt eine BOB-File in ein ArchivInfo.
+    int LoadBOB(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
 
-		int LoadSND(const std::string& file, ArchivInfo& items);
+    int LoadSND(const std::string& file, ArchivInfo& items);
 
-#		define LoadMID LoadSND
-#		define LoadXMID LoadSND
-#		define LoadWAV LoadSND
+#define LoadMID LoadSND
+#define LoadXMID LoadSND
+#define LoadWAV LoadSND
 
-		int WriteSND(const std::string& file, const ArchivInfo& items);
+    int WriteSND(const std::string& file, const ArchivInfo& items);
 
-#		define WriteWAV WriteSND
+#define WriteWAV WriteSND
 
-		/// lädt eine INI-File in ein ArchivInfo.
-		int LoadINI(const std::string& file, ArchivInfo& items);
-		int WriteINI(const std::string& file, const ArchivInfo& items);
-	}
-}
+    /// lädt eine INI-File in ein ArchivInfo.
+    int LoadINI(const std::string& file, ArchivInfo& items);
+    int WriteINI(const std::string& file, const ArchivInfo& items);
+} // namespace loader
+} // namespace libsiedler2
 
 #endif // !PROTOTYP_H_INCLUDED

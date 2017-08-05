@@ -24,13 +24,12 @@
 #include <boost/iostreams/stream.hpp>
 #include <string>
 
-namespace libsiedler2
-{
-	typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
-	
-    /// Open the given memory stream from a file and return an ErrorCode
-    /// Writes exceptions to stderr
-    int openMemoryStream(const std::string& file, MMStream& stream);
-}
+namespace libsiedler2 {
+typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+
+/// Open the given memory stream from a file and return an ErrorCode
+/// Writes exceptions to stderr
+int openMemoryStream(const std::string& file, MMStream& stream);
+} // namespace libsiedler2
 
 #endif // OpenMemoryStream_h__

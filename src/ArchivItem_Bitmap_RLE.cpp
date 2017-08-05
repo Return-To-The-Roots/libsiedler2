@@ -19,12 +19,12 @@
 #include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
+#include "PixelBufferPaletted.h"
 #include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 #include <vector>
-#include "PixelBufferPaletted.h"
 
 /** @class libsiedler2::baseArchivItem_Bitmap_RLE
  *
@@ -145,8 +145,8 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
         return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    char unknown[4] = { 0x00, 0x00, 0x00, 0x00 };
-    char unknown2[2] = { 0x01, 0x00 };
+    char unknown[4] = {0x00, 0x00, 0x00, 0x00};
+    char unknown2[2] = {0x01, 0x00};
     const uint16_t width = getWidth(), height = getHeight();
 
     fs << nx_ << ny_ << unknown << width << height << unknown2;

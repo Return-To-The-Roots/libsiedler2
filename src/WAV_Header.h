@@ -23,24 +23,23 @@
 #include <boost/endian/arithmetic.hpp>
 #include <boost/static_assert.hpp>
 
-namespace libsiedler2
+namespace libsiedler2 {
+struct WAV_Header
 {
-	struct WAV_Header
-	{
-        char RIFF_ID[4]; /// "RIFF"
-        boost::endian::little_uint32_t fileSize;
-        char WAVE_ID[4]; /// "WAVE"
-        char fmt_ID[4]; // "fmt "
-        boost::endian::little_uint32_t fmtSize; // 16
-        boost::endian::little_uint16_t fmtTag; // 1=PCM
-        boost::endian::little_uint16_t numChannels;
-        boost::endian::little_uint32_t samplesPerSec, bytesPerSec;
-        boost::endian::little_uint16_t frameSize, bitsPerSample;
-        char data_ID[4]; // "data"
-        boost::endian::little_uint32_t dataSize;
-	};
+    char RIFF_ID[4]; /// "RIFF"
+    boost::endian::little_uint32_t fileSize;
+    char WAVE_ID[4];                        /// "WAVE"
+    char fmt_ID[4];                         // "fmt "
+    boost::endian::little_uint32_t fmtSize; // 16
+    boost::endian::little_uint16_t fmtTag;  // 1=PCM
+    boost::endian::little_uint16_t numChannels;
+    boost::endian::little_uint32_t samplesPerSec, bytesPerSec;
+    boost::endian::little_uint16_t frameSize, bitsPerSample;
+    char data_ID[4]; // "data"
+    boost::endian::little_uint32_t dataSize;
+};
 
-    BOOST_STATIC_ASSERT_MSG(sizeof(WAV_Header) == 44u, "Invalid padding detected");
-}
+BOOST_STATIC_ASSERT_MSG(sizeof(WAV_Header) == 44u, "Invalid padding detected");
+} // namespace libsiedler2
 
 #endif // WAV_Header_h__

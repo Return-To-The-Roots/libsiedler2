@@ -20,44 +20,43 @@
 #pragma once
 
 #include "ArchivItem_Sound.h"
-#include <vector>
 #include <stdint.h>
+#include <vector>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Basisklasse für Other-Sounds.
+class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
 {
-    /// Basisklasse für Other-Sounds.
-    class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
-    {
-        public:
-            baseArchivItem_Sound_Other();
+public:
+    baseArchivItem_Sound_Other();
 
-            ~baseArchivItem_Sound_Other() override;
+    ~baseArchivItem_Sound_Other() override;
 
-            /// lädt die Daten aus einer Datei.
-            int load(std::istream& file, uint32_t length) override;
+    /// lädt die Daten aus einer Datei.
+    int load(std::istream& file, uint32_t length) override;
 
-            /// schreibt die Daten in eine Datei.
-            int write(std::ostream& file) const override;
+    /// schreibt die Daten in eine Datei.
+    int write(std::ostream& file) const override;
 
-            /// räumt den Soundspeicher auf.
-            void clear();
+    /// räumt den Soundspeicher auf.
+    void clear();
 
-            const std::vector<uint8_t>& getData() const { return data; }
-            void setData(const std::vector<uint8_t>& newData){ data = newData; }
-            uint32_t getLength() const { return static_cast<uint32_t>(data.size()); }
+    const std::vector<uint8_t>& getData() const { return data; }
+    void setData(const std::vector<uint8_t>& newData) { data = newData; }
+    uint32_t getLength() const { return static_cast<uint32_t>(data.size()); }
 
-        protected:
-            std::vector<uint8_t> data;
-    };
+protected:
+    std::vector<uint8_t> data;
+};
 
-    /// Klasse für Other-Sounds.
-    class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
-    {
-        public:
-            ArchivItem_Sound_Other() : baseArchivItem_Sound_Other() {}
+/// Klasse für Other-Sounds.
+class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
+{
+public:
+    ArchivItem_Sound_Other() : baseArchivItem_Sound_Other() {}
 
-            ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Other(item) {}
-    };
-}
+    ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Other(item) {}
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_OTHER_H_INCLUDED

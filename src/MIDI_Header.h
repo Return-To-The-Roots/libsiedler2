@@ -23,18 +23,17 @@
 #include <boost/endian/arithmetic.hpp>
 #include <boost/static_assert.hpp>
 
-namespace libsiedler2
+namespace libsiedler2 {
+struct MIDI_Header
 {
-	struct MIDI_Header
-	{
-        char id[4]; /// Must be MThd
-        boost::endian::big_uint32_t headerSize;
-        boost::endian::big_uint16_t format;
-        boost::endian::big_uint16_t numTracks;
-        boost::endian::big_int16_t ppqs;
-	};
+    char id[4]; /// Must be MThd
+    boost::endian::big_uint32_t headerSize;
+    boost::endian::big_uint16_t format;
+    boost::endian::big_uint16_t numTracks;
+    boost::endian::big_int16_t ppqs;
+};
 
-    BOOST_STATIC_ASSERT_MSG(sizeof(MIDI_Header) == 14u, "Invalid padding detected");
-}
+BOOST_STATIC_ASSERT_MSG(sizeof(MIDI_Header) == 14u, "Invalid padding detected");
+} // namespace libsiedler2
 
 #endif // MIDI_Header_h__

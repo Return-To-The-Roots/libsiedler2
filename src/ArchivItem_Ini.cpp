@@ -18,13 +18,13 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Ini.h"
 #include "ArchivItem_Text.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
 #include "ErrorCodes.h"
-#include <boost/lexical_cast.hpp>
+#include "IAllocator.h"
+#include "libsiedler2.h"
 #include <boost/algorithm/string/trim.hpp>
-#include <stdexcept>
+#include <boost/lexical_cast.hpp>
 #include <sstream>
+#include <stdexcept>
 
 /** @class libsiedler2::ArchivItem_Ini
  *
@@ -42,7 +42,7 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivIte
     bobtype_ = BOBTYPE_INI;
 }
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : ArchivItem( info ), ArchivInfo( info )
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : ArchivItem(info), ArchivInfo(info)
 {
 }
 
@@ -81,7 +81,8 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
         if(!std::getline(file, entry))
             break;
         size_t posNl = entry.find_first_of("\r\n");
-        if(posNl != std::string::npos) entry.erase(posNl);
+        if(posNl != std::string::npos)
+            entry.erase(posNl);
         if(entry.empty())
             break;
 
@@ -131,7 +132,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
  */
 void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
-    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>( getAllocator().create(BOBTYPE_TEXT) );
+    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
     item->setText(value);
     item->setName(name);
 
@@ -161,8 +162,7 @@ void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::s
         // setText überschreibt Namen, daher nochmals setzen
         item->setText(value);
         item->setName(name);
-    }
-    else
+    } else
     {
         // nicht gefunden, also hinzufügen
         addValue(name, value);

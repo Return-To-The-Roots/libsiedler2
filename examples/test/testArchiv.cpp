@@ -18,8 +18,8 @@
 #include "config.h"
 #include "libsiedler2/src/ArchivInfo.h"
 #include "libsiedler2/src/ArchivItem_Raw.h"
-#include "libsiedler2/src/enumTypes.h"
 #include "libsiedler2/src/IAllocator.h"
+#include "libsiedler2/src/enumTypes.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>

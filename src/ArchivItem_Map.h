@@ -19,33 +19,32 @@
 
 #pragma once
 
-#include "ArchivItem.h"
 #include "ArchivInfo.h"
+#include "ArchivItem.h"
 #include <iosfwd>
 #include <stdint.h>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Klasse für eine Mapfile.
+class ArchivItem_Map : public ArchivItem, public ArchivInfo
 {
-    /// Klasse für eine Mapfile.
-    class ArchivItem_Map : public ArchivItem, public ArchivInfo
+public:
+    struct ExtraAnimalInfo
     {
-    public:
-        struct ExtraAnimalInfo
-        {
-            uint8_t id;
-            uint16_t x, y;
-        };
-
-        ArchivItem_Map();
-        ~ArchivItem_Map() override;
-
-        /// lädt die Mapdaten aus einer Datei.
-        virtual int load(std::istream& file, bool only_header);
-        /// schreibt die Mapdaten in eine Datei.
-        virtual int write(std::ostream& file) const;
-
-        std::vector<ExtraAnimalInfo> extraInfo;
+        uint8_t id;
+        uint16_t x, y;
     };
-}
+
+    ArchivItem_Map();
+    ~ArchivItem_Map() override;
+
+    /// lädt die Mapdaten aus einer Datei.
+    virtual int load(std::istream& file, bool only_header);
+    /// schreibt die Mapdaten in eine Datei.
+    virtual int write(std::ostream& file) const;
+
+    std::vector<ExtraAnimalInfo> extraInfo;
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_MAP_H_INCLUDED

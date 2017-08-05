@@ -16,15 +16,15 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Bitmap_Player.h"
-#include "ArchivItem_Bitmap.h"
-#include "ArchivItem_Palette.h"
-#include "ColorARGB.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
+#include "ArchivItem_Bitmap.h"
+#include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Palette.h"
 #include "BmpHeader.h"
+#include "ColorARGB.h"
 #include "ErrorCodes.h"
 #include "fileFormatHelpers.h"
+#include "prototypen.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 #include <vector>
@@ -67,7 +67,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& ite
     {
         bmih.clrused = 256;
         bmih.bpp = 8;
-    }else
+    } else
     {
         bmih.clrused = 0;
         bmih.bpp = 24;
@@ -99,10 +99,10 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& ite
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        if(int ec = dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
+        if(int ec =
+             dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
             return ec;
-    }
-    else if(int ec = dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
+    } else if(int ec = dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
         return ec;
 
     std::vector<uint8_t> lineAlignBytes(numLineAlignBytes);

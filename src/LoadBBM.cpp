@@ -16,15 +16,15 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Palette.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
-#include "libendian/src/EndianIStreamAdapter.h"
+#include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
-#include "fileFormatHelpers.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "fileFormatHelpers.h"
+#include "libsiedler2.h"
+#include "prototypen.h"
+#include "libendian/src/EndianIStreamAdapter.h"
 #include <boost/filesystem/path.hpp>
 #include <sstream>
 
@@ -95,7 +95,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, ArchivInfo& items)
                 return ec;
 
             ++i;
-        }else
+        } else
         {
             fs >> length;
 

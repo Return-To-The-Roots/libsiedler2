@@ -20,45 +20,44 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include <vector>
 #include <iosfwd>
 #include <stdint.h>
+#include <vector>
 
-namespace libsiedler2
+namespace libsiedler2 {
+/// Basisklasse für Rawdaten.
+class baseArchivItem_Raw : public ArchivItem
 {
-    /// Basisklasse für Rawdaten.
-    class baseArchivItem_Raw : public ArchivItem
-    {
-        public:
-            baseArchivItem_Raw();
-            baseArchivItem_Raw(const std::vector<uint8_t>& initialData);
-            ~baseArchivItem_Raw() override;
+public:
+    baseArchivItem_Raw();
+    baseArchivItem_Raw(const std::vector<uint8_t>& initialData);
+    ~baseArchivItem_Raw() override;
 
-            /// lädt die Rawdaten aus einer Datei.
-            int load(std::istream& file, uint32_t length = 0xFFFFFFFF);
-            /// schreibt die Rawdaten in eine Datei.
-            int write(std::ostream& file, bool with_length) const;
+    /// lädt die Rawdaten aus einer Datei.
+    int load(std::istream& file, uint32_t length = 0xFFFFFFFF);
+    /// schreibt die Rawdaten in eine Datei.
+    int write(std::ostream& file, bool with_length) const;
 
-            /// liefert die Daten zurück (ro).
-            const std::vector<uint8_t>& getData() const;
-            /// liefert die Daten zurück (rw).
-            std::vector<uint8_t>& getData();
+    /// liefert die Daten zurück (ro).
+    const std::vector<uint8_t>& getData() const;
+    /// liefert die Daten zurück (rw).
+    std::vector<uint8_t>& getData();
 
-            /// löscht den Datenblock.
-            void clear();
+    /// löscht den Datenblock.
+    void clear();
 
-        private:
-            std::vector<uint8_t> data; /// Die Daten.
-    };
+private:
+    std::vector<uint8_t> data; /// Die Daten.
+};
 
-    /// Klasse für Rawdaten.
-    class ArchivItem_Raw : public virtual baseArchivItem_Raw
-    {
-        public:
-            ArchivItem_Raw() : baseArchivItem_Raw() {}
-            ArchivItem_Raw(const std::vector<uint8_t>& initialData) : baseArchivItem_Raw(initialData) {}
-            ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
-    };
-}
+/// Klasse für Rawdaten.
+class ArchivItem_Raw : public virtual baseArchivItem_Raw
+{
+public:
+    ArchivItem_Raw() : baseArchivItem_Raw() {}
+    ArchivItem_Raw(const std::vector<uint8_t>& initialData) : baseArchivItem_Raw(initialData) {}
+    ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
+};
+} // namespace libsiedler2
 
 #endif // !ARCHIVITEM_RAW_H_INCLUDED

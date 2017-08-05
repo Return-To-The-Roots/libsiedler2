@@ -20,34 +20,33 @@
 #ifndef PixelBufferPaletted_h__
 #define PixelBufferPaletted_h__
 
-#include "PixelBuffer.h"
 #include "ArchivItem_Palette.h"
+#include "PixelBuffer.h"
 #include <stdint.h>
 
-namespace libsiedler2
+namespace libsiedler2 {
+
+class PixelBufferPaletted : public PixelBuffer<uint8_t>
 {
-    
-    class PixelBufferPaletted: public PixelBuffer<uint8_t>
-    {
-    public:
-        PixelBufferPaletted(){}
-        PixelBufferPaletted(uint16_t width, uint16_t height): PixelBuffer<uint8_t>(width, height, TRANSPARENT_INDEX){}
-        uint8_t get(uint16_t x, uint16_t y) const;
-        uint8_t get(uint32_t idx) const;
-        void set(uint16_t x, uint16_t y, uint8_t clrIdx);
-        void set(uint32_t idx, uint8_t clrIdx);
-    };
+public:
+    PixelBufferPaletted() {}
+    PixelBufferPaletted(uint16_t width, uint16_t height) : PixelBuffer<uint8_t>(width, height, TRANSPARENT_INDEX) {}
+    uint8_t get(uint16_t x, uint16_t y) const;
+    uint8_t get(uint32_t idx) const;
+    void set(uint16_t x, uint16_t y, uint8_t clrIdx);
+    void set(uint32_t idx, uint8_t clrIdx);
+};
 
-    inline uint8_t PixelBufferPaletted::get(uint16_t x, uint16_t y) const
-    {
-        return pixels_[calcIdx(x, y)];
-    }
-
-    inline void PixelBufferPaletted::set(uint16_t x, uint16_t y, uint8_t clrIdx)
-    {
-        pixels_[calcIdx(x, y)] = clrIdx;
-    }
-
+inline uint8_t PixelBufferPaletted::get(uint16_t x, uint16_t y) const
+{
+    return pixels_[calcIdx(x, y)];
 }
+
+inline void PixelBufferPaletted::set(uint16_t x, uint16_t y, uint8_t clrIdx)
+{
+    pixels_[calcIdx(x, y)] = clrIdx;
+}
+
+} // namespace libsiedler2
 
 #endif // PixelBufferPaletted_h__

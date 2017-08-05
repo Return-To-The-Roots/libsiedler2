@@ -16,11 +16,11 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivItem_Ini.h"
 #include "ArchivInfo.h"
-#include "prototypen.h"
+#include "ArchivItem_Ini.h"
 #include "ErrorCodes.h"
 #include "OpenMemoryStream.h"
+#include "prototypen.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 /**
@@ -39,7 +39,7 @@ int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
 
     while(!ini.eof())
     {
-        boost::interprocess::unique_ptr< ArchivItem_Ini, Deleter<ArchivItem_Ini> > item(new ArchivItem_Ini);
+        boost::interprocess::unique_ptr<ArchivItem_Ini, Deleter<ArchivItem_Ini> > item(new ArchivItem_Ini);
 
         if(int ec = item->load(ini))
             return ec;

@@ -18,20 +18,14 @@
 #include "config.h"
 
 #define BOOST_TEST_MODULE libSiedler2_Test
-#include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/test/unit_test.hpp>
 
 struct TestSetup
 {
-    TestSetup()
-    {
-        bfs::create_directories(testOutputPath);
-    }
+    TestSetup() { bfs::create_directories(testOutputPath); }
 
-    ~TestSetup()
-    {
-        bfs::remove_all(testOutputPath);
-    }
+    ~TestSetup() { bfs::remove_all(testOutputPath); }
 };
 
 #if BOOST_VERSION >= 105900

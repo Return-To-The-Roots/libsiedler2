@@ -22,30 +22,29 @@
 
 #include <boost/endian/arithmetic.hpp>
 
-namespace libsiedler2
+namespace libsiedler2 {
+struct BmpFileHeader
 {
-	struct BmpFileHeader
-	{
-	    char header[2]; /// "BM"
-        boost::endian::little_uint32_t fileSize;
-        boost::endian::little_uint32_t reserved; /// App specific
-        boost::endian::little_uint32_t pixelOffset; /// Start adress of the pixel data
-	};
-	
-	struct BitmapInfoHeader
-	{
-        boost::endian::little_uint32_t headerSize; /// 40 for this
-        boost::endian::little_int32_t width;
-        boost::endian::little_int32_t height;
-        boost::endian::little_int16_t planes; /// 1
-        boost::endian::little_int16_t bpp; /// Bits per pixel
-        boost::endian::little_uint32_t compression; /// 0: BI_RGB
-        boost::endian::little_uint32_t size; /// Image data size or 0 for BIG_RGB
-        boost::endian::little_int32_t xppm;
-        boost::endian::little_int32_t yppm;
-        boost::endian::little_int32_t clrused;
-        boost::endian::little_int32_t clrimp;
-	};
-}
+    char header[2]; /// "BM"
+    boost::endian::little_uint32_t fileSize;
+    boost::endian::little_uint32_t reserved;    /// App specific
+    boost::endian::little_uint32_t pixelOffset; /// Start adress of the pixel data
+};
+
+struct BitmapInfoHeader
+{
+    boost::endian::little_uint32_t headerSize; /// 40 for this
+    boost::endian::little_int32_t width;
+    boost::endian::little_int32_t height;
+    boost::endian::little_int16_t planes;       /// 1
+    boost::endian::little_int16_t bpp;          /// Bits per pixel
+    boost::endian::little_uint32_t compression; /// 0: BI_RGB
+    boost::endian::little_uint32_t size;        /// Image data size or 0 for BIG_RGB
+    boost::endian::little_int32_t xppm;
+    boost::endian::little_int32_t yppm;
+    boost::endian::little_int32_t clrused;
+    boost::endian::little_int32_t clrimp;
+};
+} // namespace libsiedler2
 
 #endif // BmpHeader_h__

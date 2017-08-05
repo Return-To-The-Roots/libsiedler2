@@ -17,9 +17,9 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound.h"
-#include "libsiedler2.h"
 #include "IAllocator.h"
 #include "fileFormatHelpers.h"
+#include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <iostream>
 
@@ -66,24 +66,20 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         {
             // xmidi
             item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_XMIDI));
-        }
-        else if(isChunk(header, "WAVE"))
+        } else if(isChunk(header, "WAVE"))
         {
             // wave-format inkl-header
             item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
         }
-    }
-    else if(isChunk(header, "MThd"))
+    } else if(isChunk(header, "MThd"))
     {
         // midi
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_MIDI));
-    }
-    else if(isChunk(header, "OggS") || isChunk(header, "ID3") || isChunk(header, "\xFF\xFB"))
+    } else if(isChunk(header, "OggS") || isChunk(header, "ID3") || isChunk(header, "\xFF\xFB"))
     {
         // ogg, mp3 (id3tag, ohne),
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_OTHER));
-    }
-    else
+    } else
     {
         // wave-format ohne header?
         item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));

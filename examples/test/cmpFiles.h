@@ -23,14 +23,15 @@
 #include <boost/test/unit_test.hpp>
 #include <string>
 
-namespace libsiedler2
-{
-    class ArchivInfo;
-    class ArchivItem_Palette;
-}
+namespace libsiedler2 {
+class ArchivInfo;
+class ArchivItem_Palette;
+} // namespace libsiedler2
 
-boost::test_tools::predicate_result testLoad(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette = NULL);
-boost::test_tools::predicate_result testWrite(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette = NULL);
+boost::test_tools::predicate_result testLoad(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items,
+                                             const libsiedler2::ArchivItem_Palette* palette = NULL);
+boost::test_tools::predicate_result testWrite(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items,
+                                              const libsiedler2::ArchivItem_Palette* palette = NULL);
 boost::test_tools::predicate_result testFilesEqual(const std::string& fileToCheck, const std::string& expectedFile);
 
 #endif // cmpFiles_h__

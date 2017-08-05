@@ -20,48 +20,49 @@
 #pragma once
 
 #ifdef HAVE_CONFIG_H
-#   include "../config.h"
+#include "../config.h"
 #endif // HAVE_CONFIG_H
 
 #ifdef _WIN32
-#    define WIN32_LEAN_AND_MEAN
-#    ifdef _MSC_VER
-#        include <crtdbg.h>
-#        ifndef assert
-#            define assert _ASSERT
-#        endif
-#    else
-#        include <assert.h>
-#    endif
-#    ifdef _DEBUG
-#        include <crtdbg.h>
-#    endif // _WIN32 && _DEBUG
+#define WIN32_LEAN_AND_MEAN
+#ifdef _MSC_VER
+#include <crtdbg.h>
+#ifndef assert
+#define assert _ASSERT
+#endif
 #else
-#    include <cassert>
+#include <assert.h>
+#endif
+#ifdef _DEBUG
+#include <crtdbg.h>
+#endif // _WIN32 && _DEBUG
+#else
+#include <cassert>
 #endif // !_WIN32
 
 #include <cstddef>
 
-namespace libsiedler2{
-    template<class T_Stream>
-    inline size_t getIStreamSize(T_Stream& stream)
-    {
-        stream.seekg(0, T_Stream::end);
-        long pos = static_cast<long>(stream.tellg());
-        stream.seekg(0, T_Stream::beg);
-        return (pos < 0) ? 0 : pos;
-    }
+namespace libsiedler2 {
+template<class T_Stream>
+inline size_t getIStreamSize(T_Stream& stream)
+{
+    stream.seekg(0, T_Stream::end);
+    long pos = static_cast<long>(stream.tellg());
+    stream.seekg(0, T_Stream::beg);
+    return (pos < 0) ? 0 : pos;
+}
 
-    template<typename T>
-    struct Deleter {
-        void operator()(T *p)
-        {
-            delete p;
-        }
-    };
+template<typename T>
+struct Deleter
+{
+    void operator()(T* p) { delete p; }
+};
 } // namespace libsiedler2
 
-namespace boost{ namespace filesystem{} }
+namespace boost {
+namespace filesystem {
+}
+} // namespace boost
 namespace bfs = boost::filesystem;
 
 #endif // LIB_SIEDLER2_DEFINES_H__
