@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
     BOOST_REQUIRE(bmpLbm);
     BOOST_REQUIRE_EQUAL(bmp->getWidth(), bmpLbm->getWidth());
     BOOST_REQUIRE_EQUAL(bmp->getHeight(), bmpLbm->getHeight());
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(bmp->getData(), bmpLbm->getData());
+    RTTR_REQUIRE_EQUAL_COLLECTIONS(bmp->getPixelData(), bmpLbm->getPixelData());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

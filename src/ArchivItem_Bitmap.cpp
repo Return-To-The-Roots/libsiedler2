@@ -129,7 +129,7 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
     {
         size_t posFrom = y * buffer_width * bpp;
         size_t posTexFrom = y * getWidth() * bpp;
-        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getData().begin() + posTexFrom);
+        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getPixelData().begin() + posTexFrom);
     }
 
     // Alles ok

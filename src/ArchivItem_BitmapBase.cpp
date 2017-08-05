@@ -44,7 +44,7 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
     width_ = item.width_;
     height_ = item.height_;
 
-    data_ = item.data_;
+    pxlData_ = item.pxlData_;
 
     palette_ = NULL;
     if(item.palette_)
@@ -154,24 +154,24 @@ libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) c
 
 uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y)
 {
-    return &data_[(y * width_ + x) * getBBP()];
+    return &pxlData_[(y * width_ + x) * getBBP()];
 }
 
 const boost::uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y) const
 {
-    return &data_[(y * width_ + x) * getBBP()];
+    return &pxlData_[(y * width_ + x) * getBBP()];
 }
 
 uint8_t ArchivItem_BitmapBase::getPalettedPixel(uint16_t x, uint16_t y) const
 {
     assert(format_ == FORMAT_PALETTED);
-    return data_[y * width_ + x];
+    return pxlData_[y * width_ + x];
 }
 
 ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
 {
     assert(format_ == FORMAT_BGRA);
-    return ColorARGB::fromBGRA(&data_[(y * width_ + x) * 4u]);
+    return ColorARGB::fromBGRA(&pxlData_[(y * width_ + x) * 4u]);
 }
 
 void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat format)
@@ -192,7 +192,7 @@ void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat fo
 
     uint8_t clear = (format == FORMAT_PALETTED) ? TRANSPARENT_INDEX : 0;
 
-    data_.resize(width_ * height_ * getBBP(), clear);
+    pxlData_.resize(width_ * height_ * getBBP(), clear);
 }
 
 void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat format, const ArchivItem_Palette* newPal)
@@ -216,7 +216,7 @@ void ArchivItem_BitmapBase::clear()
 {
     width_ = 0;
     height_ = 0;
-    data_.clear();
+    pxlData_.clear();
 }
 
 /**
@@ -278,7 +278,7 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
                 newBuffer.set(x, y, clrIdx == TRANSPARENT_INDEX ? ColorARGB(0, 0, 0, 0) : ColorARGB(palette_->get(clrIdx)));
             }
         }
-        data_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
+        pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
     } else
     {
         PixelBufferPaletted newBuffer(width_, height_);
@@ -290,7 +290,7 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
                 newBuffer.set(x, y, clr.getAlpha() == 0 ? TRANSPARENT_INDEX : palette_->lookup(clr));
             }
         }
-        data_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
+        pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
     }
     format_ = newFormat;
     return ErrorCode::NONE;

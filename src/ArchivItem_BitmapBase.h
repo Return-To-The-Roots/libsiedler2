@@ -58,7 +58,7 @@ public:
     virtual int write(std::ostream& file, const ArchivItem_Palette* palette) const = 0;
 
     /// liefert den Textur-Datenblock.
-    const std::vector<uint8_t>& getData() const { return data_; }
+    const std::vector<uint8_t>& getPixelData() const { return pxlData_; }
 
     /// liefert den X-Nullpunkt.
     int16_t getNx() const;
@@ -119,7 +119,7 @@ protected:
     /// Return the pixel at the given position assuming the bitmap is ARGB
     ColorARGB getARGBPixel(uint16_t x, uint16_t y) const;
 
-    std::vector<uint8_t>& getData() { return data_; }
+    std::vector<uint8_t>& getPixelData() { return pxlData_; }
 
     int16_t nx_; /// X-Nullpunkt.
     int16_t ny_; /// Y-Nullpunkt.
@@ -127,7 +127,7 @@ private:
     uint16_t width_;  /// Breite des Bildes.
     uint16_t height_; /// Höhe des Bildes.
 
-    std::vector<uint8_t> data_; /// Die Texturdaten.
+    std::vector<uint8_t> pxlData_; /// Die Texturdaten.
 
     const ArchivItem_Palette* palette_; /// Die Palette.
     TextureFormat format_;              /// Das Texturformat.
