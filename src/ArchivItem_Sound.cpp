@@ -51,7 +51,6 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
 {
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     long oldpos = fs.getPosition();
-    baseArchivItem_Sound* item = NULL;
 
     char header[4] = "\0\0\0";
     fs >> header;

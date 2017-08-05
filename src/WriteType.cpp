@@ -60,7 +60,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
                     return ec;
                 const long curPos = fs.getPosition();
                 fs.setPosition(sizePos);
-                fs << uint32_t(curPos - sizePos);
+                fs << uint32_t(curPos - sizePos - 4);
                 fs.setPosition(curPos);
             }
             break;

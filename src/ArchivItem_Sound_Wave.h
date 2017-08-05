@@ -43,9 +43,10 @@ public:
     /// räumt den Soundspeicher auf.
     void clear();
 
+    const std::vector<uint8_t>& getData() const { return data; }
     void setData(const std::vector<uint8_t>& data) { this->data = data; }
-
-    const std::vector<uint8_t>& getData() { return data; }
+    const WAV_Header& getHeader() const { return header; }
+    void setHeader(const WAV_Header& newHeader){ header = newHeader; }
     uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
 
 protected:

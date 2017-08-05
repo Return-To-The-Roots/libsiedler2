@@ -169,7 +169,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
                 for(uint8_t i = 0; i < shift; ++i, ++x)
                 {
                     tex_pdata.set(x, y, image[position]);
-                    setPixel(x, y, TRANSPARENT_INDEX);
+                    setPixel(x, y, image[position] + 128);
                 }
                 ++position;
             } else

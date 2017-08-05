@@ -1,5 +1,15 @@
 # libSiedler2 - Library for reading and writing 'The Settlers II' file formats
 
+# Current Build Info
+
+Travis CI: ![Travis CI Build Info](https://travis-ci.org/Return-To-The-Roots/libsiedler2.svg?branch=master)
+
+Appveyor: coming...
+
+Coverage:
+[![Coverage Status](https://coveralls.io/repos/github/Return-To-The-Roots/libsiedler2/badge.svg?branch=master)](https://coveralls.io/github/Return-To-The-Roots/libsiedler2?branch=master)
+[![codecov](https://codecov.io/gh/Return-To-The-Roots/libsiedler2/branch/master/graph/badge.svg)](https://codecov.io/gh/Return-To-The-Roots/libsiedler2)
+
 
 ### Texturformat
 The bitmaps can be stored in memory in ARGB or paletted format.

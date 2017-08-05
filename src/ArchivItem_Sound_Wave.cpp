@@ -73,18 +73,19 @@ int libsiedler2::baseArchivItem_Sound_Wave::load(std::istream& file, uint32_t le
     } else
     {
         setChunkId(header.RIFF_ID, "RIFF");
+        header.fileSize = length + sizeof(header);
         setChunkId(header.WAVE_ID, "WAVE");
         setChunkId(header.fmt_ID, "fmt ");
-        setChunkId(header.data_ID, "data");
+        // Hard coded guesses for the format
+        header.fmtSize = 16;
         header.fmtTag = 1;
         header.numChannels = 1;
         header.samplesPerSec = 11025;
         header.bytesPerSec = 11025;
         header.frameSize = 1;
         header.bitsPerSample = 8;
+        setChunkId(header.data_ID, "data");
         header.dataSize = length;
-        header.fmtSize = 28;
-        header.fileSize = length + sizeof(header);
     }
 
     data.resize(length);
