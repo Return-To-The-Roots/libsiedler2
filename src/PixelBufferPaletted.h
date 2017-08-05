@@ -39,12 +39,22 @@ public:
 
 inline uint8_t PixelBufferPaletted::get(uint16_t x, uint16_t y) const
 {
-    return pixels_[calcIdx(x, y)];
+    return get(calcIdx(x, y));
+}
+
+inline uint8_t PixelBufferPaletted::get(uint32_t idx) const
+{
+    return pixels_[idx];
 }
 
 inline void PixelBufferPaletted::set(uint16_t x, uint16_t y, uint8_t clrIdx)
 {
-    pixels_[calcIdx(x, y)] = clrIdx;
+    set(calcIdx(x, y), clrIdx);
+}
+
+inline void PixelBufferPaletted::set(uint32_t idx, uint8_t clrIdx)
+{
+    pixels_[idx] = clrIdx;
 }
 
 } // namespace libsiedler2

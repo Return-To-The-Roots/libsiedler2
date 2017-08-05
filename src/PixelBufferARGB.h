@@ -51,7 +51,7 @@ inline void PixelBufferARGB::set(uint16_t x, uint16_t y, ColorARGB clr)
     return set(calcIdx(x, y), clr);
 }
 
-void PixelBufferARGB::set(uint32_t idx, ColorARGB clr)
+inline void PixelBufferARGB::set(uint32_t idx, ColorARGB clr)
 {
     return clr.toBGRA(&pixels_[idx]);
 }

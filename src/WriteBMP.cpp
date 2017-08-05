@@ -130,7 +130,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const ArchivInfo& ite
             fs << lineAlignBytes;
     }
 
-    assert(fs.getPosition() == bmpHd.fileSize);
+    assert(fs.getPosition() == static_cast<long>(bmpHd.fileSize));
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
