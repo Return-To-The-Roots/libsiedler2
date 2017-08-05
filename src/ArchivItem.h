@@ -44,7 +44,7 @@ public:
 protected:
     BobType bobtype_;  /// Bobtype des Elements.
     std::string name_; /// Name des Elements.
-    BOOST_DELETED_FUNCTION(ArchivItem& operator=(const ArchivItem&));
+    BOOST_DELETED_FUNCTION(ArchivItem& operator=(const ArchivItem&))
 };
 } // namespace libsiedler2
 
