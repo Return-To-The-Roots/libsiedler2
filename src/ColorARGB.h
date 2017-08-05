@@ -21,7 +21,6 @@
 #pragma once
 
 #include "ColorRGB.h"
-#include <boost/endian/conversion.hpp>
 #include <stdint.h>
 
 namespace libsiedler2 {
@@ -92,45 +91,72 @@ inline ColorARGB::operator ColorRGB() const
 
 inline ColorARGB ColorARGB::fromARGB(const uint8_t* ptr)
 {
-    return fromARGB(reinterpret_cast<const uint32_t*>(ptr));
+    return ColorARGB(ptr[0], ptr[1], ptr[2], ptr[3]);
 }
 
 inline ColorARGB ColorARGB::fromARGB(const uint32_t* ptr)
 {
-    // This is big endian ARGB word format
-    return ColorARGB(boost::endian::big_to_native(*ptr));
+    return fromARGB(reinterpret_cast<const uint8_t*>(ptr));
 }
+
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
+// On x86 (which is little endian), unaligned loads are permitted
+#define RTTR_USE_UNALIGNED_ACCESS 1
+#endif
 
 inline ColorARGB ColorARGB::fromBGRA(const uint8_t* ptr)
 {
+#if RTTR_USE_UNALIGNED_ACCESS
     return fromBGRA(reinterpret_cast<const uint32_t*>(ptr));
+#else
+    return ColorARGB(ptr[3], ptr[2], ptr[1], ptr[0]);
+#endif
 }
 
 inline ColorARGB ColorARGB::fromBGRA(const uint32_t* ptr)
 {
-    // This is little endian BGRA word format
-    return ColorARGB(boost::endian::little_to_native(*ptr));
+#if RTTR_USE_UNALIGNED_ACCESS
+    return ColorARGB(*ptr);
+#else
+    return fromBGRA(reinterpret_cast<const uint8_t*>(ptr));
+#endif
 }
 
 inline void ColorARGB::toARGB(uint8_t* ptr) const
 {
-    toARGB(reinterpret_cast<uint32_t*>(ptr));
+    ptr[0] = getAlpha();
+    ptr[1] = getRed();
+    ptr[2] = getGreen();
+    ptr[3] = getBlue();
 }
 
 inline void ColorARGB::toARGB(uint32_t* ptr) const
 {
-    *ptr = boost::endian::native_to_big(clrValue);
+    toARGB(reinterpret_cast<uint8_t*>(ptr));
 }
 
 inline void ColorARGB::toBGRA(uint8_t* ptr) const
 {
+#if RTTR_USE_UNALIGNED_ACCESS
     toBGRA(reinterpret_cast<uint32_t*>(ptr));
+#else
+    ptr[0] = getBlue();
+    ptr[1] = getGreen();
+    ptr[2] = getRed();
+    ptr[3] = getAlpha();
+#endif
 }
 
 inline void ColorARGB::toBGRA(uint32_t* ptr) const
 {
-    *ptr = boost::endian::native_to_little(clrValue);
+#if RTTR_USE_UNALIGNED_ACCESS
+    *ptr = clrValue;
+#else
+    toBGRA(reinterpret_cast<uint8_t*>(ptr));
+#endif
 }
+
+#undef RTTR_USE_UNALIGNED_ACCESS
 
 inline uint8_t ColorARGB::getAlpha() const
 {

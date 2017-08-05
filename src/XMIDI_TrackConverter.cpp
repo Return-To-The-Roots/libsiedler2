@@ -23,6 +23,7 @@
 #include "XMIDI_Track.h"
 #include <boost/endian/conversion.hpp>
 #include <algorithm>
+#include <cstring>
 #include <iterator>
 #include <stdexcept>
 #include <string>
@@ -453,8 +454,8 @@ MIDI_Track XMIDI_TrackConverter::CreateMidiTrack() const
     PutVLQ(0, midData);
 
     // Write length
-    uint32_t length = static_cast<uint32_t>(midData.size() - 8);
-    *reinterpret_cast<uint32_t*>(&midData[lenPos]) = boost::endian::native_to_big(length);
+    uint32_t length = boost::endian::native_to_big(static_cast<uint32_t>(midData.size() - 8));
+    std::memcpy(&midData[lenPos], &length, sizeof(length));
 
     return MIDI_Track(midData);
 }

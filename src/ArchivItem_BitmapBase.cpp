@@ -157,7 +157,7 @@ uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y)
     return &pxlData_[(y * width_ + x) * getBBP()];
 }
 
-const boost::uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y) const
+const uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y) const
 {
     return &pxlData_[(y * width_ + x) * getBBP()];
 }

@@ -21,6 +21,7 @@
 #include "ColorARGB.h"
 #include "ErrorCodes.h"
 #include <cstddef>
+#include <cstring>
 #include <vector>
 
 namespace libsiedler2 {
@@ -85,7 +86,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
                 if(buffer_format == FORMAT_PALETTED)
                     buffer[posBuf] = getPixelClrIdx(x, y, palette);
                 else
-                    *reinterpret_cast<ColorARGB*>(&buffer[posBuf]) = *reinterpret_cast<const ColorARGB*>(pxlPtr);
+                    std::memcpy(&buffer[posBuf], pxlPtr, 4);
             }
         }
     }

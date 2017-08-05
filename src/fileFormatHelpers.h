@@ -28,7 +28,7 @@ template<size_t T_length, size_t T_lengthIdStr>
 inline bool isChunk(const char (&lhs)[T_length], const char (&chunkId)[T_lengthIdStr])
 {
     BOOST_STATIC_ASSERT_MSG(T_length + 1 >= T_lengthIdStr, "Chunk id is not long enough");
-    return memcmp(lhs, chunkId, T_lengthIdStr - 1) == 0;
+    return std::memcmp(lhs, chunkId, T_lengthIdStr - 1) == 0;
 }
 
 /// Write the given chunkId into the target. Example: setChunkId(header, "RIFF");
@@ -36,7 +36,7 @@ template<size_t T_length, size_t T_lengthIdStr>
 inline void setChunkId(char (&target)[T_length], const char (&chunkId)[T_lengthIdStr])
 {
     BOOST_STATIC_ASSERT_MSG(T_length + 1 >= T_lengthIdStr, "Chunk id is not long enough");
-    memcpy(target, chunkId, T_lengthIdStr - 1);
+    std::memcpy(target, chunkId, T_lengthIdStr - 1);
 }
 
 #endif // fileFormatHelpers_h__

@@ -361,8 +361,8 @@ BOOST_AUTO_TEST_CASE(PaletteUsageForPrint)
     ArchivItem_Bitmap_Raw bmp;
     ArchivItem_Bitmap_Player bmpPl;
     unsigned w = 10, h = 14;
-    std::vector<uint8_t> inBuffer(w * h, modClr1);
-    std::vector<uint8_t> inBufferPl(w * h, modClr2);
+    std::vector<uint8_t> inBuffer(w * h, modClr1 + 0); // + 0 to avoid a undefined reference error to the constant
+    std::vector<uint8_t> inBufferPl(w * h, modClr2 + 0);
     // Swap colors to check palette usage
     // Paletted
     BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);

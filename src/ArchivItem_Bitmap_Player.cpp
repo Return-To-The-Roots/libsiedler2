@@ -24,6 +24,7 @@
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <cstddef>
+#include <cstring>
 #include <iostream>
 #include <vector>
 
@@ -472,7 +473,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffe
                         // Playerfarbe setzen
                         ColorARGB(palette->get(tex_pdata.get(x, y) + plClrStartIdx), pxlPtr[3]).toBGRA(&buffer[posBuffer]);
                     } else if(!only_player && pxlPtr[3] != 0)
-                        *reinterpret_cast<ColorARGB*>(&buffer[posBuffer]) = *reinterpret_cast<const ColorARGB*>(pxlPtr);
+                        std::memcpy(&buffer[posBuffer], pxlPtr, 4);
                 }
             }
         }

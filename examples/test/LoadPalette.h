@@ -31,8 +31,8 @@ struct LoadPalette
     libsiedler2::ArchivInfo paletteArchiv;
     libsiedler2::ArchivItem_Palette* palette;
     libsiedler2::ArchivItem_Palette* modPal;
-    BOOST_STATIC_CONSTEXPR uint8_t modClr1 = 22;
-    BOOST_STATIC_CONSTEXPR uint8_t modClr2 = 44;
+    BOOST_STATIC_CONSTANT(uint8_t, modClr1 = 22);
+    BOOST_STATIC_CONSTANT(uint8_t, modClr2 = 44);
     LoadPalette()
     {
         BOOST_REQUIRE_EQUAL(libsiedler2::Load("pal5.act", paletteArchiv), 0);
