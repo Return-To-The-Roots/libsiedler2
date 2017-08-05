@@ -56,6 +56,7 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
     char header[4] = "\0\0\0";
     fs >> header;
 
+    SoundType sndType;
     // ist es eine RIFF-File? (Header "FORM" bzw "RIFF")
     if(isChunk(header, "FORM") || isChunk(header, "RIFF"))
     {
@@ -63,28 +64,23 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         fs >> length >> header;
 
         if(isChunk(header, "XMID") || isChunk(header, "XDIR"))
+            sndType = SOUNDTYPE_XMIDI;
+        else if(isChunk(header, "WAVE"))
+            sndType = SOUNDTYPE_WAVE;
+        else
         {
-            // xmidi
-            item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_XMIDI));
-        } else if(isChunk(header, "WAVE"))
-        {
-            // wave-format inkl-header
-            item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
+            fs.setPosition(oldpos);
+            return NULL;
         }
     } else if(isChunk(header, "MThd"))
-    {
-        // midi
-        item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_MIDI));
-    } else if(isChunk(header, "OggS") || isChunk(header, "ID3") || isChunk(header, "\xFF\xFB"))
-    {
-        // ogg, mp3 (id3tag, ohne),
-        item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_OTHER));
-    } else
-    {
-        // wave-format ohne header?
-        item = dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, SOUNDTYPE_WAVE));
-    }
+        sndType = SOUNDTYPE_MIDI;
+    else if(isChunk(header, "OggS"))
+        sndType = SOUNDTYPE_OGG;
+    else if(isChunk(header, "ID3") || isChunk(header, "\xFF\xFB"))
+        sndType = SOUNDTYPE_MP3;
+    else  // wave-format ohne header?
+        sndType = SOUNDTYPE_WAVE;
 
     fs.setPosition(oldpos);
-    return item;
+    return dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, sndType));
 }

@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteOgg)
     std::string outPath = testOutputPath + "/outTest.ogg";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::ArchivInfo archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
+    BOOST_REQUIRE(testLoad(0, inPath, archiv));
     libsiedler2::ArchivItem_Sound_Other* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Other*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(Clone)
     libsiedler2::ArchivItem_Sound_Midi snd1;
     libsiedler2::ArchivItem_Sound_XMidi snd2;
     libsiedler2::ArchivItem_Sound_Wave snd3;
-    libsiedler2::ArchivItem_Sound_Other snd4;
+    libsiedler2::ArchivItem_Sound_Other snd4(libsiedler2::SOUNDTYPE_MP3);
     // Add some data
     snd1.addTrack(libsiedler2::MIDI_Track());
     snd2.addTrack(libsiedler2::XMIDI_Track());

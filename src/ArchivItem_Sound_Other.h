@@ -28,7 +28,7 @@ namespace libsiedler2 {
 class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
 {
 public:
-    baseArchivItem_Sound_Other();
+    baseArchivItem_Sound_Other(SoundType sndType);
 
     ~baseArchivItem_Sound_Other() override;
 
@@ -53,7 +53,7 @@ protected:
 class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
 {
 public:
-    ArchivItem_Sound_Other() : baseArchivItem_Sound_Other() {}
+    ArchivItem_Sound_Other(SoundType sndType) : baseArchivItem_Sound_Other(sndType) {}
 
     ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Other(item) {}
 };

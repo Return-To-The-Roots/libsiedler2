@@ -31,16 +31,16 @@ class ArchivInfo;
 /// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 namespace loader {
     /// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-    int LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette);
+    int LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette = NULL);
 
     /// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette);
+    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine LST-File in ein ArchivInfo.
-    int LoadLST(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
+    int LoadLST(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
 
     /// schreibt ein ArchivInfo eine LST-File.
-    int WriteLST(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
+    int WriteLST(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine BBM-File in ein ArchivInfo.
     int LoadBBM(const std::string& file, ArchivInfo& items);
@@ -55,7 +55,7 @@ namespace loader {
     int WriteACT(const std::string& file, const ArchivInfo& items);
 
     /// lädt eine DAT/IDX-File in ein ArchivInfo.
-    int LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
+    int LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine BMP-File in ein ArchivInfo.
     int LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette = NULL);
@@ -79,7 +79,7 @@ namespace loader {
     int LoadLBM(const std::string& file, ArchivInfo& items);
 
     /// schreibt ein ArchivInfo in eine LBM-File.
-    int WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette);
+    int WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine SWD/WSD-File in ein ArchivInfo.
     int LoadMAP(const std::string& file, ArchivInfo& items, bool only_header = false);

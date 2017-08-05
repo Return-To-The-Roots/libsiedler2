@@ -27,9 +27,9 @@
  *  Klasse für Other-Sounds.
  */
 
-libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other() : baseArchivItem_Sound()
+libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(SoundType sndType) : baseArchivItem_Sound()
 {
-    soundType_ = SOUNDTYPE_OTHER;
+    soundType_ = sndType;
 }
 
 libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()

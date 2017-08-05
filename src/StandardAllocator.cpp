@@ -59,8 +59,8 @@ ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
                     return new ArchivItem_Sound_Wave();
                 case SOUNDTYPE_XMIDI: // XMIDI
                     return new ArchivItem_Sound_XMidi();
-                case SOUNDTYPE_OTHER: // Andere
-                    return new ArchivItem_Sound_Other();
+                default: // Andere
+                    return new ArchivItem_Sound_Other(subtype);
             }
             break;
         }
@@ -118,7 +118,7 @@ ArchivItem* StandardAllocator::clone(const ArchivItem& item) const
                     return new ArchivItem_Sound_Wave(dynamic_cast<const ArchivItem_Sound_Wave&>(item));
                 case SOUNDTYPE_XMIDI: // XMIDI
                     return new ArchivItem_Sound_XMidi(dynamic_cast<const ArchivItem_Sound_XMidi&>(item));
-                case SOUNDTYPE_OTHER: // Andere
+                default: // Andere
                     return new ArchivItem_Sound_Other(dynamic_cast<const ArchivItem_Sound_Other&>(item));
             }
             break;
