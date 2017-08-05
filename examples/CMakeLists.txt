@@ -94,6 +94,9 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${LIB_SIEDLER2_BASEDIR}/libSiedler2/cmake/Modules")
 
+# Use clang-format if available
+find_package(ClangFormat 5.0.0)
+
 if(MSVC)
 	CMAKE_POLICY(SET CMP0026 OLD) # Required for use of LOCATION_*
     INCLUDE(CreateLaunchers)
@@ -120,3 +123,7 @@ set(RTTR_PAL5_PATH "${LIB_SIEDLER2_BASEDIR}/libsiedler2/examples/pal5.act")
 add_subdirectory(lstpacker)
 add_subdirectory(outline)
 add_subdirectory(test)
+
+if(ClangFormat_FOUND)
+    add_clangFormat_target("file")
+endif()

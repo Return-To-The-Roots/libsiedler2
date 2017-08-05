@@ -9,3 +9,7 @@ install(FILES ${RTTR_PAL5_PATH} DESTINATION .)
 if(MSVC)
 	create_target_launcher(outline WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
+
+if(ClangFormat_FOUND)
+    add_clangFormat_files(outline.cpp)
+endif()

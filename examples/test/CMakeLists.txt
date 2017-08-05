@@ -25,3 +25,7 @@ install(DIRECTORY ${RTTR_TESTFILES} DESTINATION .)
 if(MSVC)
 	create_target_launcher(Test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
+
+if(ClangFormat_FOUND)
+    add_clangFormat_files(${TEST_SOURCES})
+endif()
