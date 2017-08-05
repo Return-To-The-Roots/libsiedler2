@@ -77,7 +77,7 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         sndType = SOUNDTYPE_OGG;
     else if(isChunk(header, "ID3") || isChunk(header, "\xFF\xFB"))
         sndType = SOUNDTYPE_MP3;
-    else  // wave-format ohne header?
+    else // wave-format ohne header?
         sndType = SOUNDTYPE_WAVE;
 
     fs.setPosition(oldpos);
