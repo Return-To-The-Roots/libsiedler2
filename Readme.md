@@ -1,4 +1,4 @@
-# libSiedler2 - Library for reading and writing 'The Settlers II' file formats
+# libsiedler2 - Library for reading and writing 'The Settlers II' file formats
 
 # Current Build Info
 
@@ -11,7 +11,7 @@ Coverage:
 [![codecov](https://codecov.io/gh/Return-To-The-Roots/libsiedler2/branch/master/graph/badge.svg)](https://codecov.io/gh/Return-To-The-Roots/libsiedler2)
 
 
-### Texturformat
+### Texture format
 The bitmaps can be stored in memory in ARGB or paletted format.
 The ARGB format is byte BGRA, so 4 bytes define 1 pixel with blue first and alpha last.
 If this is interpreted as a 32bit word on a little endian machine than it is (word) ARGB format.
