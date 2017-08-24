@@ -427,7 +427,7 @@ void ArchivItem_BitmapBase::setPalette(ArchivItem_Palette* palette)
 
 void ArchivItem_BitmapBase::setPaletteCopy(const ArchivItem_Palette& palette)
 {
-    setPalette(dynamic_cast<ArchivItem_Palette*>(getAllocator().clone(palette)));
+    setPalette(palette.clone());
 }
 
 void ArchivItem_BitmapBase::removePalette()

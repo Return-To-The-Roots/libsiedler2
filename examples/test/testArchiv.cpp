@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
     libsiedler2::ArchivInfo archiv2(archiv), archiv3;
     BOOST_REQUIRE_EQUAL(archiv.size(), archiv2.size());
     // Avoid ctor init
-    archiv3.push(new libsiedler2::baseArchivItem_Raw);
+    archiv3.push(new libsiedler2::ArchivItem_Raw);
     // Assign
     archiv3 = archiv;
     BOOST_REQUIRE_EQUAL(archiv.size(), archiv3.size());

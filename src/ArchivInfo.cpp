@@ -123,7 +123,7 @@ void ArchivInfo::set(size_t index, ArchivItem* item)
  */
 void ArchivInfo::setC(size_t index, const ArchivItem& item)
 {
-    set(index, getAllocator().clone(item));
+    set(index, item.clone());
 }
 
 void ArchivInfo::clearItem(size_t index)
@@ -137,7 +137,7 @@ void ArchivInfo::clearItem(size_t index)
  */
 void ArchivInfo::pushC(const ArchivItem& item)
 {
-    data.push_back(getAllocator().clone(item));
+    data.push_back(item.clone());
 }
 
 const libsiedler2::ArchivItem* ArchivInfo::find(const std::string& name) const

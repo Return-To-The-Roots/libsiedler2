@@ -56,6 +56,7 @@ public:
         : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item)
     {
     }
+    RTTR_CLONEABLE(ArchivItem_Bitmap_RLE)
 };
 } // namespace libsiedler2
 

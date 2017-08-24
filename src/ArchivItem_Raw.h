@@ -57,6 +57,7 @@ public:
     ArchivItem_Raw() : baseArchivItem_Raw() {}
     ArchivItem_Raw(const std::vector<uint8_t>& initialData) : baseArchivItem_Raw(initialData) {}
     ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
+    RTTR_CLONEABLE(ArchivItem_Raw)
 };
 } // namespace libsiedler2
 

@@ -31,6 +31,7 @@ public:
     ArchivItem_Text();
 
     ~ArchivItem_Text() override;
+    RTTR_CLONEABLE(ArchivItem_Text)
 
     /// liest den Text aus einer Datei.
     int load(std::istream& file, bool conversion = true, uint32_t length = 0);

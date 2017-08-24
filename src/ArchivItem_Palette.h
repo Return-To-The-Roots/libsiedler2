@@ -39,6 +39,7 @@ public:
     ArchivItem_Palette();
 
     ~ArchivItem_Palette() override;
+    RTTR_CLONEABLE(ArchivItem_Palette)
 
     /// liest die Farbwerte aus einer Datei.
     int load(std::istream& file, bool skip = true);

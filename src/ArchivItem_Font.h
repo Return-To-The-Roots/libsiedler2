@@ -35,6 +35,7 @@ class ArchivItem_Font : public ArchivItem, public ArchivInfo
 {
 public:
     ArchivItem_Font();
+    RTTR_CLONEABLE(ArchivItem_Font)
 
     /// lädt die Fontdaten aus einer Datei.
     int load(std::istream& file, const ArchivItem_Palette* palette);

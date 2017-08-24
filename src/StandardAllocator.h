@@ -28,7 +28,6 @@ class StandardAllocator : public IAllocator
 public:
     ~StandardAllocator() override {}
     ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const override;
-    ArchivItem* clone(const ArchivItem& item) const override;
 };
 
 } // namespace libsiedler2

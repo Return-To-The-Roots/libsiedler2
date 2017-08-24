@@ -59,6 +59,7 @@ public:
     ArchivItem_Sound_Midi() : baseArchivItem_Sound_Midi() {}
 
     ArchivItem_Sound_Midi(const ArchivItem_Sound_Midi& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Midi(item) {}
+    RTTR_CLONEABLE(ArchivItem_Sound_Midi)
 };
 } // namespace libsiedler2
 

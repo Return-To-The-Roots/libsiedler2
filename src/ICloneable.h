@@ -15,24 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IALLOCATOR_H_INCLUDED
-#define IALLOCATOR_H_INCLUDED
+#pragma once
 
-#include "enumTypes.h"
+#ifndef ICloneable_h__
+#define ICloneable_h__
 
 namespace libsiedler2 {
-class ArchivItem;
 
-/**
- *  @brief Abstract ArchivItem factory
- */
-class IAllocator
+/// Class is cloneable. Calling clone() creates a copy of the correct subtype
+template<class T_Base>
+class ICloneable
 {
 public:
-    virtual ~IAllocator() {}
-    virtual ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
+    virtual ~ICloneable() {}
+    virtual T_Base* clone() const = 0;
 };
 
 } // namespace libsiedler2
 
-#endif // IALLOCATOR_H_INCLUDED
+/// Macro for implementing the clone function
+/// To be used in a class TFoo by calling
+/// RTTR_CLONEABLE(TFoo) in the public section of the class declaration
+#define RTTR_CLONEABLE(TYPE) \
+    TYPE* clone() const override { return new TYPE(*this); }
+
+#endif // ICloneable_h__

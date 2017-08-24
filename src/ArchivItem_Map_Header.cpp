@@ -165,24 +165,6 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
 }
 
 /**
- *  liefert den Namen der Map.
- */
-const std::string& libsiedler2::ArchivItem_Map_Header::getName() const
-{
-    return name_;
-}
-
-/**
- *  setzt den Namen der Map.
- *
- *  @param[in] name Name der Map
- */
-void libsiedler2::ArchivItem_Map_Header::setName(const std::string& name)
-{
-    this->name_ = name;
-}
-
-/**
  *  liefert die Breite der Map.
  */
 uint16_t libsiedler2::ArchivItem_Map_Header::getWidth() const

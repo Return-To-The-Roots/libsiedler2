@@ -34,7 +34,7 @@ public:
 
     ArchivItem_Ini(const std::string& name);
 
-    ArchivItem_Ini(const ArchivItem_Ini& item);
+    RTTR_CLONEABLE(ArchivItem_Ini)
 
     /// lädt die INI-Daten aus einer Datei.
     int load(std::istream& file);

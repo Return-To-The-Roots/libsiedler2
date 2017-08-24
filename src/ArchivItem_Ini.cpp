@@ -42,10 +42,6 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivIte
     bobtype_ = BOBTYPE_INI;
 }
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const ArchivItem_Ini& info) : ArchivItem(info), ArchivInfo(info)
-{
-}
-
 /**
  *  lädt die INI-Daten aus einer Datei.
  *

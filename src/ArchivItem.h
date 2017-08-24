@@ -19,16 +19,20 @@
 
 #pragma once
 
+#include "ICloneable.h" // IWYU pragma: exports
 #include "enumTypes.h"
 #include <boost/config.hpp>
 #include <string>
 
 namespace libsiedler2 {
-/// Basisklasse der Archivelemente.
-class ArchivItem
+/// Base class for all ArchivItems. Defined by a type and possibly a name
+/// Implements the cloneable concept:
+/// A copy of this object can be created by calling obj->clone();
+/// Note: All subclasses "TFoo" must use "RTTR_CLONEABLE(TFoo)" in the public declaration
+class ArchivItem : public ICloneable<ArchivItem>
 {
 public:
-    ArchivItem();
+    ArchivItem(BobType bobtype = BOBTYPE_NONE);
 
     virtual ~ArchivItem();
 

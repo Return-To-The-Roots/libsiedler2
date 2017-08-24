@@ -61,6 +61,7 @@ public:
     ArchivItem_Sound_Wave() : baseArchivItem_Sound_Wave() {}
 
     ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Wave(item) {}
+    RTTR_CLONEABLE(ArchivItem_Sound_Wave)
 };
 } // namespace libsiedler2
 

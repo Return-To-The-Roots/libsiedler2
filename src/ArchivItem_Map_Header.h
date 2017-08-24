@@ -31,14 +31,12 @@ class ArchivItem_Map_Header : public ArchivItem
 public:
     ArchivItem_Map_Header();
     ~ArchivItem_Map_Header() override;
+    RTTR_CLONEABLE(ArchivItem_Map_Header)
 
     /// lädt den Mapheader aus einer Datei.
     int load(std::istream& file);
     /// schreibt den Mapheader in eine Datei.
     int write(std::ostream& file) const;
-
-    const std::string& getName() const;
-    void setName(const std::string& name);
 
     uint16_t getWidth() const;
     void setWidth(uint16_t width);
@@ -61,7 +59,6 @@ public:
     bool hasExtraWord() const { return hasExtraWord_; }
 
 private:
-    std::string name_;
     uint16_t width;
     uint16_t height;
     uint8_t gfxset;

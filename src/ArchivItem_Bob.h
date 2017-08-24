@@ -37,6 +37,7 @@ public:
     ArchivItem_Bob();
 
     ~ArchivItem_Bob() override;
+    RTTR_CLONEABLE(ArchivItem_Bob)
 
     /// lädt die Bobdaten aus einer Datei.
     int load(std::istream& file, const ArchivItem_Palette* palette);

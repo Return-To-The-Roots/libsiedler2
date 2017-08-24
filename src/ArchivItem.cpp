@@ -18,25 +18,8 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem.h"
 
-/** @class libsiedler2::ArchivItem
- *
- *  Basisklasse der Archivelemente.
- */
-
-/** @var libsiedler2::ArchivItem::bobtype
- *
- *  Bobtype des Elements.
- */
-
-/** @var libsiedler2::ArchivItem::name
- *
- *  Name des Elements.
- */
-
-libsiedler2::ArchivItem::ArchivItem()
+libsiedler2::ArchivItem::ArchivItem(BobType bobtype) : bobtype_(bobtype), name_("untitled")
 {
-    bobtype_ = BOBTYPE_NONE;
-    setName("untitled");
 }
 
 libsiedler2::ArchivItem::~ArchivItem()

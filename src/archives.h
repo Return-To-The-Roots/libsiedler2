@@ -14,37 +14,27 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef TYPEN_H_INCLUDED
-#define TYPEN_H_INCLUDED
+#ifndef ARCHIVES_H_INCLUDED
+#define ARCHIVES_H_INCLUDED
 
 #pragma once
 
-#include "ArchivInfo.h"
-
-#include "ArchivItem.h"
-
+#include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Bitmap_RLE.h"
+#include "ArchivItem_Bitmap_Raw.h"
+#include "ArchivItem_Bitmap_Shadow.h"
+#include "ArchivItem_Bob.h"
+#include "ArchivItem_Font.h"
+#include "ArchivItem_Ini.h"
+#include "ArchivItem_Map.h"
+#include "ArchivItem_Map_Header.h"
 #include "ArchivItem_Palette.h"
-
+#include "ArchivItem_Raw.h"
 #include "ArchivItem_Sound.h"
 #include "ArchivItem_Sound_Midi.h"
 #include "ArchivItem_Sound_Other.h"
 #include "ArchivItem_Sound_Wave.h"
 #include "ArchivItem_Sound_XMidi.h"
-
-#include "ArchivItem_Bitmap.h"
-#include "ArchivItem_Bitmap_Player.h"
-#include "ArchivItem_Bitmap_RLE.h"
-#include "ArchivItem_Bitmap_Raw.h"
-#include "ArchivItem_Bitmap_Shadow.h"
-
-#include "ArchivItem_Bob.h"
-#include "ArchivItem_Font.h"
-#include "ArchivItem_Raw.h"
 #include "ArchivItem_Text.h"
 
-#include "ArchivItem_Map.h"
-#include "ArchivItem_Map_Header.h"
-
-#include "ArchivItem_Ini.h"
-
-#endif // !TYPEN_H_INCLUDED
+#endif // !ARCHIVES_H_INCLUDED

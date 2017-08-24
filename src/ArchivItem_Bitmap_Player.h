@@ -43,6 +43,8 @@ public:
 
     ~ArchivItem_Bitmap_Player() override;
 
+    RTTR_CLONEABLE(ArchivItem_Bitmap_Player)
+
     /// lädt die Bilddaten aus einer Datei.
     int load(std::istream& file, const ArchivItem_Palette* palette) override;
 

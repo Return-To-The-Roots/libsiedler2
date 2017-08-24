@@ -37,6 +37,7 @@ public:
 
     ArchivItem_Map();
     ~ArchivItem_Map() override;
+    RTTR_CLONEABLE(ArchivItem_Map)
 
     /// lädt die Mapdaten aus einer Datei.
     virtual int load(std::istream& file, bool only_header);
