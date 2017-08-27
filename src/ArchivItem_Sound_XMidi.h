@@ -26,15 +26,12 @@
 #include <stdint.h>
 
 namespace libsiedler2 {
-/// Basisklasse für XMIDI-Sounds.
-class baseArchivItem_Sound_XMidi : public virtual baseArchivItem_Sound
+/// Klasse für XMIDI-Sounds.
+class ArchivItem_Sound_XMidi : public ArchivItem_Sound
 {
 public:
-    baseArchivItem_Sound_XMidi();
-
-    baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item);
-
-    ~baseArchivItem_Sound_XMidi() override;
+    ArchivItem_Sound_XMidi();
+    RTTR_CLONEABLE(ArchivItem_Sound_XMidi)
 
     int load(std::istream& file, uint32_t length) override;
     int write(std::ostream& file) const override;
@@ -62,15 +59,6 @@ protected:
     boost::array<MIDI_Track, 256> midiTracklist; //-V730_NOINIT
 };
 
-/// Klasse für XMIDI-Sounds.
-class ArchivItem_Sound_XMidi : public virtual baseArchivItem_Sound_XMidi, public ArchivItem_Sound
-{
-public:
-    ArchivItem_Sound_XMidi() : baseArchivItem_Sound_XMidi() {}
-
-    ArchivItem_Sound_XMidi(const ArchivItem_Sound_XMidi& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_XMidi(item) {}
-    RTTR_CLONEABLE(ArchivItem_Sound_XMidi)
-};
 } // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_XMIDI_H_INCLUDED

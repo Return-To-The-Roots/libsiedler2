@@ -25,13 +25,13 @@
 #include <vector>
 
 namespace libsiedler2 {
-/// Basisklasse für Rawdaten.
-class baseArchivItem_Raw : public ArchivItem
+/// Klasse für Rawdaten.
+class ArchivItem_Raw : public ArchivItem
 {
 public:
-    baseArchivItem_Raw();
-    baseArchivItem_Raw(const std::vector<uint8_t>& initialData);
-    ~baseArchivItem_Raw() override;
+    ArchivItem_Raw();
+    ArchivItem_Raw(const std::vector<uint8_t>& initialData);
+    RTTR_CLONEABLE(ArchivItem_Raw)
 
     /// lädt die Rawdaten aus einer Datei.
     int load(std::istream& file, uint32_t length = 0xFFFFFFFF);
@@ -50,15 +50,6 @@ private:
     std::vector<uint8_t> data; /// Die Daten.
 };
 
-/// Klasse für Rawdaten.
-class ArchivItem_Raw : public virtual baseArchivItem_Raw
-{
-public:
-    ArchivItem_Raw() : baseArchivItem_Raw() {}
-    ArchivItem_Raw(const std::vector<uint8_t>& initialData) : baseArchivItem_Raw(initialData) {}
-    ArchivItem_Raw(const ArchivItem_Raw& item) : baseArchivItem_Raw(item) {}
-    RTTR_CLONEABLE(ArchivItem_Raw)
-};
 } // namespace libsiedler2
 
 #endif // !ARCHIVITEM_RAW_H_INCLUDED

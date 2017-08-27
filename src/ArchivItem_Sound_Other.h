@@ -24,13 +24,12 @@
 #include <vector>
 
 namespace libsiedler2 {
-/// Basisklasse für Other-Sounds.
-class baseArchivItem_Sound_Other : public virtual baseArchivItem_Sound
+/// Klasse für Other-Sounds.
+class ArchivItem_Sound_Other : public ArchivItem_Sound
 {
 public:
-    baseArchivItem_Sound_Other(SoundType sndType);
-
-    ~baseArchivItem_Sound_Other() override;
+    ArchivItem_Sound_Other(SoundType sndType);
+    RTTR_CLONEABLE(ArchivItem_Sound_Other)
 
     /// lädt die Daten aus einer Datei.
     int load(std::istream& file, uint32_t length) override;
@@ -49,15 +48,6 @@ protected:
     std::vector<uint8_t> data;
 };
 
-/// Klasse für Other-Sounds.
-class ArchivItem_Sound_Other : public virtual baseArchivItem_Sound_Other, public ArchivItem_Sound
-{
-public:
-    ArchivItem_Sound_Other(SoundType sndType) : baseArchivItem_Sound_Other(sndType) {}
-
-    ArchivItem_Sound_Other(const ArchivItem_Sound_Other& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Other(item) {}
-    RTTR_CLONEABLE(ArchivItem_Sound_Other)
-};
 } // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_OTHER_H_INCLUDED

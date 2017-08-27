@@ -25,12 +25,12 @@
 #include <stdint.h>
 
 namespace libsiedler2 {
-/// Basis-Basisklasse für Sounditems.
-class baseArchivItem_Sound : public ArchivItem
+/// Klasse für Sounditems.
+class ArchivItem_Sound : public ArchivItem
 {
 public:
-    baseArchivItem_Sound();
-    ~baseArchivItem_Sound() override;
+    ArchivItem_Sound();
+    ~ArchivItem_Sound() override;
 
     /// liefert den Typ des Sounds.
     SoundType getType() const;
@@ -41,16 +41,12 @@ public:
     /// schreibt die Sound-Daten in eine Datei.
     virtual int write(std::ostream& file) const = 0;
 
-    static baseArchivItem_Sound* findSubType(std::istream& file);
+    static ArchivItem_Sound* findSubType(std::istream& file);
 
 protected:
     SoundType soundType_;
 };
 
-/// Basisklasse für Sounditems.
-class ArchivItem_Sound : public virtual baseArchivItem_Sound
-{
-};
 } // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_H_INCLUDED

@@ -22,18 +22,15 @@
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 
-/** @class libsiedler2::baseArchivItem_Sound_Other
+namespace libsiedler2 {
+/** @class baseArchivItem_Sound_Other
  *
  *  Klasse für Other-Sounds.
  */
 
-libsiedler2::baseArchivItem_Sound_Other::baseArchivItem_Sound_Other(SoundType sndType) : baseArchivItem_Sound()
+ArchivItem_Sound_Other::ArchivItem_Sound_Other(SoundType sndType)
 {
     soundType_ = sndType;
-}
-
-libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()
-{
 }
 
 /**
@@ -44,7 +41,7 @@ libsiedler2::baseArchivItem_Sound_Other::~baseArchivItem_Sound_Other()
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, uint32_t length)
+int ArchivItem_Sound_Other::load(std::istream& file, uint32_t length)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -66,7 +63,7 @@ int libsiedler2::baseArchivItem_Sound_Other::load(std::istream& file, uint32_t l
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
+int ArchivItem_Sound_Other::write(std::ostream& file) const
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -80,7 +77,8 @@ int libsiedler2::baseArchivItem_Sound_Other::write(std::ostream& file) const
 /**
  *  räumt den Soundspeicher auf.
  */
-void libsiedler2::baseArchivItem_Sound_Other::clear()
+void ArchivItem_Sound_Other::clear()
 {
     data.resize(0);
 }
+} // namespace libsiedler2

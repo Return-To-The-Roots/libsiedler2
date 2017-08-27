@@ -29,27 +29,15 @@ namespace libsiedler2 {
 
 /** @class baseArchivItem_Sound_XMidi
  *
- *  Basisklasse für XMIDI-Sounds.
+ *  Klasse für XMIDI-Sounds.
  */
 
-baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi() : baseArchivItem_Sound(), numTracks(0), ppqs(0)
+ArchivItem_Sound_XMidi::ArchivItem_Sound_XMidi() : numTracks(0), ppqs(0)
 {
     soundType_ = SOUNDTYPE_XMIDI;
 }
 
-baseArchivItem_Sound_XMidi::baseArchivItem_Sound_XMidi(const baseArchivItem_Sound_XMidi& item) : baseArchivItem_Sound(item)
-{
-    numTracks = item.numTracks;
-    ppqs = item.ppqs;
-    tracklist = item.tracklist;
-    midiTracklist = item.midiTracklist;
-}
-
-baseArchivItem_Sound_XMidi::~baseArchivItem_Sound_XMidi()
-{
-}
-
-int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
+int ArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -166,7 +154,7 @@ int baseArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
-int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
+int ArchivItem_Sound_XMidi::write(std::ostream& file) const
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -215,7 +203,7 @@ int baseArchivItem_Sound_XMidi::write(std::ostream& file) const
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
-const MIDI_Track* baseArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
+const MIDI_Track* ArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
 {
     const XMIDI_Track* origTrack = getTrack(trackIdx);
     if(!origTrack)
@@ -230,7 +218,7 @@ const MIDI_Track* baseArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
     return &midiTracklist[trackIdx];
 }
 
-void baseArchivItem_Sound_XMidi::addTrack(const XMIDI_Track& track)
+void ArchivItem_Sound_XMidi::addTrack(const XMIDI_Track& track)
 {
     if(getTrackCount() >= tracklist.size())
         throw std::runtime_error("No more space for tracks");

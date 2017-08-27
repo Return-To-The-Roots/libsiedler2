@@ -23,17 +23,18 @@
 #include "libendian/src/EndianIStreamAdapter.h"
 #include <iostream>
 
-/** @class libsiedler2::ArchivItem_Sound
+namespace libsiedler2 {
+/** @class ArchivItem_Sound
  *
- *  Basisklasse für Sounditems.
+ *  Klasse für Sounditems.
  */
 
-libsiedler2::baseArchivItem_Sound::baseArchivItem_Sound() : ArchivItem(), soundType_(SOUNDTYPE_NONE)
+ArchivItem_Sound::ArchivItem_Sound() : soundType_(SOUNDTYPE_NONE)
 {
     bobtype_ = BOBTYPE_SOUND;
 }
 
-libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
+ArchivItem_Sound::~ArchivItem_Sound()
 {
 }
 
@@ -42,12 +43,12 @@ libsiedler2::baseArchivItem_Sound::~baseArchivItem_Sound()
  *
  *  @return Der eingestellte Typ
  */
-libsiedler2::SoundType libsiedler2::baseArchivItem_Sound::getType() const
+SoundType ArchivItem_Sound::getType() const
 {
     return soundType_;
 }
 
-libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubType(std::istream& file)
+ArchivItem_Sound* ArchivItem_Sound::findSubType(std::istream& file)
 {
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     long oldpos = fs.getPosition();
@@ -81,5 +82,6 @@ libsiedler2::baseArchivItem_Sound* libsiedler2::baseArchivItem_Sound::findSubTyp
         sndType = SOUNDTYPE_WAVE;
 
     fs.setPosition(oldpos);
-    return dynamic_cast<baseArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, sndType));
+    return dynamic_cast<ArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, sndType));
 }
+} // namespace libsiedler2

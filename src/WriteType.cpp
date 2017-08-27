@@ -52,7 +52,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
         {
             case BOBTYPE_SOUND: // WAVs, MIDIs
             {
-                const baseArchivItem_Sound& i = dynamic_cast<const baseArchivItem_Sound&>(item);
+                const ArchivItem_Sound& i = dynamic_cast<const ArchivItem_Sound&>(item);
                 libendian::EndianOStreamAdapter<false, std::ostream&> fs(lst);
                 const long sizePos = fs.getPosition();
                 fs << uint32_t(0);

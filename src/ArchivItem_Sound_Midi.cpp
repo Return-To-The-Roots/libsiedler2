@@ -29,27 +29,17 @@ namespace libsiedler2 {
 
 /** @class baseArchivItem_Sound_Midi
  *
- *  Basisklasse für MIDI-Sounds.
+ *  Klasse für MIDI-Sounds.
  */
 
-baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi() : baseArchivItem_Sound()
+ArchivItem_Sound_Midi::ArchivItem_Sound_Midi()
 {
     soundType_ = SOUNDTYPE_MIDI;
 
     numTracks = 0;
 }
 
-baseArchivItem_Sound_Midi::baseArchivItem_Sound_Midi(const baseArchivItem_Sound_Midi& item) : baseArchivItem_Sound(item)
-{
-    numTracks = item.numTracks;
-    tracklist = item.tracklist;
-}
-
-baseArchivItem_Sound_Midi::~baseArchivItem_Sound_Midi()
-{
-}
-
-int baseArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
+int ArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -98,7 +88,7 @@ int baseArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
-int baseArchivItem_Sound_Midi::write(std::ostream& file) const
+int ArchivItem_Sound_Midi::write(std::ostream& file) const
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -119,7 +109,7 @@ int baseArchivItem_Sound_Midi::write(std::ostream& file) const
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
-void baseArchivItem_Sound_Midi::addTrack(const MIDI_Track& track)
+void ArchivItem_Sound_Midi::addTrack(const MIDI_Track& track)
 {
     if(getTrackCount() >= tracklist.size())
         throw std::runtime_error("No more space for tracks");

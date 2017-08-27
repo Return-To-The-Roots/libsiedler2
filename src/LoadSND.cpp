@@ -36,7 +36,7 @@ int libsiedler2::loader::LoadSND(const std::string& file, ArchivInfo& items)
     if(int ec = openMemoryStream(file, snd))
         return ec;
 
-    baseArchivItem_Sound* sound = baseArchivItem_Sound::findSubType(snd);
+    ArchivItem_Sound* sound = ArchivItem_Sound::findSubType(snd);
 
     if(!sound)
         return ErrorCode::WRONG_HEADER;

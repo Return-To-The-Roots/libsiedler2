@@ -22,23 +22,20 @@
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <iostream>
 
-/** @class libsiedler2::baseArchivItem_Raw
+namespace libsiedler2 {
+/** @class baseArchivItem_Raw
  *
  *  Basisklasse für Rawdaten.
  */
 
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw(const std::vector<uint8_t>& initialData) : ArchivItem(), data(initialData)
+ArchivItem_Raw::ArchivItem_Raw() : ArchivItem()
 {
     bobtype_ = BOBTYPE_RAW;
 }
 
-libsiedler2::baseArchivItem_Raw::baseArchivItem_Raw() : ArchivItem()
+ArchivItem_Raw::ArchivItem_Raw(const std::vector<uint8_t>& initialData) : data(initialData)
 {
     bobtype_ = BOBTYPE_RAW;
-}
-
-libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
-{
 }
 
 /**
@@ -49,7 +46,7 @@ libsiedler2::baseArchivItem_Raw::~baseArchivItem_Raw()
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Raw::load(std::istream& file, uint32_t length)
+int ArchivItem_Raw::load(std::istream& file, uint32_t length)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -77,7 +74,7 @@ int libsiedler2::baseArchivItem_Raw::load(std::istream& file, uint32_t length)
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length) const
+int ArchivItem_Raw::write(std::ostream& file, bool with_length) const
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -97,7 +94,7 @@ int libsiedler2::baseArchivItem_Raw::write(std::ostream& file, bool with_length)
 /**
  *  liefert die Daten zurück (ro).
  */
-const std::vector<uint8_t>& libsiedler2::baseArchivItem_Raw::getData() const
+const std::vector<uint8_t>& ArchivItem_Raw::getData() const
 {
     return data;
 }
@@ -105,7 +102,7 @@ const std::vector<uint8_t>& libsiedler2::baseArchivItem_Raw::getData() const
 /**
  *  liefert die Daten zurück (rw).
  */
-std::vector<uint8_t>& libsiedler2::baseArchivItem_Raw::getData()
+std::vector<uint8_t>& ArchivItem_Raw::getData()
 {
     return data;
 }
@@ -113,7 +110,8 @@ std::vector<uint8_t>& libsiedler2::baseArchivItem_Raw::getData()
 /**
  *  löscht den Datenblock.
  */
-void libsiedler2::baseArchivItem_Raw::clear()
+void ArchivItem_Raw::clear()
 {
     data.clear();
 }
+} // namespace libsiedler2

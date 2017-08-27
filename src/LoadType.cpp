@@ -59,7 +59,7 @@ int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, ArchivItem
                 uint32_t length;
                 fs >> length;
 
-                baseArchivItem_Sound* nitem = baseArchivItem_Sound::findSubType(lst);
+                ArchivItem_Sound* nitem = ArchivItem_Sound::findSubType(lst);
                 if(!nitem)
                     return ErrorCode::WRONG_HEADER;
                 if(int ec = nitem->load(lst, length))

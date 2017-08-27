@@ -25,13 +25,12 @@
 #include <vector>
 
 namespace libsiedler2 {
-/// Basisklasse für WAVE-Sounds.
-class baseArchivItem_Sound_Wave : public virtual baseArchivItem_Sound
+/// Klasse für WAVE-Sounds.
+class ArchivItem_Sound_Wave : public ArchivItem_Sound
 {
 public:
-    baseArchivItem_Sound_Wave();
-
-    ~baseArchivItem_Sound_Wave() override;
+    ArchivItem_Sound_Wave();
+    RTTR_CLONEABLE(ArchivItem_Sound_Wave)
 
     /// lädt die Wave-Daten aus einer Datei.
     int load(std::istream& file, uint32_t length) override;
@@ -54,15 +53,6 @@ protected:
     std::vector<uint8_t> data;
 };
 
-/// Klasse für WAVE-Sounds.
-class ArchivItem_Sound_Wave : public virtual baseArchivItem_Sound_Wave, public ArchivItem_Sound
-{
-public:
-    ArchivItem_Sound_Wave() : baseArchivItem_Sound_Wave() {}
-
-    ArchivItem_Sound_Wave(const ArchivItem_Sound_Wave& item) : baseArchivItem_Sound(item), baseArchivItem_Sound_Wave(item) {}
-    RTTR_CLONEABLE(ArchivItem_Sound_Wave)
-};
 } // namespace libsiedler2
 
 #endif // !ARCHIVITEM_SOUND_WAVE_H_INCLUDED
