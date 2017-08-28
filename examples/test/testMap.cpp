@@ -17,7 +17,7 @@
 
 #include "cmpFiles.h"
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteSWD)
     std::string mapPath = "testFiles/map.SWD";
     std::string mapOutPath = testOutputPath + "/outMap.SWD";
     BOOST_REQUIRE(bfs::exists(mapPath));
-    libsiedler2::ArchivInfo act;
+    libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(mapPath, act), 0);
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(mapOutPath, act), 0);
     BOOST_REQUIRE(testFilesEqual(mapOutPath, mapPath));
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWLD)
     std::string mapPath = "testFiles/map.wld";
     std::string mapOutPath = testOutputPath + "/outMap.wld";
     BOOST_REQUIRE(bfs::exists(mapPath));
-    libsiedler2::ArchivInfo act;
+    libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(mapPath, act), 0);
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(mapOutPath, act), 0);
     BOOST_REQUIRE(testFilesEqual(mapOutPath, mapPath));

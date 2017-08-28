@@ -17,7 +17,7 @@
 
 #include "LoadPalette.h"
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/src/ArchivItem_Bob.h"
 #include "libsiedler2/src/libsiedler2.h"
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     std::string inPath = "testFiles/DATA/BOBS/CARRIER.BOB";
     if(!bfs::exists(inPath))
         return;
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
     const libsiedler2::ArchivItem_Bob& bob = *dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);

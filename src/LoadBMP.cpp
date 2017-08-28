@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
 #include "BmpHeader.h"
@@ -66,7 +66,7 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, 
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls einlesen.
  */
-int libsiedler2::loader::LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette /*= NULL*/)
+int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette /*= NULL*/)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))

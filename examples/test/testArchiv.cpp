@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Raw.h"
 #include "libsiedler2/src/IAllocator.h"
 #include "libsiedler2/src/enumTypes.h"
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_SUITE(Archiv)
 
 BOOST_AUTO_TEST_CASE(Push)
 {
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     BOOST_REQUIRE(archiv.empty());
     libsiedler2::ArchivItem_Raw* rawItem = new libsiedler2::ArchivItem_Raw;
     rawItem->getData().push_back(42);
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(Push)
 
 BOOST_AUTO_TEST_CASE(Set)
 {
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     BOOST_REQUIRE(archiv.empty());
     archiv.push(new libsiedler2::ArchivItem_Raw);
     archiv.alloc(2);
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(Set)
 
 BOOST_AUTO_TEST_CASE(Find)
 {
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     libsiedler2::ArchivItem_Raw* rawItem1 = new libsiedler2::ArchivItem_Raw;
     rawItem1->setName("Foo1");
     libsiedler2::ArchivItem_Raw* rawItem2 = new libsiedler2::ArchivItem_Raw;
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(Find)
 
 BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
 {
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     for(int i = 1; i < libsiedler2::NUM_BOB_TYPES; i++)
     {
         libsiedler2::BobType bobType = libsiedler2::BobType(i);
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
         archiv.push(item);
     }
     // Copy ctor
-    libsiedler2::ArchivInfo archiv2(archiv), archiv3;
+    libsiedler2::Archiv archiv2(archiv), archiv3;
     BOOST_REQUIRE_EQUAL(archiv.size(), archiv2.size());
     // Avoid ctor init
     archiv3.push(new libsiedler2::ArchivItem_Raw);
@@ -156,7 +156,7 @@ int TestItem::numLiveItems = 0;
 
 BOOST_AUTO_TEST_CASE(AllocAndGet)
 {
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     BOOST_REQUIRE(archiv.empty());
     archiv.alloc(3);
     BOOST_REQUIRE_EQUAL(archiv.size(), 3u);
@@ -183,7 +183,7 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
         BOOST_REQUIRE(!archiv[i]);
     // Auto delete
     {
-        libsiedler2::ArchivInfo archiv2;
+        libsiedler2::Archiv archiv2;
         BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 0);
         archiv2.push(new TestItem);
         BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
     // No delete
     TestItem* item = new TestItem;
     {
-        libsiedler2::ArchivInfo archiv2;
+        libsiedler2::Archiv archiv2;
         BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
         archiv2.push(item);
         BOOST_REQUIRE_EQUAL(archiv2.release(0), item);

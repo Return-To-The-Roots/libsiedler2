@@ -21,14 +21,14 @@
 #define LoadPalette_h__
 
 #include "ColorOutput.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/test/unit_test.hpp>
 
 struct LoadPalette
 {
-    libsiedler2::ArchivInfo paletteArchiv;
+    libsiedler2::Archiv paletteArchiv;
     libsiedler2::ArchivItem_Palette* palette;
     libsiedler2::ArchivItem_Palette* modPal;
     BOOST_STATIC_CONSTANT(uint8_t, modClr1 = 22);

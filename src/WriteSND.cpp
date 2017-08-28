@@ -16,13 +16,13 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Sound.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
 #include <boost/filesystem/fstream.hpp>
 
-int libsiedler2::loader::WriteSND(const std::string& file, const ArchivInfo& items)
+int libsiedler2::loader::WriteSND(const std::string& file, const Archiv& items)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;

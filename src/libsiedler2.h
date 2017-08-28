@@ -24,7 +24,7 @@
 
 namespace libsiedler2 {
 // Fwd decl
-class ArchivInfo;
+class Archiv;
 class ArchivItem_Palette;
 class IAllocator;
 
@@ -38,9 +38,9 @@ const IAllocator& getAllocator();
 void setAllocator(IAllocator* newAllocator);
 
 /// Lädt die Datei im Format ihrer Endung.
-int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = NULL);
 /// Schreibt die Datei im Format ihrer Endung.
-int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
 } // namespace libsiedler2
 
 #endif // !LIBSIEDLER2_H_INCLUDED

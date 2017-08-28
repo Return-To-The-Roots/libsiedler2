@@ -17,7 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "libsiedler2.h"
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ErrorCodes.h"
 #include "StandardAllocator.h"
 #include "prototypen.h"
@@ -131,7 +131,7 @@ void setAllocator(IAllocator* newAllocator)
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette)
+int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -193,7 +193,7 @@ int Load(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* p
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int Write(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette)
+int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;

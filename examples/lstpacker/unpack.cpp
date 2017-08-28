@@ -16,7 +16,7 @@
 // along with Siedler II.5 RTTR. If not, see <http://www.gnu.org/licenses/>.
 
 #include "unpack.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
 #include "libsiedler2/src/ArchivItem_Bob.h"
 #include "libsiedler2/src/ArchivItem_Font.h"
@@ -34,7 +34,7 @@
 using namespace std;
 using namespace libsiedler2;
 
-void checkTxtExtraction(const string& directory, const ArchivInfo& lst)
+void checkTxtExtraction(const string& directory, const Archiv& lst)
 {
     for(unsigned i = 0; i < lst.size(); ++i)
     {
@@ -67,7 +67,7 @@ void checkTxtExtraction(const string& directory, const ArchivInfo& lst)
     }
 }
 
-void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Palette* palette, const std::string& fileNameHexPrefix)
+void unpack(const string& directory, const Archiv& lst, const ArchivItem_Palette* palette, const std::string& fileNameHexPrefix)
 {
     boost::filesystem::create_directories(directory);
 
@@ -142,7 +142,7 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             break;
             case BOBTYPE_PALETTE: // Palette
             {
-                ArchivInfo items;
+                Archiv items;
                 items.pushC(*item);
                 newfile << "bbm";
 
@@ -206,7 +206,7 @@ void unpack(const string& directory, const ArchivInfo& lst, const ArchivItem_Pal
             // no break
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
-                ArchivInfo items;
+                Archiv items;
                 const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
                 items.pushC(bitmap);
                 newfile << "nx" << bitmap.getNx() << ".ny" << bitmap.getNy();

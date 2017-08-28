@@ -35,7 +35,7 @@ struct BlockHeader
     uint32_t blockLength;
 };
 
-libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), ArchivInfo()
+libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(), Archiv()
 {
     bobtype_ = BOBTYPE_MAP;
 }

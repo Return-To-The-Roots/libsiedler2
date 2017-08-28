@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Ini.h"
 #include "ErrorCodes.h"
 #include "OpenMemoryStream.h"
@@ -31,7 +31,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadINI(const std::string& file, ArchivInfo& items)
+int libsiedler2::loader::LoadINI(const std::string& file, Archiv& items)
 {
     MMStream ini;
     if(int ec = openMemoryStream(file, ini))

@@ -18,7 +18,7 @@
 
 #include "pack.h"
 #include "unpack.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    ArchivInfo bbm;
+    Archiv bbm;
 
     if(argc == 3)
     {
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 
         cerr << "Unpacking file " << argv[1] << " to " << outPath << endl;
 
-        ArchivInfo lst;
+        Archiv lst;
         if(Load(argv[1], lst, palette) != 0)
         {
             cerr << "Fatal Error: " << endl;

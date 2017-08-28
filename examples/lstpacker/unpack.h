@@ -23,11 +23,11 @@
 #include <string>
 
 namespace libsiedler2 {
-class ArchivInfo;
+class Archiv;
 class ArchivItem_Palette;
 } // namespace libsiedler2
 
-void unpack(const std::string& directory, const libsiedler2::ArchivInfo& lst, const libsiedler2::ArchivItem_Palette* palette,
+void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const libsiedler2::ArchivItem_Palette* palette,
             const std::string& fileNameHexPrefix = "");
 
 #endif // unpack_h__

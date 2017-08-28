@@ -17,7 +17,7 @@
 
 #include "cmpFiles.h"
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteIni)
     std::string inPath = "testFiles/test.ini";
     std::string outPath = testOutputPath + "/outTest.ini";
     BOOST_REQUIRE(bfs::exists(inPath));
-    libsiedler2::ArchivInfo act;
+    libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, act), 0);
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, act), 0);
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));

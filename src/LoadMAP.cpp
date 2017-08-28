@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Map.h"
 #include "ErrorCodes.h"
 #include "IAllocator.h"
@@ -32,7 +32,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadMAP(const std::string& file, ArchivInfo& items, bool only_header)
+int libsiedler2::loader::LoadMAP(const std::string& file, Archiv& items, bool only_header)
 {
     MMStream map;
     if(int ec = openMemoryStream(file, map))

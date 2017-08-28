@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
@@ -32,7 +32,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteTXT(const std::string& file, const ArchivInfo& items, bool conversion)
+int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, bool conversion)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;

@@ -19,7 +19,7 @@
 #include "LoadPalette.h"
 #include "cmpFiles.h"
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Raw.h"
 #include "libsiedler2/src/ColorARGB.h"
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePlayerBitmap)
     std::string bmpPath = "testFiles/bmpPlayer.lst";
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
-    ArchivInfo bmp;
+    Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRawBitmap)
     std::string bmpPath = "testFiles/bmpRaw.lst";
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
-    ArchivInfo bmp;
+    Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
     std::string bmpPath = "testFiles/bmpShadow.lst";
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
-    ArchivInfo bmp;
+    Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
     std::string bmpPath = "testFiles/bmpRLE.lst";
     std::string bmpOutPath = testOutputPath + "/bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
-    ArchivInfo bmp;
+    Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteBmp)
     std::string bmpPath = "testFiles/logo.bmp";
     std::string bmpOutPath = testOutputPath + "/outLogo.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
-    ArchivInfo bmp;
+    Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
     std::string bmpPath = "testFiles/pal.bmp";
     std::string bmpOutPath = testOutputPath + "/outPal.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
-    ArchivInfo archiv;
+    Archiv archiv;
     BOOST_REQUIRE(testLoad(0, bmpPath, archiv));
     ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase*>(archiv[0]);
     BOOST_REQUIRE(bmp);
@@ -154,7 +154,7 @@ struct TestBitmaps
     }
 };
 
-ArchivItem_BitmapBase* getFirstBitmap(ArchivInfo& archiv)
+ArchivItem_BitmapBase* getFirstBitmap(Archiv& archiv)
 {
     for(unsigned j = 0; j < archiv.size(); j++)
     {
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
         FormatSetter fmtSetter(curFmt);
         BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
         {
-            ArchivInfo archiv;
+            Archiv archiv;
             int ec = Load("testFiles/" + testFile.filename, archiv, palette);
             BOOST_REQUIRE_MESSAGE(ec == 0, "Error " << getErrorString(ec) << " loading " << testFile.filename);
             const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
@@ -198,7 +198,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
         FormatSetter fmtSetter(curFmt);
         BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
         {
-            ArchivInfo archiv;
+            Archiv archiv;
             if((curFmt == FORMAT_PALETTED && !testFile.containsPalette)
                || (curFmt == FORMAT_BGRA && testFile.isPaletted && !testFile.containsPalette))
             {
@@ -273,7 +273,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
         FormatSetter fmtSetter(curFmt);
         BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
         {
-            ArchivInfo archiv;
+            Archiv archiv;
             std::string inFilepath = "testFiles/" + testFile.filename;
             std::string outFilepathRef = testOutputPath + "/reference_" + testFile.filename;
             std::string outFilepath = testOutputPath + "/" + testFile.filename;

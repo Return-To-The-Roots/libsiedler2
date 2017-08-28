@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
 #include "IAllocator.h"
@@ -37,7 +37,7 @@
  *
  *  @bug Keine Erkennung ob Plain-Text oder "Irgendwas".
  */
-int libsiedler2::loader::LoadTXT(const std::string& file, ArchivInfo& items, bool conversion)
+int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool conversion)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))

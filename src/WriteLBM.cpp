@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
@@ -25,7 +25,7 @@
 #include "libendian/src/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 
-int libsiedler2::loader::WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;

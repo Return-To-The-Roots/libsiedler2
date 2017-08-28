@@ -31,12 +31,12 @@
  *  Klasse für INI-Dateien (genauergesagt eine Sektion).
  */
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(), ArchivInfo()
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(), Archiv()
 {
     bobtype_ = BOBTYPE_INI;
 }
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(), ArchivInfo()
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(), Archiv()
 {
     setName(name);
     bobtype_ = BOBTYPE_INI;

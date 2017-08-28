@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
@@ -31,7 +31,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBBM(const std::string& file, const ArchivInfo& items)
+int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
 {
     char header[4] = {'F', 'O', 'R', 'M'}, pbm[4] = {'P', 'B', 'M', ' '}, cmap[4] = {'C', 'M', 'A', 'P'};
 

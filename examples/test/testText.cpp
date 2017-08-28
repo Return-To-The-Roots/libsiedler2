@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Text.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
@@ -24,7 +24,7 @@
 
 BOOST_AUTO_TEST_SUITE(TextFiles)
 
-void createTxt(libsiedler2::ArchivInfo& archiv, const std::string& outFile, unsigned numEntries)
+void createTxt(libsiedler2::Archiv& archiv, const std::string& outFile, unsigned numEntries)
 {
     for(unsigned i = 0; i < numEntries; i++)
     {
@@ -46,7 +46,7 @@ void createTxt(libsiedler2::ArchivInfo& archiv, const std::string& outFile, unsi
 BOOST_AUTO_TEST_CASE(ReadWriteENG)
 {
     std::string outFilepath = testOutputPath + "/outText.ENG";
-    libsiedler2::ArchivInfo archiv, archivIn;
+    libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 3);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), archivIn.size());
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
 BOOST_AUTO_TEST_CASE(ReadWriteGER)
 {
     std::string outFilepath = testOutputPath + "/outText.GER";
-    libsiedler2::ArchivInfo archiv, archivIn;
+    libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 6);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), archivIn.size());
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
 BOOST_AUTO_TEST_CASE(ReadWritePlain)
 {
     std::string outFilepath = testOutputPath + "/outTextPlain.GER";
-    libsiedler2::ArchivInfo archiv, archivIn;
+    libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 1);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
     BOOST_REQUIRE_EQUAL(archivIn.size(), 1u);
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
 BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
 {
     std::string inFilepath = "testFiles/txtAsLst.lst";
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inFilepath, archiv), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 7u);
     for(unsigned i = 0; i < archiv.size(); i++)

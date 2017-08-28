@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem.h"
 #include <iosfwd>
 #include <string>
@@ -27,7 +27,7 @@
 namespace libsiedler2 {
 
 /// Klasse für INI-Dateien (genauergesagt eine Sektion).
-class ArchivItem_Ini : public ArchivItem, public ArchivInfo
+class ArchivItem_Ini : public ArchivItem, public Archiv
 {
 public:
     ArchivItem_Ini();

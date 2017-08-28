@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Header
 #include "libsiedler2/src/libsiedler2.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Font.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
@@ -29,7 +29,7 @@ using namespace libsiedler2;
 
 int main(int argc, char* argv[])
 {
-    ArchivInfo lst, bbm;
+    Archiv lst, bbm;
 
     Load("GFX/PALETTE/PAL5.BBM", bbm);
 
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 
     Load("DATA/RESOURCE.DAT", lst, palette);
 
-    ArchivInfo to;
+    Archiv to;
     for(unsigned i = 0; i < 4; ++i)
     {
         if(lst.get(i)->getBobType() == BOBTYPE_FONT)

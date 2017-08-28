@@ -19,14 +19,14 @@
 
 #pragma once
 
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem.h"
 #include <iosfwd>
 #include <stdint.h>
 
 namespace libsiedler2 {
 /// Klasse für eine Mapfile.
-class ArchivItem_Map : public ArchivItem, public ArchivInfo
+class ArchivItem_Map : public ArchivItem, public Archiv
 {
 public:
     struct ExtraAnimalInfo

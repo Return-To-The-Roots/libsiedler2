@@ -17,7 +17,7 @@
 
 #include "LoadPalette.h"
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Bitmap.h"
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
 #include "libsiedler2/src/libsiedler2.h"
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
     std::string inPath = "testFiles/GFX/TEXTURES/TEX5.LBM";
     if(!bfs::exists(inPath))
         return;
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
     const libsiedler2::ArchivItem_BitmapBase* bmp = dynamic_cast<libsiedler2::ArchivItem_BitmapBase*>(archiv[0]);
@@ -52,11 +52,11 @@ BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
     std::string inPathBmp = "testFiles/pal.bmp";
     std::string outPath = testOutputPath + "/out.lbm";
     // Load a paletted bmp and write it in lbm format
-    libsiedler2::ArchivInfo arBmp;
+    libsiedler2::Archiv arBmp;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathBmp, arBmp, palette), 0);
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, arBmp, palette), 0);
     // Load lbm and check if bitmaps are equal
-    libsiedler2::ArchivInfo arLbm;
+    libsiedler2::Archiv arLbm;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outPath, arLbm, palette), 0);
     const libsiedler2::ArchivItem_Bitmap* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arBmp[0]);
     const libsiedler2::ArchivItem_Bitmap* bmpLbm = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arLbm[0]);

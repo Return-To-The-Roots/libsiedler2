@@ -23,11 +23,11 @@
 #include <string>
 
 namespace libsiedler2 {
-class ArchivInfo;
+class Archiv;
 class ArchivItem_Palette;
 } // namespace libsiedler2
 
 void pack(const std::string& directory, const std::string& file, const libsiedler2::ArchivItem_Palette* palette,
-          libsiedler2::ArchivInfo* lst = NULL);
+          libsiedler2::Archiv* lst = NULL);
 
 #endif // pack_h__

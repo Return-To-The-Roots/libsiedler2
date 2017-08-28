@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "ArchivInfo.h"
+#include "Archiv.h"
 #include "ArchivItem.h"
 #include <iosfwd>
 #include <stdint.h>
@@ -31,7 +31,7 @@ class ArchivItem_Palette;
 
 namespace libsiedler2 {
 /// Klasse für Bobfiles.
-class ArchivItem_Bob : public ArchivItem, public ArchivInfo
+class ArchivItem_Bob : public ArchivItem, public Archiv
 {
 public:
     ArchivItem_Bob();

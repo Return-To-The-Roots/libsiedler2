@@ -18,7 +18,7 @@
 #include "LoadPalette.h"
 #include "cmpFiles.h"
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Font.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(LoadWriteFont)
     std::string inPath = "testFiles/testFonts.LST";
     std::string outPath = testOutputPath + "/outFonts.lst";
     BOOST_REQUIRE(bfs::exists(inPath));
-    libsiedler2::ArchivInfo archiv;
+    libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     const libsiedler2::ArchivItem_Font* font = dynamic_cast<const libsiedler2::ArchivItem_Font*>(archiv[1]);
     BOOST_REQUIRE(font);

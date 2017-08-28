@@ -17,7 +17,7 @@
 
 #include "LoadPalette.h"
 #include "config.h"
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
 #include "libsiedler2/src/ArchivItem_Font.h"
 #include "libsiedler2/src/ArchivItem_Palette.h"
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
     {
         if(!bfs::exists(inPath))
             return;
-        libsiedler2::ArchivInfo archiv;
+        libsiedler2::Archiv archiv;
         BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
         BOOST_REQUIRE_EQUAL(archiv.size(), 57u);
         BOOST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[0]));

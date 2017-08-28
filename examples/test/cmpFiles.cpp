@@ -24,7 +24,7 @@
 namespace bfs = boost::filesystem;
 
 template<typename T_Func>
-boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResult, const std::string& file, libsiedler2::Archiv& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
     int ec = func(file, items, palette);
     if(ec == expectedResult)
@@ -36,12 +36,12 @@ boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResul
     return result;
 }
 
-boost::test_tools::predicate_result testLoad(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+boost::test_tools::predicate_result testLoad(int expectedResult, const std::string& file, libsiedler2::Archiv& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
     return testLoadWrite(libsiedler2::Load, expectedResult, file, items, palette);
 }
 
-boost::test_tools::predicate_result testWrite(int expectedResult, const std::string& file, libsiedler2::ArchivInfo& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+boost::test_tools::predicate_result testWrite(int expectedResult, const std::string& file, libsiedler2::Archiv& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
     return testLoadWrite(libsiedler2::Write, expectedResult, file, items, palette);
 }

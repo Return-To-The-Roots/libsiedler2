@@ -26,7 +26,7 @@ namespace libsiedler2 {
 // Fwd decl
 class ArchivItem_Palette;
 class ArchivItem;
-class ArchivInfo;
+class Archiv;
 
 /// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 namespace loader {
@@ -37,78 +37,78 @@ namespace loader {
     int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine LST-File in ein ArchivInfo.
-    int LoadLST(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+    int LoadLST(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = NULL);
 
     /// schreibt ein ArchivInfo eine LST-File.
-    int WriteLST(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+    int WriteLST(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine BBM-File in ein ArchivInfo.
-    int LoadBBM(const std::string& file, ArchivInfo& items);
+    int LoadBBM(const std::string& file, Archiv& items);
 
     /// schreibt ein ArchivInfo in eine BBM-File.
-    int WriteBBM(const std::string& file, const ArchivInfo& items);
+    int WriteBBM(const std::string& file, const Archiv& items);
 
     /// lädt eine ACT-File in ein ArchivInfo.
-    int LoadACT(const std::string& file, ArchivInfo& items);
+    int LoadACT(const std::string& file, Archiv& items);
 
     /// schreibt ein ArchivInfo in eine ACT-File.
-    int WriteACT(const std::string& file, const ArchivInfo& items);
+    int WriteACT(const std::string& file, const Archiv& items);
 
     /// lädt eine DAT/IDX-File in ein ArchivInfo.
-    int LoadDATIDX(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+    int LoadDATIDX(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine BMP-File in ein ArchivInfo.
-    int LoadBMP(const std::string& file, ArchivInfo& image, const ArchivItem_Palette* palette = NULL);
+    int LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette = NULL);
 
     /// schreibt ein ArchivInfo in eine BMP-File.
-    int WriteBMP(const std::string& file, const ArchivInfo& items);
+    int WriteBMP(const std::string& file, const Archiv& items);
 
     /// lädt eine GER/ENG-File in ein ArchivInfo.
-    int LoadTXT(const std::string& file, ArchivInfo& items, bool conversion = true);
+    int LoadTXT(const std::string& file, Archiv& items, bool conversion = true);
 
 #define LoadGER LoadTXT
 #define LoadENG LoadTXT
 
     /// schreibt eine GER/ENG-File aus einem ArchivInfo.
-    int WriteTXT(const std::string& file, const ArchivInfo& items, bool conversion = true);
+    int WriteTXT(const std::string& file, const Archiv& items, bool conversion = true);
 
 #define WriteGER WriteTXT
 #define WriteENG WriteTXT
 
     /// lädt eine LBM-File in ein ArchivInfo.
-    int LoadLBM(const std::string& file, ArchivInfo& items);
+    int LoadLBM(const std::string& file, Archiv& items);
 
     /// schreibt ein ArchivInfo in eine LBM-File.
-    int WriteLBM(const std::string& file, const ArchivInfo& items, const ArchivItem_Palette* palette = NULL);
+    int WriteLBM(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine SWD/WSD-File in ein ArchivInfo.
-    int LoadMAP(const std::string& file, ArchivInfo& items, bool only_header = false);
+    int LoadMAP(const std::string& file, Archiv& items, bool only_header = false);
 
 #define LoadSWD LoadMAP
 #define LoadWSD LoadMAP
 
     /// schreibt ein ArchivInfo in eine SWD/WSD-File.
-    int WriteMAP(const std::string& file, const ArchivInfo& items);
+    int WriteMAP(const std::string& file, const Archiv& items);
 
 #define WriteSWD WriteMAP
 #define WriteWSD WriteMAP
 
     /// lädt eine BOB-File in ein ArchivInfo.
-    int LoadBOB(const std::string& file, ArchivInfo& items, const ArchivItem_Palette* palette);
+    int LoadBOB(const std::string& file, Archiv& items, const ArchivItem_Palette* palette);
 
-    int LoadSND(const std::string& file, ArchivInfo& items);
+    int LoadSND(const std::string& file, Archiv& items);
 
 #define LoadMID LoadSND
 #define LoadXMID LoadSND
 #define LoadWAV LoadSND
 
-    int WriteSND(const std::string& file, const ArchivInfo& items);
+    int WriteSND(const std::string& file, const Archiv& items);
 
 #define WriteWAV WriteSND
 
     /// lädt eine INI-File in ein ArchivInfo.
-    int LoadINI(const std::string& file, ArchivInfo& items);
-    int WriteINI(const std::string& file, const ArchivInfo& items);
+    int LoadINI(const std::string& file, Archiv& items);
+    int WriteINI(const std::string& file, const Archiv& items);
 } // namespace loader
 } // namespace libsiedler2
 

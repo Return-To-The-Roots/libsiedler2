@@ -18,7 +18,7 @@
 #include "pack.h"
 #include "util.h"
 
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Bitmap.h"
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
@@ -83,9 +83,9 @@ std::string hexToInt(const std::string& hexStr)
     return sOut.str();
 }
 
-void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, ArchivInfo* lst)
+void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, Archiv* lst)
 {
-    ArchivInfo tlst;
+    Archiv tlst;
 
     if(lst == NULL)
         lst = &tlst;
@@ -168,7 +168,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
         if(!(nrs >> nr))
             nr = -1;
 
-        ArchivInfo items;
+        Archiv items;
 
         cout << "Reading file " << whole_path;
         if(nr >= 0)
