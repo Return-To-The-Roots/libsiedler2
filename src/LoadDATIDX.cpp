@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
+#include "ArchivItem.h"
 #include "ErrorCodes.h"
 #include "OpenMemoryStream.h"
 #include "prototypen.h"

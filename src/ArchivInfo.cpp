@@ -17,8 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivInfo.h"
-#include "libsiedler2.h"
-#include "IAllocator.h"
+#include "ArchivItem.h"
 #include <stdexcept>
 
 namespace libsiedler2{
@@ -80,7 +79,6 @@ ArchivInfo::~ArchivInfo()
 void ArchivInfo::alloc(size_t count)
 {
     clear();
-
     data.resize(count);
 }
 
@@ -93,8 +91,7 @@ void ArchivInfo::alloc_inc(size_t increment)
  *  gibt die angelegten Daten wieder frei.
  */
 void ArchivInfo::clear()
-{
-    
+{    
     for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
         delete *it;
     data.clear();
@@ -110,7 +107,7 @@ void ArchivInfo::clear()
 void ArchivInfo::set(size_t index, ArchivItem* item)
 {
    if(index >= size())
-       throw std::range_error("Index out of range");
+       throw std::out_of_range("Index out of range");
    delete data[index];
    data[index] = item;
 }
@@ -126,10 +123,6 @@ void ArchivInfo::setC(size_t index, const ArchivItem& item)
     set(index, item.clone());
 }
 
-void ArchivInfo::clearItem(size_t index)
-{
-    set(index, NULL);
-}
 /**
  *  fügt ein Element hinten an und kopiert die Daten von @p item.
  *
@@ -140,7 +133,7 @@ void ArchivInfo::pushC(const ArchivItem& item)
     data.push_back(item.clone());
 }
 
-const libsiedler2::ArchivItem* ArchivInfo::find(const std::string& name) const
+const ArchivItem* ArchivInfo::find(const std::string& name) const
 {
     for(std::vector<ArchivItem*>::const_iterator it = data.begin(); it != data.end(); ++it)
     {
@@ -151,7 +144,7 @@ const libsiedler2::ArchivItem* ArchivInfo::find(const std::string& name) const
     return NULL;
 }
 
-libsiedler2::ArchivItem* ArchivInfo::find(const std::string& name)
+ArchivItem* ArchivInfo::find(const std::string& name)
 {
     for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
     {
@@ -160,6 +153,15 @@ libsiedler2::ArchivItem* ArchivInfo::find(const std::string& name)
     }
 
     return NULL;
+}
+
+ArchivItem* ArchivInfo::release(size_t index)
+{
+    if(index >= size())
+        return NULL;
+    ArchivItem* result = data[index];
+    data[index] = NULL;
+    return result;
 }
 
 }

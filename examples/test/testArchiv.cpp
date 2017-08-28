@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(Set)
     // Add with passing ownership
     archiv.set(4, rawItem);
     BOOST_REQUIRE_EQUAL(archiv[4], rawItem);
-    archiv.clearItem(4);
+    archiv.set(4, NULL);
     BOOST_REQUIRE(!archiv[4]);
 }
 
@@ -142,6 +142,63 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
         BOOST_REQUIRE_EQUAL(archiv[i]->getName(), archiv2[i]->getName());
         BOOST_REQUIRE_EQUAL(archiv[i]->getName(), archiv3[i]->getName());
     }
+}
+
+struct TestItem : libsiedler2::ArchivItem
+{
+    static int numLiveItems;
+    TestItem() { numLiveItems++; }
+    ~TestItem() override { numLiveItems--; }
+    RTTR_CLONEABLE(TestItem)
+};
+
+int TestItem::numLiveItems = 0;
+
+BOOST_AUTO_TEST_CASE(AllocAndGet)
+{
+    libsiedler2::ArchivInfo archiv;
+    BOOST_REQUIRE(archiv.empty());
+    archiv.alloc(3);
+    BOOST_REQUIRE_EQUAL(archiv.size(), 3u);
+    BOOST_REQUIRE(!archiv[0]);
+    BOOST_REQUIRE(!archiv[1]);
+    BOOST_REQUIRE(!archiv[2]);
+    archiv.set(1, new libsiedler2::ArchivItem_Raw);
+    BOOST_REQUIRE(archiv[1]);
+    BOOST_REQUIRE_EQUAL(archiv[1], archiv.get(1));
+    archiv.set(2, new libsiedler2::ArchivItem_Raw);
+    BOOST_REQUIRE_EQUAL(archiv.size(), 3u);
+    BOOST_REQUIRE_EQUAL(archiv[2], archiv.get(2));
+    BOOST_REQUIRE_THROW(archiv.set(3, NULL), std::out_of_range);
+    BOOST_REQUIRE(!archiv[3]);
+    BOOST_REQUIRE(!archiv.get(3));
+    archiv.alloc_inc(2);
+    BOOST_REQUIRE_EQUAL(archiv.size(), 5u);
+    BOOST_REQUIRE(archiv[1]);
+    BOOST_REQUIRE(archiv[2]);
+    BOOST_REQUIRE(!archiv[3]);
+    archiv.alloc(5);
+    BOOST_REQUIRE_EQUAL(archiv.size(), 5u);
+    for(unsigned i = 0; i < 5; i++)
+        BOOST_REQUIRE(!archiv[i]);
+    // Auto delete
+    {
+        libsiedler2::ArchivInfo archiv2;
+        BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 0);
+        archiv2.push(new TestItem);
+        BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
+    }
+    BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 0);
+    // No delete
+    TestItem* item = new TestItem;
+    {
+        libsiedler2::ArchivInfo archiv2;
+        BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
+        archiv2.push(item);
+        BOOST_REQUIRE_EQUAL(archiv2.release(0), item);
+    }
+    BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
+    delete item;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

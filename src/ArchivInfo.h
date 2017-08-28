@@ -19,78 +19,59 @@
 
 #pragma once
 
-#include "ArchivItem.h"
 #include <cstddef>
-#include <stdint.h>
 #include <string>
 #include <vector>
 
 namespace libsiedler2 {
-/// Klasse für Archivdateien.
+class ArchivItem;
+/// Class for an archiv. That is a collection of @p ArchivItem to which the archive holds ownership
+/// So all entries are deleted when the archive is destroyed
 class ArchivInfo
 {
 public:
     ArchivInfo();
-
     ArchivInfo(const ArchivInfo& info);
-
     /// Destruktor von @p ArchivInfo, räumt automatisch auf.
     virtual ~ArchivInfo();
-
-    /// erstellt den Datensatz in einer bestimmten Größe.
+    ArchivInfo& operator=(const ArchivInfo& info);
+    /// Creates a dataset with a given size. Deletes all current entries
     void alloc(size_t count);
-
-    /**
-     *  vergrößert den Datensatz um eine bestimmten Größe.
-     *
-     *  @param[in] increment Elementanzahl um den der Datensatz vergrößert werden soll
-     */
+    /// Increases the element count by the given amount
     void alloc_inc(size_t increment);
-
-    /// gibt die angelegten Daten wieder frei.
+    /// Release all data and set size to 0
     void clear();
-
-    /// Setzt den Inhalt eines ArchivItems auf das des Übergebenen.
+    /// Set the item at the given position
     /// Transfers ownership!
     void set(size_t index, ArchivItem* item);
-
-    /// kopiert den Inhalt eines ArchivItems auf das des Übergebenen.
+    /// Set the item at the given position to a copy of the given item
     void setC(size_t index, const ArchivItem& item);
-
-    /// Deletes the item at the given index
-    void clearItem(size_t index);
-
     /// Adds an element to the end. Transfers ownership!
     void push(ArchivItem* item) { data.push_back(item); }
-
-    /// fügt ein Element hinten an und kopiert die Daten von @p item.
+    /// Add a copy of the element to the end
     void pushC(const ArchivItem& item);
-
-    /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
+    /// Return the item at the given index or NULL if the index is out of bounds
     ArchivItem* get(size_t index) { return (index < size()) ? data[index] : NULL; }
-
-    /// liefert den Inhalt eines ArchivItems am entsprechenden Index.
+    /// Return the item at the given index or NULL if the index is out of bounds
     const ArchivItem* get(size_t index) const { return (index < size()) ? data[index] : NULL; }
-
-    /// liefert das erste Item mit entsprechenden Namen
+    /// Return the first item with the given name
     ArchivItem* find(const std::string& name);
-
-    /// liefert das erste Item mit entsprechenden Namen
+    /// Return the first item with the given name
     const ArchivItem* find(const std::string& name) const;
-
-    /// liefert die Größe des Archivs.
+    /// Return the item at the given position and remove it from the archive
+    /// Hence it transfers ownership! This is different then calling set(index, NULL) which destroys the element
+    ArchivItem* release(size_t index);
+    /// Return the number of entries (includes NULL entries)
     size_t size() const { return data.size(); }
-
+    /// True iff no entries stored
     bool empty() const { return data.empty(); }
-
-    const ArchivItem* operator[](size_t index) const { return get(index); }
-
-    ArchivItem* operator[](size_t index) { return get(index); }
-
-    ArchivInfo& operator=(const ArchivInfo& info);
+    /// Return the item at the given index or NULL if the index is out of bounds
+    /// Note: Pointer is const -> archiv cannot be modified with this operator
+    const ArchivItem* const operator[](size_t index) const { return get(index); }
+    ArchivItem* const operator[](size_t index) { return get(index); }
 
 private:
-    std::vector<ArchivItem*> data; /// die Elemente.
+    std::vector<ArchivItem*> data; /// elements
 };
 } // namespace libsiedler2
 
