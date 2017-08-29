@@ -21,6 +21,7 @@
 #include "libsiedler2/src/IAllocator.h"
 #include "libsiedler2/src/enumTypes.h"
 #include "libsiedler2/src/libsiedler2.h"
+#include <boost/array.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
@@ -73,7 +74,7 @@ BOOST_AUTO_TEST_CASE(Set)
     BOOST_REQUIRE_EQUAL(archiv.size(), 5u);
     BOOST_REQUIRE_EQUAL(archiv[0], rawItemOut);
     // Throw out of range exception
-    BOOST_REQUIRE_THROW(archiv.set(5, rawItem), std::range_error);
+    BOOST_REQUIRE_THROW(archiv.set(5, rawItem), std::out_of_range);
     // Add with passing ownership
     archiv.set(4, rawItem);
     BOOST_REQUIRE_EQUAL(archiv[4], rawItem);
@@ -102,6 +103,7 @@ BOOST_AUTO_TEST_CASE(Find)
 
 BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
 {
+    using namespace libsiedler2;
     libsiedler2::Archiv archiv;
     for(int i = 1; i < libsiedler2::NUM_BOB_TYPES; i++)
     {
@@ -113,9 +115,11 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
         item->setName("Item" + boost::lexical_cast<std::string>(i));
         archiv.push(item);
     }
-    for(int i = libsiedler2::SOUNDTYPE_WAVE; i < libsiedler2::SOUNDTYPE_OTHER; i++)
+    boost::array<SoundType, 6> soundTypes = {
+      {SOUNDTYPE_WAVE, SOUNDTYPE_MIDI, SOUNDTYPE_XMIDI, SOUNDTYPE_MP3, SOUNDTYPE_OGG, SOUNDTYPE_OTHER}};
+    for(unsigned i = 0; i < soundTypes.size(); i++)
     {
-        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, libsiedler2::SoundType(i));
+        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundTypes[i]);
         BOOST_REQUIRE(item);
         item->setName("Sound" + boost::lexical_cast<std::string>(i));
         archiv.push(item);

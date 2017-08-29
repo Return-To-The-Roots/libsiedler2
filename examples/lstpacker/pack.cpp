@@ -17,7 +17,6 @@
 
 #include "pack.h"
 #include "util.h"
-
 #include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem_Bitmap.h"
 #include "libsiedler2/src/ArchivItem_BitmapBase.h"
@@ -25,7 +24,6 @@
 #include "libsiedler2/src/ArchivItem_Font.h"
 #include "libsiedler2/src/IAllocator.h"
 #include "libsiedler2/src/libsiedler2.h"
-
 #include <boost/filesystem.hpp>
 #include <algorithm>
 #include <cctype>

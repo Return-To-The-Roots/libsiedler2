@@ -29,9 +29,8 @@ namespace libsiedler2 {
  *  Klasse für Sounditems.
  */
 
-ArchivItem_Sound::ArchivItem_Sound() : soundType_(SOUNDTYPE_NONE)
+ArchivItem_Sound::ArchivItem_Sound(SoundType soundType) : ArchivItem(BOBTYPE_SOUND), soundType_(soundType)
 {
-    bobtype_ = BOBTYPE_SOUND;
 }
 
 ArchivItem_Sound::~ArchivItem_Sound()

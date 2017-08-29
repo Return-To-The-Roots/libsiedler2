@@ -40,9 +40,8 @@
  *  Y-Buchstabenabstand.
  */
 
-libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(), Archiv(), dx(0), dy(0)
+libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(BOBTYPE_FONT), dx(0), dy(0)
 {
-    bobtype_ = BOBTYPE_FONT;
 }
 
 /**

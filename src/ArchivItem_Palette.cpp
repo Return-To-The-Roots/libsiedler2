@@ -35,9 +35,8 @@
  *  Klasse für Paletten.
  */
 
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette()
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BOBTYPE_PALETTE)
 {
-    bobtype_ = BOBTYPE_PALETTE;
 }
 
 libsiedler2::ArchivItem_Palette::~ArchivItem_Palette()

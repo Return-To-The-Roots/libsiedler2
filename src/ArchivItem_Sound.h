@@ -29,7 +29,7 @@ namespace libsiedler2 {
 class ArchivItem_Sound : public ArchivItem
 {
 public:
-    ArchivItem_Sound();
+    ArchivItem_Sound(SoundType soundType_);
     ~ArchivItem_Sound() override;
 
     /// liefert den Typ des Sounds.
@@ -43,7 +43,7 @@ public:
 
     static ArchivItem_Sound* findSubType(std::istream& file);
 
-protected:
+private:
     SoundType soundType_;
 };
 

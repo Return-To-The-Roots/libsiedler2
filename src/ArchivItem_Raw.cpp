@@ -28,14 +28,12 @@ namespace libsiedler2 {
  *  Basisklasse für Rawdaten.
  */
 
-ArchivItem_Raw::ArchivItem_Raw() : ArchivItem()
+ArchivItem_Raw::ArchivItem_Raw() : ArchivItem(BOBTYPE_RAW)
 {
-    bobtype_ = BOBTYPE_RAW;
 }
 
-ArchivItem_Raw::ArchivItem_Raw(const std::vector<uint8_t>& initialData) : data(initialData)
+ArchivItem_Raw::ArchivItem_Raw(const std::vector<uint8_t>& initialData) : ArchivItem(BOBTYPE_RAW), data(initialData)
 {
-    bobtype_ = BOBTYPE_RAW;
 }
 
 /**

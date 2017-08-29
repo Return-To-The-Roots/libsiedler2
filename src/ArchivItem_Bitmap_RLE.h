@@ -21,7 +21,6 @@
 
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_BitmapBase.h"
-
 #include <iosfwd>
 
 namespace libsiedler2 {

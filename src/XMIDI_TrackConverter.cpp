@@ -17,7 +17,6 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "XMIDI_TrackConverter.h"
-
 #include "GammaTable.h"
 #include "MIDI_Track.h"
 #include "XMIDI_Track.h"

@@ -33,21 +33,19 @@ class ArchivItem : public ICloneable<ArchivItem>
 {
 public:
     ArchivItem(BobType bobtype = BOBTYPE_NONE);
-
-    virtual ~ArchivItem();
-
+    virtual ~ArchivItem() override;
     /// liefert den Bobtype des Items.
     BobType getBobType() const { return bobtype_; }
-
-    /// setzt den Namen des Items.
+    /// Set the name if the item
     void setName(const std::string& name) { name_ = name; }
-
-    /// liefert den Namen des Items.
+    /// Return the name of the item
     std::string getName() const { return name_; }
 
 protected:
-    BobType bobtype_;  /// Bobtype des Elements.
-    std::string name_; /// Name des Elements.
+    // TODO: protected because classes with virtual inheritance may want to set it instead of calling many ctors down the line
+    BobType bobtype_; /// Type of the element
+private:
+    std::string name_; /// Element name
     BOOST_DELETED_FUNCTION(ArchivItem& operator=(const ArchivItem&))
 };
 } // namespace libsiedler2

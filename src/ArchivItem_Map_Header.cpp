@@ -32,9 +32,8 @@
 const char VALID_ID[11] = "WORLD_V1.0";
 
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
-    : ArchivItem(), width(0), height(0), gfxset(0), player(0), isInvalid(0), hasExtraWord_(false)
+    : ArchivItem(BOBTYPE_MAP_HEADER), width(0), height(0), gfxset(0), player(0), isInvalid(0), hasExtraWord_(false)
 {
-    bobtype_ = BOBTYPE_MAP_HEADER;
 }
 
 libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header()
@@ -67,7 +66,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     char name[24];
     fs >> name;
     OemToAnsi(name, name);
-    this->name_ = name;
+    setName(name);
 
     // GFX-Set einlesen
     fs >> gfxset;
@@ -127,7 +126,7 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
 
     // Name einlesen
     char name[24];
-    std::string tmpName = name_.substr(0, 23);
+    std::string tmpName = getName().substr(0, 23);
     AnsiToOem(tmpName.c_str(), name);
     std::fill(name + tmpName.length(), name + sizeof(name), '\0');
     fs << name;

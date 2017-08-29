@@ -19,7 +19,9 @@
 #include "Archiv.h"
 #include "ArchivItem_Ini.h"
 #include "ErrorCodes.h"
+#include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "libsiedler2.h"
 #include "prototypen.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
@@ -39,7 +41,8 @@ int libsiedler2::loader::LoadINI(const std::string& file, Archiv& items)
 
     while(!ini.eof())
     {
-        boost::interprocess::unique_ptr<ArchivItem_Ini, Deleter<ArchivItem_Ini> > item(new ArchivItem_Ini);
+        boost::interprocess::unique_ptr<ArchivItem_Ini, Deleter<ArchivItem_Ini> > item(
+          dynamic_cast<ArchivItem_Ini*>(getAllocator().create(BOBTYPE_INI)));
 
         if(int ec = item->load(ini))
             return ec;

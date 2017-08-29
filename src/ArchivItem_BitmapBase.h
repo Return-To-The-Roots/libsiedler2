@@ -20,7 +20,6 @@
 
 #include "ArchivItem.h"
 #include "enumTypes.h"
-
 #include <iosfwd>
 #include <stdint.h>
 #include <vector>
