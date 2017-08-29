@@ -20,6 +20,7 @@
 #pragma once
 
 #include "ArchivItem_BitmapBase.h"
+#include "GetFormat.h"
 #include "PixelBufferPaletted.h"
 #include "enumTypes.h"
 #include <iosfwd>
@@ -68,15 +69,56 @@ public:
     int print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
               const ArchivItem_Palette* palette = NULL, uint8_t plClrStartIdx = 128, uint16_t to_x = 0, uint16_t to_y = 0,
               uint16_t from_x = 0, uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0, bool only_player = false) const;
+    template<class T_PixelBuffer>
+    int print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL, uint8_t plClrStartIdx = 128, uint16_t to_x = 0,
+              uint16_t to_y = 0, uint16_t from_x = 0, uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0,
+              bool only_player = false) const;
 
     /// Create a bitmap with player colors.
     /// All colors with palette index in [plClrStartIdx, plClrStartIdx + numPlayerClrs) are considered to be player colors
     int create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
                TextureFormat buffer_format, const ArchivItem_Palette* palette, uint8_t plClrStartIdx = 128);
+    int create(const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
+               const ArchivItem_Palette* palette, uint8_t plClrStartIdx = 128);
+    template<class T_PixelBuffer>
+    int create(uint16_t width, uint16_t height, const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette,
+               uint8_t plClrStartIdx = 128);
+    template<class T_PixelBuffer>
+    int create(const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette, uint8_t plClrStartIdx = 128);
 
 protected:
     PixelBufferPaletted tex_pdata; /// Die Spielerfarbedaten.
 };
+
+template<class T_PixelBuffer>
+inline int ArchivItem_Bitmap_Player::print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette, uint8_t plClrStartIdx,
+                                           uint16_t to_x, uint16_t to_y, uint16_t from_x, uint16_t from_y, uint16_t from_w, uint16_t from_h,
+                                           bool only_player) const
+{
+    return print(pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(), traits::GetFormat<T_PixelBuffer>::value,
+                 palette, plClrStartIdx, to_x, to_y, from_x, from_y, from_w, from_h, only_player);
+}
+
+inline int libsiedler2::ArchivItem_Bitmap_Player::create(const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
+                                                         TextureFormat buffer_format, const ArchivItem_Palette* palette,
+                                                         uint8_t plClrStartIdx /*= 128*/)
+{
+    return create(buffer_width, buffer_height, buffer, buffer_width, buffer_height, buffer_format, palette, plClrStartIdx);
+}
+
+template<class T_PixelBuffer>
+inline int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const T_PixelBuffer& pixelBuffer,
+                                            const ArchivItem_Palette* palette, uint8_t plClrStartIdx)
+{
+    return create(width, height, pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(),
+                  traits::GetFormat<T_PixelBuffer>::value, palette, plClrStartIdx);
+}
+
+template<class T_PixelBuffer>
+inline int ArchivItem_Bitmap_Player::create(const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette, uint8_t plClrStartIdx)
+{
+    return create(pixelBuffer.getWidth(), pixelBuffer.getHeight(), pixelBuffer, palette, plClrStartIdx);
+}
 
 } // namespace libsiedler2
 

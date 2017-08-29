@@ -73,7 +73,7 @@ void unpack(const string& directory, const Archiv& lst, const ArchivItem_Palette
 
     for(unsigned i = 0; i < lst.size(); ++i)
     {
-        const ArchivItem* item = lst.get(i);
+        const ArchivItem* item = lst[i];
 
         if(!item)
             continue;

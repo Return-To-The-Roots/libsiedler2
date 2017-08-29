@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap_Shadow.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
+#include "PixelBufferPaletted.h"
 #include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
@@ -88,11 +89,10 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     if(length != 0)
     {
         uint32_t position = height * 2;
-        std::vector<uint8_t> buffer(width * height);
-        unsigned bufPos = 0;
+        PixelBufferPaletted buffer(width, height);
 
         // Einlesen
-        for(uint16_t y = 0; y < height; ++y, bufPos += width)
+        for(uint16_t y = 0; y < height; ++y)
         {
             uint16_t x = 0;
 
@@ -102,24 +102,26 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
                 // graue Pixel setzen
                 uint8_t count = data[position++];
                 for(uint8_t i = 0; i < count; ++i, ++x)
-                    buffer[bufPos + x] = gray;
+                    buffer.set(x, y, gray);
 
-                // transparente Pixel setzen
+                // Transparent pixels
                 count = data[position++];
-                for(uint8_t i = 0; i < count; ++i, ++x)
-                    buffer[bufPos + x] = TRANSPARENT_INDEX;
+                // Buffer is already transparent by default -> Just increase x
+                x += count;
             }
 
             // FF überspringen
+            assert(data[position] == 0xFF);
             ++position;
         }
 
         // FF überspringen
+        assert(data[position] == 0xFF);
         ++position;
 
         if(position != length)
             return ErrorCode::WRONG_FORMAT;
-        int ec = create(width, height, &buffer[0], width, height, FORMAT_PALETTED, palette);
+        int ec = create(buffer, palette);
         if(ec)
             return ec;
         ec = convertFormat(getGlobalTextureFormat());
@@ -173,27 +175,23 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
         while(x < width)
         {
             // graue Pixel schreiben
-            uint8_t count, color;
-            for(count = 0; x + count < width; ++count)
+            uint8_t count;
+            for(count = 0; x < width; ++count, ++x)
             {
-                color = getPixelClrIdx(x + count, y, palette);
+                uint8_t color = getPixelClrIdx(x, y, palette);
                 if(color == TRANSPARENT_INDEX)
                     break;
             }
             image[position++] = count;
 
-            x += count;
-
             // transparente Pixel schreiben
-            for(count = 0; x + count < width; ++count)
+            for(count = 0; x < width; ++count, ++x)
             {
-                color = getPixelClrIdx(x + count, y, palette);
+                uint8_t color = getPixelClrIdx(x, y, palette);
                 if(color != TRANSPARENT_INDEX)
                     break;
             }
             image[position++] = count;
-
-            x += count;
         }
 
         image[position++] = 0xFF;

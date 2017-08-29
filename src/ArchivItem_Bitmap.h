@@ -20,6 +20,7 @@
 #pragma once
 
 #include "ArchivItem_BitmapBase.h"
+#include "GetFormat.h"
 #include "enumTypes.h"
 #include <stdint.h>
 
@@ -38,16 +39,56 @@ public:
     int print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
               const ArchivItem_Palette* palette = NULL, uint16_t to_x = 0, uint16_t to_y = 0, uint16_t from_x = 0, uint16_t from_y = 0,
               uint16_t from_w = 0, uint16_t from_h = 0) const;
+    template<class T_PixelBuffer>
+    int print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL, uint16_t to_x = 0, uint16_t to_y = 0,
+              uint16_t from_x = 0, uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0) const;
 
     /// erzeugt ein Bitmap aus einem Puffer.
     int create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
                TextureFormat buffer_format, const ArchivItem_Palette* palette = NULL);
+    int create(const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
+               const ArchivItem_Palette* palette = NULL);
+    /// Create a bitmap with the same data as the pixelBuffer
+    template<class T_PixelBuffer>
+    int create(const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL);
+    /// Create a bitmap with the given size and fill it with the data from the pixelBuffer
+    template<class T_PixelBuffer>
+    int create(uint16_t width, uint16_t height, const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL);
 };
 
 /// Basisklasse für Bitmapitems.
 class ArchivItem_Bitmap : public virtual baseArchivItem_Bitmap
 {
 };
+
+template<class T_PixelBuffer>
+inline int baseArchivItem_Bitmap::print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette, uint16_t to_x, uint16_t to_y,
+                                        uint16_t from_x, uint16_t from_y, uint16_t from_w, uint16_t from_h) const
+{
+    return print(pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(), traits::GetFormat<T_PixelBuffer>::value,
+                 palette, to_x, to_y, from_x, from_y, from_w, from_h);
+}
+
+inline int baseArchivItem_Bitmap::create(const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
+                                         const ArchivItem_Palette* palette)
+{
+    return create(buffer_width, buffer_height, buffer, buffer_width, buffer_height, buffer_format, palette);
+}
+
+template<class T_PixelBuffer>
+inline int baseArchivItem_Bitmap::create(const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette)
+{
+    return create(pixelBuffer.getWidth(), pixelBuffer.getHeight(), pixelBuffer, palette);
+}
+
+template<class T_PixelBuffer>
+inline int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const T_PixelBuffer& pixelBuffer,
+                                         const ArchivItem_Palette* palette)
+{
+    return create(width, height, pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(),
+                  traits::GetFormat<T_PixelBuffer>::value, palette);
+}
+
 } // namespace libsiedler2
 
 #endif // !ARCHIVITEM_BITMAP_H_INCLUDED

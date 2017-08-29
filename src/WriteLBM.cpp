@@ -66,7 +66,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
 
     fs.write("BODY", 4);
     PixelBufferPaletted pixels(width, height);
-    if(int ec = bmp->print(pixels.getPixelPtr(), width, height, FORMAT_PALETTED, palette))
+    if(int ec = bmp->print(pixels, palette))
         return ec;
     fs << uint32_t(width * height) << pixels.getPixels();
 

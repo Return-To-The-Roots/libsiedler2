@@ -24,6 +24,8 @@
 #include "libsiedler2/src/ArchivItem_Bitmap_Raw.h"
 #include "libsiedler2/src/ColorARGB.h"
 #include "libsiedler2/src/ErrorCodes.h"
+#include "libsiedler2/src/PixelBufferARGB.h"
+#include "libsiedler2/src/PixelBufferPaletted.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/assign/std/vector.hpp>
 #include <boost/filesystem.hpp>
@@ -337,21 +339,22 @@ BOOST_AUTO_TEST_CASE(PaletteAfterCreateBitmap)
     ArchivItem_Bitmap_Raw bmp;
     ArchivItem_Bitmap_Player bmpPl;
     unsigned w = 10, h = 14;
-    std::vector<uint8_t> inBuffer(w * h * 4);
+    PixelBufferPaletted palBuffer(w, h);
+    PixelBufferARGB clrBuffer(w, h);
     // Paletted
-    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmp.create(palBuffer, palette), 0);
     BOOST_REQUIRE_EQUAL(bmp.getFormat(), FORMAT_PALETTED);
     BOOST_REQUIRE(bmp.getPalette());
     BOOST_REQUIRE(bmp.getPalette()->isEqual(*palette));
-    BOOST_REQUIRE_EQUAL(bmpPl.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.create(palBuffer, palette), 0);
     BOOST_REQUIRE_EQUAL(bmpPl.getFormat(), FORMAT_PALETTED);
     BOOST_REQUIRE(bmpPl.getPalette());
     BOOST_REQUIRE(bmpPl.getPalette()->isEqual(*palette));
     // ARGB
-    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_BGRA), 0);
+    BOOST_REQUIRE_EQUAL(bmp.create(clrBuffer), 0);
     BOOST_REQUIRE_EQUAL(bmp.getFormat(), FORMAT_BGRA);
     BOOST_REQUIRE(!bmp.getPalette());
-    BOOST_REQUIRE_EQUAL(bmpPl.create(w, h, &inBuffer[0], w, h, FORMAT_BGRA, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.create(clrBuffer, palette), 0);
     BOOST_REQUIRE_EQUAL(bmpPl.getFormat(), FORMAT_BGRA);
     BOOST_REQUIRE(!bmpPl.getPalette());
 }
@@ -365,8 +368,8 @@ BOOST_AUTO_TEST_CASE(PaletteUsageForPrint)
     std::vector<uint8_t> inBufferPl(w * h, modClr2 + 0);
     // Swap colors to check palette usage
     // Paletted
-    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
-    BOOST_REQUIRE_EQUAL(bmpPl.create(w, h, &inBufferPl[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmp.create(&inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    BOOST_REQUIRE_EQUAL(bmpPl.create(&inBufferPl[0], w, h, FORMAT_PALETTED, palette), 0);
     // Can't remove palette
     BOOST_REQUIRE_THROW(bmp.removePalette(), std::runtime_error);
     BOOST_REQUIRE_THROW(bmp.setPalette(NULL), std::runtime_error);
@@ -442,8 +445,8 @@ BOOST_AUTO_TEST_CASE(CheckPalette)
 {
     ArchivItem_Bitmap_Raw bmp;
     unsigned w = 10, h = 14;
-    std::vector<uint8_t> inBuffer(w * h, 22);
-    BOOST_REQUIRE_EQUAL(bmp.create(w, h, &inBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
+    PixelBufferPaletted buffer(w, h, 22);
+    BOOST_REQUIRE_EQUAL(bmp.create(buffer, palette), 0);
     BOOST_REQUIRE_EQUAL(bmp.convertFormat(FORMAT_BGRA), 0);
     ArchivItem_Palette wrongPal;
     BOOST_REQUIRE(bmp.checkPalette(*palette));

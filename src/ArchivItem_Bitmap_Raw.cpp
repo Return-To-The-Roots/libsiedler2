@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap_Raw.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
+#include "PixelBufferPaletted.h"
 #include "libsiedler2.h"
 #include "libendian/src/EndianIStreamAdapter.h"
 #include "libendian/src/EndianOStreamAdapter.h"
@@ -84,7 +85,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     // Speicher anlegen
     if(length > 0)
     {
-        int ec = create(width, height, &data[0], width, height, FORMAT_PALETTED, palette);
+        int ec = create(&data[0], width, height, FORMAT_PALETTED, palette);
         if(ec)
             return ec;
         ec = convertFormat(getGlobalTextureFormat());
@@ -119,17 +120,13 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     const uint16_t width = getWidth(), height = getHeight();
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
-    uint32_t length = width * height;
-    std::vector<uint8_t> buffer(length, libsiedler2::TRANSPARENT_INDEX);
-    if(length > 0)
-    {
-        int ec = print(&buffer[0], width, height, FORMAT_PALETTED, palette);
-        if(ec)
-            return ec;
-    }
+    PixelBufferPaletted buffer(width, height);
+    int ec = print(buffer, palette);
+    if(ec)
+        return ec;
 
     uint8_t unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
-    fs << uint16_t(1) << length << buffer << nx_ << ny_ << width << height << unknown2;
+    fs << uint16_t(1) << uint32_t(buffer.getSize()) << buffer.getPixels() << nx_ << ny_ << width << height << unknown2;
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

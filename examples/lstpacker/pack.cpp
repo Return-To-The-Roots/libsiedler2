@@ -29,6 +29,7 @@
 #include <cctype>
 #include <iostream>
 #include <vector>
+#include "../../src/PixelBufferARGB.h"
 
 namespace libsiedler2 {
 class ArchivItem_Palette;
@@ -154,7 +155,7 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
     sort(files.begin(), files.end(), stringCompare);
     cerr << "done" << endl;
 
-    unsigned char* buffer = new unsigned char[1000 * 1000 * 4];
+    libsiedler2::PixelBufferARGB buffer(1000, 1000);
     for(vector<fileentry>::const_iterator it = files.begin(); it != files.end(); ++it)
     {
         string whole_path = it->path;
@@ -166,13 +167,12 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
         if(!(nrs >> nr))
             nr = -1;
 
-        Archiv items;
-
         cout << "Reading file " << whole_path;
         if(nr >= 0)
             cout << " to " << nr;
         std::cout << ": ";
 
+        Archiv items;
         if(it->type == "font" || it->type == "fontX")
         {
             ArchivItem_Font font;
@@ -201,61 +201,61 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
             cout << "done" << endl;
             // todo: andere typen als pal und bmp haben evtl mehr items!
 
-            ArchivItem* neu = items.get(0);
+            ArchivItem* newItem;
             if(it->type == "bitmap")
             {
-                ArchivItem_BitmapBase* i = dynamic_cast<ArchivItem_BitmapBase*>(neu);
-                ArchivItem_BitmapBase* n = i;
+                ArchivItem_BitmapBase* bmp;
 
-                if(it->bobtype != i->getBobType())
-                    n = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(it->bobtype));
-
-                n->setName(whole_path);
-                n->setNx(it->nx);
-                n->setNy(it->ny);
-
-                if(n != i)
+                if(it->bobtype == items[0]->getBobType())
                 {
-                    memset(buffer, 0, 1000 * 1000 * 4);
-                    if(i->getBobType() == BOBTYPE_BITMAP_PLAYER)
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(i)->print(buffer, 1000, 1000, FORMAT_BGRA, palette, 128);
+                    // No conversion->Just take it
+                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(items.release(0));
+                } else
+                {
+                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(items[0]);
+                    ArchivItem_BitmapBase* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(it->bobtype));
+                    std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
+                    if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, palette);
                     else
-                        dynamic_cast<ArchivItem_Bitmap*>(i)->print(buffer, 1000, 1000, FORMAT_BGRA, palette);
-                }
+                        dynamic_cast<ArchivItem_Bitmap*>(bmp)->print(buffer, palette);
 
-                switch(it->bobtype)
-                {
+                    switch(it->bobtype)
+                    {
                     case BOBTYPE_BITMAP_RLE:
                     case BOBTYPE_BITMAP_SHADOW:
                     case BOBTYPE_BITMAP_RAW:
                     {
-                        dynamic_cast<ArchivItem_Bitmap*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA,
-                                                                    palette);
+                        dynamic_cast<ArchivItem_Bitmap*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
                     }
                     break;
                     case BOBTYPE_BITMAP_PLAYER:
                     {
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(n)->create(i->getWidth(), i->getHeight(), buffer, 1000, 1000, FORMAT_BGRA,
-                                                                           palette, 128);
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
                     }
                     break;
                     default: cerr << "Unknown type for " << it->path << endl;
+                    }
+                    bmp = convertedBmp;
                 }
+                bmp->setName(whole_path);
+                bmp->setNx(it->nx);
+                bmp->setNy(it->ny);
 
-                neu = n;
-            }
+                newItem = bmp;
+            } else
+                newItem = items.release(0);
 
             // had the filename a number? then set it to the corresponding item.
             if(nr >= 0)
             {
                 if((unsigned)nr >= lst->size())
                     lst->alloc_inc(nr - lst->size() + 1);
-                lst->setC(nr, *neu);
+                lst->set(nr, newItem);
             } else
-                lst->pushC(*neu);
+                lst->push(newItem);
         }
     }
-    delete[] buffer;
 
     if(lst == &tlst) // only write to lstfile if the caller does not want the ArchivInfo back
     {

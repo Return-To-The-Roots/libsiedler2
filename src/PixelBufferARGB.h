@@ -21,6 +21,7 @@
 #define ImageBufferARGB_h__
 
 #include "ColorARGB.h"
+#include "GetFormat.h"
 #include "PixelBuffer.h"
 
 namespace libsiedler2 {
@@ -29,7 +30,10 @@ class PixelBufferARGB : public PixelBuffer<uint32_t>
 {
 public:
     PixelBufferARGB() {}
-    PixelBufferARGB(uint16_t width, uint16_t height) : PixelBuffer<uint32_t>(width, height, 0) {}
+    PixelBufferARGB(uint16_t width, uint16_t height, ColorARGB defValue = ColorARGB())
+        : PixelBuffer<uint32_t>(width, height, defValue.clrValue)
+    {
+    }
     ColorARGB get(uint16_t x, uint16_t y) const;
     ColorARGB get(uint32_t idx) const;
     void set(uint16_t x, uint16_t y, ColorARGB clr);
@@ -55,6 +59,14 @@ inline void PixelBufferARGB::set(uint32_t idx, ColorARGB clr)
 {
     return clr.toBGRA(&pixels_[idx]);
 }
+
+namespace traits {
+    template<>
+    struct GetFormat<PixelBufferARGB>
+    {
+        BOOST_STATIC_CONSTEXPR TextureFormat value = FORMAT_BGRA;
+    };
+} // namespace traits
 
 } // namespace libsiedler2
 

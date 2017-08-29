@@ -152,7 +152,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
     fs << nx_ << ny_ << unknown << width << height << unknown2;
 
     PixelBufferPaletted buffer(width, height);
-    int ec = print(buffer.getPixelPtr(), width, height, FORMAT_PALETTED, palette);
+    int ec = print(buffer, palette);
     if(ec)
         return ec;
     // maximale größe von RLE: width*height*2
