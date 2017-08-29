@@ -25,11 +25,11 @@
 #include <limits>
 
 /**
- *  schreibt ein ArchivInfo in eine LST-File.
+ *  schreibt ein Archiv in eine LST-File.
  *
  *  @param[in] file    Dateiname der LST-File
  *  @param[in] palette Grundpalette der LST-File
- *  @param[in] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[in] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

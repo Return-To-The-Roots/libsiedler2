@@ -29,10 +29,10 @@
 #include <sstream>
 
 /**
- *  lädt eine BBM-File in ein ArchivInfo.
+ *  lädt eine BBM-File in ein Archiv.
  *
  *  @param[in]  file    Dateiname der BBM-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

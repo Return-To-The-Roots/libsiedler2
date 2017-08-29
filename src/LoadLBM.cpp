@@ -29,10 +29,10 @@
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 /**
- *  lädt eine LBM-File in ein ArchivInfo.
+ *  lädt eine LBM-File in ein Archiv.
  *
  *  @param[in]  file    Dateiname der LBM-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

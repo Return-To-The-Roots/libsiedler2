@@ -24,10 +24,10 @@
 #include <boost/filesystem/fstream.hpp>
 
 /**
- *  schreibt ein ArchivInfo in eine BBM-File.
+ *  schreibt ein Archiv in eine BBM-File.
  *
  *  @param[in] file    Dateiname der BBM-File
- *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
+ *  @param[in] items   Archiv-Struktur, von welcher gelesen wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
@@ -39,7 +39,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
         return ErrorCode::INVALID_BUFFER;
 
     uint32_t numPalettes = 0;
-    // Anzahl Paletten in ArchivInfo suchen
+    // Anzahl Paletten in Archiv suchen
     for(size_t i = 0; i < items.size(); ++i)
     {
         if(dynamic_cast<const ArchivItem_Palette*>(items[i]))

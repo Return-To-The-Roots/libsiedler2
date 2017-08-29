@@ -23,10 +23,10 @@
 #include "prototypen.h"
 
 /**
- *  lädt eine Sounddatei in ein ArchivInfo. (midi, xmidi, wave)
+ *  lädt eine Sounddatei in ein Archiv. (midi, xmidi, wave)
  *
  *  @param[in]  file    Dateiname der Sounddatei
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

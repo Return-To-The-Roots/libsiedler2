@@ -23,11 +23,11 @@
 #include "libendian/src/EndianIStreamAdapter.h"
 
 /**
- *  lädt eine LST-File in ein ArchivInfo.
+ *  lädt eine LST-File in ein Archiv.
  *
  *  @param[in]  file    Dateiname der LST-File
  *  @param[in]  palette Grundpalette der LST-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

@@ -23,10 +23,10 @@
 #include <boost/filesystem/fstream.hpp>
 
 /**
- *  schreibt ein ArchivInfo in eine SWD/WSD-File.
+ *  schreibt ein Archiv in eine SWD/WSD-File.
  *
  *  @param[in] file    Dateiname der SWD/WSD-File
- *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
+ *  @param[in] items   Archiv-Struktur, von welcher gelesen wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

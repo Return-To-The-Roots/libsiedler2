@@ -21,13 +21,13 @@
 #include <stdexcept>
 
 namespace libsiedler2{
-/** @class ArchivInfo
+/** @class Archiv
  *
  *  Klasse für Archivdateien.
  */
 
 
-/** @var ArchivInfo::data
+/** @var Archiv::data
  *
  *  die Elemente.
  */
@@ -64,7 +64,7 @@ Archiv& Archiv::operator=(const Archiv& info){
 }
 
 /**
- *  Destruktor von @p ArchivInfo, räumt automatisch auf.
+ *  Destruktor von @p Archiv, räumt automatisch auf.
  */
 Archiv::~Archiv()
 {

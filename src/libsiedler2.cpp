@@ -126,7 +126,7 @@ void setAllocator(IAllocator* newAllocator)
  *  Lädt die Datei im Format ihrer Endung.
  *
  *  @param[in]  file    Dateiname der Datei
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *  @param[in]  palette Palette, welche benutzt werden soll
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
@@ -188,7 +188,7 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
  *  Schreibt die Datei im Format ihrer Endung.
  *
  *  @param[in] file    Dateiname der Datei
- *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
+ *  @param[in] items   Archiv-Struktur, von welcher gelesen wird
  *  @param[in] palette Palette, welche benutzt werden soll
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler

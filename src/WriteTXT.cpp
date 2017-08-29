@@ -24,10 +24,10 @@
 #include <boost/filesystem/fstream.hpp>
 
 /**
- *  schreibt eine GER/ENG-File aus einem ArchivInfo.
+ *  schreibt eine GER/ENG-File aus einem Archiv.
  *
  *  @param[in] file       Dateiname der GER/ENG-File
- *  @param[in] items      ArchivInfo-Struktur, welche geschrieben wird
+ *  @param[in] items      Archiv-Struktur, welche geschrieben wird
  *  @param[in] conversion Soll ggf. ANSI-Charset in OEM umgewandelt werden?
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler

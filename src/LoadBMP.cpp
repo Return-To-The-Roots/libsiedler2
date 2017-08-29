@@ -57,10 +57,10 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, 
 }
 
 /**
- *  lädt eine BMP-File in ein ArchivInfo.
+ *  lädt eine BMP-File in ein Archiv.
  *
  *  @param[in]  file    Dateiname der BMP-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *

@@ -27,10 +27,10 @@
 #include <vector>
 
 /**
- *  lädt eine GER/ENG-File in ein ArchivInfo.
+ *  lädt eine GER/ENG-File in ein Archiv.
  *
  *  @param[in]  file       Dateiname der GER/ENG-File
- *  @param[out] items      ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items      Archiv-Struktur, welche gefüllt wird
  *  @param[in]  conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler

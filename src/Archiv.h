@@ -32,7 +32,7 @@ class Archiv
 public:
     Archiv();
     Archiv(const Archiv& info);
-    /// Destruktor von @p ArchivInfo, räumt automatisch auf.
+    /// Destruktor von @p Archiv, räumt automatisch auf.
     virtual ~Archiv();
     Archiv& operator=(const Archiv& info);
     /// Creates a dataset with a given size. Deletes all current entries

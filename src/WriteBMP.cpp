@@ -30,10 +30,10 @@
 #include <vector>
 
 /**
- *  schreibt ein ArchivInfo in eine BMP-File.
+ *  schreibt ein Archiv in eine BMP-File.
  *
  *  @param[in] file    Dateiname der BMP-File
- *  @param[in] items   ArchivInfo-Struktur, von welcher gelesen wird
+ *  @param[in] items   Archiv-Struktur, von welcher gelesen wird
  *  @param[in] palette Palette die für das Bitmap verwendet werden soll
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls schreiben.

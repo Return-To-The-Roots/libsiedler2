@@ -23,10 +23,10 @@
 #include <boost/filesystem/fstream.hpp>
 
 /**
- *  schreibt ein ArchivInfo in eine INI-File.
+ *  schreibt ein Archiv in eine INI-File.
  *
  *  @param[in]  file    Dateiname der INI-File
- *  @param[in] items    ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[in] items    Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

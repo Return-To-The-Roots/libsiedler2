@@ -27,10 +27,10 @@
 #include <boost/filesystem/path.hpp>
 
 /**
- *  lädt eine BOB-File in ein ArchivInfo.
+ *  lädt eine BOB-File in ein Archiv.
  *
  *  @param[in]  file    Dateiname der BOB-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */

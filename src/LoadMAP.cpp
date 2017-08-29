@@ -25,10 +25,10 @@
 #include "prototypen.h"
 
 /**
- *  lädt eine MAP-File in ein ArchivInfo.
+ *  lädt eine MAP-File in ein Archiv.
  *
  *  @param[in]  file    Dateiname der MAP-File
- *  @param[out] items   ArchivInfo-Struktur, welche gefüllt wird
+ *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
