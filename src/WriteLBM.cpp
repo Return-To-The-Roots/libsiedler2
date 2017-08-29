@@ -38,7 +38,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
     if(!palette)
         return ErrorCode::PALETTE_MISSING;
 
-    // Datei zum schreiben öffnen
+    // Open file for writing
     libendian::EndianOStreamAdapter<true, bfs::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
