@@ -4,7 +4,7 @@
 
 Travis CI: ![Travis CI Build Info](https://travis-ci.org/Return-To-The-Roots/libsiedler2.svg?branch=master)
 
-Appveyor: coming...
+Appveyor: [![Build status](https://ci.appveyor.com/api/projects/status/om9ibb7vdfa4x4cf/branch/master?svg=true)](https://ci.appveyor.com/project/Flamefire/libsiedler2-nlflr/branch/master)
 
 Coverage:
 [![Coverage Status](https://coveralls.io/repos/github/Return-To-The-Roots/libsiedler2/badge.svg?branch=master)](https://coveralls.io/github/Return-To-The-Roots/libsiedler2?branch=master)
