@@ -40,7 +40,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items)
+int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette)
 {
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -62,15 +62,17 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items)
     bmih.xppm = bmih.yppm = 2834;
     bmih.clrimp = 0;
 
-    const ArchivItem_Palette* palette = bitmap->getPalette();
-    if(palette)
+    bool isPaletted;
+    if(bitmap->getPalette())
     {
         bmih.clrused = 256;
         bmih.bpp = 8;
+        isPaletted = true;
     } else
     {
         bmih.clrused = 0;
         bmih.bpp = 24;
+        isPaletted = false;
     }
     bmpHd.pixelOffset = sizeof(bmpHd) + sizeof(bmih) + bmih.clrused * 4;
     unsigned numLineAlignBytes = (bmih.width * bmih.bpp / 8) % 4;
@@ -94,8 +96,8 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items)
         fs.write(colors[0], bmih.clrused * 4);
     }
 
-    std::vector<uint8_t> buffer(bmih.width * bmih.height * (palette ? 1 : 4), palette ? TRANSPARENT_INDEX : 0);
-    TextureFormat bufFmt = palette ? FORMAT_PALETTED : FORMAT_BGRA;
+    std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4), isPaletted ? TRANSPARENT_INDEX : 0);
+    TextureFormat bufFmt = isPaletted ? FORMAT_PALETTED : FORMAT_BGRA;
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {

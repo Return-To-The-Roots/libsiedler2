@@ -61,7 +61,7 @@ namespace loader {
     int LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette = NULL);
 
     /// schreibt ein Archiv in eine BMP-File.
-    int WriteBMP(const std::string& file, const Archiv& items);
+    int WriteBMP(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
 
     /// lädt eine GER/ENG-File in ein Archiv.
     int LoadTXT(const std::string& file, Archiv& items, bool conversion = true);

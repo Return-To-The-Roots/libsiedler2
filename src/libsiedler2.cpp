@@ -214,7 +214,7 @@ int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette
         else if(extension == "bbm")
             ret = loader::WriteBBM(file, items);
         else if(extension == "bmp")
-            ret = loader::WriteBMP(file, items);
+            ret = loader::WriteBMP(file, items, palette);
         else if(extension == "lst")
             ret = loader::WriteLST(file, items, palette);
         else if(extension == "swd" || extension == "wld")
