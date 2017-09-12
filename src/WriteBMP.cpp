@@ -63,11 +63,15 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     bmih.clrimp = 0;
 
     bool isPaletted;
+    // Passed palette is only used for playerbitmaps if the bitmap does not have one as our format supports unpalleted images and the bitmap
+    // palette (or not having one) takes preference
     if(bitmap->getPalette())
     {
         bmih.clrused = 256;
         bmih.bpp = 8;
         isPaletted = true;
+        // Prefer bitmaps palette
+        palette = bitmap->getPalette();
     } else
     {
         bmih.clrused = 0;
@@ -92,7 +96,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     if(bmih.clrused > 0)
     {
         uint8_t colors[256][4];
-        bitmap->getPalette()->copy(&colors[0][0], sizeof(colors), true);
+        palette->copy(&colors[0][0], sizeof(colors), true);
         fs.write(colors[0], bmih.clrused * 4);
     }
 

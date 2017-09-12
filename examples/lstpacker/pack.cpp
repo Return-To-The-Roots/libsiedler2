@@ -23,13 +23,13 @@
 #include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/src/ArchivItem_Font.h"
 #include "libsiedler2/src/IAllocator.h"
+#include "libsiedler2/src/PixelBufferARGB.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <algorithm>
 #include <cctype>
 #include <iostream>
 #include <vector>
-#include "../../src/PixelBufferARGB.h"
 
 namespace libsiedler2 {
 class ArchivItem_Palette;
@@ -222,19 +222,20 @@ void pack(const string& directory, const string& file, const ArchivItem_Palette*
 
                     switch(it->bobtype)
                     {
-                    case BOBTYPE_BITMAP_RLE:
-                    case BOBTYPE_BITMAP_SHADOW:
-                    case BOBTYPE_BITMAP_RAW:
-                    {
-                        dynamic_cast<ArchivItem_Bitmap*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
-                    }
-                    break;
-                    case BOBTYPE_BITMAP_PLAYER:
-                    {
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
-                    }
-                    break;
-                    default: cerr << "Unknown type for " << it->path << endl;
+                        case BOBTYPE_BITMAP_RLE:
+                        case BOBTYPE_BITMAP_SHADOW:
+                        case BOBTYPE_BITMAP_RAW:
+                        {
+                            dynamic_cast<ArchivItem_Bitmap*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
+                        }
+                        break;
+                        case BOBTYPE_BITMAP_PLAYER:
+                        {
+                            dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp)
+                              ->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
+                        }
+                        break;
+                        default: cerr << "Unknown type for " << it->path << endl;
                     }
                     bmp = convertedBmp;
                 }
