@@ -20,12 +20,11 @@
 #include "ArchivItem.h"
 #include <stdexcept>
 
-namespace libsiedler2{
+namespace libsiedler2 {
 /** @class Archiv
  *
  *  Klasse für Archivdateien.
  */
-
 
 /** @var Archiv::data
  *
@@ -48,7 +47,8 @@ Archiv::Archiv(const Archiv& info)
     }
 }
 
-Archiv& Archiv::operator=(const Archiv& info){
+Archiv& Archiv::operator=(const Archiv& info)
+{
     if(this == &info)
         return *this;
     clear();
@@ -91,7 +91,7 @@ void Archiv::alloc_inc(size_t increment)
  *  gibt die angelegten Daten wieder frei.
  */
 void Archiv::clear()
-{    
+{
     for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
         delete *it;
     data.clear();
@@ -106,10 +106,10 @@ void Archiv::clear()
 
 void Archiv::set(size_t index, ArchivItem* item)
 {
-   if(index >= size())
-       throw std::out_of_range("Index out of range");
-   delete data[index];
-   data[index] = item;
+    if(index >= size())
+        throw std::out_of_range("Index out of range");
+    delete data[index];
+    data[index] = item;
 }
 
 /**
@@ -164,4 +164,4 @@ ArchivItem* Archiv::release(size_t index)
     return result;
 }
 
-}
+} // namespace libsiedler2
