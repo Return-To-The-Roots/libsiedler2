@@ -27,7 +27,7 @@
 #include "fileFormatHelpers.h"
 #include "libsiedler2.h"
 #include "prototypen.h"
-#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <vector>
 /**

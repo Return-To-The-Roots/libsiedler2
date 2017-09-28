@@ -17,10 +17,10 @@
 
 #include "LoadPalette.h"
 #include "config.h"
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
-#include "libsiedler2/src/ArchivItem_Bob.h"
-#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem_Bitmap_Player.h"
+#include "libsiedler2/ArchivItem_Bob.h"
+#include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 

@@ -21,8 +21,8 @@
 #include "ColorARGB.h"
 #include "ErrorCodes.h"
 #include "libsiedler2.h"
-#include "libendian/src/EndianIStreamAdapter.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <cstddef>
 #include <cstring>
 #include <iostream>

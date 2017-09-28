@@ -21,9 +21,9 @@
 #define LoadPalette_h__
 
 #include "ColorOutput.h"
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem_Palette.h"
-#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem_Palette.h"
+#include "libsiedler2/libsiedler2.h"
 #include <boost/test/unit_test.hpp>
 
 struct LoadPalette

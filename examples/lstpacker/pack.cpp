@@ -17,14 +17,14 @@
 
 #include "pack.h"
 #include "util.h"
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem_Bitmap.h"
-#include "libsiedler2/src/ArchivItem_BitmapBase.h"
-#include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
-#include "libsiedler2/src/ArchivItem_Font.h"
-#include "libsiedler2/src/IAllocator.h"
-#include "libsiedler2/src/PixelBufferARGB.h"
-#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem_Bitmap.h"
+#include "libsiedler2/ArchivItem_BitmapBase.h"
+#include "libsiedler2/ArchivItem_Bitmap_Player.h"
+#include "libsiedler2/ArchivItem_Font.h"
+#include "libsiedler2/IAllocator.h"
+#include "libsiedler2/PixelBufferARGB.h"
+#include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <algorithm>
 #include <cctype>

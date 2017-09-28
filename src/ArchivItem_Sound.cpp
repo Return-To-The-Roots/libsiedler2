@@ -20,7 +20,7 @@
 #include "IAllocator.h"
 #include "fileFormatHelpers.h"
 #include "libsiedler2.h"
-#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
 #include <iostream>
 
 namespace libsiedler2 {

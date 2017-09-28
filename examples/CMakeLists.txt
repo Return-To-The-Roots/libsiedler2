@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
 
 include(CheckCXXSourceCompiles)
 
-project(libSiedler2)
+project(siedler2Examples)
 
 enable_testing()
 
@@ -85,14 +85,27 @@ if(NOT MSVC)
 	endif()
 endif()
 
-find_path(LIB_SIEDLER2_BASEDIR
-	NAMES "libsiedler2/src/libsiedler2.h"
-	PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../..)
-if(NOT LIB_SIEDLER2_BASEDIR)
-    message(FATAL_ERROR "Path to libsiedler2 not found!")
+set(RTTR_LIBSIEDLER2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+find_path(RTTR_LIBUTIL_DIR
+	NAMES "include/libutil"
+    HINTS ${RTTR_LIBSIEDLER2_DIR}/../libutil
+	PATHS ENV LIBUTIL_DIR
+    PATH_SUFFIXES ../)
+if(NOT RTTR_LIBUTIL_DIR)
+    message(FATAL_ERROR "Path to libutil not found! You can set the full path in the env var LIBUTIL_DIR ($ENV{LIBUTIL_DIR})")
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${LIB_SIEDLER2_BASEDIR}/libSiedler2/cmake/Modules")
+find_path(RTTR_LIBENDIAN_DIR
+	NAMES "include/libendian"
+    HINTS ${RTTR_LIBSIEDLER2_DIR}/../libendian
+	PATHS ENV LIBENDIAN_DIR
+    PATH_SUFFIXES ../)
+if(NOT RTTR_LIBENDIAN_DIR)
+    message(FATAL_ERROR "Path to libendian not found! You can set the full path in the env var LIBENDIAN_DIR ($ENV{LIBENDIAN_DIR})")
+endif()
+
+list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake/Modules")
 
 # Use clang-format if available
 find_package(ClangFormat 5.0.0)
@@ -102,23 +115,12 @@ if(MSVC)
     INCLUDE(CreateLaunchers)
 endif()
 
-find_path(LIB_ENDIAN_BASEDIR
-	NAMES "libendian/src/libendian.h"
-	PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../.. ENV LIB_ENDIAN_DIR
-    PATH_SUFFIXES ../)
-if(NOT LIB_ENDIAN_BASEDIR)
-    message(FATAL_ERROR "Path to libendian not found! You can set the full path in the env var LIB_ENDIAN_DIR ($ENV{LIB_ENDIAN_DIR})")
-endif()
+add_subdirectory(${RTTR_LIBENDIAN_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libEndian)
+add_subdirectory(${RTTR_LIBSIEDLER2_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libSiedler2)
 
-include_directories(${LIB_ENDIAN_BASEDIR})
-
-#add_subdirectory(${LIB_SIEDLER2_DIR}/../libendian ${CMAKE_CURRENT_BINARY_DIR}/libendian)
-add_subdirectory(${LIB_SIEDLER2_BASEDIR}/libsiedler2 ${CMAKE_CURRENT_BINARY_DIR}/libsiedler2)
-
-include_directories(${LIB_SIEDLER2_BASEDIR})
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
-set(RTTR_PAL5_PATH "${LIB_SIEDLER2_BASEDIR}/libsiedler2/examples/pal5.act")
+set(RTTR_PAL5_PATH "${RTTR_LIBSIEDLER2_DIR}/examples/pal5.act")
 
 add_subdirectory(lstpacker)
 add_subdirectory(outline)

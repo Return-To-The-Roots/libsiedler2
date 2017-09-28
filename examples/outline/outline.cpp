@@ -17,11 +17,11 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
-#include "libsiedler2/src/libsiedler2.h"
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem_Font.h"
-#include "libsiedler2/src/ArchivItem_Bitmap_Player.h"
-#include "libsiedler2/src/ArchivItem_Palette.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem_Bitmap_Player.h"
+#include "libsiedler2/ArchivItem_Font.h"
+#include "libsiedler2/ArchivItem_Palette.h"
+#include "libsiedler2/libsiedler2.h"
 #include <cstdio>
 #include <vector>
 
@@ -75,9 +75,9 @@ int main(int argc, char* argv[])
 
                 unsigned char color = 1;
                 c->print(&buffer.front(), w, h, format, palette, color);
-                c->print(&buffer.front(), w, h, format, palette, color, 2 );
+                c->print(&buffer.front(), w, h, format, palette, color, 2);
                 c->print(&buffer.front(), w, h, format, palette, color, 0, 2);
-                c->print(&buffer.front(), w, h, format, palette, color, 2, 2 );
+                c->print(&buffer.front(), w, h, format, palette, color, 2, 2);
 
                 for(unsigned short z = 0; z < w * h; ++z)
                 {

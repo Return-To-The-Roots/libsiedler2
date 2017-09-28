@@ -24,7 +24,7 @@
 #include "fileFormatHelpers.h"
 #include "libsiedler2.h"
 #include "prototypen.h"
-#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
 #include <boost/filesystem/path.hpp>
 #include <sstream>
 

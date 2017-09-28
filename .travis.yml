@@ -36,21 +36,29 @@ addons:
 cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.58.0
+    - ${TRAVIS_BUILD_DIR}/deps/libutil
     - ${TRAVIS_BUILD_DIR}/deps/libendian
+    
+installDeps:
+    &installDeps
+    - |
+        LIBUTIL_DIR="$DEPS_DIR/libutil"
+        if [ ! -d "$LIBUTIL_DIR/src" ]; then
+            git clone https://github.com/Return-To-The-Roots/libutil.git "$LIBUTIL_DIR"
+        fi
+        (cd ${LIBUTIL_DIR} && git checkout master && git reset --hard && git pull)
+        LIBENDIAN_DIR="$DEPS_DIR/libendian"
+        if [ ! -d "$LIBENDIAN_DIR/src" ]; then
+            git clone https://github.com/Return-To-The-Roots/libendian.git "$LIBENDIAN_DIR"
+        fi
+        (cd ${LIBENDIAN_DIR} && git checkout master && git reset --hard && git pull)
+        export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:${LIBUTIL_DIR}:${LIBENDIAN_DIR}
 
 matrix:
     include:
         - os: osx
           compiler: clang
-          install:
-            - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-            - export LIB_ENDIAN_DIR="$DEPS_DIR/libendian"
-            - |
-                if [ ! -d "$LIB_ENDIAN_DIR/src" ]; then
-                    git clone https://github.com/Return-To-The-Roots/libendian.git "$LIB_ENDIAN_DIR"
-                fi
-                (cd ${LIB_ENDIAN_DIR} && git checkout master && git reset --hard && git pull)
-
+          install: *installDeps
           #                                                             Travis libs are x64 only
           env: BUILD_TYPE=Debug CXX_FLAGS=-std=c++03 ADDITIONAL_CMAKE_FLAGS="--no-arch=i386" GCOV="gcov"
     exclude:
@@ -59,16 +67,8 @@ matrix:
         - compiler: clang
           env: BUILD_TYPE=Release CXX_FLAGS=-std=c++03
 
-install:
-    - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+install: *installDeps
     - BOOST_VERSION="1.58.0"
-    - export LIB_ENDIAN_DIR="$DEPS_DIR/libendian"
-    - mkdir -p "$LIB_ENDIAN_DIR"
-    - |
-        if [ ! -d "$LIB_ENDIAN_DIR/src" ]; then
-            git clone https://github.com/Return-To-The-Roots/libendian.git "$LIB_ENDIAN_DIR"
-        fi
-        (cd ${LIB_ENDIAN_DIR} && git checkout master && git reset --hard && git pull)
     # Enable coverage analysis only in debug and for g++
     - |
         if [ "$CXX" = "g++" ] && [ "$BUILD_TYPE" = "Debug" ]; then

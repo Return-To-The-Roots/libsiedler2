@@ -20,8 +20,8 @@
 #include "ErrorCodes.h"
 #include "fileFormatHelpers.h"
 #include "oem.h"
-#include "libendian/src/EndianIStreamAdapter.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
 
 /** @class libsiedler2::ArchivItem_Map_Header

@@ -19,8 +19,8 @@
 #include "ArchivItem_Font.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
-#include "libendian/src/EndianIStreamAdapter.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>

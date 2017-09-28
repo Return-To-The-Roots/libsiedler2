@@ -16,9 +16,9 @@ platform:
     
 install:
   - set BOOST_ROOT=C:\Libraries\boost_1_59_0
-  - set LIB_ENDIAN_DIR=%cd%\libendian
-  - mkdir %LIB_ENDIAN_DIR%
-  - git clone https://github.com/Return-To-The-Roots/libendian.git %LIB_ENDIAN_DIR%
+  - git clone https://github.com/Return-To-The-Roots/libutil.git libutil
+  - git clone https://github.com/Return-To-The-Roots/libendian.git libendian
+  - set CMAKE_PREFIX_PATH=%CMAKE_PREFIX_PATH%;%cd%\libutil;%cd%\libendian
 
 before_build:
   - mkdir build
@@ -34,7 +34,7 @@ build:
 
 build_script:
   - echo "Building for %configuration% on %platform%"
-  - msbuild /m /p:Configuration="%configuration%" /p:Platform="%platform%" /v:n build/libSiedler2.sln
+  - msbuild /m /p:Configuration="%configuration%" /p:Platform="%platform%" /v:n build/siedler2Examples.sln
 
 test_script:
   - cd build

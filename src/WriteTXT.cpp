@@ -20,7 +20,7 @@
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 
 /**

@@ -22,8 +22,8 @@
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "libsiedler2.h"
-#include "libendian/src/EndianIStreamAdapter.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
 
 struct BlockHeader

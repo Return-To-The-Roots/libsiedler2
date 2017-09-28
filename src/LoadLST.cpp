@@ -20,7 +20,7 @@
 #include "ErrorCodes.h"
 #include "OpenMemoryStream.h"
 #include "prototypen.h"
-#include "libendian/src/EndianIStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
 
 /**
  *  lädt eine LST-File in ein Archiv.

@@ -20,8 +20,8 @@
 #include "ErrorCodes.h"
 #include "XMIDI_TrackConverter.h"
 #include "fileFormatHelpers.h"
-#include "libendian/src/EndianIStreamAdapter.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianIStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
 #include <stdexcept>
 

@@ -15,12 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Siedler II.5 RTTR. If not, see <http://www.gnu.org/licenses/>.
 
-
 #include "pack.h"
 #include "unpack.h"
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem_Palette.h"
-#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem_Palette.h"
+#include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <iostream>
 #include <string>
@@ -36,7 +35,7 @@ int main(int argc, char* argv[])
     {
         cerr << "Usage: " << endl;
         cerr << "pack:   " << argv[0] << " directory" << endl;
-        cerr << "unpack: " << argv[0] << " file.lst"  << endl;
+        cerr << "unpack: " << argv[0] << " file.lst" << endl;
         cerr << "Optionally pass a color palette file (bbm/act) to use instead" << endl;
 
         return 1;
@@ -57,7 +56,7 @@ int main(int argc, char* argv[])
         {
             cerr << "Error: Could not load given palette: " << argv[2] << endl;
             cerr << "Retrying with default ones" << endl;
-        }else
+        } else
             cout << "Using non-standard color palette: " << argv[2] << endl;
     }
 
@@ -96,21 +95,21 @@ int main(int argc, char* argv[])
         if(Load(argv[1], lst, palette) != 0)
         {
             cerr << "Fatal Error: " << endl;
-            cerr << argv[1] << " was not found or cannot be opened" << endl;;
+            cerr << argv[1] << " was not found or cannot be opened" << endl;
+            ;
 
             return 3;
         }
 
         unpack(outPath, lst, palette);
-    }
-    else if(bfs::is_directory(inputPath))
+    } else if(bfs::is_directory(inputPath))
     {
         bfs::path outFilepath = inputPath.string() + ".NEW.LST";
 
         cerr << "Packing directory " << inputPath << " to " << outFilepath << endl;
 
         pack(inputPath.string(), outFilepath.string(), palette);
-    }else
+    } else
     {
         cerr << "Unknown type. Not a file or folder: " << inputPath;
         return 1;

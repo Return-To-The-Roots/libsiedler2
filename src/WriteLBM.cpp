@@ -22,7 +22,7 @@
 #include "ErrorCodes.h"
 #include "PixelBufferPaletted.h"
 #include "prototypen.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 
 int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette)

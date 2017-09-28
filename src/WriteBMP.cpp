@@ -25,7 +25,7 @@
 #include "ErrorCodes.h"
 #include "fileFormatHelpers.h"
 #include "prototypen.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <boost/filesystem/fstream.hpp>
 #include <vector>
 

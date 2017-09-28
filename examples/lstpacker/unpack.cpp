@@ -16,14 +16,14 @@
 // along with Siedler II.5 RTTR. If not, see <http://www.gnu.org/licenses/>.
 
 #include "unpack.h"
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem_BitmapBase.h"
-#include "libsiedler2/src/ArchivItem_Bob.h"
-#include "libsiedler2/src/ArchivItem_Font.h"
-#include "libsiedler2/src/ArchivItem_Sound.h"
-#include "libsiedler2/src/ArchivItem_Sound_Wave.h"
-#include "libsiedler2/src/ArchivItem_Text.h"
-#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem_BitmapBase.h"
+#include "libsiedler2/ArchivItem_Bob.h"
+#include "libsiedler2/ArchivItem_Font.h"
+#include "libsiedler2/ArchivItem_Sound.h"
+#include "libsiedler2/ArchivItem_Sound_Wave.h"
+#include "libsiedler2/ArchivItem_Text.h"
+#include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <iomanip>

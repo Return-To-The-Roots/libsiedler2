@@ -18,11 +18,11 @@
 #include "ColorOutput.h"
 #include "cmpFiles.h"
 #include "config.h"
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem_Palette.h"
-#include "libsiedler2/src/ColorARGB.h"
-#include "libsiedler2/src/ColorRGB.h"
-#include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem_Palette.h"
+#include "libsiedler2/ColorARGB.h"
+#include "libsiedler2/ColorRGB.h"
+#include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 

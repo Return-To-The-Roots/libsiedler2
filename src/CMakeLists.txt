@@ -21,16 +21,18 @@ ENDIF()
 
 ADD_DEFINITIONS(-DNOMINMAX)
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
+get_filename_component(parentPath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
+set(includePath ${parentPath}/include)
+INCLUDE_DIRECTORIES(${includePath}/libsiedler2)
 INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
 
 FILE(GLOB SRC_FILES *.cpp *.h *.hpp)
-ADD_LIBRARY(siedler2 STATIC ${SRC_FILES})
+FILE(GLOB HEADER_FILES ${includePath}/libsiedler2/*.*)
+ADD_LIBRARY(siedler2 STATIC ${SRC_FILES} ${HEADER_FILES})
 
-TARGET_LINK_LIBRARIES(siedler2 ${Boost_LIBRARIES})
+target_include_directories(siedler2 PUBLIC ${includePath})
+TARGET_LINK_LIBRARIES(siedler2 endianStreams ${Boost_LIBRARIES})
 
 if(ClangFormat_FOUND)
-    add_clangFormat_files(${SRC_FILES})
+    add_clangFormat_files(${SRC_FILES} ${HEADER_FILES})
 endif()
-
-#################################################################################

@@ -27,7 +27,7 @@
 #include "ArchivItem_Sound.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
-#include "libendian/src/EndianOStreamAdapter.h"
+#include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
 #include <stdexcept>
 

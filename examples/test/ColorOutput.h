@@ -20,8 +20,8 @@
 #ifndef ColorOutput_h__
 #define ColorOutput_h__
 
-#include "libsiedler2/src/ColorARGB.h"
-#include "libsiedler2/src/ColorRGB.h"
+#include "libsiedler2/ColorARGB.h"
+#include "libsiedler2/ColorRGB.h"
 #include <iostream>
 
 namespace libsiedler2 {
