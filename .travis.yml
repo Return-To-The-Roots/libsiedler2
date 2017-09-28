@@ -41,7 +41,8 @@ cache:
     
 installDeps:
     &installDeps
-    - |
+    |
+        DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
         LIBUTIL_DIR="$DEPS_DIR/libutil"
         if [ ! -d "$LIBUTIL_DIR/src" ]; then
             git clone https://github.com/Return-To-The-Roots/libutil.git "$LIBUTIL_DIR"
@@ -52,7 +53,8 @@ installDeps:
             git clone https://github.com/Return-To-The-Roots/libendian.git "$LIBENDIAN_DIR"
         fi
         (cd ${LIBENDIAN_DIR} && git checkout master && git reset --hard && git pull)
-        export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:${LIBUTIL_DIR}:${LIBENDIAN_DIR}
+        export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${LIBUTIL_DIR}:${LIBENDIAN_DIR}
+        echo "Set cmake prefix path: '$CMAKE_PREFIX_PATH'"
 
 matrix:
     include:
@@ -67,7 +69,8 @@ matrix:
         - compiler: clang
           env: BUILD_TYPE=Release CXX_FLAGS=-std=c++03
 
-install: *installDeps
+install:
+    - *installDeps
     - BOOST_VERSION="1.58.0"
     # Enable coverage analysis only in debug and for g++
     - |
@@ -99,9 +102,9 @@ install: *installDeps
     # Use clang 3.9
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.9"; export CC="clang-3.9"; fi
     - |
-        if [[ "${BOOST_VERSION}" != "" ]]; then
+        if [ "${BOOST_VERSION}" != "" ]; then
           BOOST_DIR=${DEPS_DIR}/boost-${BOOST_VERSION}
-          if [[ -z "$(ls -A ${BOOST_DIR})" ]]; then
+          if [ "$(ls -A ${BOOST_DIR})" ]; then
             BOOST_URL="http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//\./_}.tar.gz"
             mkdir -p ${BOOST_DIR}
             { travis_retry wget -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${BOOST_DIR}; } || exit 1
