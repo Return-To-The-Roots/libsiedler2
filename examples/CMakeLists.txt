@@ -91,7 +91,7 @@ find_path(RTTR_LIBUTIL_DIR
 	NAMES "include/libutil"
     HINTS ${RTTR_LIBSIEDLER2_DIR}/../libutil
 	PATHS ENV LIBUTIL_DIR
-    PATH_SUFFIXES ../)
+    PATH_SUFFIXES ".." libutil)
 if(NOT RTTR_LIBUTIL_DIR)
     message(FATAL_ERROR "Path to libutil not found! You can set the full path in the env var LIBUTIL_DIR ($ENV{LIBUTIL_DIR})")
 endif()
@@ -100,7 +100,7 @@ find_path(RTTR_LIBENDIAN_DIR
 	NAMES "include/libendian"
     HINTS ${RTTR_LIBSIEDLER2_DIR}/../libendian
 	PATHS ENV LIBENDIAN_DIR
-    PATH_SUFFIXES ../)
+    PATH_SUFFIXES ".." libendian)
 if(NOT RTTR_LIBENDIAN_DIR)
     message(FATAL_ERROR "Path to libendian not found! You can set the full path in the env var LIBENDIAN_DIR ($ENV{LIBENDIAN_DIR})")
 endif()
