@@ -87,21 +87,21 @@ endif()
 
 set(RTTR_LIBSIEDLER2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-find_path(RTTR_LIBUTIL_DIR
-	NAMES "include/libutil"
+find_path(RTTR_LIBUTIL_INCDIR
+	NAMES "libutil/Log.h"
     HINTS ${RTTR_LIBSIEDLER2_DIR}/../libutil
 	PATHS ENV LIBUTIL_DIR
-    PATH_SUFFIXES ../)
-if(NOT RTTR_LIBUTIL_DIR)
+    PATH_SUFFIXES include)
+if(NOT RTTR_LIBUTIL_INCDIR)
     message(FATAL_ERROR "Path to libutil not found! You can set the full path in the env var LIBUTIL_DIR ($ENV{LIBUTIL_DIR})")
 endif()
 
-find_path(RTTR_LIBENDIAN_DIR
-	NAMES "include/libendian"
+find_path(RTTR_LIBENDIAN_INCDIR
+	NAMES "libendian/libendian.h"
     HINTS ${RTTR_LIBSIEDLER2_DIR}/../libendian
 	PATHS ENV LIBENDIAN_DIR
-    PATH_SUFFIXES ../)
-if(NOT RTTR_LIBENDIAN_DIR)
+    PATH_SUFFIXES include)
+if(NOT RTTR_LIBENDIAN_INCDIR)
     message(FATAL_ERROR "Path to libendian not found! You can set the full path in the env var LIBENDIAN_DIR ($ENV{LIBENDIAN_DIR})")
 endif()
 
@@ -115,8 +115,8 @@ if(MSVC)
     INCLUDE(CreateLaunchers)
 endif()
 
-add_subdirectory(${RTTR_LIBENDIAN_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libEndian)
-add_subdirectory(${RTTR_LIBSIEDLER2_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libSiedler2)
+add_subdirectory(${RTTR_LIBENDIAN_INCDIR}/.. ${CMAKE_CURRENT_BINARY_DIR}/libEndian)
+add_subdirectory(${RTTR_LIBSIEDLER2_INCDIR}/.. ${CMAKE_CURRENT_BINARY_DIR}/libSiedler2)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
