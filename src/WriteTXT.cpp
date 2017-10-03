@@ -21,7 +21,7 @@
 #include "ErrorCodes.h"
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/nowide/fstream.hpp>
 
 /**
  *  schreibt eine GER/ENG-File aus einem Archiv.
@@ -46,7 +46,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
     }
 
     // Datei zum lesen öffnen
-    libendian::EndianOStreamAdapter<false, bfs::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, bnw::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

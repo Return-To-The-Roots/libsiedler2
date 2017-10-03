@@ -20,7 +20,7 @@
 #include "ArchivItem_Sound.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/nowide/fstream.hpp>
 
 int libsiedler2::loader::WriteSND(const std::string& file, const Archiv& items)
 {
@@ -35,7 +35,7 @@ int libsiedler2::loader::WriteSND(const std::string& file, const Archiv& items)
     if(!snd)
         return ErrorCode::WRONG_ARCHIV;
 
-    bfs::ofstream fs(file, std::ios_base::binary);
+    bnw::ofstream fs(file, std::ios_base::binary);
     if(!fs)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 

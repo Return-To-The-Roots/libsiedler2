@@ -23,7 +23,7 @@
 #include "PixelBufferPaletted.h"
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/nowide/fstream.hpp>
 
 int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette)
 {
@@ -39,7 +39,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
         return ErrorCode::PALETTE_MISSING;
 
     // Open file for writing
-    libendian::EndianOStreamAdapter<true, bfs::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<true, bnw::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

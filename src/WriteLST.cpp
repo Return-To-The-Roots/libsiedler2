@@ -21,7 +21,7 @@
 #include "ErrorCodes.h"
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/nowide/fstream.hpp>
 #include <limits>
 
 /**
@@ -39,7 +39,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const Archiv& items, 
         return ErrorCode::INVALID_BUFFER;
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, bfs::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, bnw::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

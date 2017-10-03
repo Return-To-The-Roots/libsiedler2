@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 include(CheckCXXSourceCompiles)
 
@@ -115,8 +115,11 @@ if(MSVC)
     INCLUDE(CreateLaunchers)
 endif()
 
-add_subdirectory(${RTTR_LIBENDIAN_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libEndian)
-add_subdirectory(${RTTR_LIBSIEDLER2_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libSiedler2)
+set(NOWIDE_BUILD_SHARED OFF)
+add_definitions(-DBOOST_NOWIDE_NO_LIB)
+add_subdirectory(${RTTR_LIBUTIL_DIR}/nowide/src nowide)
+add_subdirectory(${RTTR_LIBENDIAN_DIR} libEndian)
+add_subdirectory(${RTTR_LIBSIEDLER2_DIR} libSiedler2)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 

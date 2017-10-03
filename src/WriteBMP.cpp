@@ -26,7 +26,7 @@
 #include "fileFormatHelpers.h"
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/nowide/fstream.hpp>
 #include <vector>
 
 /**
@@ -84,7 +84,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     bmpHd.fileSize = (bitmap->getWidth() * bmih.bpp / 8 + numLineAlignBytes) * bitmap->getHeight() + bmpHd.pixelOffset;
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, bfs::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, bnw::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

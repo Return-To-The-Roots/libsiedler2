@@ -21,7 +21,7 @@
 #include "ErrorCodes.h"
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/nowide/fstream.hpp>
 
 /**
  *  schreibt ein Archiv in eine BBM-File.
@@ -47,7 +47,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<true, bfs::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<true, bnw::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

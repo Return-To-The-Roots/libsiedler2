@@ -20,7 +20,7 @@
 #include "ArchivItem_Map.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
-#include <boost/filesystem/fstream.hpp>
+#include <boost/nowide/fstream.hpp>
 
 /**
  *  schreibt ein Archiv in eine SWD/WSD-File.
@@ -40,7 +40,7 @@ int libsiedler2::loader::WriteMAP(const std::string& file, const Archiv& items)
         return ErrorCode::WRONG_ARCHIV;
 
     // Datei zum lesen öffnen
-    bfs::ofstream fs(file, std::ios_base::binary);
+    bnw::ofstream fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

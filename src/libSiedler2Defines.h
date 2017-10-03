@@ -62,7 +62,10 @@ struct Deleter
 namespace boost {
 namespace filesystem {
 }
+namespace nowide {
+}
 } // namespace boost
 namespace bfs = boost::filesystem;
+namespace bnw = boost::nowide;
 
 #endif // LIB_SIEDLER2_DEFINES_H__
