@@ -1,9 +1,31 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
-include(CheckCXXSourceCompiles)
-
 project(siedler2Examples)
 
+set(RTTR_LIBSIEDLER2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+find_path(RTTR_LIBUTIL_DIR
+	NAMES "include/libutil"
+    HINTS ${RTTR_LIBSIEDLER2_DIR}/../libutil
+	PATHS ENV LIBUTIL_DIR
+    PATH_SUFFIXES ".." libutil)
+if(NOT RTTR_LIBUTIL_DIR)
+    message(FATAL_ERROR "Path to libutil not found! You can set the full path in the env var LIBUTIL_DIR ($ENV{LIBUTIL_DIR})")
+endif()
+
+find_path(RTTR_LIBENDIAN_DIR
+	NAMES "include/libendian"
+    HINTS ${RTTR_LIBSIEDLER2_DIR}/../libendian
+	PATHS ENV LIBENDIAN_DIR
+    PATH_SUFFIXES ".." libendian)
+if(NOT RTTR_LIBENDIAN_DIR)
+    message(FATAL_ERROR "Path to libendian not found! You can set the full path in the env var LIBENDIAN_DIR ($ENV{LIBENDIAN_DIR})")
+endif()
+
+list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake/Modules")
+
+include(CheckCXXSourceCompiles)
+include(CMakeMacroAddFlags)
 enable_testing()
 
 ################################################################################
@@ -41,29 +63,39 @@ OPTION(RTTR_ENABLE_WERROR "Build with warnings turned into errors" ON)
 
 IF (MSVC)
 	IF(RTTR_ENABLE_WERROR)
-		ADD_DEFINITIONS(/WX)
+		add_compile_options(/WX)
 	ENDIF()
-    ADD_DEFINITIONS(/MP) # parallel compilation
+    add_compile_options(/MP) # parallel compilation
     # disable MSVC posix functions
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
     ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 	ADD_DEFINITIONS(/wd"4250")
 else()
-    ADD_DEFINITIONS(-Wall)
+    add_compile_options(-Wall)
 	IF(RTTR_ENABLE_WERROR)
-		ADD_DEFINITIONS(-Werror)
+		add_compile_options(-Werror)
 	ENDIF()
 ENDIF()
 
-CHECK_CXX_SOURCE_COMPILES("
-	#if __cplusplus >= 201103L
-	int main() {}
-	#endif" COMPILER_IN_CXX11_MODE)
+if(WIN32)
+    ADD_DEFINITIONS(-DNOMINMAX)
+endif()
 
-IF ((NOT COMPILER_IN_CXX11_MODE) AND NOT MSVC)
-    ADD_DEFINITIONS(-Doverride=)
+if(NOT MSVC)
+    CHECK_CXX_SOURCE_COMPILES("
+        #if __cplusplus >= 201103L
+        int main() {}
+        #endif" COMPILER_IN_CXX11_MODE)
+
+    IF (NOT COMPILER_IN_CXX11_MODE)
+        ADD_DEFINITIONS(-Doverride=)
+    endif()
 ENDIF()
+
+################################################################################
+# Code coverage
+################################################################################
 
 # VS does not support coverage analysis
 if(NOT MSVC)
@@ -73,39 +105,18 @@ if(NOT MSVC)
 			message(FATAL_ERROR "Coverage requires a debug build or you get false positives")
 		endif()
 		# Note: "--coverage" instead of "-coverage" makes this work with ccache
-		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 --coverage")
-		if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+		add_flags(CMAKE_CXX_FLAGS_DEBUG -O0 --coverage)
+		if(CMAKE_COMPILER_IS_GNUCXX)
 			# Inlining makes the coverage statistic much harder to read and may lead to lots of partials
 			# However expect a slowdown!
 			message(STATUS "Enabled no-inline for better coverage statistics")
-			set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline -fno-inline-small-functions -fno-default-inline")
+			add_flags(CMAKE_CXX_FLAGS_DEBUG -fno-inline -fno-inline-small-functions -fno-default-inline)
 		else()
 			message(STATUS "Using default inlining which probably influences coverage statistics")
 		endif()
 	endif()
 endif()
 
-set(RTTR_LIBSIEDLER2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-
-find_path(RTTR_LIBUTIL_DIR
-	NAMES "include/libutil"
-    HINTS ${RTTR_LIBSIEDLER2_DIR}/../libutil
-	PATHS ENV LIBUTIL_DIR
-    PATH_SUFFIXES ".." libutil)
-if(NOT RTTR_LIBUTIL_DIR)
-    message(FATAL_ERROR "Path to libutil not found! You can set the full path in the env var LIBUTIL_DIR ($ENV{LIBUTIL_DIR})")
-endif()
-
-find_path(RTTR_LIBENDIAN_DIR
-	NAMES "include/libendian"
-    HINTS ${RTTR_LIBSIEDLER2_DIR}/../libendian
-	PATHS ENV LIBENDIAN_DIR
-    PATH_SUFFIXES ".." libendian)
-if(NOT RTTR_LIBENDIAN_DIR)
-    message(FATAL_ERROR "Path to libendian not found! You can set the full path in the env var LIBENDIAN_DIR ($ENV{LIBENDIAN_DIR})")
-endif()
-
-list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake/Modules")
 
 # Use clang-format if available
 find_package(ClangFormat 5.0.0)
@@ -115,8 +126,9 @@ if(MSVC)
     INCLUDE(CreateLaunchers)
 endif()
 
-set(NOWIDE_BUILD_SHARED OFF)
-add_definitions(-DBOOST_NOWIDE_NO_LIB)
+set(NOWIDE_BUILD_STATIC ON CACHE BOOL "" FORCE)
+set(NOWIDE_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+set(NOWIDE_USE_BOOST_FILESYSTEM ON CACHE BOOL "" FORCE)
 add_subdirectory(${RTTR_LIBUTIL_DIR}/nowide/src nowide)
 add_subdirectory(${RTTR_LIBENDIAN_DIR} libEndian)
 add_subdirectory(${RTTR_LIBSIEDLER2_DIR} libSiedler2)
