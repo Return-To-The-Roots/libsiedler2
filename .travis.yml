@@ -47,12 +47,12 @@ installDeps:
         if [ ! -d "$LIBUTIL_DIR/src" ]; then
             git clone https://github.com/Return-To-The-Roots/libutil.git "$LIBUTIL_DIR"
         fi
-        (cd ${LIBUTIL_DIR} && git checkout master && git reset --hard && git pull)
+        (cd ${LIBUTIL_DIR} && git checkout master && git fetch && git reset --hard origin/master)
         LIBENDIAN_DIR="$DEPS_DIR/libendian"
         if [ ! -d "$LIBENDIAN_DIR/src" ]; then
             git clone https://github.com/Return-To-The-Roots/libendian.git "$LIBENDIAN_DIR"
         fi
-        (cd ${LIBENDIAN_DIR} && git checkout master && git reset --hard && git pull)
+        (cd ${LIBENDIAN_DIR} && git checkout master && git fetch && git reset --hard origin/master)
         export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${LIBUTIL_DIR}:${LIBENDIAN_DIR}
         echo "Set cmake prefix path: '$CMAKE_PREFIX_PATH'"
 
