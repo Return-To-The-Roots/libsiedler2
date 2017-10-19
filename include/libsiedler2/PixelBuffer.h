@@ -60,8 +60,7 @@ protected:
 template<typename T_Pixel>
 inline PixelBuffer<T_Pixel>::PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue)
     : width_(width), height_(height), pixels_(static_cast<uint32_t>(width) * height, defValue)
-{
-}
+{}
 
 template<typename T_Pixel>
 inline void libsiedler2::PixelBuffer<T_Pixel>::clear()

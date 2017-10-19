@@ -31,9 +31,7 @@ namespace libsiedler2 {
  *  die Elemente.
  */
 
-Archiv::Archiv()
-{
-}
+Archiv::Archiv() {}
 
 Archiv::Archiv(const Archiv& info)
 {

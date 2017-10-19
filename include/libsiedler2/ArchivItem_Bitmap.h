@@ -58,8 +58,7 @@ public:
 
 /// Basisklasse für Bitmapitems.
 class ArchivItem_Bitmap : public virtual baseArchivItem_Bitmap
-{
-};
+{};
 
 template<class T_PixelBuffer>
 inline int baseArchivItem_Bitmap::print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette, uint16_t to_x, uint16_t to_y,

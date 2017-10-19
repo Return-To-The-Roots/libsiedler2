@@ -32,9 +32,7 @@ namespace libsiedler2 {
  *  Klasse für XMIDI-Sounds.
  */
 
-ArchivItem_Sound_XMidi::ArchivItem_Sound_XMidi() : ArchivItem_Sound(SOUNDTYPE_XMIDI), numTracks(0), ppqs(0)
-{
-}
+ArchivItem_Sound_XMidi::ArchivItem_Sound_XMidi() : ArchivItem_Sound(SOUNDTYPE_XMIDI), numTracks(0), ppqs(0) {}
 
 int ArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
 {

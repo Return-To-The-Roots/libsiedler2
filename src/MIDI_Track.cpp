@@ -22,17 +22,11 @@
 #include <limits>
 
 namespace libsiedler2 {
-MIDI_Track::MIDI_Track()
-{
-}
+MIDI_Track::MIDI_Track() {}
 
-MIDI_Track::MIDI_Track(const std::vector<uint8_t>& data) : mid_data(data)
-{
-}
+MIDI_Track::MIDI_Track(const std::vector<uint8_t>& data) : mid_data(data) {}
 
-MIDI_Track::~MIDI_Track()
-{
-}
+MIDI_Track::~MIDI_Track() {}
 
 int MIDI_Track::read(std::istream& file, size_t length)
 {

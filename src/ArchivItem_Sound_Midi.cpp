@@ -32,9 +32,7 @@ namespace libsiedler2 {
  *  Klasse für MIDI-Sounds.
  */
 
-ArchivItem_Sound_Midi::ArchivItem_Sound_Midi() : ArchivItem_Sound(SOUNDTYPE_MIDI), numTracks(0)
-{
-}
+ArchivItem_Sound_Midi::ArchivItem_Sound_Midi() : ArchivItem_Sound(SOUNDTYPE_MIDI), numTracks(0) {}
 
 int ArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
 {

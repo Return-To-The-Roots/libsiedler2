@@ -29,13 +29,9 @@
  *  Klasse für Bobfiles.
  */
 
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BOBTYPE_BOB), numGoodImgs(0)
-{
-}
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BOBTYPE_BOB), numGoodImgs(0) {}
 
-libsiedler2::ArchivItem_Bob::~ArchivItem_Bob()
-{
-}
+libsiedler2::ArchivItem_Bob::~ArchivItem_Bob() {}
 
 /**
  *  lädt die Bobdaten aus einer Datei.

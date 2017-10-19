@@ -35,13 +35,9 @@
  *  Klasse für Paletten.
  */
 
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BOBTYPE_PALETTE)
-{
-}
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BOBTYPE_PALETTE) {}
 
-libsiedler2::ArchivItem_Palette::~ArchivItem_Palette()
-{
-}
+libsiedler2::ArchivItem_Palette::~ArchivItem_Palette() {}
 
 /**
  *  liest die Farbwerte aus einer Datei.

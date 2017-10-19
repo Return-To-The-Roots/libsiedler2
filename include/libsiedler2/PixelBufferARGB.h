@@ -32,8 +32,7 @@ public:
     PixelBufferARGB() {}
     PixelBufferARGB(uint16_t width, uint16_t height, ColorARGB defValue = ColorARGB())
         : PixelBuffer<uint32_t>(width, height, defValue.clrValue)
-    {
-    }
+    {}
     ColorARGB get(uint16_t x, uint16_t y) const;
     ColorARGB get(uint32_t idx) const;
     void set(uint16_t x, uint16_t y, ColorARGB clr);

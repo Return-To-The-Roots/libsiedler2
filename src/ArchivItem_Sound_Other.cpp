@@ -28,9 +28,7 @@ namespace libsiedler2 {
  *  Klasse für Other-Sounds.
  */
 
-ArchivItem_Sound_Other::ArchivItem_Sound_Other(SoundType sndType) : ArchivItem_Sound(sndType)
-{
-}
+ArchivItem_Sound_Other::ArchivItem_Sound_Other(SoundType sndType) : ArchivItem_Sound(sndType) {}
 
 /**
  *  lädt die Daten aus einer Datei.

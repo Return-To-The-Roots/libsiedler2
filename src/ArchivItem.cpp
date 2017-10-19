@@ -18,10 +18,6 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem.h"
 
-libsiedler2::ArchivItem::ArchivItem(BobType bobtype) : bobtype_(bobtype), name_("untitled")
-{
-}
+libsiedler2::ArchivItem::ArchivItem(BobType bobtype) : bobtype_(bobtype), name_("untitled") {}
 
-libsiedler2::ArchivItem::~ArchivItem()
-{
-}
+libsiedler2::ArchivItem::~ArchivItem() {}
