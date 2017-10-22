@@ -83,18 +83,18 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             assert(false);
             return ErrorCode::WRONG_FORMAT;
         }
-        // Blocksize must match extents
-        if(bHeader.blockLength != static_cast<uint32_t>(w) * static_cast<uint32_t>(h))
-        {
-            assert(false);
-            return ErrorCode::WRONG_FORMAT;
-        }
         // Multiplier of 0 means unused block and implies no data
         if(bHeader.multiplier == 0)
         {
             assert(bHeader.blockLength == 0);
             push(NULL);
             continue;
+        }
+        // Blocksize must match extents
+        if(bHeader.blockLength != static_cast<uint32_t>(w) * static_cast<uint32_t>(h))
+        {
+            assert(false);
+            return ErrorCode::WRONG_FORMAT;
         }
         // If there is data, size must match
         if(bHeader.w != w || bHeader.h != h)
