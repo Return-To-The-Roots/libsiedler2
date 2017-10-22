@@ -23,7 +23,11 @@ file(COPY ${RTTR_TESTFILES} DESTINATION "${CMAKE_BINARY_DIR}")
 install(DIRECTORY ${RTTR_TESTFILES} DESTINATION .)
 
 if(MSVC)
-	create_target_launcher(Test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	if(CMAKE_VERSION VERSION_LESS 3.8)
+		create_target_launcher(Test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	else()
+		set_property(TARGET Test VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	endif()
 endif()
 
 if(ClangFormat_FOUND)

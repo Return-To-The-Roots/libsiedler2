@@ -7,7 +7,11 @@ file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
 install(FILES ${RTTR_PAL5_PATH} DESTINATION .)
 
 if(MSVC)
-	create_target_launcher(outline WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	if(CMAKE_VERSION VERSION_LESS 3.8)
+		create_target_launcher(outline WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	else()
+		set_property(TARGET outline VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	endif()
 endif()
 
 if(ClangFormat_FOUND)

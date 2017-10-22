@@ -121,7 +121,7 @@ endif()
 # Use clang-format if available
 find_package(ClangFormat 5.0.0)
 
-if(MSVC)
+if(MSVC AND CMAKE_VERSION VERSION_LESS 3.8)
 	CMAKE_POLICY(SET CMP0026 OLD) # Required for use of LOCATION_*
     INCLUDE(CreateLaunchers)
 endif()
