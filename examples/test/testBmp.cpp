@@ -140,8 +140,7 @@ struct TestBitmaps
         Info() {}
         Info(const std::string& filename, bool isPaletted, bool containsPalette, bool supportsBoth = false)
             : filename(filename), isPaletted(isPaletted), containsPalette(containsPalette), supportsBoth(supportsBoth)
-        {
-        }
+        {}
     };
     std::vector<Info> files;
     TestBitmaps()

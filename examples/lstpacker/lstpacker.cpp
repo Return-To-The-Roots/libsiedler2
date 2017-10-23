@@ -42,7 +42,8 @@ int main(int argc, char* argv[])
                                   "pack:   lstpacker <directory>\n"
                                   "unpack: lstpacker <file.lst>\n"
                                   "Optionally pass a color palette file (bbm/act) to use instead of default one");
-    desc.add_options()("help,h", "Show help")("pal,p", "Palette to use");
+    desc.add_options()("help,h", "Show help")("file,f", bpo::value<bfs::path>(), "File to unpack or directory to pack")(
+      "palette,p", bpo::value<bfs::path>(), "Palette to use");
     bpo::positional_options_description positionalOptions;
     positionalOptions.add("file", 1).add("palette", 1);
 

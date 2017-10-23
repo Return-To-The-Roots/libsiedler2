@@ -12,7 +12,7 @@ if(MSVC)
 	if(CMAKE_VERSION VERSION_LESS 3.8)
 		create_target_launcher(lstpacker WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 	else()
-		set_property(TARGET lstpacker VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+		set_property(TARGET lstpacker PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 	endif()
 endif()
 

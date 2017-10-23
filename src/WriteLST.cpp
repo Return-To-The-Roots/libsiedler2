@@ -79,5 +79,4 @@ int libsiedler2::loader::WriteLST(const std::string& file, const Archiv& items, 
     }
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
-    ;
 }
