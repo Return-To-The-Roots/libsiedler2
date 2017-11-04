@@ -1,4 +1,3 @@
-
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 
 if(NOT Boost_USE_STATIC_LIBS)

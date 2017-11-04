@@ -78,9 +78,8 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         BlockHeader bHeader;
         fs >> bHeader.id >> bHeader.unknown >> bHeader.w >> bHeader.h >> bHeader.multiplier >> bHeader.blockLength;
         // Header id must match
-        if(bHeader.id != 0x2710 || bHeader.unknown != 0)
+        if(!fs || bHeader.id != 0x2710 || bHeader.unknown != 0)
         {
-            assert(false);
             return ErrorCode::WRONG_FORMAT;
         }
         // Multiplier of 0 means unused block and implies no data
@@ -103,12 +102,6 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return ErrorCode::WRONG_FORMAT;
         }
 
-        if(i == 1 && header->hasExtraWord())
-        {
-            // Work around for map file bug: There are 2 extra bytes inbetween the header which would actually belong to the first block
-            fs.setPositionRel(-2);
-        }
-
         ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
         ec = layer->load(file, bHeader.blockLength);
         if(ec)
@@ -116,6 +109,15 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             delete layer;
             return ec;
         }
+        if(i == 1 && header->hasExtraWord())
+        {
+            // Work around for map file bug: There are 2 extra bytes inbetween the header which would actually belong to the first block
+            fs.setPositionRel(-2);
+            std::vector<uint8_t>& data = layer->getData();
+            // Replace last 2 bytes by 3rd last one
+            data[data.size() - 1] = data[data.size() - 2] = data[data.size() - 3];
+        }
+
         push(layer);
     }
 

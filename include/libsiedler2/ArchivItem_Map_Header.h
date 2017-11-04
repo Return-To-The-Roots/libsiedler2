@@ -47,8 +47,8 @@ public:
     uint8_t getGfxSet() const;
     void setGfxSet(uint8_t gfxset);
 
-    uint8_t getPlayer() const;
-    void setPlayer(uint8_t player);
+    uint8_t getNumPlayers() const;
+    void setNumPlayers(uint8_t numPlayers);
 
     const std::string& getAuthor() const;
     void setAuthor(const std::string& author);
@@ -62,7 +62,7 @@ private:
     uint16_t width;
     uint16_t height;
     uint8_t gfxset;
-    uint8_t player;
+    uint8_t numPlayers;
     std::string author_;
     uint16_t playerHQx[7], playerHQy[7];
     uint8_t isInvalid;

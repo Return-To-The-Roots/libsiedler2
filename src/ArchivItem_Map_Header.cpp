@@ -22,6 +22,7 @@
 #include "oem.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
+#include <boost/array.hpp>
 #include <iostream>
 
 /** @class libsiedler2::ArchivItem_Map_Header
@@ -32,7 +33,7 @@
 const char VALID_ID[11] = "WORLD_V1.0";
 
 libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
-    : ArchivItem(BOBTYPE_MAP_HEADER), width(0), height(0), gfxset(0), player(0), isInvalid(0), hasExtraWord_(false)
+    : ArchivItem(BOBTYPE_MAP_HEADER), width(0), height(0), gfxset(0), numPlayers(0), isInvalid(0), hasExtraWord_(false)
 {}
 
 libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header() {}
@@ -59,23 +60,21 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     if(!fs || !isChunk(id, VALID_ID))
         return ErrorCode::WRONG_HEADER;
 
-    // Name einlesen
-    char name[24];
-    fs >> name;
-    OemToAnsi(name, name);
-    setName(name);
+    // Read name. Either 20B + width/height (2B each) or 24B
+    // Ignore it for now and come back later
+    long namePos = fs.getPosition();
+    fs.setPositionRel(20);
+    uint16_t posWidth, posHeight;
+    fs >> posWidth >> posHeight;
 
-    // GFX-Set einlesen
-    fs >> gfxset;
+    fs >> gfxset >> numPlayers;
 
-    // Spielerzahl einlesen
-    fs >> player;
-
-    // Autor einlesen
-    char author[20];
-    fs >> author;
-    OemToAnsi(author, author);
-    this->author_ = author;
+    // 20B, should include NULL
+    boost::array<char, 21> author;
+    fs.readRaw(author.data(), 20);
+    author.back() = '\0';
+    OemToAnsi(author.data(), author.data());
+    this->author_ = author.data();
 
     fs >> playerHQx >> playerHQy;
 
@@ -99,6 +98,23 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     assert(unknown == 0);
 
     fs >> width >> height;
+
+    // What name format do we have?
+    size_t nameLen;
+    if(width == posWidth && height == posHeight)
+        nameLen = 20;
+    else
+        nameLen = 24;
+    long curPos = fs.getPosition();
+    fs.setPosition(namePos);
+    // It should include a NULL terminator, but we have to make sure
+    boost::array<char, 25> name;
+    fs.readRaw(name.data(), nameLen);
+    name[nameLen] = '\0';
+    fs.setPosition(curPos);
+
+    OemToAnsi(name.data(), name.data());
+    setName(name.data());
 
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
@@ -135,7 +151,7 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
         fs << width << height;
     }
 
-    fs << gfxset << player;
+    fs << gfxset << numPlayers;
 
     // Autor einlesen
     char author[20];
@@ -217,9 +233,9 @@ void libsiedler2::ArchivItem_Map_Header::setGfxSet(uint8_t gfxset)
 /**
  *  liefert die Spielerzahl der Map.
  */
-uint8_t libsiedler2::ArchivItem_Map_Header::getPlayer() const
+uint8_t libsiedler2::ArchivItem_Map_Header::getNumPlayers() const
 {
-    return player;
+    return numPlayers;
 }
 
 /**
@@ -227,9 +243,9 @@ uint8_t libsiedler2::ArchivItem_Map_Header::getPlayer() const
  *
  *  @param[in] player Spielerzahl der Map
  */
-void libsiedler2::ArchivItem_Map_Header::setPlayer(uint8_t player)
+void libsiedler2::ArchivItem_Map_Header::setNumPlayers(uint8_t numPlayers)
 {
-    this->player = player;
+    this->numPlayers = numPlayers;
 }
 
 /**

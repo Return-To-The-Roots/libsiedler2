@@ -46,4 +46,17 @@ BOOST_AUTO_TEST_CASE(ReadWriteWLD)
     BOOST_REQUIRE(testFilesEqual(mapOutPath, mapPath));
 }
 
+BOOST_AUTO_TEST_CASE(ReadFaultyWLD)
+{
+    // Copy of map.wld but has a 20B title with size afterwards and extra word
+    std::string mapPath = "testFiles/faultyMap.wld";
+    std::string mapOutPath = testOutputPath + "/faultyMap.wld";
+    std::string okMapPath = "testFiles/map.wld";
+    BOOST_REQUIRE(bfs::exists(mapPath));
+    libsiedler2::Archiv act;
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(mapPath, act), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Write(mapOutPath, act), 0);
+    BOOST_REQUIRE(testFilesEqual(mapOutPath, okMapPath));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
