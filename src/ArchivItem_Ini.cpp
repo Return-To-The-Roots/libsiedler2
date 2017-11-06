@@ -21,14 +21,12 @@
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "libsiedler2.h"
+#include "libutil/StringConversion.h"
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/lexical_cast.hpp>
-#include <sstream>
-#include <stdexcept>
 
 /** @class libsiedler2::ArchivItem_Ini
  *
- *  Klasse für INI-Dateien (genauergesagt eine Sektion).
+ *  Klasse für INI-Dateien (genauer gesagt eine Sektion).
  */
 
 libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(BOBTYPE_INI) {}
@@ -143,7 +141,7 @@ std::string libsiedler2::ArchivItem_Ini::getValue(const std::string& name) const
 
 int libsiedler2::ArchivItem_Ini::getValueI(const std::string& name) const
 {
-    return boost::lexical_cast<int>(getValue(name));
+    return s25util::fromStringClassic<int>(getValue(name));
 }
 
 void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::string& value)
@@ -163,6 +161,6 @@ void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::s
 
 void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, int value)
 {
-    std::string temp = boost::lexical_cast<std::string>(value);
+    std::string temp = s25util::toStringClassic(value);
     setValue(name, temp);
 }

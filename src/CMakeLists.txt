@@ -19,7 +19,7 @@ FILE(GLOB HEADER_FILES ${includePath}/libsiedler2/*.*)
 ADD_LIBRARY(siedler2 STATIC ${SRC_FILES} ${HEADER_FILES})
 
 target_include_directories(siedler2 INTERFACE ${includePath})
-TARGET_LINK_LIBRARIES(siedler2 nowide-static ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(siedler2 s25util nowide-static ${Boost_LIBRARIES})
 
 if(ClangFormat_FOUND)
     add_clangFormat_files(${SRC_FILES} ${HEADER_FILES})
