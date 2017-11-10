@@ -19,8 +19,10 @@
 
 #pragma once
 
+#include "FileEntry.h"
 #include "enumTypes.h"
 #include <string>
+#include <vector>
 
 namespace libsiedler2 {
 // Fwd decl
@@ -41,6 +43,11 @@ void setAllocator(IAllocator* newAllocator);
 int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = NULL);
 /// Schreibt die Datei im Format ihrer Endung.
 int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
+/// List all files in the folder and fills them into the vector
+std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath);
+/// Load all files from the folderInfos into the archiv. Sorts the infos first
+int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette = NULL);
+
 } // namespace libsiedler2
 
 #endif // !LIBSIEDLER2_H_INCLUDED

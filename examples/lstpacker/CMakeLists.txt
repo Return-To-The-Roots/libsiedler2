@@ -3,7 +3,7 @@ find_package(Boost 1.58 REQUIRED COMPONENTS program_options)
 file(GLOB LSTPACKER_SOURCES *.cpp *.h)
 add_executable(lstpacker ${LSTPACKER_SOURCES})
 
-target_link_libraries(lstpacker siedler2 ${Boost_LIBRARIES})
+target_link_libraries(lstpacker siedler2 s25util ${Boost_LIBRARIES})
 
 file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
 install(FILES ${RTTR_PAL5_PATH} DESTINATION .)

@@ -15,18 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Siedler II.5 RTTR. If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#ifndef FileEntry_h__
+#define FileEntry_h__
 
-#ifndef pack_h__
-#define pack_h__
-
+#include "enumTypes.h"
 #include <string>
 
 namespace libsiedler2 {
-class Archiv;
-class ArchivItem_Palette;
+struct FileEntry
+{
+    explicit FileEntry(const std::string& filePath) : filePath(filePath), nr(-1), bobtype(BOBTYPE_UNSET), nx(0), ny(0) {}
+    /// Path to file and (remaining) name
+    std::string filePath, name;
+    /// Index in the archiv/folder
+    int nr;
+    BobType bobtype;
+    /// Origin or delta (fonts)
+    unsigned nx, ny;
+};
+bool operator<(const FileEntry& lhs, const FileEntry& rhs);
 } // namespace libsiedler2
 
-void pack(const std::string& directory, const std::string& file, const libsiedler2::ArchivItem_Palette* palette);
-
-#endif // pack_h__
+#endif // FileEntry_h__

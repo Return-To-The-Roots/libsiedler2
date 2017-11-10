@@ -17,15 +17,19 @@
 
 #include "pack.h"
 #include "util.h"
+#include "libSiedler2/FileEntry.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Bitmap.h"
 #include "libsiedler2/ArchivItem_BitmapBase.h"
 #include "libsiedler2/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/ArchivItem_Font.h"
+#include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/IAllocator.h"
 #include "libsiedler2/PixelBufferARGB.h"
 #include "libsiedler2/libsiedler2.h"
+#include "libutil/StringConversion.h"
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 #include <algorithm>
 #include <cctype>
 #include <iostream>
@@ -39,231 +43,37 @@ namespace bfs = boost::filesystem;
 using namespace std;
 using namespace libsiedler2;
 
-struct fileentry
+void pack(const std::string& directory, const std::string& file, const libsiedler2::ArchivItem_Palette* palette)
 {
-    fileentry() : bobtype(BOBTYPE_NONE), nx(0), ny(0) {}
-    string file;
-    string path;
-    BobType bobtype;
-    unsigned short nx;
-    unsigned short ny;
-    string type;
-};
+    Archiv lst;
 
-bool stringCompare(const fileentry& left, const fileentry& right)
-{
-    int a, b;
+    cout << "Reading directory: " << std::flush;
+    vector<FileEntry> files = ReadFolderInfo(directory);
+    cout << "done" << endl;
 
-    stringstream aa;
-    aa << left.file;
-    stringstream bb;
-    bb << right.file;
+    // Not really required but for output below
+    cout << "Sorting directory (this can take some time!): " << std::flush;
+    sort(files.begin(), files.end());
+    cout << "done" << endl;
 
-    if(!(aa >> a) || !(bb >> b))
+    cout << "Listing files to pack:" << endl;
+    unsigned ct = 0;
+    BOOST_FOREACH(const FileEntry& entry, files)
     {
-        for(string::const_iterator lit = left.file.begin(), rit = right.file.begin(); lit != left.file.end() && rit != right.file.end();
-            ++lit, ++rit)
-            if(tolower(*lit) < tolower(*rit))
-                return true;
-            else if(tolower(*lit) > tolower(*rit))
-                return false;
-        return left.file.size() < right.file.size();
-    } else
-        return a < b;
-}
-
-std::string hexToInt(const std::string& hexStr)
-{
-    std::istringstream sIn(hexStr);
-    unsigned tmp;
-    sIn >> std::hex >> tmp;
-    std::ostringstream sOut;
-    sOut << tmp;
-    return sOut.str();
-}
-
-void pack(const string& directory, const string& file, const ArchivItem_Palette* palette, Archiv* lst)
-{
-    Archiv tlst;
-
-    if(lst == NULL)
-        lst = &tlst;
-
-    vector<fileentry> files;
-
-    cerr << "Reading directory: ";
-    for(bfs::directory_iterator it = bfs::directory_iterator(directory); it != bfs::directory_iterator(); ++it)
-    {
-        if(!bfs::is_regular_file(it->status()) && !bfs::is_directory(it->status()))
-            continue;
-
-        bfs::path curPath = it->path();
-        curPath.make_preferred();
-
-        fileentry file;
-
-        string whole_file = curPath.filename().string();
-        file.path = curPath.string();
-
-        transform(whole_file.begin(), whole_file.end(), whole_file.begin(), ::tolower);
-
-        vector<string> wf = explode(whole_file, '.');
-        if(wf.back() == "db") // do not add "Thumbs.db"
-            continue;
-        if(wf.back() == "fon")
-            file.type = "font";
-        else if(wf.back() == "fonx")
-            file.type = "fontX";
-        else if(wf.back() == "bmp")
-        {
-            file.bobtype = BOBTYPE_BITMAP_RAW;
-            file.type = "bitmap";
-        } else if(wf.back() == "bbm" || wf.back() == "act")
-        {
-            file.bobtype = BOBTYPE_PALETTE;
-            file.type = "palette";
-        } else if(wf.back() == "empty")
-            file.type = "empty";
-
-        for(vector<string>::iterator it = wf.begin(); it != wf.end(); ++it)
-        {
-            if(*it == "rle")
-                file.bobtype = BOBTYPE_BITMAP_RLE;
-            else if(*it == "player")
-                file.bobtype = BOBTYPE_BITMAP_PLAYER;
-            else if(*it == "shadow")
-                file.bobtype = BOBTYPE_BITMAP_SHADOW;
-
-            else if(it->substr(0, 2) == "nx" || it->substr(0, 2) == "dx")
-                file.nx = atoi(it->substr(2).c_str());
-            else if(it->substr(0, 2) == "ny" || it->substr(0, 2) == "dy")
-                file.ny = atoi(it->substr(2).c_str());
-            else if(it->substr(0, 2) == "u+" || it->substr(0, 2) == "0x") // Allow unicode file names (e.g. U+1234)
-                file.file += (file.file.empty() ? "" : ".") + hexToInt(it->substr(2));
-
-            else
-                file.file += (file.file.empty() ? "" : ".") + *it;
-        }
-
-        if(file.bobtype != BOBTYPE_NONE || !file.type.empty())
-            files.push_back(file);
+        if(entry.nr >= 0 && static_cast<unsigned>(entry.nr) > ct)
+            ct = static_cast<unsigned>(entry.nr);
+        cout << "[" << ct << "]: " << entry.filePath << endl;
     }
 
-    cerr << "done" << endl;
+    cout << "Loading files " << std::flush;
+    if(int ec = LoadFolder(files, lst, palette))
+        cout << "Error: " << getErrorString(ec) << endl;
+    else
+        cout << "done" << endl;
 
-    cerr << "Sorting directory (this can take some time!): ";
-    sort(files.begin(), files.end(), stringCompare);
-    cerr << "done" << endl;
-
-    libsiedler2::PixelBufferARGB buffer(1000, 1000);
-    for(vector<fileentry>::const_iterator it = files.begin(); it != files.end(); ++it)
-    {
-        string whole_path = it->path;
-
-        // read file number, to set the index correctly
-        std::stringstream nrs;
-        int nr = -1;
-        nrs << it->file;
-        if(!(nrs >> nr))
-            nr = -1;
-
-        cout << "Reading file " << whole_path;
-        if(nr >= 0)
-            cout << " to " << nr;
-        std::cout << ": ";
-
-        Archiv items;
-        if(it->type == "font" || it->type == "fontX")
-        {
-            ArchivItem_Font font;
-            font.isUnicode = (it->type == "fontX");
-            font.setDx(it->nx & 0xFF);
-            font.setDy(it->ny & 0xFF);
-            pack(whole_path, "", palette, &font);
-
-            // had the filename a number? then set it to the corresponding item.
-            if(nr >= 0)
-            {
-                if((unsigned)nr >= lst->size())
-                    lst->alloc_inc(nr - lst->size() + 1);
-                lst->setC(nr, font);
-            } else
-                lst->pushC(font);
-        } else if(it->type == "empty" || Load(whole_path, items, palette) != 0)
-        {
-            lst->alloc_inc(1); // add empty item
-            if(it->type == "empty")
-                cout << "ignored" << endl;
-            else
-                cout << "failed" << endl;
-        } else
-        {
-            cout << "done" << endl;
-            // todo: andere typen als pal und bmp haben evtl mehr items!
-
-            ArchivItem* newItem;
-            if(it->type == "bitmap")
-            {
-                ArchivItem_BitmapBase* bmp;
-
-                if(it->bobtype == items[0]->getBobType())
-                {
-                    // No conversion->Just take it
-                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(items.release(0));
-                } else
-                {
-                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(items[0]);
-                    ArchivItem_BitmapBase* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(it->bobtype));
-                    std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
-                    if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, palette);
-                    else
-                        dynamic_cast<ArchivItem_Bitmap*>(bmp)->print(buffer, palette);
-
-                    switch(it->bobtype)
-                    {
-                        case BOBTYPE_BITMAP_RLE:
-                        case BOBTYPE_BITMAP_SHADOW:
-                        case BOBTYPE_BITMAP_RAW:
-                        {
-                            dynamic_cast<ArchivItem_Bitmap*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
-                        }
-                        break;
-                        case BOBTYPE_BITMAP_PLAYER:
-                        {
-                            dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp)
-                              ->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
-                        }
-                        break;
-                        default: cerr << "Unknown type for " << it->path << endl;
-                    }
-                    bmp = convertedBmp;
-                }
-                bmp->setName(whole_path);
-                bmp->setNx(it->nx);
-                bmp->setNy(it->ny);
-
-                newItem = bmp;
-            } else
-                newItem = items.release(0);
-
-            // had the filename a number? then set it to the corresponding item.
-            if(nr >= 0)
-            {
-                if((unsigned)nr >= lst->size())
-                    lst->alloc_inc(nr - lst->size() + 1);
-                lst->set(nr, newItem);
-            } else
-                lst->push(newItem);
-        }
-    }
-
-    if(lst == &tlst) // only write to lstfile if the caller does not want the ArchivInfo back
-    {
-        cout << "Writing data to " << file << ": ";
-        if(Write(file, *lst, palette) != 0)
-            cout << "failed" << endl;
-        else
-            cout << "done" << endl;
-    }
+    cout << "Writing data to " << file << ": ";
+    if(int ec = Write(file, lst, palette))
+        cout << "failed: " << getErrorString(ec) << endl;
+    else
+        cout << "done" << endl;
 }

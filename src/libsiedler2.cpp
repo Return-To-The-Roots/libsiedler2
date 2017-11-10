@@ -18,12 +18,23 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "libsiedler2.h"
 #include "Archiv.h"
+#include "ArchivItem_Bitmap.h"
+#include "ArchivItem_BitmapBase.h"
+#include "ArchivItem_Bitmap_Player.h"
+#include "ArchivItem_Font.h"
 #include "ErrorCodes.h"
+#include "PixelBufferARGB.h"
 #include "StandardAllocator.h"
 #include "prototypen.h"
+#include "libutil/StringConversion.h"
+#include "libutil/Tokenizer.h"
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 /** @mainpage libsiedler2
@@ -140,7 +151,7 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
     if(!filePath.has_extension())
         return ErrorCode::UNSUPPORTED_FORMAT;
     std::string extension = filePath.extension().string().substr(1);
-    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+    boost::algorithm::to_lower(extension);
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
@@ -184,6 +195,95 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
     return ret;
 }
 
+int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette)
+{
+    std::sort(folderInfos.begin(), folderInfos.end());
+    libsiedler2::PixelBufferARGB buffer(1000, 1000);
+    BOOST_FOREACH(const FileEntry& entry, folderInfos)
+    {
+        // Ignore
+        if(entry.bobtype == BOBTYPE_UNSET)
+            continue;
+        ArchivItem* newItem = NULL;
+        if(entry.bobtype == BOBTYPE_FONT)
+        {
+            boost::interprocess::unique_ptr<ArchivItem_Font, Deleter<ArchivItem_Font> > font(new ArchivItem_Font);
+            font->isUnicode = boost::algorithm::to_lower_copy(bfs::path(entry.filePath).extension().string()) == ".fonx";
+            font->setDx(static_cast<uint8_t>(entry.nx));
+            font->setDy(static_cast<uint8_t>(entry.ny));
+            int ec;
+            if(bfs::is_directory(entry.filePath))
+                ec = LoadFolder(ReadFolderInfo(entry.filePath), *font, palette);
+            else
+                ec = Load(entry.filePath, *font, palette);
+            if(ec)
+                return ec;
+
+            newItem = font.release();
+        } else if(entry.bobtype != BOBTYPE_NONE)
+        {
+            Archiv tmpItems;
+            if(int ec = Load(entry.filePath, tmpItems, palette))
+                return ec;
+            if(tmpItems.size() != 1)
+                return ErrorCode::UNSUPPORTED_FORMAT;
+
+            if(entry.bobtype == BOBTYPE_BITMAP_PLAYER || entry.bobtype == BOBTYPE_BITMAP_RAW || entry.bobtype == BOBTYPE_BITMAP_RLE
+               || entry.bobtype == BOBTYPE_BITMAP_SHADOW)
+            {
+                ArchivItem_BitmapBase* bmp;
+
+                if(entry.bobtype == tmpItems[0]->getBobType())
+                {
+                    // No conversion->Just take it
+                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(tmpItems.release(0));
+                } else
+                {
+                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(tmpItems[0]);
+                    if(!bmp)
+                        return ErrorCode::UNSUPPORTED_FORMAT;
+                    ArchivItem_BitmapBase* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(entry.bobtype));
+                    std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
+                    if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, palette);
+                    else
+                        dynamic_cast<baseArchivItem_Bitmap*>(bmp)->print(buffer, palette);
+
+                    switch(entry.bobtype)
+                    {
+                        case BOBTYPE_BITMAP_RLE:
+                        case BOBTYPE_BITMAP_SHADOW:
+                        case BOBTYPE_BITMAP_RAW:
+                            dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
+                            break;
+                        case BOBTYPE_BITMAP_PLAYER:
+                            dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp)
+                              ->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
+                            break;
+                        default: return ErrorCode::UNSUPPORTED_FORMAT;
+                    }
+                    bmp = convertedBmp;
+                }
+                bmp->setName(entry.name);
+                bmp->setNx(entry.nx);
+                bmp->setNy(entry.ny);
+
+                newItem = bmp;
+            } else // todo: andere typen als pal und bmp haben evtl mehr items!
+                newItem = tmpItems.release(0);
+        }
+        // had the filename a number? then set it to the corresponding item.
+        if(entry.nr >= 0)
+        {
+            if(static_cast<unsigned>(entry.nr) >= items.size())
+                items.alloc_inc(entry.nr - items.size() + 1);
+            items.set(entry.nr, newItem);
+        } else
+            items.push(newItem);
+    }
+    return ErrorCode::NONE;
+}
+
 /**
  *  Schreibt die Datei im Format ihrer Endung.
  *
@@ -202,7 +302,7 @@ int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette
     if(!filePath.has_extension())
         return ErrorCode::UNSUPPORTED_FORMAT;
     std::string extension = filePath.extension().string().substr(1);
-    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+    boost::algorithm::to_lower(extension);
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
@@ -237,6 +337,76 @@ int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette
     }
 
     return ret;
+}
+
+unsigned hexToInt(const std::string& hexStr)
+{
+    s25util::ClassicImbuedStream<std::istringstream> sIn(hexStr);
+    unsigned tmp;
+    sIn >> std::hex >> tmp;
+    if(!sIn || !sIn.eof())
+        throw std::runtime_error("Invalid hex number 0x" + hexStr);
+    return tmp;
+}
+
+std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
+{
+    std::vector<FileEntry> entries;
+    for(bfs::directory_iterator it = bfs::directory_iterator(folderPath); it != bfs::directory_iterator(); ++it)
+    {
+        if(!bfs::is_regular_file(it->status()) && !bfs::is_directory(it->status()))
+            continue;
+
+        bfs::path curPath = it->path();
+        curPath.make_preferred();
+
+        FileEntry file(curPath.string());
+
+        std::string fileName = curPath.filename().string();
+        boost::algorithm::to_lower(fileName);
+        std::vector<std::string> wf = Tokenizer(fileName, ".").explode();
+
+        if(wf.back() == "fon" || wf.back() == "fonx")
+            file.bobtype = BOBTYPE_FONT;
+        else if(wf.back() == "bmp")
+            file.bobtype = BOBTYPE_BITMAP_RAW;
+        else if(wf.back() == "bbm" || wf.back() == "act")
+            file.bobtype = BOBTYPE_PALETTE;
+        else if(wf.back() == "txt" || wf.back() == "ger" || wf.back() == "eng")
+            file.bobtype = BOBTYPE_TEXT;
+        else if(wf.back() == "empty")
+            file.bobtype = BOBTYPE_NONE;
+        if(file.bobtype != BOBTYPE_UNSET)
+            wf.pop_back();
+
+        std::string sNr = wf.empty() ? "" : wf.front();
+        if(sNr.substr(0, 2) == "u+" || sNr.substr(0, 2) == "0x") // Allow unicode file names (e.g. U+1234)
+        {
+            file.nr = hexToInt(sNr.substr(2));
+            wf.erase(wf.begin());
+        } else if(s25util::tryFromStringClassic(sNr, file.nr))
+            wf.erase(wf.begin());
+
+        BOOST_FOREACH(const std::string& part, wf)
+        {
+            if(part == "rle")
+                file.bobtype = BOBTYPE_BITMAP_RLE;
+            else if(part == "player")
+                file.bobtype = BOBTYPE_BITMAP_PLAYER;
+            else if(part == "shadow")
+                file.bobtype = BOBTYPE_BITMAP_SHADOW;
+
+            else if(part.substr(0, 2) == "nx" || part.substr(0, 2) == "dx")
+                file.nx = s25util::fromStringClassic<unsigned>(part.substr(2));
+            else if(part.substr(0, 2) == "ny" || part.substr(0, 2) == "dy")
+                file.ny = s25util::fromStringClassic<unsigned>(part.substr(2));
+            else
+                file.name += (file.name.empty() ? "" : ".") + part;
+        }
+
+        entries.push_back(file);
+    }
+    return entries;
 }
 
 } // namespace libsiedler2

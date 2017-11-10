@@ -101,10 +101,7 @@ if(MSVC AND CMAKE_VERSION VERSION_LESS 3.8)
     INCLUDE(CreateLaunchers)
 endif()
 
-set(NOWIDE_BUILD_STATIC ON CACHE BOOL "" FORCE)
-set(NOWIDE_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-set(NOWIDE_USE_BOOST_FILESYSTEM ON CACHE BOOL "" FORCE)
-add_subdirectory(${RTTR_LIBUTIL_DIR}/nowide/src nowide)
+add_subdirectory(${RTTR_LIBUTIL_DIR} libutil)
 add_subdirectory(${RTTR_LIBENDIAN_DIR} libEndian)
 add_subdirectory(${RTTR_LIBSIEDLER2_DIR} libSiedler2)
 
