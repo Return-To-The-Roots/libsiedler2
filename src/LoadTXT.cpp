@@ -77,7 +77,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
             return ErrorCode::WRONG_HEADER;
 
         if(size == 0)
-            size = static_cast<uint32_t>(fileSize) - headerSize;
+            size = static_cast<uint32_t>(fileSize - headerSize);
         if(size < count * sizeof(uint32_t))
             return ErrorCode::WRONG_FORMAT;
 

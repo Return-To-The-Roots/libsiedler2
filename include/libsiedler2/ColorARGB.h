@@ -64,6 +64,7 @@ struct ColorARGB
     uint8_t getBlue() const;
     void setBlue(uint8_t val);
 };
+//-V:ColorARGB:801
 
 inline bool operator==(const ColorARGB& lhs, const ColorARGB& rhs)
 {
@@ -71,7 +72,7 @@ inline bool operator==(const ColorARGB& lhs, const ColorARGB& rhs)
 }
 inline bool operator!=(const ColorARGB& lhs, const ColorARGB& rhs)
 {
-    return !(rhs == rhs);
+    return !(lhs == rhs);
 }
 
 inline ColorARGB::ColorARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b)

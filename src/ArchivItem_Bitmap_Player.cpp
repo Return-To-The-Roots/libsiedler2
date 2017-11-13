@@ -344,7 +344,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t heigh
             // und Pixel setzen
             if(buffer_format == FORMAT_BGRA)
             {
-                ColorARGB clr = ColorARGB::fromBGRA(&buffer[posBuffer]);
+                ColorARGB clr = ColorARGB::fromBGRA(&buffer[posBuffer]); //-V522
                 if(clr.getAlpha() != 0)
                 {
                     uint8_t c = palette->lookup(clr);

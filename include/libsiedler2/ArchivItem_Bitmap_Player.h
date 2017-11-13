@@ -33,7 +33,7 @@ class ArchivItem_Palette;
 
 namespace libsiedler2 {
 /// Basisklasse für Player-Bitmaps.
-class ArchivItem_Bitmap_Player : public virtual ArchivItem_BitmapBase
+class ArchivItem_Bitmap_Player : public virtual ArchivItem_BitmapBase //-V690
 {
 public:
     BOOST_STATIC_CONSTEXPR uint8_t numPlayerClrs = 4;

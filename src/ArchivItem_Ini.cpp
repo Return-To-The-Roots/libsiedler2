@@ -108,7 +108,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
     for(size_t i = 0; i < size(); ++i)
     {
         const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(get(i));
-        file << item->getName() << "=" << item->getText() << "\r\n";
+        file << item->getName() << "=" << item->getText() << "\r\n"; //-V522
     }
 
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
@@ -123,7 +123,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
 void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
     ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
-    item->setText(value);
+    item->setText(value); //-V522
     item->setName(name);
 
     push(item);

@@ -78,7 +78,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
                 if(buffer_format == FORMAT_PALETTED)
                     buffer[posBuf] = *pxlPtr;
                 else
-                    ColorARGB(palette->get(*pxlPtr)).toBGRA(&buffer[posBuf]);
+                    ColorARGB(palette->get(*pxlPtr)).toBGRA(&buffer[posBuf]); //-V522
             } else
             {
                 if(pxlPtr[3] == 0) // bei Transparenz wird buffer nicht verändert
@@ -130,7 +130,7 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
     {
         size_t posFrom = y * buffer_width * bpp;
         size_t posTexFrom = y * getWidth() * bpp;
-        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getPixelData().begin() + posTexFrom);
+        std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getPixelData().begin() + posTexFrom); //-V522
     }
 
     // Alles ok

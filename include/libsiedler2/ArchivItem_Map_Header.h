@@ -20,6 +20,7 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include <boost/array.hpp>
 #include <iosfwd>
 #include <stdint.h>
 #include <string>
@@ -64,10 +65,11 @@ private:
     uint8_t gfxset;
     uint8_t numPlayers;
     std::string author_;
-    uint16_t playerHQx[7], playerHQy[7];
+    boost::array<uint16_t, 7> playerHQx, playerHQy; //-V730_NOINIT
     uint8_t isInvalid;
-    uint8_t playerFaces[7];
-    uint8_t areaInfos[250 * 9]; // 250 entries with: uint8 Type(0:Unused, 1:water, 2:land), uint16 x,y, uint32 size
+    boost::array<uint8_t, 7> playerFaces; //-V730_NOINIT
+    /// 250 entries with: uint8 Type(0:Unused, 1:water, 2:land), uint16 x,y, uint32 size
+    boost::array<uint8_t, 250 * 9> areaInfos; //-V730_NOINIT
     bool hasExtraWord_;
 };
 } // namespace libsiedler2

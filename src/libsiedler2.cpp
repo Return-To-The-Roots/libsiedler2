@@ -245,7 +245,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     ArchivItem_BitmapBase* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(entry.bobtype));
                     std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
                     if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, palette);
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, palette); //-V522
                     else
                         dynamic_cast<baseArchivItem_Bitmap*>(bmp)->print(buffer, palette);
 
@@ -254,12 +254,19 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                         case BOBTYPE_BITMAP_RLE:
                         case BOBTYPE_BITMAP_SHADOW:
                         case BOBTYPE_BITMAP_RAW:
-                            dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp)->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
+                        {
+                            baseArchivItem_Bitmap* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp);
+                            assert(bmpBase);
+                            bmpBase->create(bmp->getWidth(), bmp->getHeight(), buffer, palette); //-V522
                             break;
+                        }
                         case BOBTYPE_BITMAP_PLAYER:
-                            dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp)
-                              ->create(bmp->getWidth(), bmp->getHeight(), buffer, palette);
-                            break;
+                        {
+                            ArchivItem_Bitmap_Player* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp);
+                            assert(bmpPl);
+                            bmpPl->create(bmp->getWidth(), bmp->getHeight(), buffer, palette); //-V522
+                        }
+                        break;
                         default: return ErrorCode::UNSUPPORTED_FORMAT;
                     }
                     bmp = convertedBmp;

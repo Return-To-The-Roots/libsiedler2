@@ -18,6 +18,7 @@
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "MIDI_Track.h"
 #include "ErrorCodes.h"
+#include <cassert>
 #include <iostream>
 #include <limits>
 

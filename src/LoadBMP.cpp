@@ -120,7 +120,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
 
         pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
         for(int i = 0; i < bmih.clrused; ++i)
-            pal->set(i, ColorARGB::fromBGRA(&colors[i][0]));
+            pal->set(i, ColorARGB::fromBGRA(&colors[i][0])); //-V522
     }
 
     uint8_t bbp = (bmih.bpp / 8);

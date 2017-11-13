@@ -19,6 +19,7 @@
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
 #include "oem.h"
+#include <cassert>
 #include <iostream>
 #include <limits>
 #include <vector>

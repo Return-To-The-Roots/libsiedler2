@@ -54,7 +54,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
 
     // Plain-Text ?
     if(items.size() == 1)
-        return dynamic_cast<const ArchivItem_Text*>(items[0])->write(fs.getStream(), conversion);
+        return static_cast<const ArchivItem_Text*>(items[0])->write(fs.getStream(), conversion);
     else
     {
         // "archiviert"
@@ -69,7 +69,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
         uint32_t size = count * sizeof(uint32_t);
         for(uint32_t i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items[i]);
+            const ArchivItem_Text* item = static_cast<const ArchivItem_Text*>(items[i]);
 
             if(item && !item->getText().empty())
             {
@@ -83,7 +83,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
         // Texte schreiben
         for(uint32_t i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(items[i]);
+            const ArchivItem_Text* item = static_cast<const ArchivItem_Text*>(items[i]);
 
             if(item)
             {

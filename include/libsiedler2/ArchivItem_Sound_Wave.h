@@ -49,7 +49,7 @@ public:
     uint32_t getLength() { return static_cast<uint32_t>(data.size()); }
 
 protected:
-    WAV_Header header;
+    WAV_Header header; //-V730_NOINIT
     std::vector<uint8_t> data;
 };
 

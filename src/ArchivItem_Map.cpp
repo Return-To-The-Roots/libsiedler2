@@ -55,8 +55,9 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     clear();
 
     ArchivItem_Map_Header* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
+    assert(header);
 
-    int ec = header->load(file);
+    int ec = header->load(file); //-V522
     if(ec)
     {
         delete header;
@@ -103,7 +104,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         }
 
         ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
-        ec = layer->load(file, bHeader.blockLength);
+        ec = layer->load(file, bHeader.blockLength); //-V522
         if(ec)
         {
             delete layer;

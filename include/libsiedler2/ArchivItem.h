@@ -29,7 +29,7 @@ namespace libsiedler2 {
 /// Implements the cloneable concept:
 /// A copy of this object can be created by calling obj->clone();
 /// Note: All subclasses "TFoo" must use "RTTR_CLONEABLE(TFoo)" in the public declaration
-class ArchivItem : public ICloneable<ArchivItem>
+class ArchivItem : public ICloneable<ArchivItem> //-V690
 {
 public:
     ArchivItem(BobType bobtype = BOBTYPE_NONE);

@@ -57,7 +57,7 @@ int libsiedler2::loader::LoadBOB(const std::string& file, Archiv& items, const A
 
     boost::filesystem::path filePath(file);
     if(filePath.has_filename())
-        item->setName(filePath.filename().string());
+        item->setName(filePath.filename().string()); //-V522
 
     if(int ec = item->load(bob.getStream(), palette))
     {

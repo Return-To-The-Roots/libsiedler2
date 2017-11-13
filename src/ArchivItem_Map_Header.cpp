@@ -24,6 +24,7 @@
 #include "libendian/EndianOStreamAdapter.h"
 #include <boost/array.hpp>
 #include <iostream>
+#include <stdexcept>
 
 /** @class libsiedler2::ArchivItem_Map_Header
  *
@@ -76,11 +77,11 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     OemToAnsi(author.data(), author.data());
     this->author_ = author.data();
 
-    fs >> playerHQx >> playerHQy;
+    fs >> playerHQx.elems >> playerHQy.elems;
 
     fs >> isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
-    fs >> playerFaces >> areaInfos;
+    fs >> playerFaces.elems >> areaInfos.elems;
 
     uint16_t headerSig;
     fs >> headerSig;
@@ -158,11 +159,11 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     tmpName = author_.substr(0, 19);
     AnsiToOem(tmpName.c_str(), author);
     std::fill(author + tmpName.length(), author + sizeof(author), '\0');
-    fs << author << playerHQx << playerHQy;
+    fs << author << playerHQx.elems << playerHQy.elems;
 
     fs << isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
-    fs << playerFaces << areaInfos;
+    fs << playerFaces.elems << areaInfos.elems;
 
     // Header sig
     fs << uint16_t(0x2711) << uint32_t(0);
@@ -275,6 +276,8 @@ void libsiedler2::ArchivItem_Map_Header::setAuthor(const std::string& author)
  */
 void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const uint32_t player, const uint16_t x, const uint16_t y)
 {
+    if(player >= playerHQx.size())
+        throw std::range_error("Only 7 players allowed!");
     playerHQx[player] = x;
     playerHQy[player] = y;
 }
@@ -288,6 +291,8 @@ void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const uint32_t player, cons
  */
 void libsiedler2::ArchivItem_Map_Header::getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y)
 {
+    if(player >= playerHQx.size())
+        throw std::range_error("Only 7 players allowed!");
     x = playerHQx[player];
     y = playerHQy[player];
 }

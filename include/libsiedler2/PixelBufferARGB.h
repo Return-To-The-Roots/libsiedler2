@@ -23,6 +23,7 @@
 #include "ColorARGB.h"
 #include "GetFormat.h"
 #include "PixelBuffer.h"
+#include "enumTypes.h"
 
 namespace libsiedler2 {
 

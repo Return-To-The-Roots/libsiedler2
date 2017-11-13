@@ -43,7 +43,6 @@ public:
     const std::vector<T_Pixel>& getPixels() const { return pixels_; }
     void clear();
 
-protected:
     uint32_t calcIdx(uint32_t x, uint32_t y) const
     {
         assert(x < width_ && y < height_);

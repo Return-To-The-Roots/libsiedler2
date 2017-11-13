@@ -172,7 +172,7 @@ int ArchivItem_Sound_XMidi::write(std::ostream& file) const
         uint32_t trackLength = 4 + sizeof(uint32_t) + 4; // XMID EVNT len
         const XMIDI_Track& track = tracklist[i];
         trackLength += static_cast<uint32_t>(track.getData().size());
-        if(!track.getTimbres().empty())
+        if(!track.getTimbres().empty()) //-V807
             trackLength += 4 + sizeof(uint32_t) + sizeof(uint16_t) + static_cast<uint32_t>(track.getTimbres().size()) * 2;
         trackLengths[i] = trackLength;
         len += 4 + sizeof(uint32_t) + trackLength; // FORM len

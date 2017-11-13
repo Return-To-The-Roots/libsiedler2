@@ -105,11 +105,19 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        if(int ec =
-             dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
+        const ArchivItem_Bitmap_Player* bmpPl = dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap);
+        if(!bmpPl)
+            return ErrorCode::UNSUPPORTED_FORMAT;
+        if(int ec = bmpPl->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
             return ec;
-    } else if(int ec = dynamic_cast<const baseArchivItem_Bitmap*>(bitmap)->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
-        return ec;
+    } else
+    {
+        const baseArchivItem_Bitmap* bmpBase = dynamic_cast<const baseArchivItem_Bitmap*>(bitmap);
+        if(!bmpBase)
+            return ErrorCode::UNSUPPORTED_FORMAT;
+        if(int ec = bmpBase->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))
+            return ec;
+    }
 
     std::vector<uint8_t> lineAlignBytes(numLineAlignBytes);
 

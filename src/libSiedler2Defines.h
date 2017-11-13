@@ -19,25 +19,11 @@
 
 #pragma once
 
-#ifdef HAVE_CONFIG_H
-#include "../config.h"
-#endif // HAVE_CONFIG_H
-
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#ifdef _MSC_VER
-#include <crtdbg.h>
-#ifndef assert
-#define assert _ASSERT
-#endif
-#else
-#include <assert.h>
-#endif
 #ifdef _DEBUG
 #include <crtdbg.h>
-#endif // _WIN32 && _DEBUG
-#else
-#include <cassert>
+#endif // _DEBUG
 #endif // !_WIN32
 
 #include <cstddef>

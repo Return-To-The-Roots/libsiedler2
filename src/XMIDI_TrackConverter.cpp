@@ -264,9 +264,9 @@ void XMIDI_TrackConverter::ConvertEvent(int time, uint8_t status, int size, firs
         bank127[statValue] = false;
     // Disable patch changes on Track 10 is doing a conversion
     else if(curStatus == MIDI_STATUS_PROG_CHANGE && statValue == 9)
-        return
+        return;
 
-          CreateNewEvent(time);
+    CreateNewEvent(time);
     curEvent->status = status;
     curEvent->data[0] = data;
     LogStatus(" type ") << unsigned(statValue) << ", " << unsigned(data);

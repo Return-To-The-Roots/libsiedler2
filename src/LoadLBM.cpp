@@ -56,8 +56,10 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
       dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
 
     uint16_t width = 0, height = 0;
-    uint16_t compression;
+    uint16_t compression = 0;
     char chunk[4];
+    bool headerRead = false;
+    bool bodyRead = false;
     // Chunks einlesen
     while(lbm.read(chunk, 4))
     {
@@ -70,6 +72,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
 
         if(isChunk(chunk, "BMHD"))
         {
+            if(headerRead || bodyRead)
+                return ErrorCode::WRONG_FORMAT;
             uint32_t unknown;
             uint8_t numPlanes, mask;
 
@@ -87,8 +91,11 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
 
             // Rest überspringen
             lbm.ignore(chunkLen);
+            headerRead = true;
         } else if(isChunk(chunk, "CMAP"))
         {
+            if(bodyRead)
+                return ErrorCode::WRONG_FORMAT;
             // Ist Länge wirklich so groß wie Farbtabelle?
             if(chunkLen != 256 * 3)
                 return ErrorCode::WRONG_FORMAT;
@@ -100,6 +107,9 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
                 return ec;
         } else if(isChunk(chunk, "BODY"))
         {
+            if(!headerRead || bodyRead)
+                return ErrorCode::WRONG_FORMAT;
+            bodyRead = true;
             // haben wir eine Palette erhalten?
             if(bitmap->getPalette() == NULL)
                 return ErrorCode::PALETTE_MISSING;
