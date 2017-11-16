@@ -106,7 +106,7 @@ int ArchivItem_Sound_Midi::write(std::ostream& file) const
 
 void ArchivItem_Sound_Midi::addTrack(const MIDI_Track& track)
 {
-    if(getTrackCount() >= tracklist.size())
+    if(getNumTracks() >= tracklist.size())
         throw std::runtime_error("No more space for tracks");
     tracklist[numTracks++] = track;
 }

@@ -217,7 +217,7 @@ const MIDI_Track* ArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
 
 void ArchivItem_Sound_XMidi::addTrack(const XMIDI_Track& track)
 {
-    if(getTrackCount() >= tracklist.size())
+    if(getNumTracks() >= tracklist.size())
         throw std::runtime_error("No more space for tracks");
     tracklist[numTracks++] = track;
 }

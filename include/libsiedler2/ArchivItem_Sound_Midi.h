@@ -41,7 +41,7 @@ public:
             return &tracklist[track];
         return NULL;
     }
-    uint16_t getTrackCount() const { return numTracks; }
+    uint16_t getNumTracks() const { return numTracks; }
     void addTrack(const MIDI_Track& track);
 
 protected:

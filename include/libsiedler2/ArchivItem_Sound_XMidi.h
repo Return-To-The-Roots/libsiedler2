@@ -49,7 +49,7 @@ public:
         return NULL;
     }
     const MIDI_Track* getMidiTrack(uint16_t trackIdx);
-    uint16_t getTrackCount() const { return numTracks; }
+    uint16_t getNumTracks() const { return numTracks; }
 
     void addTrack(const XMIDI_Track& track);
 
