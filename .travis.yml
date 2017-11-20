@@ -32,6 +32,7 @@ addons:
             - llvm-3.9
             - cmake
             - cmake-data
+            - libminiupnpc-dev
 
 cache:
   directories:
