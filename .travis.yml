@@ -61,7 +61,11 @@ matrix:
     include:
         - os: osx
           compiler: clang
-          install: *installDeps
+          install:
+              - *installDeps
+              - brew update
+              - brew install miniupnpc
+
           #                                                             Travis libs are x64 only
           env: BUILD_TYPE=Debug CXX_FLAGS=-std=c++03 ADDITIONAL_CMAKE_FLAGS="--no-arch=i386" GCOV="gcov"
     exclude:

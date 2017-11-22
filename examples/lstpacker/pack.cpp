@@ -17,7 +17,7 @@
 
 #include "pack.h"
 #include "util.h"
-#include "libSiedler2/FileEntry.h"
+#include "libsiedler2/FileEntry.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Bitmap.h"
 #include "libsiedler2/ArchivItem_BitmapBase.h"

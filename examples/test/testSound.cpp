@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     libsiedler2::ArchivItem_Sound* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[0]);
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getTrackCount(), 1u);
+    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
     BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0)->getMidLength(), 39003u);
     BOOST_REQUIRE(!archivLst[1]);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[51]);
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivSNG[0]);
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getTrackCount(), 1u);
+    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
     BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0)->getMidLength(), 6830u);
 }
 
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteXMid)
     libsiedler2::ArchivItem_Sound_XMidi* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
-    for(unsigned i = 0; i < snd->getTrackCount(); i++)
+    for(unsigned i = 0; i < snd->getNumTracks(); i++)
         BOOST_REQUIRE(snd->getMidiTrack(i));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
     BOOST_REQUIRE(testFilesEqual(outPath, inPath));
@@ -167,8 +167,8 @@ BOOST_AUTO_TEST_CASE(Clone)
     BOOST_REQUIRE_EQUAL(snd7->getType(), snd3.getType());
     BOOST_REQUIRE_EQUAL(snd8->getType(), snd4.getType());
 
-    BOOST_REQUIRE_EQUAL(snd5->getTrackCount(), 1u);
-    BOOST_REQUIRE_EQUAL(snd6->getTrackCount(), 1u);
+    BOOST_REQUIRE_EQUAL(snd5->getNumTracks(), 1u);
+    BOOST_REQUIRE_EQUAL(snd6->getNumTracks(), 1u);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(snd7->getData().begin(), snd7->getData().end(), snd3.getData().begin(), snd3.getData().end());
     BOOST_REQUIRE_EQUAL_COLLECTIONS(snd8->getData().begin(), snd8->getData().end(), snd4.getData().begin(), snd4.getData().end());
 }
