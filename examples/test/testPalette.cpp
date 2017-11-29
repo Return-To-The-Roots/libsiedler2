@@ -20,6 +20,7 @@
 #include "config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Palette.h"
+#include "libsiedler2/ArchivItem_PaletteAnimation.h"
 #include "libsiedler2/ColorARGB.h"
 #include "libsiedler2/ColorRGB.h"
 #include "libsiedler2/libsiedler2.h"
@@ -110,6 +111,55 @@ BOOST_AUTO_TEST_CASE(GetColor)
     pal.copy(&clrBuf[0], clrBuf.size(), true);
     // BGRA buffer:
     BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[libsiedler2::TRANSPARENT_INDEX * 4]), libsiedler2::TRANSPARENT_COLOR);
+}
+
+BOOST_AUTO_TEST_CASE(ReadWritePalAnim)
+{
+    std::string outPath = testOutputPath + "/paletteAnims.txt";
+
+    libsiedler2::Archiv archiv;
+    libsiedler2::ArchivItem_PaletteAnimation anim;
+    anim.isActive = true;
+    anim.moveUp = true;
+    anim.rate = 1337;
+    anim.firstClr = 2;
+    anim.lastClr = 5;
+    archiv.pushC(anim);
+    archiv.push(NULL);
+    anim.isActive = false;
+    anim.rate = 42;
+    anim.firstClr = 3;
+    anim.lastClr = 6;
+    archiv.pushC(anim);
+    anim.moveUp = false;
+    archiv.pushC(anim);
+
+    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
+    libsiedler2::Archiv archiv2;
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(outPath, archiv2), 0);
+    BOOST_REQUIRE_EQUAL(archiv.size(), archiv2.size());
+    BOOST_REQUIRE(!archiv2[1]);
+    const libsiedler2::ArchivItem_PaletteAnimation* anim2 = dynamic_cast<libsiedler2::ArchivItem_PaletteAnimation*>(archiv2[0]);
+    BOOST_REQUIRE(anim2);
+    BOOST_REQUIRE_EQUAL(anim2->isActive, true);
+    BOOST_REQUIRE_EQUAL(anim2->moveUp, true);
+    BOOST_REQUIRE_EQUAL(anim2->rate, 1337);
+    BOOST_REQUIRE_EQUAL(anim2->firstClr, 2);
+    BOOST_REQUIRE_EQUAL(anim2->lastClr, 5);
+    anim2 = dynamic_cast<libsiedler2::ArchivItem_PaletteAnimation*>(archiv2[2]);
+    BOOST_REQUIRE(anim2);
+    BOOST_REQUIRE_EQUAL(anim2->isActive, false);
+    BOOST_REQUIRE_EQUAL(anim2->moveUp, true);
+    BOOST_REQUIRE_EQUAL(anim2->rate, 42);
+    BOOST_REQUIRE_EQUAL(anim2->firstClr, 3);
+    BOOST_REQUIRE_EQUAL(anim2->lastClr, 6);
+    anim2 = dynamic_cast<libsiedler2::ArchivItem_PaletteAnimation*>(archiv2[3]);
+    BOOST_REQUIRE(anim2);
+    BOOST_REQUIRE_EQUAL(anim2->isActive, false);
+    BOOST_REQUIRE_EQUAL(anim2->moveUp, false);
+    BOOST_REQUIRE_EQUAL(anim2->rate, 42);
+    BOOST_REQUIRE_EQUAL(anim2->firstClr, 3);
+    BOOST_REQUIRE_EQUAL(anim2->lastClr, 6);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

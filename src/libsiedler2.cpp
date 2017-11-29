@@ -183,6 +183,8 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
             ret = loader::LoadINI(file, items);
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
             ret = loader::LoadSND(file, items);
+        else if(extension == "txt")
+            ret = loader::LoadPaletteAnim(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
@@ -225,12 +227,12 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             Archiv tmpItems;
             if(int ec = Load(entry.filePath, tmpItems, palette))
                 return ec;
-            if(tmpItems.size() != 1)
-                return ErrorCode::UNSUPPORTED_FORMAT;
-
             if(entry.bobtype == BOBTYPE_BITMAP_PLAYER || entry.bobtype == BOBTYPE_BITMAP_RAW || entry.bobtype == BOBTYPE_BITMAP_RLE
                || entry.bobtype == BOBTYPE_BITMAP_SHADOW)
             {
+                if(tmpItems.size() != 1)
+                    return ErrorCode::UNSUPPORTED_FORMAT;
+
                 ArchivItem_BitmapBase* bmp;
 
                 if(entry.bobtype == tmpItems[0]->getBobType())
@@ -276,8 +278,27 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 bmp->setNy(entry.ny);
 
                 newItem = bmp;
-            } else // todo: andere typen als pal und bmp haben evtl mehr items!
+            } else if(entry.bobtype == BOBTYPE_PALETTE_ANIM)
+            {
+                for(unsigned i = 0; i < tmpItems.size(); i++)
+                {
+                    if(!tmpItems[i])
+                        continue;
+                    if(items[i])
+                        return ErrorCode::UNSUPPORTED_FORMAT;
+                    if(i >= items.size())
+                        items.alloc_inc(i - items.size() + 1);
+                    items.set(i, tmpItems.release(i));
+                }
+                continue;
+            } else
+            {
+                // todo: andere typen als pal und bmp haben evtl mehr items!
+                if(tmpItems.size() != 1)
+                    return ErrorCode::UNSUPPORTED_FORMAT;
+
                 newItem = tmpItems.release(0);
+            }
         }
         // had the filename a number? then set it to the corresponding item.
         if(entry.nr >= 0)
@@ -334,6 +355,8 @@ int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette
             ret = loader::WriteSND(file, items);
         else if(extension == "lbm")
             ret = loader::WriteLBM(file, items, palette);
+        else if(extension == "txt")
+            ret = loader::WritePaletteAnim(file, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
@@ -402,6 +425,8 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
                 file.bobtype = BOBTYPE_BITMAP_PLAYER;
             else if(part == "shadow")
                 file.bobtype = BOBTYPE_BITMAP_SHADOW;
+            else if(part == "paletteanims")
+                file.bobtype = BOBTYPE_PALETTE_ANIM;
 
             else if(part.substr(0, 2) == "nx" || part.substr(0, 2) == "dx")
                 file.nx = s25util::fromStringClassic<unsigned>(part.substr(2));

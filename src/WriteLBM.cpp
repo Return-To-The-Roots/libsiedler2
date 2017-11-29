@@ -19,6 +19,7 @@
 #include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
+#include "ArchivItem_PaletteAnimation.h"
 #include "ErrorCodes.h"
 #include "PixelBufferPaletted.h"
 #include "prototypen.h"
@@ -31,7 +32,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
         return ErrorCode::INVALID_BUFFER;
 
     const baseArchivItem_Bitmap* bmp = dynamic_cast<const baseArchivItem_Bitmap*>(items[0]);
-    if(items.size() != 1u || !bmp)
+    if(!bmp)
         return ErrorCode::WRONG_ARCHIV;
     if(bmp->getPalette())
         palette = bmp->getPalette();
@@ -63,6 +64,16 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
     fs << uint32_t(256 * 3); // len = numColors * RGB
     if(int ec = palette->write(fs.getStream(), false))
         return ec;
+
+    for(unsigned i = 1; i < items.size(); i++)
+    {
+        if(!items[i] || items[i]->getBobType() != BOBTYPE_PALETTE_ANIM)
+            return ErrorCode::WRONG_ARCHIV;
+        fs.write("CRNG", 4);
+        fs << uint32_t(8);
+        if(int ec = static_cast<const ArchivItem_PaletteAnimation*>(items[i])->write(fs.getStream()))
+            return ec;
+    }
 
     fs.write("BODY", 4);
     PixelBufferPaletted pixels(width, height);

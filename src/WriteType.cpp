@@ -24,6 +24,7 @@
 #include "ArchivItem_Font.h"
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Palette.h"
+#include "ArchivItem_PaletteAnimation.h"
 #include "ArchivItem_Sound.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
@@ -128,6 +129,12 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
                     return ec;
             }
             break;
+            case BOBTYPE_PALETTE_ANIM:
+            {
+                const ArchivItem_PaletteAnimation& nitem = dynamic_cast<const ArchivItem_PaletteAnimation&>(item);
+                if(int ec = nitem.write(lst)) //-V522
+                    return ec;
+            }
             default: return ErrorCode::NONE;
         }
     } catch(std::exception& e)

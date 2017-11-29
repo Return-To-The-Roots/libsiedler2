@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "StandardAllocator.h"
+#include "ArchivItem_PaletteAnimation.h"
 #include "archives.h"
 
 namespace libsiedler2 {
@@ -32,46 +33,31 @@ ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
 {
     switch(type)
     {
-        case BOBTYPE_SOUND: // WAVs, MIDIs
+        case BOBTYPE_SOUND:
         {
             switch(subtype)
             {
                 case SOUNDTYPE_NONE: return NULL;
-                case SOUNDTYPE_MIDI: // MIDI
-                    return new ArchivItem_Sound_Midi();
-                case SOUNDTYPE_WAVE: // WAV
-                    return new ArchivItem_Sound_Wave();
-                case SOUNDTYPE_XMIDI: // XMIDI
-                    return new ArchivItem_Sound_XMidi();
-                default: // Andere
-                    return new ArchivItem_Sound_Other(subtype);
+                case SOUNDTYPE_MIDI: return new ArchivItem_Sound_Midi();
+                case SOUNDTYPE_WAVE: return new ArchivItem_Sound_Wave();
+                case SOUNDTYPE_XMIDI: return new ArchivItem_Sound_XMidi();
+                default: return new ArchivItem_Sound_Other(subtype);
             }
             break;
         }
-        case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
-            return new ArchivItem_Bitmap_RLE();
-        case BOBTYPE_FONT: // Font
-            return new ArchivItem_Font();
-        case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
-            return new ArchivItem_Bitmap_Player();
-        case BOBTYPE_PALETTE: // Palette
-            return new ArchivItem_Palette();
-        case BOBTYPE_BOB: // Bobfiles
-            return new ArchivItem_Bob();
-        case BOBTYPE_BITMAP_SHADOW: // Schatten
-            return new ArchivItem_Bitmap_Shadow();
-        case BOBTYPE_MAP: // Mapfiles
-            return new ArchivItem_Map();
-        case BOBTYPE_TEXT: // Text
-            return new ArchivItem_Text();
-        case BOBTYPE_RAW: // Raw-Item
-            return new ArchivItem_Raw();
-        case BOBTYPE_MAP_HEADER: // Mapheader-Item
-            return new ArchivItem_Map_Header();
-        case BOBTYPE_INI: // INI-Datei-Item
-            return new ArchivItem_Ini();
-        case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-            return new ArchivItem_Bitmap_Raw();
+        case BOBTYPE_BITMAP_RLE: return new ArchivItem_Bitmap_RLE();
+        case BOBTYPE_FONT: return new ArchivItem_Font();
+        case BOBTYPE_BITMAP_PLAYER: return new ArchivItem_Bitmap_Player();
+        case BOBTYPE_PALETTE: return new ArchivItem_Palette();
+        case BOBTYPE_BOB: return new ArchivItem_Bob();
+        case BOBTYPE_BITMAP_SHADOW: return new ArchivItem_Bitmap_Shadow();
+        case BOBTYPE_MAP: return new ArchivItem_Map();
+        case BOBTYPE_TEXT: return new ArchivItem_Text();
+        case BOBTYPE_RAW: return new ArchivItem_Raw();
+        case BOBTYPE_MAP_HEADER: return new ArchivItem_Map_Header();
+        case BOBTYPE_INI: return new ArchivItem_Ini();
+        case BOBTYPE_BITMAP_RAW: return new ArchivItem_Bitmap_Raw();
+        case BOBTYPE_PALETTE_ANIM: return new ArchivItem_PaletteAnimation();
         default: return NULL;
     }
     return NULL;

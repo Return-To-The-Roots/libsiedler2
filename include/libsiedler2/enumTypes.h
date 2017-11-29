@@ -45,9 +45,10 @@ enum BobType
     BOBTYPE_MAP_HEADER = 11,
     BOBTYPE_INI = 12,
     BOBTYPE_UNSET,
-    BOBTYPE_BITMAP_RAW = 14
+    BOBTYPE_BITMAP_RAW = 14,
+    BOBTYPE_PALETTE_ANIM
 };
-static const uint16_t NUM_BOB_TYPES = BOBTYPE_BITMAP_RAW + 1;
+static const uint16_t NUM_BOB_TYPES = BOBTYPE_PALETTE_ANIM + 1;
 
 enum SoundType
 {

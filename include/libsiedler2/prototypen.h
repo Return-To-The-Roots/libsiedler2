@@ -109,6 +109,10 @@ namespace loader {
     /// lädt eine INI-File in ein Archiv.
     int LoadINI(const std::string& file, Archiv& items);
     int WriteINI(const std::string& file, const Archiv& items);
+
+    int LoadPaletteAnim(const std::string& file, Archiv& items);
+    int WritePaletteAnim(const std::string& file, const Archiv& items);
+
 } // namespace loader
 } // namespace libsiedler2
 

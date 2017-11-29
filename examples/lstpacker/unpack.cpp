@@ -20,11 +20,13 @@
 #include "libsiedler2/ArchivItem_BitmapBase.h"
 #include "libsiedler2/ArchivItem_Bob.h"
 #include "libsiedler2/ArchivItem_Font.h"
+#include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/ArchivItem_Sound.h"
 #include "libsiedler2/ArchivItem_Sound_Wave.h"
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
+#include <boost/nowide/fstream.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -33,6 +35,8 @@
 
 using namespace std;
 using namespace libsiedler2;
+namespace bnw = boost::nowide;
+namespace bfs = boost::filesystem;
 
 void checkTxtExtraction(const string& directory, const Archiv& lst)
 {
@@ -49,7 +53,7 @@ void checkTxtExtraction(const string& directory, const Archiv& lst)
     const std::string filePath = directory + ".summary.txt";
 
     cout << "extracting " << filePath.c_str() << ": ";
-    std::ofstream fTxt(filePath.c_str(), ios::binary);
+    bnw::ofstream fTxt(filePath.c_str(), ios::binary);
 
     for(unsigned i = 0; i < lst.size(); ++i)
     {
@@ -67,9 +71,22 @@ void checkTxtExtraction(const string& directory, const Archiv& lst)
     }
 }
 
-void unpack(const string& directory, const Archiv& lst, const ArchivItem_Palette* palette, const std::string& fileNameHexPrefix)
+void writeTxtPalette(const libsiedler2::ArchivItem_Palette& palette, const std::string& filepath)
+{
+    bnw::ofstream txt(filepath);
+    for(unsigned i = 0; i < 256; i++)
+    {
+        txt << setw(3) << setfill(' ') << i << "\t0x" << std::uppercase << std::hex << setfill('0') << setw(2)
+            << unsigned(palette.get(i).getRed()) << setw(2) << unsigned(palette.get(i).getGreen()) << setw(2)
+            << unsigned(palette.get(i).getBlue()) << std::dec << std::endl;
+    }
+}
+
+void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const libsiedler2::ArchivItem_Palette* palette,
+            const std::string& fileNameHexPrefix, bool paletteAsTxt)
 {
     boost::filesystem::create_directories(directory);
+    bool containsPalAnim = false;
 
     for(unsigned i = 0; i < lst.size(); ++i)
     {
@@ -152,6 +169,8 @@ void unpack(const string& directory, const Archiv& lst, const ArchivItem_Palette
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
+                if(paletteAsTxt)
+                    writeTxtPalette(static_cast<const libsiedler2::ArchivItem_Palette&>(*item), newfile.str() + ".txt");
             }
             break;
             case BOBTYPE_BOB: // Bobfiles
@@ -218,11 +237,29 @@ void unpack(const string& directory, const Archiv& lst, const ArchivItem_Palette
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
+                if(paletteAsTxt && bitmap.getPalette())
+                    writeTxtPalette(*bitmap.getPalette(), newfile.str() + ".txt");
             }
             break;
+            case BOBTYPE_PALETTE_ANIM:
+                containsPalAnim = true;
+                break;
+                break;
             default: cerr << "Unhandled bobtype: " << item->getBobType() << endl;
         }
     }
 
     checkTxtExtraction(directory, lst);
+    if(containsPalAnim)
+    {
+        bfs::path newfile(directory);
+        newfile /= "paletteAnims.txt";
+
+        cout << "extracting " << newfile.string() << ": ";
+
+        if(Write(newfile.string().c_str(), lst) != 0)
+            cout << "failed" << endl;
+        else
+            cout << "done" << endl;
+    }
 }

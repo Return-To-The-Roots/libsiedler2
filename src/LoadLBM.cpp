@@ -19,6 +19,7 @@
 #include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
+#include "ArchivItem_PaletteAnimation.h"
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "OpenMemoryStream.h"
@@ -51,6 +52,9 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
     // ist es eine LBM-File? (Header "FORM")
     if(!lbm || !isChunk(header, "FORM") || !isChunk(pbm, "PBM "))
         return ErrorCode::WRONG_HEADER;
+
+    // (at least) 1 item
+    items.alloc(1);
 
     boost::interprocess::unique_ptr<baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(
       dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
@@ -92,6 +96,15 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             // Rest überspringen
             lbm.ignore(chunkLen);
             headerRead = true;
+        } else if(isChunk(chunk, "CRNG"))
+        {
+            if(bodyRead)
+                return ErrorCode::WRONG_FORMAT;
+            boost::interprocess::unique_ptr<ArchivItem_PaletteAnimation, Deleter<ArchivItem_PaletteAnimation> > anim(
+              dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM)));
+            if(int ec = anim->load(lbm.getStream()))
+                return ec;
+            items.push(anim.release());
         } else if(isChunk(chunk, "CMAP"))
         {
             if(bodyRead)
@@ -183,7 +196,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
                     }
                 }
             }
-            items.push(bitmap.release());
+            items.set(0, bitmap.release());
         } else
         {
             // Skip this chunk

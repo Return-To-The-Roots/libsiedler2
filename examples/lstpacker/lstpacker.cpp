@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
                                   "unpack: lstpacker <file.lst>\n"
                                   "Optionally pass a color palette file (bbm/act) to use instead of default one");
     desc.add_options()("help,h", "Show help")("file,f", bpo::value<bfs::path>(), "File to unpack or directory to pack")(
-      "palette,p", bpo::value<bfs::path>(), "Palette to use");
+      "palette,p", bpo::value<bfs::path>(), "Palette to use")("palAsTxt,t", "Output palettes as human readable txt files");
     bpo::positional_options_description positionalOptions;
     positionalOptions.add("file", 1).add("palette", 1);
 
@@ -113,10 +113,11 @@ int main(int argc, char* argv[])
             return 3;
         }
 
-        unpack(outPath, lst, palette);
+        unpack(outPath, lst, palette, "", options.count("palAsTxt") != 0u);
     } else if(bfs::is_directory(inputPath))
     {
-        bfs::path outFilepath = inputPath.string() + ".NEW.LST";
+        bfs::path outFilepath = (inputPath / ".").parent_path(); // Get real path to parent dir
+        outFilepath += ".NEW.LST";
         bnw::cout << "Packing directory " << inputPath << " to " << outFilepath << std::endl;
         pack(inputPath.string(), outFilepath.string(), palette);
     } else

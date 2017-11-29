@@ -24,6 +24,7 @@
 #include "ArchivItem_Font.h"
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Palette.h"
+#include "ArchivItem_PaletteAnimation.h"
 #include "ArchivItem_Sound.h"
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
@@ -163,6 +164,18 @@ int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, ArchivItem
             {
                 baseArchivItem_Bitmap_Raw* nitem = dynamic_cast<baseArchivItem_Bitmap_Raw*>(getAllocator().create(BOBTYPE_BITMAP_RAW));
                 if(int ec = nitem->load(lst, palette)) //-V522
+                {
+                    delete nitem;
+                    return ec;
+                }
+                item = nitem;
+            }
+            break;
+            case BOBTYPE_PALETTE_ANIM:
+            {
+                ArchivItem_PaletteAnimation* nitem =
+                  dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM));
+                if(int ec = nitem->load(lst)) //-V522
                 {
                     delete nitem;
                     return ec;
