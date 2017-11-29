@@ -24,6 +24,8 @@
 
 namespace libsiedler2 {
 
+class ArchivItem_Palette;
+
 /// Class that describes an animation through a palette color rotation
 class ArchivItem_PaletteAnimation : public ArchivItem
 {
@@ -44,8 +46,8 @@ public:
     uint16_t rate;
     /// First and last color used. Note the wrapping: lastClr + 1 = firstClr
     uint8_t firstClr, lastClr;
-    /// Apply the rotation to the given color. Assumes isActive
-    uint8_t getNextClr(uint8_t curClr) const;
+    /// Creates a new palette from the given one with the rotation applied
+    ArchivItem_Palette* apply(const ArchivItem_Palette& pal) const;
 };
 
 } // namespace libsiedler2

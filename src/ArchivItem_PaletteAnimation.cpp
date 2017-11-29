@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_PaletteAnimation.h"
+#include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
@@ -91,21 +92,26 @@ int ArchivItem_PaletteAnimation::writeToTxt(std::ostream& file) const
     return ErrorCode::NONE;
 }
 
-uint8_t ArchivItem_PaletteAnimation::getNextClr(uint8_t curClr) const
+ArchivItem_Palette* ArchivItem_PaletteAnimation::apply(const ArchivItem_Palette& pal) const
 {
-    if(curClr < firstClr || curClr > lastClr)
-        return curClr;
-    if(moveUp)
+    ArchivItem_Palette* result = pal.clone();
+    if(isActive && firstClr < lastClr)
     {
-        if(curClr == lastClr)
-            curClr = firstClr;
-        else
-            curClr++;
-    } else if(curClr == firstClr)
-        curClr = lastClr;
-    else
-        curClr--;
-    return curClr;
+        if(moveUp)
+        {
+            ColorRGB lastClrSave = result->get(lastClr);
+            for(unsigned i = firstClr; i < lastClr; i++)
+                result->set(i + 1, result->get(i));
+            result->set(firstClr, lastClrSave);
+        } else
+        {
+            ColorRGB firstClrSave = result->get(firstClr);
+            for(unsigned i = firstClr; i < lastClr; i++)
+                result->set(i, result->get(i + 1));
+            result->set(lastClr, firstClrSave);
+        }
+    }
+    return result;
 }
 
 } // namespace libsiedler2
