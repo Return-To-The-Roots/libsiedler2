@@ -65,6 +65,8 @@ matrix:
               - *installDeps
               - brew update
               - brew install miniupnpc
+              - command curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+              - rvm get head || true # https://github.com/travis-ci/travis-ci/issues/6307
 
           #                                                             Travis libs are x64 only
           env: BUILD_TYPE=Debug CXX_FLAGS=-std=c++03 ADDITIONAL_CMAKE_FLAGS="--no-arch=i386" GCOV="gcov"
