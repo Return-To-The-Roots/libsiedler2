@@ -116,6 +116,8 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;
     if(!palette && buffer_format == FORMAT_PALETTED)
+        palette = getPalette();
+    if(!palette && buffer_format == FORMAT_PALETTED)
         return ErrorCode::PALETTE_MISSING;
 
     // Texturspeicher anfordern

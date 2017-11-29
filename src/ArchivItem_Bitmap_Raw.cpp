@@ -20,7 +20,6 @@
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
 #include "PixelBufferPaletted.h"
-#include "libsiedler2.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
@@ -80,19 +79,20 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     if(length != static_cast<uint32_t>(width * height))
         return ErrorCode::WRONG_FORMAT;
 
+    TextureFormat outFormat = getWantedFormat(FORMAT_PALETTED);
     // Speicher anlegen
     if(length > 0)
     {
         int ec = create(&data[0], width, height, FORMAT_PALETTED, palette);
         if(ec)
             return ec;
-        ec = convertFormat(getGlobalTextureFormat());
+        ec = convertFormat(outFormat);
         if(ec)
             return ec;
         if(getFormat() == FORMAT_BGRA)
             removePalette();
     } else
-        init(0, 0, getGlobalTextureFormat(), getGlobalTextureFormat() == FORMAT_PALETTED ? palette : NULL);
+        init(0, 0, outFormat, outFormat == FORMAT_PALETTED ? palette : NULL);
 
     // Unbekannte Daten überspringen
     fs.ignore(8);

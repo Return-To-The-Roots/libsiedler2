@@ -119,6 +119,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
             return ErrorCode::UNEXPECTED_EOF;
 
         pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
+        bitmap->setPalette(pal);
         for(int i = 0; i < bmih.clrused; ++i)
             pal->set(i, ColorARGB::fromBGRA(&colors[i][0])); //-V522
     }
@@ -147,14 +148,13 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(!bmpFs)
         return ErrorCode::UNEXPECTED_EOF;
 
-    if(int ec =
-         bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height, (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA, pal))
+    if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height, (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA))
         return ec;
-    if(getGlobalTextureFormat() != bitmap->getFormat())
+    if(ArchivItem_BitmapBase::getWantedFormat(bitmap->getFormat()) != bitmap->getFormat())
     {
         if(!bitmap->getPalette() && palette)
             bitmap->setPaletteCopy(*palette);
-        if(int ec = bitmap->convertFormat(getGlobalTextureFormat()))
+        if(int ec = bitmap->convertFormat(ArchivItem_BitmapBase::getWantedFormat(bitmap->getFormat())))
             return ec;
     }
 

@@ -109,6 +109,9 @@ public:
     static uint32_t getBBP(TextureFormat format);
     uint32_t getBBP() const { return getBBP(getFormat()); }
 
+    /// Adjusts the global format incooporating the "ORIGINAL" format
+    static TextureFormat getWantedFormat(TextureFormat origFormat);
+
 protected:
     /// Return a pointer to the start of the given pixel
     uint8_t* getPixelPtr(uint16_t x, uint16_t y);

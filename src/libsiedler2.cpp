@@ -71,7 +71,7 @@ struct Initializer
     {
         assert(libsiedler2::allocator == NULL);
         libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
-        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
+        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_ORIGINAL);
     }
     ~Initializer() { libsiedler2::setAllocator(NULL); }
 };

@@ -21,6 +21,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
+//#include <vld.h>
+
 struct TestSetup
 {
     TestSetup() { bfs::create_directories(testOutputPath); }

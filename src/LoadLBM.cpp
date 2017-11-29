@@ -127,7 +127,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             if(bitmap->getPalette() == NULL)
                 return ErrorCode::PALETTE_MISSING;
 
-            bitmap->init(width, height, getGlobalTextureFormat());
+            bitmap->init(width, height, ArchivItem_BitmapBase::getWantedFormat(FORMAT_PALETTED));
 
             if(compression == 0) // unkomprimiert
             {

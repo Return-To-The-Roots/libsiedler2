@@ -20,7 +20,6 @@
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
 #include "ErrorCodes.h"
-#include "libsiedler2.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <cstddef>
@@ -124,7 +123,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
                                                 const std::vector<uint16_t>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
 {
     // Speicher anlegen
-    init(width, height, getGlobalTextureFormat(), palette);
+    init(width, height, getWantedFormat(FORMAT_PALETTED), palette);
 
     if(image.empty())
         return ErrorCode::NONE;
@@ -328,6 +327,8 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t heigh
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;
+    if(!palette)
+        palette = getPalette();
     if(!palette)
         return ErrorCode::PALETTE_MISSING;
 

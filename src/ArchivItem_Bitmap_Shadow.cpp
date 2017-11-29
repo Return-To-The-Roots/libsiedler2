@@ -20,7 +20,6 @@
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
 #include "PixelBufferPaletted.h"
-#include "libsiedler2.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
@@ -122,7 +121,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
         int ec = create(buffer, palette);
         if(ec)
             return ec;
-        ec = convertFormat(getGlobalTextureFormat());
+        ec = convertFormat(getWantedFormat(FORMAT_PALETTED));
         if(ec)
             return ec;
         if(getFormat() == FORMAT_BGRA)

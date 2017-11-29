@@ -24,8 +24,9 @@ namespace libsiedler2 {
 /** Supported texture formats */
 enum TextureFormat
 {
-    FORMAT_PALETTED = 1,
-    FORMAT_BGRA = 4
+    FORMAT_ORIGINAL,
+    FORMAT_PALETTED,
+    FORMAT_BGRA,
 };
 
 /** Supported bob types */

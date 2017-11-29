@@ -173,8 +173,20 @@ ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
     return ColorARGB::fromBGRA(&pxlData_[(y * width_ + x) * 4u]);
 }
 
+libsiedler2::TextureFormat ArchivItem_BitmapBase::getWantedFormat(TextureFormat origFormat)
+{
+    TextureFormat globFmt = getGlobalTextureFormat();
+    if(globFmt == FORMAT_ORIGINAL)
+        return origFormat;
+    else
+        return globFmt;
+}
+
 void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat format)
 {
+    if(format == FORMAT_ORIGINAL)
+        throw std::logic_error("Must set the actual texture format!");
+
     clear();
     // Consistency: width == 0 <=> height == 0
     if(width == 0)
@@ -261,7 +273,7 @@ void ArchivItem_BitmapBase::setNy(int16_t ny)
 int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
 {
     // Nothing to do
-    if(newFormat == format_)
+    if(newFormat == FORMAT_ORIGINAL || newFormat == format_)
         return ErrorCode::NONE;
 
     if(!palette_)
@@ -426,7 +438,8 @@ void ArchivItem_BitmapBase::setPalette(ArchivItem_Palette* palette)
 
 void ArchivItem_BitmapBase::setPaletteCopy(const ArchivItem_Palette& palette)
 {
-    setPalette(palette.clone());
+    if(palette_ != &palette)
+        setPalette(palette.clone());
 }
 
 void ArchivItem_BitmapBase::removePalette()

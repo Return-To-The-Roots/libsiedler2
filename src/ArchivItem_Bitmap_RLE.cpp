@@ -20,7 +20,6 @@
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
 #include "PixelBufferPaletted.h"
-#include "libsiedler2.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
@@ -81,7 +80,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
     fs >> data;
 
     // Speicher anlegen
-    init(width, height, getGlobalTextureFormat(), palette);
+    init(width, height, getWantedFormat(FORMAT_PALETTED), palette);
 
     if(length != 0)
     {

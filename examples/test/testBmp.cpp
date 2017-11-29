@@ -169,9 +169,9 @@ ArchivItem_BitmapBase* getFirstBitmap(Archiv& archiv)
 BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
 {
     const TestBitmaps testFiles;
-    // Try both formats with all possible bmp types. BGRA first
-    TextureFormat curFmt = FORMAT_BGRA;
-    for(int i = 0; i < 2; i++)
+    // Try all formats with all possible bmp types.
+    boost::array<TextureFormat, 3> fmts = {{FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA}};
+    BOOST_FOREACH(TextureFormat curFmt, fmts)
     {
         FormatSetter fmtSetter(curFmt);
         BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
@@ -181,9 +181,13 @@ BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
             BOOST_REQUIRE_MESSAGE(ec == 0, "Error " << getErrorString(ec) << " loading " << testFile.filename);
             const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
             BOOST_REQUIRE(bmp);
-            BOOST_REQUIRE_EQUAL(bmp->getFormat(), curFmt);
+            if(curFmt != FORMAT_ORIGINAL)
+                BOOST_REQUIRE_EQUAL(bmp->getFormat(), curFmt);
+            else if(testFile.isPaletted)
+                BOOST_REQUIRE_EQUAL(bmp->getFormat(), FORMAT_PALETTED);
+            else
+                BOOST_REQUIRE_EQUAL(bmp->getFormat(), FORMAT_BGRA);
         }
-        curFmt = FORMAT_PALETTED;
     }
 }
 
@@ -192,25 +196,25 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
     const TestBitmaps testFiles;
     ArchivItem_Palette emptyPal;
 
-    // Try both formats with all possible bmp types. BGRA first
-    TextureFormat curFmt = FORMAT_BGRA;
-    for(int i = 0; i < 2; i++)
+    // Try all formats with all possible bmp types.
+    boost::array<TextureFormat, 3> fmts = {{FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA}};
+    BOOST_FOREACH(TextureFormat curFmt, fmts)
     {
         FormatSetter fmtSetter(curFmt);
         BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
         {
             Archiv archiv;
-            if((curFmt == FORMAT_PALETTED && !testFile.containsPalette)
-               || (curFmt == FORMAT_BGRA && testFile.isPaletted && !testFile.containsPalette))
+            if((curFmt == FORMAT_PALETTED && !testFile.containsPalette) || (testFile.isPaletted && !testFile.containsPalette))
             {
-                // Conversion required but no palette
+                // Paletted files need a palette. For conversion to paletted we also need one
                 BOOST_REQUIRE(testLoad(ErrorCode::PALETTE_MISSING, "testFiles/" + testFile.filename, archiv));
             } else
             {
-                // No conversion or use file palette
+                // Non paletted file or palette contained
                 BOOST_REQUIRE(testLoad(0, "testFiles/" + testFile.filename, archiv));
+                const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
                 // For paletted bitmaps we must have a palette, the others must not have one
-                if(curFmt == FORMAT_PALETTED || testFile.containsPalette)
+                if(bmp->getFormat() == FORMAT_PALETTED || testFile.containsPalette)
                     BOOST_REQUIRE_MESSAGE(getFirstBitmap(archiv)->getPalette(),
                                           "No palette found for " << testFile.filename << " fmt=" << curFmt);
                 else
@@ -219,14 +223,14 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
             }
             const ArchivItem_Palette* usedPalette;
             // Use the empty pal to detect if it was used for conversion
-            if(curFmt == FORMAT_BGRA && testFile.containsPalette)
+            if(testFile.containsPalette)
                 usedPalette = &emptyPal;
             else
                 usedPalette = modPal; // Files are saved with palette, so use another one to detect difference
             archiv.clear();
             BOOST_REQUIRE(testLoad(0, "testFiles/" + testFile.filename, archiv, usedPalette));
             const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
-            if(curFmt == FORMAT_PALETTED)
+            if(bmp->getFormat() == FORMAT_PALETTED)
             {
                 // Paletted formats must have a palette
                 BOOST_REQUIRE(bmp->getPalette());
@@ -258,7 +262,6 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
             } else
                 BOOST_REQUIRE_MESSAGE(!bmp->getPalette(), "Palette found for " << testFile.filename << " fmt=" << curFmt);
         }
-        curFmt = FORMAT_PALETTED;
     }
 }
 
@@ -267,9 +270,9 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
     const TestBitmaps testFiles;
     ArchivItem_Palette emptyPal;
 
-    // Try both formats with all possible bmp types. BGRA first
-    TextureFormat curFmt = FORMAT_BGRA;
-    for(int i = 0; i < 2; i++)
+    // Try all formats with all possible bmp types.
+    boost::array<TextureFormat, 3> fmts = {{FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA}};
+    BOOST_FOREACH(TextureFormat curFmt, fmts)
     {
         FormatSetter fmtSetter(curFmt);
         BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
@@ -282,13 +285,13 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
             ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
             // Not modified when writing with same palette
             BOOST_REQUIRE(testWrite(0, outFilepathRef, archiv, palette));
-            if(testFile.supportsBoth && !testFile.isPaletted && curFmt == FORMAT_PALETTED)
+            if(testFile.supportsBoth && !testFile.isPaletted && bmp->getFormat() == FORMAT_PALETTED)
                 BOOST_REQUIRE(!testFilesEqual(outFilepathRef, inFilepath)); // Stored as paletted
             else
                 BOOST_REQUIRE(testFilesEqual(outFilepathRef, inFilepath));
 
             // a) no palette
-            if(curFmt == FORMAT_BGRA)
+            if(bmp->getFormat() == FORMAT_BGRA)
             {
                 bmp->removePalette();
                 // If conversion is required -> error
@@ -311,7 +314,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
             // b) use bitmaps palette if none passed
             bmp->setPaletteCopy(*palette);
             BOOST_REQUIRE(testWrite(0, outFilepath, archiv));
-            if(testFile.supportsBoth && !testFile.isPaletted && curFmt != FORMAT_PALETTED)
+            if(testFile.supportsBoth && !testFile.isPaletted && bmp->getFormat() != FORMAT_PALETTED)
             {
                 // Non-paletted file is written as paletted because it now contains a palette
                 // If the format is paletted, then the reference is already paletted -> other branch
@@ -329,7 +332,6 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
             BOOST_REQUIRE(testWrite(0, outFilepath, archiv, argPal));
             BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
         }
-        curFmt = FORMAT_PALETTED;
     }
 }
 
