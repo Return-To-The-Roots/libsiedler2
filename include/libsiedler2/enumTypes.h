@@ -26,7 +26,7 @@ enum TextureFormat
 {
     FORMAT_ORIGINAL,
     FORMAT_PALETTED,
-    FORMAT_BGRA,
+    FORMAT_BGRA
 };
 
 /** Supported bob types */
