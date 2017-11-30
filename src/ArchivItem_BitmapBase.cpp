@@ -148,7 +148,7 @@ libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) c
     if(getFormat() == FORMAT_PALETTED)
     {
         uint8_t pxlVal = getPalettedPixel(x, y);
-        return pxlVal == TRANSPARENT_INDEX ? ColorARGB(0) : palette_->get(pxlVal);
+        return pxlVal == TRANSPARENT_INDEX ? ColorARGB(0) : ColorARGB(palette_->get(pxlVal));
     } else
         return getARGBPixel(x, y);
 }
