@@ -38,12 +38,16 @@ int main(int argc, char* argv[])
     bnw::args(argc, argv);
     bnw::nowide_filesystem();
 
+    std::string texFmt;
+
     bpo::options_description desc("Usage:\n"
                                   "pack:   lstpacker <directory>\n"
                                   "unpack: lstpacker <file.lst>\n"
                                   "Optionally pass a color palette file (bbm/act) to use instead of default one");
     desc.add_options()("help,h", "Show help")("file,f", bpo::value<bfs::path>(), "File to unpack or directory to pack")(
-      "palette,p", bpo::value<bfs::path>(), "Palette to use")("palAsTxt,t", "Output palettes as human readable txt files");
+      "palette,p", bpo::value<bfs::path>(), "Palette to use")("palAsTxt,t", "Output palettes as human readable txt files")(
+      "texFmt", bpo::value<std::string>(&texFmt)->default_value("original"),
+      "Texture format to use (usually equal output format): (o)riginal, (p)paletted, (B)GRA");
     bpo::positional_options_description positionalOptions;
     positionalOptions.add("file", 1).add("palette", 1);
 
@@ -56,6 +60,14 @@ int main(int argc, char* argv[])
         bnw::cout << desc << std::endl;
         return 1;
     }
+    if(texFmt == "original" || texFmt == "o")
+        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_ORIGINAL);
+    else if(texFmt == "paletted" || texFmt == "p")
+        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_PALETTED);
+    else if(texFmt == "BGRA" || texFmt == "B" || texFmt == "bgra" || texFmt == "b")
+        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
+    else
+        throw bpo::validation_error(bpo::validation_error::invalid_option_value, "texFmt");
 
     bfs::path inputPath(options["file"].as<bfs::path>());
     if(!bfs::exists(inputPath))
