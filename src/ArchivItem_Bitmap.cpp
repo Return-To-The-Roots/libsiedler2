@@ -73,7 +73,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
             const uint8_t* pxlPtr = getPixelPtr(x, y);
             if(getFormat() == FORMAT_PALETTED)
             {
-                if(*pxlPtr == TRANSPARENT_INDEX) // bei Transparenz wird buffer nicht verändert
+                if(*pxlPtr == getPalette()->transparentIdx) // bei Transparenz wird buffer nicht verändert
                     continue;
                 if(buffer_format == FORMAT_PALETTED)
                     buffer[posBuf] = *pxlPtr;

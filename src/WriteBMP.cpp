@@ -100,7 +100,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
         fs.write(colors[0], bmih.clrused * 4);
     }
 
-    std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4), isPaletted ? TRANSPARENT_INDEX : 0);
+    std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4), isPaletted ? palette->transparentIdx : 0);
     TextureFormat bufFmt = isPaletted ? FORMAT_PALETTED : FORMAT_BGRA;
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)

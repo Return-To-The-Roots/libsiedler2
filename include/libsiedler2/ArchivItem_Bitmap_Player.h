@@ -37,6 +37,9 @@ class ArchivItem_Bitmap_Player : public virtual ArchivItem_BitmapBase //-V690
 {
 public:
     BOOST_STATIC_CONSTEXPR uint8_t numPlayerClrs = 4;
+    /// Color index used for transparent colors in the player color buffer. We need a different one here as we either store transparent or
+    /// an offset onto the actual player color index
+    BOOST_STATIC_CONSTEXPR uint8_t TRANSPARENT_PLAYER_CLR_IDX = 0xFF;
 
     ArchivItem_Bitmap_Player();
 

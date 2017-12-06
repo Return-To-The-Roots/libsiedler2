@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(GetColor)
     for(unsigned i = 0; i < 256; i++)
     {
         libsiedler2::ColorARGB clr = pal[i];
-        if(i == libsiedler2::TRANSPARENT_INDEX)
+        if(i == pal.transparentIdx)
             clr = libsiedler2::ColorARGB(0, 0, 0, 0);
 
         // BGRA buffer:
@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE(GetColor)
     }
     pal.copy(&clrBuf[0], clrBuf.size(), true);
     // BGRA buffer:
-    BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[libsiedler2::TRANSPARENT_INDEX * 4]), libsiedler2::TRANSPARENT_COLOR);
+    BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[pal.transparentIdx * 4]), libsiedler2::TRANSPARENT_COLOR);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWritePalAnim)

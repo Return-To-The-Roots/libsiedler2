@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Palette.h"
+#include "ColorARGB.h"
 #include "ErrorCodes.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
@@ -35,7 +36,7 @@
  *  Klasse für Paletten.
  */
 
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BOBTYPE_PALETTE) {}
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BOBTYPE_PALETTE), transparentIdx(DEFAULT_TRANSPARENT_IDX) {}
 
 libsiedler2::ArchivItem_Palette::~ArchivItem_Palette() {}
 
@@ -106,11 +107,16 @@ bool libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr, uint8_t& clrId
 {
     for(unsigned i = 0; i < 256; ++i)
     {
-        if(colors[i] == clr)
+        if(i != transparentIdx && colors[i] == clr)
         {
             clrIdx = static_cast<uint8_t>(i);
             return true;
         }
+    }
+    if(colors[transparentIdx] == clr)
+    {
+        clrIdx = transparentIdx;
+        return true;
     }
     return false;
 }
@@ -162,24 +168,13 @@ void libsiedler2::ArchivItem_Palette::copy(uint8_t* buffer, size_t bufSize, bool
 
     // Farben kopieren
     for(uint16_t i = 0; i < 256; ++i)
-    {
-        buffer[i * 4 + 0] = colors[i].b;
-        buffer[i * 4 + 1] = colors[i].g;
-        buffer[i * 4 + 2] = colors[i].r;
-        buffer[i * 4 + 3] = 0xFF;
-    }
+        ColorARGB(colors[i]).toBGRA(&buffer[i * 4]);
     if(writeFakeTransparency)
-    {
-        buffer[TRANSPARENT_INDEX * 4 + 0] = TRANSPARENT_COLOR.b;
-        buffer[TRANSPARENT_INDEX * 4 + 1] = TRANSPARENT_COLOR.g;
-        buffer[TRANSPARENT_INDEX * 4 + 2] = TRANSPARENT_COLOR.r;
-    } else
+        TRANSPARENT_COLOR.toBGR(&buffer[transparentIdx * 4]);
+    else
     {
         // Transparentes Element transparent machen
-        buffer[TRANSPARENT_INDEX * 4 + 0] = 0x00;
-        buffer[TRANSPARENT_INDEX * 4 + 1] = 0x00;
-        buffer[TRANSPARENT_INDEX * 4 + 2] = 0x00;
-        buffer[TRANSPARENT_INDEX * 4 + 3] = 0x00;
+        ColorARGB(0).toBGRA(&buffer[transparentIdx * 4]);
     }
 }
 

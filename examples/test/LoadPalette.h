@@ -48,6 +48,7 @@ struct LoadPalette
         modPal->set(modClr2, modPal->get(modClr2 + 1));
         modPal->set(modClr2 + 1, clr);
     }
+
 private:
     libsiedler2::Archiv paletteArchiv;
 };

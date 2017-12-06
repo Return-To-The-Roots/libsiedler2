@@ -62,7 +62,7 @@ boost::test_tools::predicate_result testFilesEqual(const std::string& fileToChec
     ifs2.unsetf(std::ios::skipws);
 
     size_t pos = 0;
-    for(std::istream_iterator<char> b1(ifs1), b2(ifs2), endIt; b1 != endIt && b2 != endIt; ++b1, ++b2, ++pos)
+    for(std::istream_iterator<unsigned char> b1(ifs1), b2(ifs2), endIt; b1 != endIt && b2 != endIt; ++b1, ++b2, ++pos)
     {
         if(*b1 != *b2)
         {

@@ -55,7 +55,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
     const uint16_t height = bmp->getHeight();
     fs.write("BMHD", 4);
     fs << uint32_t(20) << width << height << int16_t(0) << int16_t(0) // origin
-       << uint8_t(8) << uint8_t(0) << uint8_t(256)                    // numPlanes, mask, no compression
+       << uint8_t(8) << uint8_t(0) << uint8_t(0)                      // numPlanes, mask, no compression
        << uint8_t(0) << uint16_t(0)                                   // pad and transClr
        << uint8_t(0) << uint8_t(0)                                    // aspect ratio
        << int16_t(320) << uint16_t(200);                              // page size

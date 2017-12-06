@@ -28,7 +28,7 @@
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
-
+#include <iostream>
 /**
  *  lädt eine LBM-File in ein Archiv.
  *
@@ -59,8 +59,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
     boost::interprocess::unique_ptr<baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(
       dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
 
-    uint16_t width = 0, height = 0;
-    uint16_t compression = 0;
+    uint16_t width = 0, height = 0, transClr = 0;
+    uint8_t compression = 0, mask = 0;
     char chunk[4];
     bool headerRead = false;
     bool bodyRead = false;
@@ -78,23 +78,19 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
         {
             if(headerRead || bodyRead)
                 return ErrorCode::WRONG_FORMAT;
-            uint32_t unknown;
-            uint8_t numPlanes, mask;
+            uint16_t xOrig, yOrig, pageW, pageH;
+            uint8_t numPlanes, pad, xAspect, yAspect;
 
-            lbm >> width >> height >> unknown >> numPlanes >> mask >> compression;
-
+            lbm >> width >> height >> xOrig >> yOrig >> numPlanes >> mask >> compression >> pad >> transClr >> xAspect >> yAspect >> pageW
+              >> pageH;
             // Nur 256 Farben und nicht mehr!
-            if(numPlanes != 8 || mask != 0)
+            if(numPlanes != 8 || (mask != 0 && mask != 2))
                 return ErrorCode::WRONG_FORMAT;
 
             // Keine bekannte Kompressionsart?
-            if(compression != 0 && compression != 256)
+            if(compression > 1u)
                 return ErrorCode::WRONG_FORMAT;
 
-            chunkLen -= 12;
-
-            // Rest überspringen
-            lbm.ignore(chunkLen);
             headerRead = true;
         } else if(isChunk(chunk, "CRNG"))
         {
@@ -115,6 +111,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
 
             // Daten von Item auswerten
             ArchivItem_Palette* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
+            if(mask == 2 && transClr < 256)
+                palette->transparentIdx = static_cast<uint8_t>(transClr);
             bitmap->setPalette(palette);
             if(int ec = palette->load(lbm.getStream(), false))
                 return ec;
@@ -204,7 +202,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
         }
     }
 
-    if(items.empty() || !lbm.eof())
+    if(items.empty() || !items[0] || !lbm.eof())
         return ErrorCode::WRONG_FORMAT;
 
     return ErrorCode::NONE;

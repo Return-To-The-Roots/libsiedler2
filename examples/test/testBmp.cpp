@@ -193,6 +193,9 @@ BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
 
 BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
 {
+    // Rules:
+    // If the file contains a palette, it is stored in the bitmap and used.
+    // If the file does not contain a palette the passed palette is used, but only stored with the bitmap if it is paletted.
     const TestBitmaps testFiles;
     ArchivItem_Palette emptyPal;
 
@@ -267,6 +270,11 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
 
 BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
 {
+    // Rules:
+    // If the file format contains a palette and the bitmap contains one, it is used instead of the passed palette.
+    // Otherwise the palette passed is used with the bitmaps palette as a fallback. It is an error not to pass a palette when conversion is
+    // required unless the bitmap contains one. If the file format supports paletted and unpaletted images then the paletted format is used,
+    // if(and only if) the bitmap is paletted or contains a palette.
     const TestBitmaps testFiles;
     ArchivItem_Palette emptyPal;
 
@@ -293,6 +301,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
             // a) no palette
             if(bmp->getFormat() == FORMAT_BGRA)
             {
+                libsiedler2::ArchivItem_Palette* bmpPal = bmp->getPalette() ? bmp->getPalette()->clone() : NULL;
                 bmp->removePalette();
                 // If conversion is required -> error
                 if(testFile.isPaletted && !testFile.supportsBoth)
@@ -310,9 +319,11 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
                     BOOST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef)); // Still stored as RGB
                 else
                     BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
+                bmp->setPalette(bmpPal);
             }
             // b) use bitmaps palette if none passed
-            bmp->setPaletteCopy(*palette);
+            if(!bmp->getPalette())
+                bmp->setPaletteCopy(*palette);
             BOOST_REQUIRE(testWrite(0, outFilepath, archiv));
             if(testFile.supportsBoth && !testFile.isPaletted && bmp->getFormat() != FORMAT_PALETTED)
             {
@@ -324,11 +335,13 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
             } else
                 BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
             // c) Passed palette is used unless file contains one (or may)
-            // So if it doesn't contain one we make the bitmaps palette invalid otherwise the argument palette is invalid
-            ArchivItem_Palette *bmpPal = modPal, *argPal = palette;
+            // File cannot contain palette: bitmap pal = invalid (modPal)
+            // File (may) contain palette: argPal = invalid (modPal)
+            const ArchivItem_Palette* argPal = palette;
             if(testFile.containsPalette || testFile.supportsBoth)
-                std::swap(bmpPal, argPal);
-            bmp->setPaletteCopy(*bmpPal);
+                argPal = modPal;
+            else
+                bmp->setPaletteCopy(*modPal);
             BOOST_REQUIRE(testWrite(0, outFilepath, archiv, argPal));
             BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
         }
@@ -585,7 +598,7 @@ BOOST_AUTO_TEST_CASE(TransparentTex)
     unsigned w = 10, h = 14;
     // Use different size for bitmap (bigger width, smaller height)
     unsigned bw = w + 3, bh = h - 2;
-    std::vector<uint8_t> inBufferPal(w * h, TRANSPARENT_INDEX);
+    std::vector<uint8_t> inBufferPal(w * h, palette->transparentIdx);
     // Buffer in (byte) BGRA format
     std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u);
     // With all 0
@@ -853,7 +866,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
     unsigned w = 7, h = 8;
     // Use bigger size for bitmap
     unsigned bw = w + 2, bh = h + 6;
-    std::vector<uint8_t> inBufferPal(w * h, TRANSPARENT_INDEX);
+    std::vector<uint8_t> inBufferPal(w * h, palette->transparentIdx);
     ArchivItem_Bitmap_Player bmp;
     ArchivItem_Bitmap_Raw bmpRaw;
     {
@@ -898,8 +911,8 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
             bmpRaw.getVisibleArea(visRaw.x, visRaw.y, visRaw.w, visRaw.h);
             BOOST_REQUIRE_EQUAL(visRaw, rect);
 
-            inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
-            inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = TRANSPARENT_INDEX;
+            inBufferPal[rect.x + rect.y * w] = palette->transparentIdx;
+            inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = palette->transparentIdx;
 
             // Buffer in (byte) BGRA format
             std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u, 0);
@@ -914,7 +927,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
             Rect visRaw2;
             bmpRaw.getVisibleArea(visRaw2.x, visRaw2.y, visRaw2.w, visRaw2.h);
             BOOST_REQUIRE_EQUAL(visRaw2, rect);
-            inBufferPal[rect.x + rect.y * w] = TRANSPARENT_INDEX;
+            inBufferPal[rect.x + rect.y * w] = palette->transparentIdx;
         }
     }
 }

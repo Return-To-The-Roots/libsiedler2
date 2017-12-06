@@ -27,8 +27,6 @@
 #include <stdint.h>
 
 namespace libsiedler2 {
-/// Index des Transparenzwertes
-const uint8_t TRANSPARENT_INDEX = 254;
 
 const ColorRGB TRANSPARENT_COLOR(0xff, 0, 0x8f);
 
@@ -36,6 +34,8 @@ const ColorRGB TRANSPARENT_COLOR(0xff, 0, 0x8f);
 class ArchivItem_Palette : public ArchivItem
 {
 public:
+    static const uint8_t DEFAULT_TRANSPARENT_IDX = 0;
+
     ArchivItem_Palette();
 
     ~ArchivItem_Palette() override;
@@ -72,6 +72,8 @@ public:
 
     /// Return true iff the 2 palettes specify the same colors
     bool isEqual(const ArchivItem_Palette& other) const;
+
+    uint8_t transparentIdx;
 
 protected:
     boost::array<ColorRGB, 256> colors; //-V730_NOINIT

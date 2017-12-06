@@ -102,7 +102,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
                 // transparente Pixel setzen
                 count = data[position++];
                 for(uint8_t i = 0; i < count; ++i, ++x)
-                    setPixel(x, y, TRANSPARENT_INDEX);
+                    setPixel(x, y, palette->transparentIdx);
             }
 
             // FF überspringen
@@ -180,7 +180,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
             for(count = 0; count < width - x; ++count)
             {
                 color = buffer.get(x + count, y);
-                if(color == TRANSPARENT_INDEX)
+                if(color == palette->transparentIdx)
                     break;
                 image[position + 1 + count] = color;
                 if(count == 0x7F)
@@ -195,7 +195,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
             for(count = 0; count < width - x; ++count)
             {
                 color = buffer.get(x + count, y);
-                if(color != TRANSPARENT_INDEX || count == 0xFF)
+                if(color != palette->transparentIdx || count == 0xFF)
                     break;
             }
             image[position++] = (uint8_t)count;
@@ -206,6 +206,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
         image[position++] = 0xFF;
     }
     image[position++] = 0xFF;
+    image.resize(position);
 
     uint32_t length = position + height * 2;
 

@@ -1,19 +1,19 @@
 // Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
 //
-// This file is part of Siedler II.5 RTTR.
+// This file is part of Return To The Roots.
 //
-// Siedler II.5 RTTR is free software: you can redistribute it and/or modify
+// Return To The Roots is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 2 of the License, or
 // (at your option) any later version.
 //
-// Siedler II.5 RTTR is distributed in the hope that it will be useful,
+// Return To The Roots is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Siedler II.5 RTTR. If not, see <http://www.gnu.org/licenses/>.
+// along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 ///////////////////////////////////////////////////////////////////////////////
 // Header
@@ -34,10 +34,6 @@ int main(int argc, char* argv[])
     Load("GFX/PALETTE/PAL5.BBM", bbm);
 
     ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
-
-    TextureFormat format = FORMAT_PALETTED;
-
-    setGlobalTextureFormat(format);
 
     Load("DATA/RESOURCE.DAT", lst, palette);
 
@@ -71,22 +67,22 @@ int main(int argc, char* argv[])
 
                 unsigned short w = c->getWidth() + 1, h = c->getHeight() + 1;
 
-                std::vector<unsigned char> buffer(w * h, TRANSPARENT_INDEX);
+                PixelBufferPaletted buffer(w, h);
 
                 unsigned char color = 1;
-                c->print(&buffer.front(), w, h, format, palette, color);
-                c->print(&buffer.front(), w, h, format, palette, color, 2);
-                c->print(&buffer.front(), w, h, format, palette, color, 0, 2);
-                c->print(&buffer.front(), w, h, format, palette, color, 2, 2);
+                c->print(buffer, palette, color);
+                c->print(buffer, palette, color, 2);
+                c->print(buffer, palette, color, 0, 2);
+                c->print(buffer, palette, color, 2, 2);
 
                 for(unsigned short z = 0; z < w * h; ++z)
                 {
-                    if(buffer[z] >= color && buffer[z] <= color + 3)
-                        buffer[z] = 0;
+                    if(buffer.get(z) >= color && buffer.get(z) <= color + 3)
+                        buffer.set(z, 0);
                 }
-                c->print(&buffer.front(), w, h, format, palette, color, 1, 1);
+                c->print(buffer, palette, color, 1, 1);
 
-                o.create(w, h, &buffer.front(), w, h, format, palette, color);
+                o.create(buffer, palette, color);
 
                 out.setC(j, o);
             }
