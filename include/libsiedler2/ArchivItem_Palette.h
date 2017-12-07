@@ -28,12 +28,18 @@
 
 namespace libsiedler2 {
 
+/// A bright pink color very unlikely to be used in textures.
+/// It is the same as index 254 in PAL5 and in some files used as a background color
 const ColorRGB TRANSPARENT_COLOR(0xff, 0, 0x8f);
 
 /// Klasse für Paletten.
 class ArchivItem_Palette : public ArchivItem
 {
 public:
+    /// The choice for the default transparent index is kind of arbitrary as in most files we have a separate encoding for transparent
+    /// pixels. However in the LBMs containing the terrain textures we do have parts that should be transparent (background of edges and
+    /// paths) and there index 0 is used consistently. Also PAL5 (default) contains more than 1 black color and index 0 does not seem to be
+    /// used for black in the S2 LST files.
     static const uint8_t DEFAULT_TRANSPARENT_IDX = 0;
 
     ArchivItem_Palette();
@@ -68,7 +74,7 @@ public:
     /// Copy palette to the buffer as BGRA
     /// If writeFakeTransparency is true, then the pseudo transparency color is written
     /// otherwise a true transparency (all 0) is written
-    void copy(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency = false) const;
+    void copyToBGRA(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency = false) const;
 
     /// Return true iff the 2 palettes specify the same colors
     bool isEqual(const ArchivItem_Palette& other) const;

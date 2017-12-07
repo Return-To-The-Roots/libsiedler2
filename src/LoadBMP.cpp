@@ -113,15 +113,25 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     ArchivItem_Palette* pal = NULL;
     if(bmih.bpp == 8)
     {
+        unsigned numClrsUsed = std::min<unsigned>(bmih.clrused, 256);
         // Farbpalette lesen
         uint8_t colors[256][4];
-        if(!bmpFs.read(colors[0], bmih.clrused * 4))
+        if(!bmpFs.read(colors[0], numClrsUsed * 4))
             return ErrorCode::UNEXPECTED_EOF;
 
         pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
         bitmap->setPalette(pal);
-        for(int i = 0; i < bmih.clrused; ++i)
-            pal->set(i, ColorARGB::fromBGRA(&colors[i][0])); //-V522
+        bool transpClrSet = false;
+        for(unsigned i = 0; i < numClrsUsed; ++i)
+        {
+            ColorARGB clr = ColorARGB::fromBGRA(&colors[i][0]);
+            pal->set(i, clr); //-V522
+            if(clr.getAlpha() == 0 && !transpClrSet)
+            {
+                transpClrSet = true;
+                pal->transparentIdx = static_cast<uint8_t>(i);
+            }
+        }
     }
 
     uint8_t bbp = (bmih.bpp / 8);
