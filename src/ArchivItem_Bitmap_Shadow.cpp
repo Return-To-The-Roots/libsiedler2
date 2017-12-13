@@ -84,7 +84,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     {
         // Speicher anlegen
         init(width, height, FORMAT_PALETTED, palette);
-    }else
+    } else
     {
         uint32_t position = height * 2;
         PixelBufferPaletted buffer(width, height, palette->transparentIdx);
@@ -95,7 +95,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
             uint16_t x = 0;
 
             // Solange Zeile einlesen, bis x voll ist
-            while(x < width)
+            while(x < width && position + 2 < data.size())
             {
                 // graue Pixel setzen
                 uint8_t count = data[position++];
@@ -108,11 +108,15 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
                 x += count;
             }
 
+            if(position >= data.size())
+                return ErrorCode::WRONG_FORMAT;
             // FF überspringen
             assert(data[position] == 0xFF);
             ++position;
         }
 
+        if(position >= data.size())
+            return ErrorCode::WRONG_FORMAT;
         // FF überspringen
         assert(data[position] == 0xFF);
         ++position;
@@ -154,8 +158,8 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
 
     fs << nx_ << ny_ << uint32_t(0) << width << height << uint16_t(1);
 
-    // maximale größe von RLE: width*height*2
-    std::vector<uint8_t> image(width * height * 2);
+    // Maximum size: 1 byte/pixel + (1 byte FF + 2 extra bytes for first transparent and last solid pixel) per row + 1 byte FF final
+    std::vector<uint8_t> image(width * height + height * 3 + 1);
 
     // Startadressen
     std::vector<uint16_t> starts(height);
@@ -195,6 +199,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
         image[position++] = 0xFF;
     }
     image[position++] = 0xFF;
+    image.resize(position);
 
     uint32_t length = position + height * 2;
 

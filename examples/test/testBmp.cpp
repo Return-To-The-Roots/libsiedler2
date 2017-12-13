@@ -24,6 +24,7 @@
 #include "libsiedler2/ArchivItem_Bitmap_Raw.h"
 #include "libsiedler2/ColorARGB.h"
 #include "libsiedler2/ErrorCodes.h"
+#include "libsiedler2/IAllocator.h"
 #include "libsiedler2/PixelBufferARGB.h"
 #include "libsiedler2/PixelBufferPaletted.h"
 #include "libsiedler2/libsiedler2.h"
@@ -83,6 +84,19 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
+    // Make maximum size by alternating between transparent and non-transparent pixels
+    PixelBufferPaletted buffer(10, 13, palette->transparentIdx);
+    for(unsigned y = 0; y < buffer.getHeight(); y++)
+    {
+        // Start with transparent
+        for(unsigned x = 1; x < buffer.getWidth(); x += 2)
+            buffer.set(x, y, 1);
+    }
+    baseArchivItem_Bitmap* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW));
+    shadowBmp->create(buffer, palette);
+    bmp.clear();
+    bmp.push(shadowBmp);
+    BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
@@ -94,6 +108,19 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
+    // Make maximum size by alternating between transparent and non-transparent pixels
+    PixelBufferPaletted buffer(10, 13, palette->transparentIdx);
+    for(unsigned y = 0; y < buffer.getHeight(); y++)
+    {
+        // Start with transparent
+        for(unsigned x = 1; x < buffer.getWidth(); x += 2)
+            buffer.set(x, y, 1);
+    }
+    baseArchivItem_Bitmap* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RLE));
+    shadowBmp->create(buffer, palette);
+    bmp.clear();
+    bmp.push(shadowBmp);
+    BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteBmp)

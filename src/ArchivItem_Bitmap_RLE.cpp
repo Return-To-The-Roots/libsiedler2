@@ -96,6 +96,8 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
             {
                 // farbige Pixel setzen
                 uint8_t count = data[position++];
+                if(position + count + 1 >= data.size())
+                    return ErrorCode::WRONG_FORMAT;
                 for(uint8_t i = 0; i < count; ++i, ++x)
                     setPixel(x, y, data[position++]);
 
@@ -104,11 +106,17 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
                 x += count;
             }
 
+            if(position >= data.size())
+                return ErrorCode::WRONG_FORMAT;
             // FF überspringen
+            assert(data[position] == 0xFF);
             ++position;
         }
 
+        if(position >= data.size())
+            return ErrorCode::WRONG_FORMAT;
         // FF überspringen
+        assert(data[position] == 0xFF);
         ++position;
 
         if(position != length)
@@ -151,8 +159,8 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
     int ec = print(buffer, palette);
     if(ec)
         return ec;
-    // maximale größe von RLE: width*height*2
-    std::vector<uint8_t> image(width * height * 2);
+    // Maximum size: 1-2 bytes per pixel + 1 byte FF per row + 1 byte FF end
+    std::vector<uint8_t> image(width * height * 2 + height + 1);
 
     // Startadressen
     std::vector<uint16_t> starts(height);
