@@ -109,13 +109,14 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             if(chunkLen != 256 * 3)
                 return ErrorCode::WRONG_FORMAT;
 
-            // Daten von Item auswerten
             ArchivItem_Palette* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
             if(mask == 2 && transClr < 256)
                 palette->transparentIdx = static_cast<uint8_t>(transClr);
             bitmap->setPalette(palette);
             if(int ec = palette->load(lbm.getStream(), false))
                 return ec;
+            // For S2 LBMs the transparent index is always 0 (if it has any transparency at all, TODO: Add solid bmps)
+            palette->transparentIdx = 0;
         } else if(isChunk(chunk, "BODY"))
         {
             if(!headerRead || bodyRead)

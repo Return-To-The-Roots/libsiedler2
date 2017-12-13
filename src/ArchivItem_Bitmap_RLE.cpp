@@ -101,8 +101,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
 
                 // transparente Pixel setzen
                 count = data[position++];
-                for(uint8_t i = 0; i < count; ++i, ++x)
-                    setPixel(x, y, palette->transparentIdx);
+                x += count;
             }
 
             // FF überspringen
@@ -148,7 +147,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
 
     fs << nx_ << ny_ << unknown << width << height << unknown2;
 
-    PixelBufferPaletted buffer(width, height);
+    PixelBufferPaletted buffer(width, height, palette->transparentIdx);
     int ec = print(buffer, palette);
     if(ec)
         return ec;

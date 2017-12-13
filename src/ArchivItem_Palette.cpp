@@ -63,6 +63,9 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
 
     BOOST_STATIC_ASSERT_MSG(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot read it in whole");
     fs.read(&colors[0].r, sizeof(colors));
+    // If the palette contains the transparent color, we use that, otherwise we use the default.
+    // This is mostly for backwards compatibility (we used to use index 254 which is that pink in PAL5) and ease of use (black as transparent color in bmps might be confusing)
+    transparentIdx = lookupOrDef(TRANSPARENT_COLOR, DEFAULT_TRANSPARENT_IDX);
 
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

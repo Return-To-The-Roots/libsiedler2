@@ -78,15 +78,16 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     // Daten einlesen
     fs >> data;
 
-    // Speicher anlegen
-    init(width, height, FORMAT_PALETTED, palette);
-
     uint8_t gray = palette->lookup(ColorRGB(255, 255, 255));
 
-    if(length != 0)
+    if(length == 0)
+    {
+        // Speicher anlegen
+        init(width, height, FORMAT_PALETTED, palette);
+    }else
     {
         uint32_t position = height * 2;
-        PixelBufferPaletted buffer(width, height);
+        PixelBufferPaletted buffer(width, height, palette->transparentIdx);
 
         // Einlesen
         for(uint16_t y = 0; y < height; ++y)

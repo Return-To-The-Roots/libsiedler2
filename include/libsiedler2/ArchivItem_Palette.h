@@ -39,7 +39,7 @@ public:
     /// The choice for the default transparent index is kind of arbitrary as in most files we have a separate encoding for transparent
     /// pixels. However in the LBMs containing the terrain textures we do have parts that should be transparent (background of edges and
     /// paths) and there index 0 is used consistently. Also PAL5 (default) contains more than 1 black color and index 0 does not seem to be
-    /// used for black in the S2 LST files.
+    /// used for black in the S2 LST files. For compatibility we use this only if the palette does not contain TRANSPARENT_COLOR.
     static const uint8_t DEFAULT_TRANSPARENT_IDX = 0;
 
     ArchivItem_Palette();
@@ -47,7 +47,7 @@ public:
     ~ArchivItem_Palette() override;
     RTTR_CLONEABLE(ArchivItem_Palette)
 
-    /// liest die Farbwerte aus einer Datei.
+    /// Load the palette from the file and set the transparent index to the index of TRANSPARENT_COLOR or DEFAULT_TRANSPARENT_IDX
     int load(std::istream& file, bool skip = true);
 
     /// schreibt die Farbwerte in eine Datei.
