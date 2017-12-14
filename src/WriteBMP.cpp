@@ -101,12 +101,15 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
             palette->get(i).toBGR(&colors[i][0]);
             colors[i][3] = 0; // Last entry ('A') is always 0 in bmps
         }
-        // Write special transparent color
-        TRANSPARENT_COLOR.toBGR(&colors[palette->transparentIdx][0]);
+        if(palette->hasTransparency())
+        {
+            // Write special transparent color
+            TRANSPARENT_COLOR.toBGR(&colors[palette->getTransparentIdx()][0]);
+        }
         fs.write(colors[0], bmih.clrused * 4);
     }
 
-    std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4), isPaletted ? palette->transparentIdx : 0);
+    std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4), isPaletted ? palette->getTransparentIdx() : 0);
     TextureFormat bufFmt = isPaletted ? FORMAT_PALETTED : FORMAT_BGRA;
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)

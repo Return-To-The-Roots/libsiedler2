@@ -87,7 +87,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     } else
     {
         uint32_t position = height * 2;
-        PixelBufferPaletted buffer(width, height, palette->transparentIdx);
+        PixelBufferPaletted buffer(width, height, palette->getTransparentIdx());
 
         // Einlesen
         for(uint16_t y = 0; y < height; ++y)
@@ -181,7 +181,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
             for(count = 0; x < width; ++count, ++x)
             {
                 uint8_t color = getPixelClrIdx(x, y, palette);
-                if(color == palette->transparentIdx)
+                if(palette->isTransparent(color))
                     break;
             }
             image[position++] = count;
@@ -190,7 +190,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
             for(count = 0; x < width; ++count, ++x)
             {
                 uint8_t color = getPixelClrIdx(x, y, palette);
-                if(color != palette->transparentIdx)
+                if(!palette->isTransparent(color))
                     break;
             }
             image[position++] = count;

@@ -83,6 +83,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
 
             lbm >> width >> height >> xOrig >> yOrig >> numPlanes >> mask >> compression >> pad >> transClr >> xAspect >> yAspect >> pageW
               >> pageH;
+
             // Nur 256 Farben und nicht mehr!
             if(numPlanes != 8 || (mask != 0 && mask != 2))
                 return ErrorCode::WRONG_FORMAT;
@@ -110,13 +111,15 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
                 return ErrorCode::WRONG_FORMAT;
 
             ArchivItem_Palette* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
-            if(mask == 2 && transClr < 256)
-                palette->transparentIdx = static_cast<uint8_t>(transClr);
             bitmap->setPalette(palette);
             if(int ec = palette->load(lbm.getStream(), false))
                 return ec;
-            // For S2 LBMs the transparent index is always 0 (if it has any transparency at all, TODO: Add solid bmps)
-            palette->transparentIdx = 0;
+            if(mask == 2 && transClr < 256)
+                palette->setTransparentIdx(static_cast<uint8_t>(transClr));
+            else
+            { // For S2 LBMs the transparent index is always 0 (if it has any transparency at all, TODO: Add solid bmps)
+                palette->setTransparentIdx(0);
+            }
         } else if(isChunk(chunk, "BODY"))
         {
             if(!headerRead || bodyRead)

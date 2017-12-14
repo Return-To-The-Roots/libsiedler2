@@ -77,10 +77,24 @@ public:
     /// Return true iff the 2 palettes specify the same colors
     bool isEqual(const ArchivItem_Palette& other) const;
 
-    uint8_t transparentIdx;
+    /// Return true iff transparency is enabled with this palette
+    bool hasTransparency() const { return transparentIdx < 256; }
+    /// Enable transparency for the given color index
+    void setTransparentIdx(uint8_t colorIdx) { transparentIdx = colorIdx; }
+    /// Disable transparency
+    void removeTransparency() { setBackgroundColorIdx(DEFAULT_TRANSPARENT_IDX); }
+    /// Disable transparency and set the background for images created with this palette
+    void setBackgroundColorIdx(uint8_t colorIdx) { transparentIdx = 0x100 + colorIdx; /* Conversion to uint8_t yields colorIdx*/ }
+    /// Return the transparent index or the background color index if not transparent.
+    uint8_t getTransparentIdx() const { return static_cast<uint8_t>(transparentIdx); }
+    /// Return true if the given color is transparent (always false if hasTransparency is false)
+    bool isTransparent(uint8_t colorIdx) const { return static_cast<uint16_t>(colorIdx) == transparentIdx; }
 
 protected:
     boost::array<ColorRGB, 256> colors; //-V730_NOINIT
+    /// Transparent color index. Might be > UINT8_MAX which means 'no transparency' and will result in false for any comparison with
+    /// another uint8_t (intended)
+    uint16_t transparentIdx;
 };
 } // namespace libsiedler2
 

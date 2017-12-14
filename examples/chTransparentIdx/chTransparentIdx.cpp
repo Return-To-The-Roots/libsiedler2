@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 
         bnw::cout << "Repacking file " << inputPath << " to " << outPath << std::endl;
 
-        palette->transparentIdx = options["from"].as<uint8_t>();
+        palette->setTransparentIdx(options["from"].as<uint8_t>());
         libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
         libsiedler2::Archiv lst;
         if(int ec = Load(inputPath.string(), lst, palette))
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
             bnw::cerr << "Fatal Error during reading: " << libsiedler2::getErrorString(ec) << std::endl;
             return 3;
         }
-        palette->transparentIdx = options["to"].as<uint8_t>();
+        palette->setTransparentIdx(options["to"].as<uint8_t>());
         if(int ec = Write(outPath.string(), lst, palette))
         {
             bnw::cerr << "Fatal Error during writing: " << libsiedler2::getErrorString(ec) << std::endl;

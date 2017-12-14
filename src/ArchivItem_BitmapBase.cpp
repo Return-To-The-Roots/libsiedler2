@@ -76,7 +76,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, uint8_t colorIdx)
     {
         assert(palette_);
         // RGB+A setzen
-        if(colorIdx == palette_->transparentIdx) // Transparenz
+        if(palette_->isTransparent(colorIdx)) // Transparenz
             pxlPtr[3] = 0x00;
         else
             ColorARGB(palette_->get(colorIdx)).toBGRA(pxlPtr);
@@ -102,7 +102,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorARGB clr
     {
         // Palettenindex setzen
         if(clr.getAlpha() == 0)
-            *pxlPtr = palette_->transparentIdx;
+            *pxlPtr = palette_->getTransparentIdx();
         else
             *pxlPtr = palette_->lookup(clr);
     } else
@@ -135,7 +135,7 @@ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const Arch
         ColorARGB clr = getARGBPixel(x, y);
         // Index von RGB+A liefern
         if(clr.getAlpha() == 0) // Transparenz
-            return palette->transparentIdx;
+            return palette->getTransparentIdx();
         else
             return palette->lookup(clr);
     }
@@ -148,7 +148,7 @@ libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) c
     if(getFormat() == FORMAT_PALETTED)
     {
         uint8_t pxlVal = getPalettedPixel(x, y);
-        return pxlVal == palette_->transparentIdx ? ColorARGB(0) : ColorARGB(palette_->get(pxlVal));
+        return (palette_->isTransparent(pxlVal)) ? ColorARGB(0) : ColorARGB(palette_->get(pxlVal));
     } else
         return getARGBPixel(x, y);
 }
@@ -203,7 +203,7 @@ void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat fo
     height_ = height;
     format_ = format;
 
-    uint8_t clear = (format == FORMAT_PALETTED) ? palette_->transparentIdx : 0;
+    uint8_t clear = (format == FORMAT_PALETTED) ? palette_->getTransparentIdx() : 0;
 
     pxlData_.resize(width_ * height_ * getBBP(), clear);
 }
@@ -286,10 +286,7 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
         for(unsigned y = 0; y < height_; y++)
         {
             for(unsigned x = 0; x < width_; x++)
-            {
-                uint8_t clrIdx = getPalettedPixel(x, y);
-                newBuffer.set(x, y, clrIdx == palette_->transparentIdx ? ColorARGB(0, 0, 0, 0) : ColorARGB(palette_->get(clrIdx)));
-            }
+                newBuffer.set(x, y, getPixel(x, y));
         }
         pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
     } else
@@ -300,7 +297,7 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
             for(unsigned x = 0; x < width_; x++)
             {
                 ColorARGB clr = getARGBPixel(x, y);
-                newBuffer.set(x, y, clr.getAlpha() == 0 ? palette_->transparentIdx : palette_->lookup(clr));
+                newBuffer.set(x, y, clr.getAlpha() == 0 ? palette_->getTransparentIdx() : palette_->lookup(clr));
             }
         }
         pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
@@ -317,18 +314,21 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     lx = ly = -1;
 
     if((width_ == 0) || (height_ == 0))
-    {
         return;
+
+    const ArchivItem_Palette* palette = getPalette();
+    if(palette && !getPalette()->hasTransparency())
+    {
+        vx = vy = 0;
+        vw = width_;
+        vh = height_;
     }
-
-    const uint8_t transparentIdx = getPalette() ? getPalette()->transparentIdx : ArchivItem_Palette::DEFAULT_TRANSPARENT_IDX;
-
     // find empty rows at left
     for(x = 0; x < width_; ++x)
     {
         for(y = 0; y < height_; ++y)
         {
-            if((getBBP() == 1) && (*getPixelPtr(x, y) != transparentIdx))
+            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
             {
                 vx = x;
                 break;
@@ -348,7 +348,7 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     {
         for(y = 0; y < height_; ++y)
         {
-            if((getBBP() == 1) && (*getPixelPtr(x, y) != transparentIdx))
+            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
             {
                 lx = x;
                 break;
@@ -368,7 +368,7 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     {
         for(x = 0; x < width_; ++x)
         {
-            if((getBBP() == 1) && (*getPixelPtr(x, y) != transparentIdx))
+            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
             {
                 vy = y;
                 break;
@@ -388,7 +388,7 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     {
         for(x = 0; x < width_; ++x)
         {
-            if((getBBP() == 1) && (*getPixelPtr(x, y) != transparentIdx))
+            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
             {
                 ly = y;
                 break;

@@ -117,9 +117,9 @@ bool libsiedler2::ArchivItem_Palette::lookup(const ColorRGB& clr, uint8_t& clrId
             return true;
         }
     }
-    if(colors[transparentIdx] == clr)
+    if(hasTransparency() && colors[transparentIdx] == clr)
     {
-        clrIdx = transparentIdx;
+        clrIdx = getTransparentIdx();
         return true;
     }
     return false;

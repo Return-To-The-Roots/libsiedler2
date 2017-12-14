@@ -155,7 +155,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
 
     fs << nx_ << ny_ << unknown << width << height << unknown2;
 
-    PixelBufferPaletted buffer(width, height, palette->transparentIdx);
+    PixelBufferPaletted buffer(width, height, palette->getTransparentIdx());
     int ec = print(buffer, palette);
     if(ec)
         return ec;
@@ -187,7 +187,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
             for(count = 0; count < width - x; ++count)
             {
                 color = buffer.get(x + count, y);
-                if(color == palette->transparentIdx)
+                if(palette->isTransparent(color))
                     break;
                 image[position + 1 + count] = color;
                 if(count == 0x7F)
@@ -202,7 +202,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
             for(count = 0; count < width - x; ++count)
             {
                 color = buffer.get(x + count, y);
-                if(color != palette->transparentIdx || count == 0xFF)
+                if(!palette->isTransparent(color) || count == 0xFF)
                     break;
             }
             image[position++] = (uint8_t)count;

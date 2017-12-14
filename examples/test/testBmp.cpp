@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
     // Make maximum size by alternating between transparent and non-transparent pixels
-    PixelBufferPaletted buffer(10, 13, palette->transparentIdx);
+    PixelBufferPaletted buffer(10, 13, palette->getTransparentIdx());
     for(unsigned y = 0; y < buffer.getHeight(); y++)
     {
         // Start with transparent
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
     // Make maximum size by alternating between transparent and non-transparent pixels
-    PixelBufferPaletted buffer(10, 13, palette->transparentIdx);
+    PixelBufferPaletted buffer(10, 13, palette->getTransparentIdx());
     for(unsigned y = 0; y < buffer.getHeight(); y++)
     {
         // Start with transparent
@@ -625,7 +625,7 @@ BOOST_AUTO_TEST_CASE(TransparentTex)
     unsigned w = 10, h = 14;
     // Use different size for bitmap (bigger width, smaller height)
     unsigned bw = w + 3, bh = h - 2;
-    std::vector<uint8_t> inBufferPal(w * h, palette->transparentIdx);
+    std::vector<uint8_t> inBufferPal(w * h, palette->getTransparentIdx());
     // Buffer in (byte) BGRA format
     std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u);
     // With all 0
@@ -893,7 +893,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
     unsigned w = 7, h = 8;
     // Use bigger size for bitmap
     unsigned bw = w + 2, bh = h + 6;
-    std::vector<uint8_t> inBufferPal(w * h, palette->transparentIdx);
+    std::vector<uint8_t> inBufferPal(w * h, palette->getTransparentIdx());
     ArchivItem_Bitmap_Player bmp;
     ArchivItem_Bitmap_Raw bmpRaw;
     {
@@ -938,8 +938,8 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
             bmpRaw.getVisibleArea(visRaw.x, visRaw.y, visRaw.w, visRaw.h);
             BOOST_REQUIRE_EQUAL(visRaw, rect);
 
-            inBufferPal[rect.x + rect.y * w] = palette->transparentIdx;
-            inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = palette->transparentIdx;
+            inBufferPal[rect.x + rect.y * w] = palette->getTransparentIdx();
+            inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = palette->getTransparentIdx();
 
             // Buffer in (byte) BGRA format
             std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u, 0);
@@ -954,7 +954,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
             Rect visRaw2;
             bmpRaw.getVisibleArea(visRaw2.x, visRaw2.y, visRaw2.w, visRaw2.h);
             BOOST_REQUIRE_EQUAL(visRaw2, rect);
-            inBufferPal[rect.x + rect.y * w] = palette->transparentIdx;
+            inBufferPal[rect.x + rect.y * w] = palette->getTransparentIdx();
         }
     }
 }

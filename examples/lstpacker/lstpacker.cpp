@@ -21,6 +21,7 @@
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 #include <boost/nowide/args.hpp>
 #include <boost/nowide/integration/filesystem.hpp>
 #include <boost/nowide/iostream.hpp>
@@ -42,14 +43,15 @@ int main(int argc, char* argv[])
 
     bpo::options_description desc("Usage:\n"
                                   "pack:   lstpacker <directory>\n"
-                                  "unpack: lstpacker <file.lst>\n"
-                                  "Optionally pass a color palette file (bbm/act) to use instead of default one");
-    desc.add_options()("help,h", "Show help")("file,f", bpo::value<bfs::path>(), "File to unpack or directory to pack")(
-      "palette,p", bpo::value<bfs::path>(), "Palette to use")("palAsTxt,t", "Output palettes as human readable txt files")(
+                                  "unpack: lstpacker <file.lst> <file.lst> ...\n");
+    desc.add_options()("help,h", "Show help")("file,f", bpo::value<std::vector<bfs::path> >()->multitoken(),
+                                              "File to unpack or directory to pack")("palette,p", bpo::value<bfs::path>(),
+                                                                                     "Palette  (bbm/act) to use instead of default one")(
+      "palAsTxt,t", "Output palettes as human readable txt files")(
       "texFmt", bpo::value<std::string>(&texFmt)->default_value("original"),
       "Texture format to use (usually equal output format): (o)riginal, (p)paletted, (B)GRA");
     bpo::positional_options_description positionalOptions;
-    positionalOptions.add("file", 1).add("palette", 1);
+    positionalOptions.add("file", -1);
 
     bpo::variables_map options;
     bpo::store(bpo::command_line_parser(argc, argv).options(desc).positional(positionalOptions).run(), options);
@@ -68,13 +70,6 @@ int main(int argc, char* argv[])
         libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
     else
         throw bpo::validation_error(bpo::validation_error::invalid_option_value, "texFmt");
-
-    bfs::path inputPath(options["file"].as<bfs::path>());
-    if(!bfs::exists(inputPath))
-    {
-        bnw::cerr << "Input file or folder does not exist: " << inputPath;
-        return 1;
-    }
 
     libsiedler2::Archiv bbm;
 
@@ -104,36 +99,46 @@ int main(int argc, char* argv[])
 
     libsiedler2::ArchivItem_Palette* palette = (libsiedler2::ArchivItem_Palette*)bbm[0];
 
-    if(bfs::is_regular_file(inputPath))
+    std::vector<bfs::path> inputPaths(options["file"].as<std::vector<bfs::path> >());
+    BOOST_FOREACH(const bfs::path& inputPath, inputPaths)
     {
-        if(!inputPath.has_extension())
+        if(!bfs::exists(inputPath))
         {
-            bnw::cerr << "Input filepath has no extension: " << inputPath;
+            bnw::cerr << "Input file or folder does not exist: " << inputPath;
             return 1;
         }
-        std::string outPath = inputPath.stem().string();
 
-        bnw::cout << "Unpacking file " << inputPath << " to " << outPath << std::endl;
-
-        libsiedler2::Archiv lst;
-        if(Load(inputPath.string(), lst, palette) != 0)
+        if(bfs::is_regular_file(inputPath))
         {
-            bnw::cerr << "Fatal Error: " << std::endl;
-            bnw::cerr << inputPath << " was not found or cannot be opened" << std::endl;
-            return 3;
-        }
+            if(!inputPath.has_extension())
+            {
+                bnw::cerr << "Input filepath has no extension: " << inputPath;
+                return 1;
+            }
+            std::string outPath = inputPath.stem().string();
 
-        unpack(outPath, lst, palette, "", options.count("palAsTxt") != 0u);
-    } else if(bfs::is_directory(inputPath))
-    {
-        bfs::path outFilepath = (inputPath / ".").parent_path(); // Get real path to parent dir
-        outFilepath += ".NEW.LST";
-        bnw::cout << "Packing directory " << inputPath << " to " << outFilepath << std::endl;
-        pack(inputPath.string(), outFilepath.string(), palette);
-    } else
-    {
-        bnw::cerr << "Unknown type. Not a file or folder: " << inputPath;
-        return 1;
+            bnw::cout << "Unpacking file " << inputPath << " to " << outPath << std::endl;
+
+            libsiedler2::Archiv lst;
+            if(Load(inputPath.string(), lst, palette) != 0)
+            {
+                bnw::cerr << "Fatal Error: " << std::endl;
+                bnw::cerr << inputPath << " was not found or cannot be opened" << std::endl;
+                return 3;
+            }
+
+            unpack(outPath, lst, palette, "", options.count("palAsTxt") != 0u);
+        } else if(bfs::is_directory(inputPath))
+        {
+            bfs::path outFilepath = (inputPath / ".").parent_path(); // Get real path to parent dir
+            outFilepath += ".NEW.LST";
+            bnw::cout << "Packing directory " << inputPath << " to " << outFilepath << std::endl;
+            pack(inputPath.string(), outFilepath.string(), palette);
+        } else
+        {
+            bnw::cerr << "Unknown type. Not a file or folder: " << inputPath;
+            return 1;
+        }
     }
 
     bnw::cout << "done" << std::endl;
