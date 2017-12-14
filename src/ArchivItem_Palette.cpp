@@ -165,7 +165,7 @@ const libsiedler2::ColorRGB& libsiedler2::ArchivItem_Palette::operator[](unsigne
  *
  *  @param[in,out] buffer Zielpuffer für die Palettendaten (muss 256*4-Byte groß sein)
  */
-void libsiedler2::ArchivItem_Palette::copyToBGRA(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency) const
+void libsiedler2::ArchivItem_Palette::copyToBGRA(uint8_t* buffer, size_t bufSize) const
 {
     if(bufSize < 256 * 4)
         throw std::runtime_error("Buffer is to small!");
@@ -173,13 +173,6 @@ void libsiedler2::ArchivItem_Palette::copyToBGRA(uint8_t* buffer, size_t bufSize
     // Farben kopieren
     for(uint16_t i = 0; i < 256; ++i)
         ColorARGB(colors[i]).toBGRA(&buffer[i * 4]);
-    if(writeFakeTransparency)
-        TRANSPARENT_COLOR.toBGR(&buffer[transparentIdx * 4]);
-    else
-    {
-        // Transparentes Element transparent machen
-        ColorARGB(0).toBGRA(&buffer[transparentIdx * 4]);
-    }
 }
 
 bool libsiedler2::ArchivItem_Palette::isEqual(const ArchivItem_Palette& other) const

@@ -71,10 +71,8 @@ public:
     /// Index-Operator von @p ArchivItem_Palette.
     const ColorRGB& operator[](unsigned index) const;
 
-    /// Copy palette to the buffer as BGRA
-    /// If writeFakeTransparency is true, then the pseudo transparency color is written
-    /// otherwise a true transparency (all 0) is written
-    void copyToBGRA(uint8_t* buffer, size_t bufSize, bool writeFakeTransparency = false) const;
+    /// Copy palette to the buffer as BGRA. Ignores transparency
+    void copyToBGRA(uint8_t* buffer, size_t bufSize) const;
 
     /// Return true iff the 2 palettes specify the same colors
     bool isEqual(const ArchivItem_Palette& other) const;

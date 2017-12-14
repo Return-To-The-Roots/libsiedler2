@@ -121,16 +121,10 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
 
         pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
         bitmap->setPalette(pal);
-        bool transpClrSet = false;
         for(unsigned i = 0; i < numClrsUsed; ++i)
         {
-            ColorARGB clr = ColorARGB::fromBGRA(&colors[i][0]);
-            pal->set(i, clr); //-V522
-            if(clr.getAlpha() == 0 && !transpClrSet)
-            {
-                transpClrSet = true;
-                pal->transparentIdx = static_cast<uint8_t>(i);
-            }
+            ColorARGB clr = ColorARGB::fromBGRA(&colors[i][0]); // NOTE: Alpha is always 0!
+            pal->set(i, clr);                                   //-V522
         }
     }
 

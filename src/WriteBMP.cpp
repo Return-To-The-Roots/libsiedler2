@@ -96,7 +96,13 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     if(bmih.clrused > 0)
     {
         uint8_t colors[256][4];
-        palette->copyToBGRA(&colors[0][0], sizeof(colors), true);
+        for(int i = 0; i < bmih.clrused; i++)
+        {
+            palette->get(i).toBGR(&colors[i][0]);
+            colors[i][3] = 0; // Last entry ('A') is always 0 in bmps
+        }
+        // Write special transparent color
+        TRANSPARENT_COLOR.toBGR(&colors[palette->transparentIdx][0]);
         fs.write(colors[0], bmih.clrused * 4);
     }
 
