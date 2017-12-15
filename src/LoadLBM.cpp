@@ -23,14 +23,14 @@
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "OpenMemoryStream.h"
+#include "boost/algorithm/string/case_conv.hpp"
+#include "boost/filesystem/path.hpp"
 #include "fileFormatHelpers.h"
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <iostream>
-#include "boost/algorithm/string/case_conv.hpp"
-#include "boost/filesystem/path.hpp"
 /**
  *  lädt eine LBM-File in ein Archiv.
  *
@@ -119,7 +119,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             if(mask == 2 && transClr < 256)
                 palette->setTransparentIdx(static_cast<uint8_t>(transClr));
             else
-            { 
+            {
                 // For S2 TEX*.LBMs the transparent index is always 0
                 std::string fileName = bfs::path(file).stem().string();
                 if(boost::algorithm::to_upper_copy(fileName.substr(0, 3)) == "TEX")
