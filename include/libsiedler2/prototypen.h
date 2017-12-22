@@ -110,6 +110,8 @@ namespace loader {
     int LoadINI(const std::string& file, Archiv& items);
     int WriteINI(const std::string& file, const Archiv& items);
 
+    int LoadTxtPalette(const std::string& file, Archiv& items);
+    int WriteTxtPalette(const std::string& file, const ArchivItem_Palette& palette);
     int LoadPaletteAnim(const std::string& file, Archiv& items);
     int WritePaletteAnim(const std::string& file, const Archiv& items);
 

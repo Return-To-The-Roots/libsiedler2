@@ -32,6 +32,14 @@ bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
         return true;
     else if(left.nr > right.nr)
         return false;
+    // Palettes come first
+    if(left.bobtype != right.bobtype)
+    {
+        if(left.bobtype == BOBTYPE_PALETTE)
+            return true;
+        else if(right.bobtype == BOBTYPE_PALETTE)
+            return false;
+    }
     // Both negative or same
     for(std::string::const_iterator lit = left.name.begin(), rit = right.name.begin(); lit != left.name.end() && rit != right.name.end();
         ++lit, ++rit)

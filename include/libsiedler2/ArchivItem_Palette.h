@@ -90,6 +90,9 @@ public:
     /// Return true if the given color is transparent (always false if hasTransparency is false)
     bool isTransparent(uint8_t colorIdx) const { return static_cast<uint16_t>(colorIdx) == transparentIdx; }
 
+    bool operator==(const ArchivItem_Palette& other) const { return colors == other.colors && transparentIdx == other.transparentIdx; }
+    bool operator!=(const ArchivItem_Palette& other) const { return !(*this == other); }
+
 protected:
     boost::array<ColorRGB, 256> colors; //-V730_NOINIT
     /// Transparent color index. Might be > UINT8_MAX which means 'no transparency' and will result in false for any comparison with

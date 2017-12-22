@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     bnw::args(argc, argv);
     bnw::nowide_filesystem();
 
-    std::string texFmt;
+    std::string texFmt, outFileExt;
 
     bpo::options_description desc("Usage:\n"
                                   "pack:   lstpacker <directory>\n"
@@ -49,7 +49,8 @@ int main(int argc, char* argv[])
                                                                                      "Palette  (bbm/act) to use instead of default one")(
       "palAsTxt,t", "Output palettes as human readable txt files")(
       "texFmt", bpo::value<std::string>(&texFmt)->default_value("original"),
-      "Texture format to use (usually equal output format): (o)riginal, (p)paletted, (B)GRA");
+      "Texture format to use (usually equal output format): (o)riginal, (p)paletted, (B)GRA")(
+      "outFileFmt,o", bpo::value<std::string>(&outFileExt)->default_value("LST"), "Output file format (extension)");
     bpo::positional_options_description positionalOptions;
     positionalOptions.add("file", -1);
 
@@ -131,7 +132,7 @@ int main(int argc, char* argv[])
         } else if(bfs::is_directory(inputPath))
         {
             bfs::path outFilepath = (inputPath / ".").parent_path(); // Get real path to parent dir
-            outFilepath += ".NEW.LST";
+            outFilepath += ".NEW." + outFileExt;
             bnw::cout << "Packing directory " << inputPath << " to " << outFilepath << std::endl;
             pack(inputPath.string(), outFilepath.string(), palette);
         } else

@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
+#include "ArchivItem_Palette.h"
 #include "ArchivItem_PaletteAnimation.h"
 #include "ErrorCodes.h"
 #include "IAllocator.h"
@@ -25,9 +26,65 @@
 #include "libutil/StringConversion.h"
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/nowide/fstream.hpp>
+#include <iomanip>
 
 namespace libsiedler2 { namespace loader {
+    static const std::string txtPalHeader = "Bitmap palette V1";
     static const std::string palAnimHeader = "Palette animations V1";
+
+    int LoadTxtPalette(const std::string& file, Archiv& items)
+    {
+        s25util::ClassicImbuedStream<bnw::ifstream> fs(file);
+        if(!fs)
+            return ErrorCode::FILE_NOT_ACCESSIBLE;
+        std::string header;
+        if(!std::getline(fs, header) || header != txtPalHeader)
+            return ErrorCode::WRONG_HEADER;
+        boost::interprocess::unique_ptr<ArchivItem_Palette, Deleter<ArchivItem_Palette> > pal(
+          dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE)));
+        items.alloc(1);
+        std::string transparency, sColor;
+        unsigned hasTransparency, transpColorIdx;
+        if(!(fs >> transparency >> hasTransparency >> sColor >> transpColorIdx))
+            return ErrorCode::WRONG_FORMAT;
+        if(transparency != "Transparency:" || sColor != "Color:")
+            return ErrorCode::WRONG_FORMAT;
+        if(hasTransparency)
+            pal->setTransparentIdx(transpColorIdx);
+        else
+            pal->setBackgroundColorIdx(transpColorIdx);
+        while(fs)
+        {
+            unsigned idx, clr;
+            if(!(fs >> std::dec >> idx >> std::hex >> clr) || idx >= 256)
+            {
+                if(fs.eof())
+                {
+                    items.set(0, pal.release());
+                    return ErrorCode::NONE;
+                } else
+                    return ErrorCode::WRONG_FORMAT;
+            }
+            pal->set(idx, ColorRGB(clr >> 16, clr >> 8, clr));
+        }
+        return ErrorCode::UNEXPECTED_EOF;
+    }
+
+    int WriteTxtPalette(const std::string& file, const ArchivItem_Palette& palette)
+    {
+        s25util::ClassicImbuedStream<bnw::ofstream> fs(file);
+        if(!fs)
+            return ErrorCode::FILE_NOT_ACCESSIBLE;
+        fs << txtPalHeader << std::endl;
+        fs << "Transparency: " << unsigned(palette.hasTransparency()) << " Color: " << unsigned(palette.getTransparentIdx()) << std::endl;
+        for(unsigned i = 0; i < 256; i++)
+        {
+            fs << std::setw(3) << std::setfill(' ') << i << "\t0x" << std::uppercase << std::hex << std::setfill('0') << std::setw(2)
+               << unsigned(palette.get(i).getRed()) << std::setw(2) << unsigned(palette.get(i).getGreen()) << std::setw(2)
+               << unsigned(palette.get(i).getBlue()) << std::dec << std::endl;
+        }
+        return ErrorCode::NONE;
+    }
 
     int LoadPaletteAnim(const std::string& file, Archiv& items)
     {

@@ -184,8 +184,11 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
             ret = loader::LoadSND(file, items);
         else if(extension == "txt")
+        {
             ret = loader::LoadPaletteAnim(file, items);
-        else
+            if(ret)
+                ret = loader::LoadTxtPalette(file, items);
+        } else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
     {
@@ -232,6 +235,13 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             {
                 if(tmpItems.size() != 1)
                     return ErrorCode::UNSUPPORTED_FORMAT;
+                const ArchivItem_Palette* curPal = palette;
+                if(entry.nr >= 0)
+                {
+                    if(static_cast<unsigned>(entry.nr) < items.size() && items[entry.nr]->getBobType() == BOBTYPE_PALETTE)
+                        curPal = static_cast<const ArchivItem_Palette*>(items[entry.nr]);
+                } else if(!items.empty() && items[items.size() - 1u]->getBobType() == BOBTYPE_PALETTE)
+                    curPal = static_cast<const ArchivItem_Palette*>(items[items.size() - 1u]);
 
                 ArchivItem_BitmapBase* bmp;
 
@@ -247,9 +257,9 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     ArchivItem_BitmapBase* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(entry.bobtype));
                     std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
                     if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, palette); //-V522
+                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, curPal); //-V522
                     else
-                        dynamic_cast<baseArchivItem_Bitmap*>(bmp)->print(buffer, palette);
+                        dynamic_cast<baseArchivItem_Bitmap*>(bmp)->print(buffer);
 
                     switch(entry.bobtype)
                     {
@@ -259,14 +269,14 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                         {
                             baseArchivItem_Bitmap* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp);
                             assert(bmpBase);
-                            bmpBase->create(bmp->getWidth(), bmp->getHeight(), buffer, palette); //-V522
+                            bmpBase->create(bmp->getWidth(), bmp->getHeight(), buffer); //-V522
                             break;
                         }
                         case BOBTYPE_BITMAP_PLAYER:
                         {
                             ArchivItem_Bitmap_Player* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp);
                             assert(bmpPl);
-                            bmpPl->create(bmp->getWidth(), bmp->getHeight(), buffer, palette); //-V522
+                            bmpPl->create(bmp->getWidth(), bmp->getHeight(), buffer, curPal); //-V522
                         }
                         break;
                         default: return ErrorCode::UNSUPPORTED_FORMAT;
@@ -276,6 +286,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 bmp->setName(entry.name);
                 bmp->setNx(entry.nx);
                 bmp->setNy(entry.ny);
+                bmp->setPaletteCopy(*curPal);
 
                 newItem = bmp;
             } else if(entry.bobtype == BOBTYPE_PALETTE_ANIM)
@@ -427,6 +438,8 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
                 file.bobtype = BOBTYPE_BITMAP_SHADOW;
             else if(part == "paletteanims")
                 file.bobtype = BOBTYPE_PALETTE_ANIM;
+            else if(part == "palette")
+                file.bobtype = BOBTYPE_PALETTE;
 
             else if(part.substr(0, 2) == "nx" || part.substr(0, 2) == "dx")
                 file.nx = s25util::fromStringClassic<unsigned>(part.substr(2));
