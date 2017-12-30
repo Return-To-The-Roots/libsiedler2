@@ -169,7 +169,7 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
         else if(extension == "dat" || extension == "idx")
         {
             ret = loader::LoadDATIDX(file, items, palette);
-            if(ret && extension == "dat")
+            if(ret == ErrorCode::WRONG_HEADER && extension == "dat")
                 ret = loader::LoadSND(file, items);
         } else if(extension == "lbm")
             ret = loader::LoadLBM(file, items);
@@ -185,9 +185,15 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
             ret = loader::LoadSND(file, items);
         else if(extension == "txt")
         {
-            ret = loader::LoadPaletteAnim(file, items);
-            if(ret)
+            bfs::path filename = filePath.stem();
+            std::string ext2 = (filename.has_extension()) ? filename.extension().string().substr(1) : "";
+            boost::algorithm::to_lower(ext2);
+            if(ext2 == "paletteanims")
+                ret = loader::LoadPaletteAnim(file, items);
+            else if(ext2 == "palette")
                 ret = loader::LoadTxtPalette(file, items);
+            else
+                ret = loader::LoadTXT(file, items);
         } else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)

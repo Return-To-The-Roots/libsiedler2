@@ -39,39 +39,6 @@ using namespace libsiedler2;
 namespace bnw = boost::nowide;
 namespace bfs = boost::filesystem;
 
-void checkTxtExtraction(const string& directory, const Archiv& lst)
-{
-    for(unsigned i = 0; i < lst.size(); ++i)
-    {
-        const ArchivItem* item = lst.get(i);
-
-        if(!item)
-            continue;
-        if(item->getBobType() != BOBTYPE_TEXT)
-            return;
-    }
-
-    const std::string filePath = directory + ".summary.txt";
-
-    cout << "extracting " << filePath.c_str() << ": ";
-    bnw::ofstream fTxt(filePath.c_str(), ios::binary);
-
-    for(unsigned i = 0; i < lst.size(); ++i)
-    {
-        const ArchivItem* item = lst.get(i);
-
-        if(item)
-        {
-            const ArchivItem_Text* txt = dynamic_cast<const ArchivItem_Text*>(item);
-            if(txt->write(fTxt, false) != 0)
-                fTxt << " [error]";
-            else if(!txt->getText().empty())
-                fTxt.seekp(-1, std::ios_base::cur); // Remove NULL terminator
-        }
-        fTxt << char('\n');
-    }
-}
-
 void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const libsiedler2::ArchivItem_Palette* palette,
             const std::string& fileNameHexPrefix, bool paletteAsTxt)
 {
@@ -240,7 +207,6 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
         }
     }
 
-    checkTxtExtraction(directory, lst);
     if(containsPalAnim)
     {
         bfs::path newfile(directory);

@@ -53,8 +53,10 @@ void pack(const std::string& directory, const std::string& file, const libsiedle
 
     std::cout << "Loading files " << std::flush;
     if(int ec = LoadFolder(files, lst, palette))
+    {
         std::cout << "Error: " << getErrorString(ec) << std::endl;
-    else
+        return;
+    } else
         std::cout << "done" << std::endl;
 
     std::cout << "Writing data to " << file << ": ";

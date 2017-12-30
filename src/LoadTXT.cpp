@@ -49,7 +49,9 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
 
     int16_t header;
     // Header einlesen
-    if(!(fs >> header))
+    if(fileSize < sizeof(header))
+        header = 0;
+    else if(!(fs >> header))
         return ErrorCode::WRONG_HEADER;
 
     items.clear();
@@ -58,7 +60,8 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
     if(header != (int16_t)0xFDE7)
     {
         // den Header zurückspringen
-        fs.setPositionRel(-2);
+        if(fileSize >= sizeof(header))
+            fs.setPositionRel(-2);
 
         ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
         int ec = item->load(fs.getStream(), conversion);
