@@ -186,7 +186,7 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
         else if(extension == "txt")
         {
             bfs::path filename = filePath.stem();
-            std::string ext2 = (filename.has_extension()) ? filename.extension().string().substr(1) : "";
+            std::string ext2 = (filename.has_extension()) ? filename.extension().string().substr(1) : filename.string();
             boost::algorithm::to_lower(ext2);
             if(ext2 == "paletteanims")
                 ret = loader::LoadPaletteAnim(file, items);
