@@ -233,21 +233,21 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             newItem = font.release();
         } else if(entry.bobtype != BOBTYPE_NONE)
         {
+            const ArchivItem_Palette* curPal = palette;
+            if(entry.nr >= 0)
+            {
+                if(static_cast<unsigned>(entry.nr) < items.size() && items[entry.nr]->getBobType() == BOBTYPE_PALETTE)
+                    curPal = static_cast<const ArchivItem_Palette*>(items[entry.nr]);
+            } else if(!items.empty() && items[items.size() - 1u]->getBobType() == BOBTYPE_PALETTE)
+                curPal = static_cast<const ArchivItem_Palette*>(items[items.size() - 1u]);
             Archiv tmpItems;
-            if(int ec = Load(entry.filePath, tmpItems, palette))
+            if(int ec = Load(entry.filePath, tmpItems, curPal))
                 return ec;
             if(entry.bobtype == BOBTYPE_BITMAP_PLAYER || entry.bobtype == BOBTYPE_BITMAP_RAW || entry.bobtype == BOBTYPE_BITMAP_RLE
                || entry.bobtype == BOBTYPE_BITMAP_SHADOW)
             {
                 if(tmpItems.size() != 1)
                     return ErrorCode::UNSUPPORTED_FORMAT;
-                const ArchivItem_Palette* curPal = palette;
-                if(entry.nr >= 0)
-                {
-                    if(static_cast<unsigned>(entry.nr) < items.size() && items[entry.nr]->getBobType() == BOBTYPE_PALETTE)
-                        curPal = static_cast<const ArchivItem_Palette*>(items[entry.nr]);
-                } else if(!items.empty() && items[items.size() - 1u]->getBobType() == BOBTYPE_PALETTE)
-                    curPal = static_cast<const ArchivItem_Palette*>(items[items.size() - 1u]);
 
                 ArchivItem_BitmapBase* bmp;
 
