@@ -49,13 +49,15 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     if(!bitmap)
         return ErrorCode::WRONG_ARCHIV;
 
+    const uint16_t width = bitmap->getWidth();
+    const uint16_t height = bitmap->getHeight();
     BmpFileHeader bmpHd;
     BitmapInfoHeader bmih;
     setChunkId(bmpHd.header, "BM");
     bmpHd.reserved = 0;
     bmih.headerSize = sizeof(bmih);
-    bmih.width = bitmap->getWidth();
-    bmih.height = bitmap->getHeight();
+    bmih.width = width;
+    bmih.height = height;
     bmih.planes = 1;
     bmih.compression = 0;
     bmih.size = 0; // Valid for BI_RGB
@@ -81,7 +83,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     bmpHd.pixelOffset = sizeof(bmpHd) + sizeof(bmih) + bmih.clrused * 4;
     unsigned numLineAlignBytes = (bmih.width * bmih.bpp / 8) % 4;
     numLineAlignBytes = numLineAlignBytes == 0 ? 0 : 4 - numLineAlignBytes;
-    bmpHd.fileSize = (bitmap->getWidth() * bmih.bpp / 8 + numLineAlignBytes) * bitmap->getHeight() + bmpHd.pixelOffset;
+    bmpHd.fileSize = (width * bmih.bpp / 8 + numLineAlignBytes) * height + bmpHd.pixelOffset;
 
     // Datei zum schreiben öffnen
     libendian::EndianOStreamAdapter<false, bnw::ofstream> fs(file, std::ios_base::binary);
@@ -131,22 +133,21 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     std::vector<uint8_t> lineAlignBytes(numLineAlignBytes);
 
     // Bottom-Up, "von unten nach oben"
-    for(int y = bmih.height - 1; y >= 0; --y)
+    for(int y = height - 1; y >= 0; --y)
     {
-        unsigned idx = bmih.width * y;
-        if(bmih.bpp == 8)
-            fs.write(&buffer[idx], bmih.width);
+        unsigned idx = width * y;
+        if(isPaletted)
+            fs.write(&buffer[idx], width);
         else
         {
             idx *= 4; // BGRA
-            for(int x = 0; x < bmih.width; ++x, idx += 4)
+            for(int x = 0; x < width; ++x, idx += 4)
             {
                 ColorRGB clr;
                 if(buffer[idx + 3] == 0x00)
-                    clr = TRANSPARENT_COLOR;
+                    fs << TRANSPARENT_COLOR.b << TRANSPARENT_COLOR.g << TRANSPARENT_COLOR.r;
                 else
-                    clr = ColorRGB::fromBGR(&buffer[idx]);
-                fs << clr.b << clr.g << clr.r;
+                    fs << buffer[idx] << buffer[idx + 1] << buffer[idx + 2]; // Buffer is BGRA
             }
         }
         if(!lineAlignBytes.empty())

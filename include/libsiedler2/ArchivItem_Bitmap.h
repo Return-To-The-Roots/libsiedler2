@@ -54,6 +54,8 @@ public:
     /// Create a bitmap with the given size and fill it with the data from the pixelBuffer
     template<class T_PixelBuffer>
     int create(uint16_t width, uint16_t height, const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL);
+
+    void flipVertical();
 };
 
 /// Basisklasse für Bitmapitems.
