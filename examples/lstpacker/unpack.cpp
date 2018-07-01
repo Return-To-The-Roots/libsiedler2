@@ -135,6 +135,14 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
             {
                 const ArchivItem_Bob* bob = dynamic_cast<const ArchivItem_Bob*>(item);
                 unpack(directory, *bob, palette);
+                //links[][8][2][6]
+                bnw::ofstream linksFile(directory + ".links");
+                for(unsigned i = 0; i < bob->getNumItems(); i ++)
+                {
+                    if(i % (8 * 2 * 6) == 0)
+                        linksFile << "Job ID " << i / (8*2*6) << std::endl;
+                    linksFile << i << ": " << bob->getLink(i) << std::endl;
+                }
             }
             break;
             case BOBTYPE_MAP: // Mapfiles
