@@ -21,6 +21,7 @@
 
 #include "FileEntry.h"
 #include "enumTypes.h"
+#include "ErrorCodes.h"
 #include <string>
 #include <vector>
 

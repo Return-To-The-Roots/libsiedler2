@@ -29,6 +29,7 @@ namespace libsiedler2 {
 /// Klasse für XMIDI-Sounds.
 class ArchivItem_Sound_XMidi : public ArchivItem_Sound
 {
+    bool isTrackConverted(uint16_t track) const;
 public:
     ArchivItem_Sound_XMidi();
     RTTR_CLONEABLE(ArchivItem_Sound_XMidi)
@@ -48,7 +49,8 @@ public:
             return &tracklist[track];
         return NULL;
     }
-    const MIDI_Track* getMidiTrack(uint16_t trackIdx);
+    const MIDI_Track& getMidiTrack(uint16_t trackIdx);
+    MIDI_Track getMidiTrack(uint16_t trackIdx) const;
     uint16_t getNumTracks() const { return numTracks; }
     uint16_t getPPQN() const { return ppqs; }
 

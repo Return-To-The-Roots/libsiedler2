@@ -200,19 +200,29 @@ int ArchivItem_Sound_XMidi::write(std::ostream& file) const
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
-const MIDI_Track* ArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
+bool ArchivItem_Sound_XMidi::isTrackConverted(uint16_t track) const
 {
+    return track < midiTracklist.size() && !midiTracklist[track].getData().empty();
+}
+
+const MIDI_Track& ArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx)
+{
+    if(!isTrackConverted(trackIdx))
+        midiTracklist[trackIdx] = const_cast<const ArchivItem_Sound_XMidi*>(this)->getMidiTrack(trackIdx);
+    return midiTracklist[trackIdx];
+}
+
+MIDI_Track ArchivItem_Sound_XMidi::getMidiTrack(uint16_t trackIdx) const
+{
+    if(isTrackConverted(trackIdx))
+        return midiTracklist[trackIdx];
     const XMIDI_Track* origTrack = getTrack(trackIdx);
     if(!origTrack)
-        return NULL;
-    if(midiTracklist[trackIdx].getData().empty())
-    {
-        XMIDI_TrackConverter converter(*origTrack);
-        if(!converter.Convert())
-            throw std::runtime_error("Invalid XMIDI track detected");
-        midiTracklist[trackIdx] = converter.CreateMidiTrack();
-    }
-    return &midiTracklist[trackIdx];
+        throw std::out_of_range("Invalid XMidi track index");
+    XMIDI_TrackConverter converter(*origTrack);
+    if(!converter.Convert())
+        throw std::runtime_error("Invalid XMIDI track detected");
+    return converter.CreateMidiTrack();
 }
 
 void ArchivItem_Sound_XMidi::addTrack(const XMIDI_Track& track)
