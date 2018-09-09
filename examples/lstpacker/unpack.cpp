@@ -33,6 +33,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include "libsiedler2/ArchivItem_Sound_Midi.h"
+#include "libsiedler2/ArchivItem_Sound_XMidi.h"
 
 using namespace std;
 using namespace libsiedler2;
@@ -92,8 +94,29 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     }
                     break;
                     case SOUNDTYPE_XMIDI: // XMIDI
-                        cerr << "Unsupported xmidi sound ignored: " << newFileBaseName << endl;
+                    {
+                        newfile << "midi";
+
+                        cout << "extracting " << newfile.str() << ": ";
+
+                        ArchivItem_Sound_XMidi* wave = dynamic_cast<ArchivItem_Sound_XMidi*>(item->clone());
+                        const MIDI_Track* midiTrack = wave->getMidiTrack(0);
+                        if(!midiTrack)
+                            cout << "failed";
+                        else
+                        {
+                            ArchivItem_Sound_Midi soundArchiv;
+                            soundArchiv.addTrack(*midiTrack);
+                            soundArchiv.setPPQ(wave->getPPQN());
+                            std::ofstream fwave(newfile.str().c_str(), ios::binary);
+                            if(fwave && soundArchiv.write(fwave) == 0)
+                                cout << "done";
+                            else
+                                cout << "failed";
+                        }
+                        cout << endl;
                         break;
+                    }
                     case SOUNDTYPE_OTHER: // Andere
                         cerr << "Unsupported other sound ignored: " << newFileBaseName << endl;
                         break;

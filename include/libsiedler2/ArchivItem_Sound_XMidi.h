@@ -50,6 +50,7 @@ public:
     }
     const MIDI_Track* getMidiTrack(uint16_t trackIdx);
     uint16_t getNumTracks() const { return numTracks; }
+    uint16_t getPPQN() const { return ppqs; }
 
     void addTrack(const XMIDI_Track& track);
 

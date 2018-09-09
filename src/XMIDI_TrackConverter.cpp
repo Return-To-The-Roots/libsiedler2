@@ -534,5 +534,16 @@ void XMIDI_TrackConverter::ApplyFirstState(first_state& fs, int chan_mask)
 
         events = bank;
     }
+    // Tempo of 500.000 ms per quarter note
+    // XMIDI has a fixed rate of 120Hz so PPQN should then be set to 60
+    MIDI_Event* ev = new MIDI_Event;
+    ev->status = 0xFF;
+    ev->data[0] = 0x51;
+    ev->buffer.resize(3);
+    ev->buffer[0] = 0x07;
+    ev->buffer[1] = 0xA1;
+    ev->buffer[2] = 0x20;
+    ev->next = events;
+    events = ev;
 }
 } // namespace libsiedler2

@@ -43,6 +43,7 @@ public:
     }
     uint16_t getNumTracks() const { return numTracks; }
     void addTrack(const MIDI_Track& track);
+    void setPPQ(uint16_t newPPQ) { ppqs = newPPQ; }
 
 protected:
     uint16_t numTracks, ppqs;
