@@ -19,9 +19,9 @@
 
 #pragma once
 
+#include "ErrorCodes.h"
 #include "FileEntry.h"
 #include "enumTypes.h"
-#include "ErrorCodes.h"
 #include <string>
 #include <vector>
 

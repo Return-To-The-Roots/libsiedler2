@@ -30,6 +30,7 @@ namespace libsiedler2 {
 class ArchivItem_Sound_XMidi : public ArchivItem_Sound
 {
     bool isTrackConverted(uint16_t track) const;
+
 public:
     ArchivItem_Sound_XMidi();
     RTTR_CLONEABLE(ArchivItem_Sound_XMidi)
