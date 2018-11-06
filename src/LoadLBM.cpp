@@ -29,7 +29,7 @@
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include "libutil/unique_ptr.h"
 #include <iostream>
 /**
  *  lädt eine LBM-File in ein Archiv.
@@ -58,8 +58,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
     // (at least) 1 item
     items.alloc(1);
 
-    boost::interprocess::unique_ptr<baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(
-      dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    libutil::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
 
     uint16_t width = 0, height = 0, transClr = 0;
     uint8_t compression = 0, mask = 0;
@@ -99,7 +98,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
         {
             if(bodyRead)
                 return ErrorCode::WRONG_FORMAT;
-            boost::interprocess::unique_ptr<ArchivItem_PaletteAnimation, Deleter<ArchivItem_PaletteAnimation> > anim(
+            libutil::unique_ptr<ArchivItem_PaletteAnimation> anim(
               dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM)));
             if(int ec = anim->load(lbm.getStream()))
                 return ec;

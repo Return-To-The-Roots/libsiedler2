@@ -28,7 +28,7 @@
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include "libutil/unique_ptr.h"
 #include <vector>
 /**
  *  liest eine Bitmapzeile
@@ -98,8 +98,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(bmih.planes != 1)
         return ErrorCode::WRONG_FORMAT;
 
-    boost::interprocess::unique_ptr<baseArchivItem_Bitmap, Deleter<baseArchivItem_Bitmap> > bitmap(
-      dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    libutil::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setName(file);
 
     // keine Kompression

@@ -24,7 +24,7 @@
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libutil/StringConversion.h"
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include "libutil/unique_ptr.h"
 #include <boost/nowide/fstream.hpp>
 #include <iomanip>
 
@@ -40,8 +40,7 @@ namespace libsiedler2 { namespace loader {
         std::string header;
         if(!std::getline(fs, header) || header != txtPalHeader)
             return ErrorCode::WRONG_HEADER;
-        boost::interprocess::unique_ptr<ArchivItem_Palette, Deleter<ArchivItem_Palette> > pal(
-          dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE)));
+        libutil::unique_ptr<ArchivItem_Palette> pal(dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE)));
         items.alloc(1);
         std::string transparency, sColor;
         unsigned hasTransparency, transpColorIdx;
@@ -104,7 +103,7 @@ namespace libsiedler2 { namespace loader {
                 else
                     return ErrorCode::WRONG_FORMAT;
             }
-            boost::interprocess::unique_ptr<ArchivItem_PaletteAnimation, Deleter<ArchivItem_PaletteAnimation> > anim(
+            libutil::unique_ptr<ArchivItem_PaletteAnimation> anim(
               dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM)));
             if(int ec = anim->loadFromTxt(fs))
                 return ec;

@@ -28,10 +28,10 @@
 #include "prototypen.h"
 #include "libutil/StringConversion.h"
 #include "libutil/Tokenizer.h"
+#include "libutil/unique_ptr.h"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -218,7 +218,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         ArchivItem* newItem = NULL;
         if(entry.bobtype == BOBTYPE_FONT)
         {
-            boost::interprocess::unique_ptr<ArchivItem_Font, Deleter<ArchivItem_Font> > font(new ArchivItem_Font);
+            libutil::unique_ptr<ArchivItem_Font> font(new ArchivItem_Font);
             font->isUnicode = boost::algorithm::to_lower_copy(bfs::path(entry.filePath).extension().string()) == ".fonx";
             font->setDx(static_cast<uint8_t>(entry.nx));
             font->setDy(static_cast<uint8_t>(entry.ny));
