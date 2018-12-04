@@ -100,20 +100,15 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                         cout << "extracting " << newfile.str() << ": ";
 
                         ArchivItem_Sound_XMidi* wave = dynamic_cast<ArchivItem_Sound_XMidi*>(item->clone());
-                        const MIDI_Track* midiTrack = wave->getMidiTrack(0);
-                        if(!midiTrack)
-                            cout << "failed";
+                        const MIDI_Track& midiTrack = wave->getMidiTrack(0);
+                        ArchivItem_Sound_Midi soundArchiv;
+                        soundArchiv.addTrack(midiTrack);
+                        soundArchiv.setPPQ(wave->getPPQN());
+                        std::ofstream fwave(newfile.str().c_str(), ios::binary);
+                        if(fwave && soundArchiv.write(fwave) == 0)
+                            cout << "done";
                         else
-                        {
-                            ArchivItem_Sound_Midi soundArchiv;
-                            soundArchiv.addTrack(*midiTrack);
-                            soundArchiv.setPPQ(wave->getPPQN());
-                            std::ofstream fwave(newfile.str().c_str(), ios::binary);
-                            if(fwave && soundArchiv.write(fwave) == 0)
-                                cout << "done";
-                            else
-                                cout << "failed";
-                        }
+                            cout << "failed";
                         cout << endl;
                         break;
                     }
