@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.8)
 
 project(siedler2Examples)
 
@@ -57,17 +57,6 @@ if(WIN32)
     ADD_DEFINITIONS(-DNOMINMAX)
 endif()
 
-if(NOT MSVC)
-    CHECK_CXX_SOURCE_COMPILES("
-        #if __cplusplus >= 201103L
-        int main() {}
-        #endif" COMPILER_IN_CXX11_MODE)
-
-    IF (NOT COMPILER_IN_CXX11_MODE)
-        ADD_DEFINITIONS(-Doverride=)
-    endif()
-ENDIF()
-
 ################################################################################
 # Code coverage
 ################################################################################
@@ -95,11 +84,6 @@ endif()
 
 # Use clang-format if available
 find_package(ClangFormat 5.0.0)
-
-if(MSVC AND CMAKE_VERSION VERSION_LESS 3.8)
-	CMAKE_POLICY(SET CMP0026 OLD) # Required for use of LOCATION_*
-    INCLUDE(CreateLaunchers)
-endif()
 
 add_subdirectory(${RTTR_LIBUTIL_DIR} libutil)
 add_subdirectory(${RTTR_LIBENDIAN_DIR} libEndian)
