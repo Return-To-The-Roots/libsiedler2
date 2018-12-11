@@ -41,7 +41,7 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow()
 }
 
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item)
-    : baseArchivItem_Bitmap(item)
+    : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item)
 {
     bobtype_ = BOBTYPE_BITMAP_SHADOW;
 }

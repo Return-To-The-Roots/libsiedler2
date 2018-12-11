@@ -46,6 +46,8 @@ struct LogStatus
     {
 #if RTTR_LOG_XMIDI
         std::cout << el;
+#else
+        RTTR_UNUSED(el);
 #endif // RTTR_LOG_XMIDI
         return *this;
     }
@@ -424,9 +426,7 @@ MIDI_Track XMIDI_TrackConverter::CreateMidiTrack() const
             // 1 bytes data
             // Program Change and Channel Pressure
             case 0xC:
-            case 0xD:
-                midData.push_back(event->data[0]);
-                break;
+            case 0xD: midData.push_back(event->data[0]); break;
 
             // Variable length
             // SysEx

@@ -135,6 +135,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
                 if(int ec = nitem.write(lst)) //-V522
                     return ec;
             }
+            break;
             default: return ErrorCode::NONE;
         }
     } catch(std::exception& e)

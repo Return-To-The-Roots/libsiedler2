@@ -54,4 +54,8 @@ namespace nowide {
 namespace bfs = boost::filesystem;
 namespace bnw = boost::nowide;
 
+#ifndef RTTR_UNUSED
+#define RTTR_UNUSED(x) (void)(x)
+#endif
+
 #endif // LIB_SIEDLER2_DEFINES_H__

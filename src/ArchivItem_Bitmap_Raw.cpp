@@ -42,7 +42,8 @@ libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw()
     bobtype_ = BOBTYPE_BITMAP_RAW;
 }
 
-libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item) : baseArchivItem_Bitmap(item)
+libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item)
+    : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item)
 {
     bobtype_ = BOBTYPE_BITMAP_RAW;
 }

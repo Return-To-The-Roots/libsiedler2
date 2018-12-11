@@ -67,8 +67,8 @@ public:
     bool empty() const { return data.empty(); }
     /// Return the item at the given index or NULL if the index is out of bounds
     /// Note: Pointer is const -> archiv cannot be modified with this operator
-    const ArchivItem* const operator[](size_t index) const { return get(index); }
-    ArchivItem* const operator[](size_t index) { return get(index); }
+    const ArchivItem* operator[](size_t index) const { return get(index); }
+    ArchivItem* operator[](size_t index) { return get(index); }
 
 private:
     std::vector<ArchivItem*> data; /// elements

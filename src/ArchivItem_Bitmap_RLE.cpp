@@ -40,7 +40,8 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE()
     bobtype_ = BOBTYPE_BITMAP_RLE;
 }
 
-libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item) : baseArchivItem_Bitmap(item)
+libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item)
+    : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item)
 {
     bobtype_ = BOBTYPE_BITMAP_RLE;
 }
