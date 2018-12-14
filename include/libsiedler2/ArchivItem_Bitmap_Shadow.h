@@ -52,7 +52,7 @@ public:
     ArchivItem_Bitmap_Shadow() {}
 
     ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item)
-        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item)
+        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item), ArchivItem_Bitmap(item)
     {}
     RTTR_CLONEABLE(ArchivItem_Bitmap_Shadow)
 };
