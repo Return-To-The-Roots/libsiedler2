@@ -21,7 +21,6 @@ env:
 addons:
     apt:
         sources:
-            - boost-latest
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-3.9
         packages:
@@ -62,9 +61,6 @@ matrix:
           install:
               - *installDeps
               - brew install miniupnpc
-              - command curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-              - rvm get head || true # https://github.com/travis-ci/travis-ci/issues/6307
-
           #                                                             Travis libs are x64 only
           env: BUILD_TYPE=Debug CXX_FLAGS=-std=c++03 ADDITIONAL_CMAKE_FLAGS="--no-arch=i386" GCOV="gcov"
     exclude:
@@ -120,20 +116,7 @@ script:
     - $CXX --version
     - $GCOV --version
     - lcov --version 2>/dev/null || true
-    # Fail if any command failed
-    - set -e
-    - mkdir build && cd build
-    - cmake -DRTTR_ENABLE_WERROR=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" --generator="Unix Makefiles" ${ADDITIONAL_CMAKE_FLAGS} ../examples
-    # Travis uses 2 cores
-    - make -j2
-    # Execute tests
-    - export CTEST_OUTPUT_ON_FAILURE=1
-    - export BOOST_TEST_CATCH_SYSTEM_ERRORS="no"
-    - export RTTR_DISABLE_ASSERT_BREAKPOINT=1
-    - make test
-    # Reset environment
-    - cd ..
-    - set +e
+    - meta/ci/build.sh ${BUILD_TYPE} "-DCMAKE_CXX_FLAGS=\"${CXX_FLAGS}\" ${ADDITIONAL_CMAKE_FLAGS}"
 
 after_success:
     # Coverage.io
