@@ -22,10 +22,10 @@ if(NOT RTTR_LIBENDIAN_DIR)
     message(FATAL_ERROR "Path to libendian not found! You can set the full path in the env var LIBENDIAN_DIR ($ENV{LIBENDIAN_DIR})")
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake")
 
 include(CheckCXXSourceCompiles)
-include(CMakeMacroAddFlags)
+include(AddFlags)
 enable_testing()
 
 ################################################################################
