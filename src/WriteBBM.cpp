@@ -43,7 +43,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
     for(size_t i = 0; i < items.size(); ++i)
     {
         if(dynamic_cast<const ArchivItem_Palette*>(items[i]))
-            ++numPalettes;
+            ++numPalettes; //-V127
     }
 
     // Datei zum schreiben öffnen

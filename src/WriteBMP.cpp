@@ -80,7 +80,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
         bmih.bpp = 24;
         isPaletted = false;
     }
-    bmpHd.pixelOffset = sizeof(bmpHd) + sizeof(bmih) + bmih.clrused * 4;
+    bmpHd.pixelOffset = sizeof(bmpHd) + sizeof(bmih) + bmih.clrused * 4; //-V119
     unsigned numLineAlignBytes = (bmih.width * bmih.bpp / 8) % 4;
     numLineAlignBytes = numLineAlignBytes == 0 ? 0 : 4 - numLineAlignBytes;
     bmpHd.fileSize = (width * bmih.bpp / 8 + numLineAlignBytes) * height + bmpHd.pixelOffset;

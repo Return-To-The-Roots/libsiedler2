@@ -35,7 +35,7 @@ inline size_t getIStreamSize(T_Stream& stream)
     stream.seekg(0, T_Stream::end);
     long pos = static_cast<long>(stream.tellg());
     stream.seekg(0, T_Stream::beg);
-    return (pos < 0) ? 0 : pos;
+    return (pos < 0) ? 0 : size_t(pos);
 }
 
 template<typename T>

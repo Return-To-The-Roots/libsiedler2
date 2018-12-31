@@ -203,7 +203,7 @@ void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat fo
     height_ = height;
     format_ = format;
 
-    uint8_t clear = (format == FORMAT_PALETTED) ? palette_->getTransparentIdx() : 0;
+    uint8_t clear = (format == FORMAT_PALETTED) ? palette_->getTransparentIdx() : 0; //-V522
 
     pxlData_.resize(width_ * height_ * getBBP(), clear);
 }

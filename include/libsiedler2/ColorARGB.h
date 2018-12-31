@@ -97,7 +97,7 @@ inline ColorARGB ColorARGB::fromARGB(const uint8_t* ptr)
 
 inline ColorARGB ColorARGB::fromARGB(const uint32_t* ptr)
 {
-    return fromARGB(reinterpret_cast<const uint8_t*>(ptr));
+    return fromARGB(reinterpret_cast<const uint8_t*>(ptr)); //-V206
 }
 
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
@@ -108,7 +108,7 @@ inline ColorARGB ColorARGB::fromARGB(const uint32_t* ptr)
 inline ColorARGB ColorARGB::fromBGRA(const uint8_t* ptr)
 {
 #if RTTR_USE_UNALIGNED_ACCESS
-    return fromBGRA(reinterpret_cast<const uint32_t*>(ptr));
+    return fromBGRA(reinterpret_cast<const uint32_t*>(ptr)); //-V206
 #else
     return ColorARGB(ptr[3], ptr[2], ptr[1], ptr[0]);
 #endif
@@ -133,13 +133,13 @@ inline void ColorARGB::toARGB(uint8_t* ptr) const
 
 inline void ColorARGB::toARGB(uint32_t* ptr) const
 {
-    toARGB(reinterpret_cast<uint8_t*>(ptr));
+    toARGB(reinterpret_cast<uint8_t*>(ptr)); //-V206
 }
 
 inline void ColorARGB::toBGRA(uint8_t* ptr) const
 {
 #if RTTR_USE_UNALIGNED_ACCESS
-    toBGRA(reinterpret_cast<uint32_t*>(ptr));
+    toBGRA(reinterpret_cast<uint32_t*>(ptr)); //-V206
 #else
     ptr[0] = getBlue();
     ptr[1] = getGreen();

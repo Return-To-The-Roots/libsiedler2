@@ -346,7 +346,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t heigh
     {
         for(uint32_t x = 0, x2 = 0; x2 < buffer_width && x < width; ++x, ++x2)
         {
-            size_t posBuffer = (y2 * buffer_width + x2) * bpp;
+            size_t posBuffer = (y2 * size_t(buffer_width) + x2) * bpp;
             // und Pixel setzen
             if(buffer_format == FORMAT_BGRA)
             {
@@ -431,7 +431,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffe
     {
         for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
-            size_t posBuffer = (y2 * buffer_width + x2) * bpp;
+            size_t posBuffer = (y2 * size_t(buffer_width) + x2) * bpp;
             const uint8_t* pxlPtr = getPixelPtr(x, y);
             if(getFormat() == FORMAT_PALETTED)
             {

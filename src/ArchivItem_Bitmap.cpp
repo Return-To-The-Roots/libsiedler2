@@ -69,7 +69,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
     {
         for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
         {
-            size_t posBuf = (y2 * buffer_width + x2) * bufBpp;
+            size_t posBuf = (y2 * size_t(buffer_width) + x2) * bufBpp;
             const uint8_t* pxlPtr = getPixelPtr(x, y);
             if(getFormat() == FORMAT_PALETTED)
             {
@@ -124,14 +124,14 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
     init(width, height, buffer_format, palette);
 
     const unsigned bpp = getBBP();
-    uint16_t copyWidth = std::min(buffer_width, width);
-    uint16_t copyHeight = std::min(buffer_height, height);
+    size_t copyWidth = size_t(std::min(buffer_width, width));
+    size_t copyHeight = size_t(std::min(buffer_height, height));
     size_t rowSize = copyWidth * bpp;
 
     for(uint32_t y = 0; y < copyHeight; ++y)
     {
         size_t posFrom = y * buffer_width * bpp;
-        size_t posTexFrom = y * getWidth() * bpp;
+        size_t posTexFrom = y * size_t(getWidth()) * bpp;
         std::copy(&buffer[posFrom], &buffer[posFrom + rowSize], getPixelData().begin() + posTexFrom); //-V522
     }
 
