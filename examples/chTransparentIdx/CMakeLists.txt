@@ -3,7 +3,7 @@ find_package(Boost 1.58 REQUIRED COMPONENTS program_options)
 file(GLOB SOURCES *.cpp *.h)
 add_executable(chTransparentIdx ${SOURCES})
 
-target_link_libraries(chTransparentIdx siedler2 s25util ${Boost_LIBRARIES})
+target_link_libraries(chTransparentIdx siedler2 s25util Boost::program_options)
 
 file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
 install(FILES ${RTTR_PAL5_PATH} DESTINATION .)

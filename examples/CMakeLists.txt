@@ -89,8 +89,6 @@ add_subdirectory(${RTTR_LIBUTIL_DIR} libutil)
 add_subdirectory(${RTTR_LIBENDIAN_DIR} libEndian)
 add_subdirectory(${RTTR_LIBSIEDLER2_DIR} libSiedler2)
 
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
 set(RTTR_PAL5_PATH "${RTTR_LIBSIEDLER2_DIR}/examples/pal5.act")
 
 add_subdirectory(chTransparentIdx)
