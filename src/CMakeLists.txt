@@ -1,5 +1,5 @@
 
-FIND_PACKAGE(Boost 1.55.0 REQUIRED COMPONENTS filesystem iostreams)
+FIND_PACKAGE(Boost 1.64.0 REQUIRED COMPONENTS filesystem iostreams)
 
 IF (MSVC)
 	ADD_DEFINITIONS(/WX) # warning = error

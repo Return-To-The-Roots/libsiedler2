@@ -15,7 +15,7 @@ platform:
   - x64
     
 install:
-  - set BOOST_ROOT=C:\Libraries\boost_1_59_0
+  - set BOOST_ROOT=C:\Libraries\boost_1_64_0
   - git clone https://github.com/Return-To-The-Roots/libutil.git libutil
   - git clone https://github.com/Return-To-The-Roots/libendian.git libendian
   - set CMAKE_PREFIX_PATH=%CMAKE_PREFIX_PATH%;%cd%\libutil;%cd%\libendian

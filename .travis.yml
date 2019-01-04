@@ -33,7 +33,7 @@ addons:
 
 cache:
   directories:
-    - ${TRAVIS_BUILD_DIR}/deps/boost-1.58.0
+    - ${TRAVIS_BUILD_DIR}/deps/boost-1.64.0
     - ${TRAVIS_BUILD_DIR}/deps/libutil
     - ${TRAVIS_BUILD_DIR}/deps/libendian
     
@@ -69,7 +69,7 @@ matrix:
 
 install:
     - *installDeps
-    - BOOST_VERSION="1.58.0"
+    - BOOST_VERSION="1.64.0"
     # Enable coverage analysis only in debug and for g++
     - |
         if [ "$CXX" = "g++" ] && [ "$BUILD_TYPE" = "Debug" ]; then
