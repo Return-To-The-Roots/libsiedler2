@@ -74,7 +74,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, Archiv& items, const A
         // ist das Item benutzt?
         if(used != 1)
         {
-            items.push(NULL);
+            items.push(nullptr);
             continue;
         }
 

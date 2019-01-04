@@ -41,7 +41,7 @@ Archiv::Archiv(const Archiv& info)
         if(*it)
             pushC(**it);
         else
-            push(NULL);
+            push(nullptr);
     }
 }
 
@@ -56,7 +56,7 @@ Archiv& Archiv::operator=(const Archiv& info)
         if(*it)
             pushC(**it);
         else
-            push(NULL);
+            push(nullptr);
     }
     return *this;
 }
@@ -139,7 +139,7 @@ const ArchivItem* Archiv::find(const std::string& name) const
             return *it;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ArchivItem* Archiv::find(const std::string& name)
@@ -150,15 +150,15 @@ ArchivItem* Archiv::find(const std::string& name)
             return *it;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ArchivItem* Archiv::release(size_t index)
 {
     if(index >= size())
-        return NULL;
+        return nullptr;
     ArchivItem* result = data[index];
-    data[index] = NULL;
+    data[index] = nullptr;
     return result;
 }
 

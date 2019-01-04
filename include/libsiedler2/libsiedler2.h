@@ -41,13 +41,13 @@ const IAllocator& getAllocator();
 void setAllocator(IAllocator* newAllocator);
 
 /// Lädt die Datei im Format ihrer Endung.
-int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = NULL);
+int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 /// Schreibt die Datei im Format ihrer Endung.
-int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
+int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
 /// List all files in the folder and fills them into the vector
 std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath);
 /// Load all files from the folderInfos into the archiv. Sorts the infos first
-int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette = NULL);
+int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
 } // namespace libsiedler2
 

@@ -31,16 +31,16 @@ class Archiv;
 /// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 namespace loader {
     /// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-    int LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette = NULL);
+    int LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette = NULL);
+    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine LST-File in ein Archiv.
-    int LoadLST(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = NULL);
+    int LoadLST(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt ein Archiv eine LST-File.
-    int WriteLST(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
+    int WriteLST(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine BBM-File in ein Archiv.
     int LoadBBM(const std::string& file, Archiv& items);
@@ -55,13 +55,13 @@ namespace loader {
     int WriteACT(const std::string& file, const Archiv& items);
 
     /// lädt eine DAT/IDX-File in ein Archiv.
-    int LoadDATIDX(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = NULL);
+    int LoadDATIDX(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine BMP-File in ein Archiv.
-    int LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette = NULL);
+    int LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt ein Archiv in eine BMP-File.
-    int WriteBMP(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
+    int WriteBMP(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine GER/ENG-File in ein Archiv.
     int LoadTXT(const std::string& file, Archiv& items, bool conversion = true);
@@ -79,7 +79,7 @@ namespace loader {
     int LoadLBM(const std::string& file, Archiv& items);
 
     /// schreibt ein Archiv in eine LBM-File.
-    int WriteLBM(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = NULL);
+    int WriteLBM(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine SWD/WSD-File in ein Archiv.
     int LoadMAP(const std::string& file, Archiv& items, bool only_header = false);

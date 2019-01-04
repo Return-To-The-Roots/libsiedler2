@@ -60,7 +60,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     clear();
@@ -144,9 +144,9 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::write(std::ostream& file, const Arch
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         palette = getPalette();
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);

@@ -74,7 +74,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
         uint16_t count, unknown;
         uint32_t size;
 
-        BOOST_CONSTEXPR_OR_CONST size_t headerSize = sizeof(header) + sizeof(count) + sizeof(unknown) + sizeof(size);
+        constexpr size_t headerSize = sizeof(header) + sizeof(count) + sizeof(unknown) + sizeof(size);
 
         if(!(fs >> count >> unknown >> size))
             return ErrorCode::WRONG_HEADER;
@@ -131,7 +131,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
 
                 items.push(item);
             } else
-                items.push(NULL);
+                items.push(nullptr);
         }
     }
 

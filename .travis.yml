@@ -14,19 +14,15 @@ compiler:
     - g++
 
 env:
-    - BUILD_TYPE=Debug CXX_FLAGS=-std=c++03
-    - BUILD_TYPE=Debug CXX_FLAGS=-std=c++11
-    - BUILD_TYPE=Release CXX_FLAGS=-std=c++11
+    - BUILD_TYPE=Debug
+    - BUILD_TYPE=Release
 
 addons:
     apt:
         sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-3.9
         packages:
-            - g++-4.8
-            - clang-3.9
-            - llvm-3.9
+            - g++-6.4
             - cmake
             - cmake-data
             - libminiupnpc-dev
@@ -70,12 +66,11 @@ matrix:
 install:
     - *installDeps
     - BOOST_VERSION="1.64.0"
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-6.4"; export CC="gcc-6.4"; fi
     # Enable coverage analysis only in debug and for g++
     - |
         if [ "$CXX" = "g++" ] && [ "$BUILD_TYPE" = "Debug" ]; then
-            # GCov 4.6 cannot handle the file structure
-            export CXX="g++-4.8"
-            export GCOV="gcov-4.8"
+            export GCOV="gcov-6.4"
             
             # Install newer lcov (1.9 seems to fail: http://gronlier.fr/blog/2015/01/adding-code-coverage-to-your-c-project/)
             export LCOV_ROOT="$HOME/lcov"
@@ -95,10 +90,6 @@ install:
             export GCOV="gcov" # Just to have anything valid
             export RTTR_COVERAGE="0"
         fi
-    # C++11 requires gcc-4.8 or newer
-    - if [ "$CXX" = "g++" ] && [ "$CXX_FLAGS" = "-std=c++11" ]; then export CXX="g++-4.8"; export CC="gcc-4.8"; fi
-    # Use clang 3.9
-    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.9"; export CC="clang-3.9"; fi
     - |
         if [ "${BOOST_VERSION}" != "" ]; then
           BOOST_DIR=${DEPS_DIR}/boost-${BOOST_VERSION}

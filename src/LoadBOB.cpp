@@ -36,7 +36,7 @@
  */
 int libsiedler2::loader::LoadBOB(const std::string& file, Archiv& items, const ArchivItem_Palette* palette)
 {
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     MMStream mmapStream;

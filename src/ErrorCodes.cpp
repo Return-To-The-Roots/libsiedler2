@@ -16,7 +16,6 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "ErrorCodes.h"
-#include <boost/lexical_cast.hpp>
 
 std::string libsiedler2::getErrorString(int errorCode)
 {
@@ -32,6 +31,6 @@ std::string libsiedler2::getErrorString(int errorCode)
         case ErrorCode::PALETTE_MISSING: return "Palette is missing";
         case ErrorCode::INVALID_BUFFER: return "No or invalid buffer given";
         case ErrorCode::UNSUPPORTED_FORMAT: return "File format is not (yet) supported";
-        default: return "Custom error (" + boost::lexical_cast<std::string>(errorCode) + ")";
+        default: return "Custom error (" + std::to_string(errorCode) + ")";
     }
 }

@@ -23,14 +23,14 @@
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "OpenMemoryStream.h"
-#include "boost/algorithm/string/case_conv.hpp"
-#include "boost/filesystem/path.hpp"
 #include "fileFormatHelpers.h"
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
-#include "libutil/unique_ptr.h"
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/filesystem/path.hpp>
 #include <iostream>
+#include <memory>
 /**
  *  lädt eine LBM-File in ein Archiv.
  *
@@ -58,7 +58,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
     // (at least) 1 item
     items.alloc(1);
 
-    libutil::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    std::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
 
     uint16_t width = 0, height = 0, transClr = 0;
     uint8_t compression = 0, mask = 0;
@@ -98,7 +98,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
         {
             if(bodyRead)
                 return ErrorCode::WRONG_FORMAT;
-            libutil::unique_ptr<ArchivItem_PaletteAnimation> anim(
+            std::unique_ptr<ArchivItem_PaletteAnimation> anim(
               dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM)));
             if(int ec = anim->load(lbm.getStream()))
                 return ec;
@@ -132,7 +132,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
                 return ErrorCode::WRONG_FORMAT;
             bodyRead = true;
             // haben wir eine Palette erhalten?
-            if(bitmap->getPalette() == NULL)
+            if(bitmap->getPalette() == nullptr)
                 return ErrorCode::PALETTE_MISSING;
 
             bitmap->init(width, height, ArchivItem_BitmapBase::getWantedFormat(FORMAT_PALETTED));

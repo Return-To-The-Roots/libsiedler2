@@ -49,7 +49,7 @@ void MIDI_Track::clear()
 const uint8_t* MIDI_Track::getMid() const
 {
     if(mid_data.empty())
-        return NULL;
+        return nullptr;
     return &mid_data[0];
 }
 

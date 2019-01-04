@@ -183,8 +183,8 @@ int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, ArchivItem
                 item = nitem;
             }
             break;
-            case BOBTYPE_NONE: item = NULL; break;
-            default: item = NULL; return ErrorCode::WRONG_FORMAT;
+            case BOBTYPE_NONE: item = nullptr; break;
+            default: item = nullptr; return ErrorCode::WRONG_FORMAT;
         }
     } catch(std::exception& e)
     {

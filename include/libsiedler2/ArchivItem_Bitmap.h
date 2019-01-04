@@ -37,23 +37,23 @@ class baseArchivItem_Bitmap : public virtual ArchivItem_BitmapBase
 public:
     /// schreibt das Bitmap in einen Puffer.
     int print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
-              const ArchivItem_Palette* palette = NULL, uint16_t to_x = 0, uint16_t to_y = 0, uint16_t from_x = 0, uint16_t from_y = 0,
+              const ArchivItem_Palette* palette = nullptr, uint16_t to_x = 0, uint16_t to_y = 0, uint16_t from_x = 0, uint16_t from_y = 0,
               uint16_t from_w = 0, uint16_t from_h = 0) const;
     template<class T_PixelBuffer>
-    int print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL, uint16_t to_x = 0, uint16_t to_y = 0,
+    int print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = nullptr, uint16_t to_x = 0, uint16_t to_y = 0,
               uint16_t from_x = 0, uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0) const;
 
     /// erzeugt ein Bitmap aus einem Puffer.
     int create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
-               TextureFormat buffer_format, const ArchivItem_Palette* palette = NULL);
+               TextureFormat buffer_format, const ArchivItem_Palette* palette = nullptr);
     int create(const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
-               const ArchivItem_Palette* palette = NULL);
+               const ArchivItem_Palette* palette = nullptr);
     /// Create a bitmap with the same data as the pixelBuffer
     template<class T_PixelBuffer>
-    int create(const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL);
+    int create(const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = nullptr);
     /// Create a bitmap with the given size and fill it with the data from the pixelBuffer
     template<class T_PixelBuffer>
-    int create(uint16_t width, uint16_t height, const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL);
+    int create(uint16_t width, uint16_t height, const T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = nullptr);
 
     void flipVertical();
 };

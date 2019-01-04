@@ -32,7 +32,8 @@ namespace libsiedler2 {
  *  Basis-Basisklasse für Bitmapitems.
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase() : ArchivItem(), nx_(0), ny_(0), width_(0), height_(0), palette_(NULL), format_(FORMAT_BGRA)
+ArchivItem_BitmapBase::ArchivItem_BitmapBase()
+    : ArchivItem(), nx_(0), ny_(0), width_(0), height_(0), palette_(nullptr), format_(FORMAT_BGRA)
 {}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem(item)
@@ -45,7 +46,7 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
 
     pxlData_ = item.pxlData_;
 
-    palette_ = NULL;
+    palette_ = nullptr;
     if(item.palette_)
         setPaletteCopy(*item.palette_);
     format_ = item.format_;
@@ -54,7 +55,7 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
 ArchivItem_BitmapBase::~ArchivItem_BitmapBase()
 {
     delete palette_;
-    palette_ = NULL;
+    palette_ = nullptr;
 }
 
 /**
@@ -448,7 +449,7 @@ void ArchivItem_BitmapBase::setPaletteCopy(const ArchivItem_Palette& palette)
 
 void ArchivItem_BitmapBase::removePalette()
 {
-    setPalette(NULL);
+    setPalette(nullptr);
 }
 
 } // namespace libsiedler2

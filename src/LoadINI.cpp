@@ -23,7 +23,7 @@
 #include "OpenMemoryStream.h"
 #include "libsiedler2.h"
 #include "prototypen.h"
-#include "libutil/unique_ptr.h"
+#include <memory>
 
 /**
  *  lädt eine INI-File in ein Archiv.
@@ -41,7 +41,7 @@ int libsiedler2::loader::LoadINI(const std::string& file, Archiv& items)
 
     while(!ini.eof())
     {
-        libutil::unique_ptr<ArchivItem_Ini> item(dynamic_cast<ArchivItem_Ini*>(getAllocator().create(BOBTYPE_INI)));
+        std::unique_ptr<ArchivItem_Ini> item(dynamic_cast<ArchivItem_Ini*>(getAllocator().create(BOBTYPE_INI)));
 
         if(int ec = item->load(ini))
             return ec;

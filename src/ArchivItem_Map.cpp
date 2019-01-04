@@ -87,7 +87,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
         if(bHeader.multiplier == 0)
         {
             assert(bHeader.blockLength == 0);
-            push(NULL);
+            push(nullptr);
             continue;
         }
         // Blocksize must match extents

@@ -22,7 +22,7 @@
 #include "oem.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
-#include <boost/array.hpp>
+#include <array>
 #include <iostream>
 #include <stdexcept>
 
@@ -70,18 +70,18 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
 
     fs >> gfxset >> numPlayers;
 
-    // 20B, should include NULL
-    boost::array<char, 21> author;
+    // 20B, should include nullptr
+    std::array<char, 21> author;
     fs.readRaw(author.data(), 20);
     author.back() = '\0';
     OemToAnsi(author.data(), author.data());
     this->author_ = author.data();
 
-    fs >> playerHQx.elems >> playerHQy.elems;
+    fs >> playerHQx >> playerHQy;
 
     fs >> isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
-    fs >> playerFaces.elems >> areaInfos.elems;
+    fs >> playerFaces >> areaInfos;
 
     uint16_t headerSig;
     fs >> headerSig;
@@ -108,8 +108,8 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
         nameLen = 24;
     long curPos = fs.getPosition();
     fs.setPosition(namePos);
-    // It should include a NULL terminator, but we have to make sure
-    boost::array<char, 25> name;
+    // It should include a nullptr terminator, but we have to make sure
+    std::array<char, 25> name;
     fs.readRaw(name.data(), nameLen);
     name[nameLen] = '\0';
     fs.setPosition(curPos);
@@ -159,11 +159,11 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     tmpName = author_.substr(0, 19);
     AnsiToOem(tmpName.c_str(), author);
     std::fill(author + tmpName.length(), author + sizeof(author), '\0');
-    fs << author << playerHQx.elems << playerHQy.elems;
+    fs << author << playerHQx << playerHQy;
 
     fs << isInvalid; // This should be checked, but it seems some editors wrongly leave it set
 
-    fs << playerFaces.elems << areaInfos.elems;
+    fs << playerFaces << areaInfos;
 
     // Header sig
     fs << uint16_t(0x2711) << uint32_t(0);

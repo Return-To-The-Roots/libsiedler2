@@ -66,7 +66,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     clear();
@@ -199,10 +199,10 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         palette = getPalette();
     // Palette required
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
@@ -338,7 +338,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t heigh
         return ErrorCode::PALETTE_MISSING;
 
     // Texturspeicher anfordern
-    init(width, height, buffer_format, buffer_format == FORMAT_BGRA ? NULL : palette);
+    init(width, height, buffer_format, buffer_format == FORMAT_BGRA ? nullptr : palette);
 
     const unsigned bpp = getBBP(buffer_format);
 
@@ -409,9 +409,9 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffe
         return ErrorCode::NONE;
     if(!buffer)
         return ErrorCode::INVALID_BUFFER;
-    if(palette == NULL)
+    if(palette == nullptr)
         palette = getPalette();
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     if(from_x >= getWidth() || from_y >= getHeight() || to_x >= buffer_width || to_y >= buffer_height)

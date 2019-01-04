@@ -56,8 +56,8 @@ struct LogStatus
 XMIDI_TrackConverter::XMIDI_TrackConverter(const XMIDI_Track& track) : track(track)
 {
     position = 0;
-    curEvent = NULL;
-    events = NULL;
+    curEvent = nullptr;
+    events = nullptr;
     numEvents = 0,
 
     std::fill(bank127.begin(), bank127.end(), false);
@@ -483,7 +483,7 @@ void XMIDI_TrackConverter::ApplyFirstState(first_state& fs, int chan_mask)
 
         // Copy Volume
         if(vol && (vol->time > patch->time + PATCH_VOL_PAN_BIAS || vol->time < patch->time - PATCH_VOL_PAN_BIAS))
-            vol = NULL;
+            vol = nullptr;
 
         temp = vol;
         vol = new MIDI_Event;
@@ -497,7 +497,7 @@ void XMIDI_TrackConverter::ApplyFirstState(first_state& fs, int chan_mask)
 
         // Copy Bank
         if(bank && (bank->time > patch->time + PATCH_VOL_PAN_BIAS || bank->time < patch->time - PATCH_VOL_PAN_BIAS))
-            bank = NULL;
+            bank = nullptr;
 
         temp = bank;
 
@@ -511,7 +511,7 @@ void XMIDI_TrackConverter::ApplyFirstState(first_state& fs, int chan_mask)
 
         // Copy Pan
         if(pan && (pan->time > patch->time + PATCH_VOL_PAN_BIAS || pan->time < patch->time - PATCH_VOL_PAN_BIAS))
-            pan = NULL;
+            pan = nullptr;
 
         temp = pan;
         pan = new MIDI_Event;

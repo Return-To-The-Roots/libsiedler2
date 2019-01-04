@@ -37,7 +37,7 @@ ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
         {
             switch(subtype)
             {
-                case SOUNDTYPE_NONE: return NULL;
+                case SOUNDTYPE_NONE: return nullptr;
                 case SOUNDTYPE_MIDI: return new ArchivItem_Sound_Midi();
                 case SOUNDTYPE_WAVE: return new ArchivItem_Sound_Wave();
                 case SOUNDTYPE_XMIDI: return new ArchivItem_Sound_XMidi();
@@ -58,9 +58,9 @@ ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
         case BOBTYPE_INI: return new ArchivItem_Ini();
         case BOBTYPE_BITMAP_RAW: return new ArchivItem_Bitmap_Raw();
         case BOBTYPE_PALETTE_ANIM: return new ArchivItem_PaletteAnimation();
-        default: return NULL;
+        default: return nullptr;
     }
-    return NULL;
+    return nullptr;
 }
 
 } // namespace libsiedler2

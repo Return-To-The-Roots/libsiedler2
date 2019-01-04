@@ -63,7 +63,7 @@ namespace traits {
     template<>
     struct GetFormat<PixelBufferPaletted>
     {
-        BOOST_STATIC_CONSTEXPR TextureFormat value = FORMAT_PALETTED;
+        static constexpr TextureFormat value = FORMAT_PALETTED;
     };
 } // namespace traits
 

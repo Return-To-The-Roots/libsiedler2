@@ -28,7 +28,7 @@
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
-#include "libutil/unique_ptr.h"
+#include <memory>
 #include <vector>
 /**
  *  liest eine Bitmapzeile
@@ -66,7 +66,7 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, 
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls einlesen.
  */
-int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette /*= NULL*/)
+int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette /*= nullptr*/)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(file, mmapStream))
@@ -98,7 +98,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(bmih.planes != 1)
         return ErrorCode::WRONG_FORMAT;
 
-    libutil::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    std::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
     bitmap->setName(file);
 
     // keine Kompression
@@ -109,7 +109,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(bmih.clrused == 0)
         bmih.clrused = 1u << uint32_t(bmih.bpp); // 2^n
 
-    ArchivItem_Palette* pal = NULL;
+    ArchivItem_Palette* pal = nullptr;
     if(bmih.bpp == 8)
     {
         unsigned numClrsUsed = std::min<unsigned>(bmih.clrused, 256);

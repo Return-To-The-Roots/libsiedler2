@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <boost/array.hpp>
+#include <array>
 #include <stdint.h>
 #include <vector>
 
@@ -35,22 +35,22 @@ private:
         int time;
         uint8_t status;
 
-        boost::array<uint8_t, 2> data;
+        std::array<uint8_t, 2> data;
 
         std::vector<uint8_t> buffer;
         int duration;
         MIDI_Event* next_note;
         uint32_t note_time;
         MIDI_Event* next;
-        MIDI_Event() : time(0), status(0), data(), duration(0), next_note(NULL), note_time(0), next(NULL) {}
+        MIDI_Event() : time(0), status(0), data(), duration(0), next_note(nullptr), note_time(0), next(nullptr) {}
     };
 
     struct first_state // Status,   Data[0]
     {
-        boost::array<MIDI_Event*, 16> patch; // 0xC
-        boost::array<MIDI_Event*, 16> bank;  // 0xB,      0
-        boost::array<MIDI_Event*, 16> pan;   // 0xB,      7
-        boost::array<MIDI_Event*, 16> vol;   // 0xB,      10
+        std::array<MIDI_Event*, 16> patch; // 0xC
+        std::array<MIDI_Event*, 16> bank;  // 0xB,      0
+        std::array<MIDI_Event*, 16> pan;   // 0xB,      7
+        std::array<MIDI_Event*, 16> vol;   // 0xB,      10
         first_state() : patch(), bank(), pan(), vol() {}
     };
 
@@ -95,7 +95,7 @@ private:
         MIDI_STATUS_SYSEX = 0xF
     };
 
-    boost::array<bool, 16> bank127;
+    std::array<bool, 16> bank127;
 };
 } // namespace libsiedler2
 

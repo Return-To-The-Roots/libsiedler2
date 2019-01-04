@@ -81,7 +81,7 @@ public:
     /// using the currently set palette
     virtual void init(int16_t width, int16_t height, TextureFormat format);
     /// Allocates memory for the given size and format and initializes it to transparent
-    /// newPal will replace the existing palette by copy or remove it if it is NULL
+    /// newPal will replace the existing palette by copy or remove it if it is nullptr
     /// newPal is required for paletted format
     void init(int16_t width, int16_t height, TextureFormat format, const ArchivItem_Palette* newPal);
 

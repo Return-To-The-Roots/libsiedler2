@@ -62,7 +62,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
     std::vector<char> text;
     if(length)
     {
-        // Avoid copy if we need to append NULL terminator
+        // Avoid copy if we need to append nullptr terminator
         text.reserve(length + 1);
         text.resize(length);
         if(!file.read(&text.front(), length))
@@ -73,7 +73,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
         text.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     }
 
-    // Add NULL terminator if it is missing
+    // Add nullptr terminator if it is missing
     if(text.empty() || text.back() != 0)
         text.push_back(0);
 
@@ -128,7 +128,7 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
 /**
  *  liefert den Text.
  *
- *  @return liefert einen konstanten Zeiger auf das Textelement, NULL bei leerem Text
+ *  @return liefert einen konstanten Zeiger auf das Textelement, nullptr bei leerem Text
  */
 const std::string& libsiedler2::ArchivItem_Text::getText() const
 {
@@ -163,7 +163,7 @@ std::string libsiedler2::ArchivItem_Text::getFileText(bool convertToOem) const
 /**
  *  setzt den Text.
  *
- *  @param[in] text       Der Text der gesetzt werden soll, falls @p NULL, wird
+ *  @param[in] text       Der Text der gesetzt werden soll, falls @p nullptr, wird
  *                        evtl vorhandener Text gelöscht
  *  @param[in] length     Länge des Textes, bei @p 0 wird @p strlen verwendet
  */

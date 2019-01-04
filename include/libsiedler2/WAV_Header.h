@@ -21,7 +21,6 @@
 #pragma once
 
 #include <boost/endian/arithmetic.hpp>
-#include <boost/static_assert.hpp>
 
 namespace libsiedler2 {
 struct WAV_Header
@@ -39,7 +38,7 @@ struct WAV_Header
     boost::endian::little_uint32_t dataSize;
 };
 
-BOOST_STATIC_ASSERT_MSG(sizeof(WAV_Header) == 44u, "Invalid padding detected");
+static_assert(sizeof(WAV_Header) == 44u, "Invalid padding detected");
 } // namespace libsiedler2
 
 #endif // WAV_Header_h__

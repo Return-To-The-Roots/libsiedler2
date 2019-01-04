@@ -28,12 +28,11 @@
 #include "prototypen.h"
 #include "libutil/StringConversion.h"
 #include "libutil/Tokenizer.h"
-#include "libutil/unique_ptr.h"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <algorithm>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 
@@ -60,7 +59,7 @@ static TextureFormat texturformat;
 /**
  *  Der gesetzte Item-Allokator.
  */
-static IAllocator* allocator = NULL;
+static IAllocator* allocator = nullptr;
 
 } // namespace libsiedler2
 
@@ -69,11 +68,11 @@ struct Initializer
 {
     Initializer()
     {
-        assert(libsiedler2::allocator == NULL);
+        assert(libsiedler2::allocator == nullptr);
         libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
         libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_ORIGINAL);
     }
-    ~Initializer() { libsiedler2::setAllocator(NULL); }
+    ~Initializer() { libsiedler2::setAllocator(nullptr); }
 };
 static Initializer initializer__;
 } // namespace
@@ -210,15 +209,15 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
 {
     std::sort(folderInfos.begin(), folderInfos.end());
     libsiedler2::PixelBufferARGB buffer(1000, 1000);
-    BOOST_FOREACH(const FileEntry& entry, folderInfos)
+    for(const FileEntry& entry : folderInfos)
     {
         // Ignore
         if(entry.bobtype == BOBTYPE_UNSET)
             continue;
-        ArchivItem* newItem = NULL;
+        ArchivItem* newItem = nullptr;
         if(entry.bobtype == BOBTYPE_FONT)
         {
-            libutil::unique_ptr<ArchivItem_Font> font(new ArchivItem_Font);
+            auto font = std::make_unique<ArchivItem_Font>();
             font->isUnicode = boost::algorithm::to_lower_copy(bfs::path(entry.filePath).extension().string()) == ".fonx";
             font->setDx(static_cast<uint8_t>(entry.nx));
             font->setDy(static_cast<uint8_t>(entry.ny));
@@ -434,7 +433,7 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
         } else if(s25util::tryFromStringClassic(sNr, file.nr))
             wf.erase(wf.begin());
 
-        BOOST_FOREACH(const std::string& part, wf)
+        for(const std::string& part : wf)
         {
             if(part == "rle")
                 file.bobtype = BOBTYPE_BITMAP_RLE;

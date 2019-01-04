@@ -18,7 +18,9 @@ FILE(GLOB HEADER_FILES ${includePath}/libsiedler2/*.*)
 ADD_LIBRARY(siedler2 STATIC ${SRC_FILES} ${HEADER_FILES})
 
 target_include_directories(siedler2 INTERFACE ${includePath} PRIVATE ${includePath}/libsiedler2)
-target_link_libraries(siedler2 PUBLIC s25util PRIVATE nowide-static Boost::filesystem Boost::iostreams endian::interface)
+target_link_libraries(siedler2 PUBLIC s25util PRIVATE nowide::static Boost::filesystem Boost::iostreams endian::interface)
+target_compile_features(siedler2 PUBLIC cxx_std_14)
+set_target_properties(siedler2 PROPERTIES CXX_EXTENSIONS OFF)
 
 include(EnableWarnings)
 enable_warnings(siedler2)

@@ -50,22 +50,22 @@ public:
     void push(ArchivItem* item) { data.push_back(item); }
     /// Add a copy of the element to the end
     void pushC(const ArchivItem& item);
-    /// Return the item at the given index or NULL if the index is out of bounds
-    ArchivItem* get(size_t index) { return (index < size()) ? data[index] : NULL; }
-    /// Return the item at the given index or NULL if the index is out of bounds
-    const ArchivItem* get(size_t index) const { return (index < size()) ? data[index] : NULL; }
+    /// Return the item at the given index or nullptr if the index is out of bounds
+    ArchivItem* get(size_t index) { return (index < size()) ? data[index] : nullptr; }
+    /// Return the item at the given index or nullptr if the index is out of bounds
+    const ArchivItem* get(size_t index) const { return (index < size()) ? data[index] : nullptr; }
     /// Return the first item with the given name
     ArchivItem* find(const std::string& name);
     /// Return the first item with the given name
     const ArchivItem* find(const std::string& name) const;
     /// Return the item at the given position and remove it from the archive
-    /// Hence it transfers ownership! This is different then calling set(index, NULL) which destroys the element
+    /// Hence it transfers ownership! This is different then calling set(index, nullptr) which destroys the element
     ArchivItem* release(size_t index);
-    /// Return the number of entries (includes NULL entries)
+    /// Return the number of entries (includes nullptr entries)
     size_t size() const { return data.size(); }
     /// True iff no entries stored
     bool empty() const { return data.empty(); }
-    /// Return the item at the given index or NULL if the index is out of bounds
+    /// Return the item at the given index or nullptr if the index is out of bounds
     /// Note: Pointer is const -> archiv cannot be modified with this operator
     const ArchivItem* operator[](size_t index) const { return get(index); }
     ArchivItem* operator[](size_t index) { return get(index); }

@@ -60,7 +60,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     clear();
@@ -148,7 +148,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         palette = this->getPalette();
     if(!palette)
         return ErrorCode::PALETTE_MISSING;

@@ -21,7 +21,6 @@
 #pragma once
 
 #include <boost/endian/arithmetic.hpp>
-#include <boost/static_assert.hpp>
 
 namespace libsiedler2 {
 struct MIDI_Header
@@ -33,7 +32,7 @@ struct MIDI_Header
     boost::endian::big_int16_t ppqs;
 };
 
-BOOST_STATIC_ASSERT_MSG(sizeof(MIDI_Header) == 14u, "Invalid padding detected");
+static_assert(sizeof(MIDI_Header) == 14u, "Invalid padding detected");
 } // namespace libsiedler2
 
 #endif // MIDI_Header_h__

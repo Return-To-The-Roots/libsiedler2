@@ -36,10 +36,10 @@ namespace libsiedler2 {
 class ArchivItem_Bitmap_Player : public virtual ArchivItem_BitmapBase //-V690
 {
 public:
-    BOOST_STATIC_CONSTEXPR uint8_t numPlayerClrs = 4;
+    static constexpr uint8_t numPlayerClrs = 4;
     /// Color index used for transparent colors in the player color buffer. We need a different one here as we either store transparent or
     /// an offset onto the actual player color index
-    BOOST_STATIC_CONSTEXPR uint8_t TRANSPARENT_PLAYER_CLR_IDX = 0xFF;
+    static constexpr uint8_t TRANSPARENT_PLAYER_CLR_IDX = 0xFF;
 
     ArchivItem_Bitmap_Player();
 
@@ -70,10 +70,10 @@ public:
 
     /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
     int print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
-              const ArchivItem_Palette* palette = NULL, uint8_t plClrStartIdx = 128, uint16_t to_x = 0, uint16_t to_y = 0,
+              const ArchivItem_Palette* palette = nullptr, uint8_t plClrStartIdx = 128, uint16_t to_x = 0, uint16_t to_y = 0,
               uint16_t from_x = 0, uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0, bool only_player = false) const;
     template<class T_PixelBuffer>
-    int print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = NULL, uint8_t plClrStartIdx = 128, uint16_t to_x = 0,
+    int print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = nullptr, uint8_t plClrStartIdx = 128, uint16_t to_x = 0,
               uint16_t to_y = 0, uint16_t from_x = 0, uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0,
               bool only_player = false) const;
 

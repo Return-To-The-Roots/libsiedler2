@@ -21,7 +21,7 @@
 
 #include "ArchivItem_Sound.h"
 #include "MIDI_Track.h"
-#include <boost/array.hpp>
+#include <array>
 #include <stdint.h>
 
 namespace libsiedler2 {
@@ -39,7 +39,7 @@ public:
     {
         if(track < numTracks)
             return &tracklist[track];
-        return NULL;
+        return nullptr;
     }
     uint16_t getNumTracks() const { return numTracks; }
     void addTrack(const MIDI_Track& track);
@@ -47,7 +47,7 @@ public:
 
 protected:
     uint16_t numTracks, ppqs;
-    boost::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
+    std::array<MIDI_Track, 256> tracklist; //-V730_NOINIT
 };
 
 } // namespace libsiedler2

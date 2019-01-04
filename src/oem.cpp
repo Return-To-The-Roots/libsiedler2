@@ -46,8 +46,8 @@ char* AnsiToOem(const char* from, char* to, uint32_t length)
     };
 
     // sanity check
-    if(to == NULL || from == NULL)
-        return NULL;
+    if(to == nullptr || from == nullptr)
+        return nullptr;
 
     // wir haben keine Länge erhalten, also ermitteln
     if(length == 0)
@@ -100,8 +100,8 @@ char* OemToAnsi(const char* from, char* to, uint32_t length)
     };
 
     // sanity check
-    if(to == NULL || from == NULL)
-        return NULL;
+    if(to == nullptr || from == nullptr)
+        return nullptr;
 
     // wir haben keine Länge erhalten, also ermitteln
     if(length == 0)

@@ -62,7 +62,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
@@ -93,7 +93,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
         if(getFormat() == FORMAT_BGRA)
             removePalette();
     } else
-        init(0, 0, outFormat, outFormat == FORMAT_PALETTED ? palette : NULL);
+        init(0, 0, outFormat, outFormat == FORMAT_PALETTED ? palette : nullptr);
 
     // Unbekannte Daten überspringen
     fs.ignore(8);
@@ -113,7 +113,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-    if(palette == NULL)
+    if(palette == nullptr)
         palette = getPalette();
 
     const uint16_t width = getWidth(), height = getHeight();

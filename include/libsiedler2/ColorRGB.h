@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <boost/static_assert.hpp>
 #include <stdint.h>
 
 namespace libsiedler2 {
@@ -54,7 +53,7 @@ inline void ColorRGB::toBGR(uint8_t* ptr) const
 }
 
 // If this fails, then loading an array of RGB value (byte oriented: RGBRGB...) will fail
-BOOST_STATIC_ASSERT_MSG(sizeof(ColorRGB) == 3u, "Invalid size of ColorRGB");
+static_assert(sizeof(ColorRGB) == 3u, "Invalid size of ColorRGB");
 } // namespace libsiedler2
 
 #endif // ColorRGB_h__

@@ -21,7 +21,6 @@
 #include "ErrorCodes.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
-#include <boost/static_assert.hpp>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -61,7 +60,7 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
             return ErrorCode::WRONG_HEADER;
     }
 
-    BOOST_STATIC_ASSERT_MSG(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot read it in whole");
+    static_assert(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot read it in whole");
     fs.read(&colors[0].r, sizeof(colors));
     // If the palette contains the transparent color, we use that, otherwise we use the default.
     // This is mostly for backwards compatibility (we used to use index 254 which is that pink in PAL5) and ease of use (black as
@@ -88,7 +87,7 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
     if(skip)
         fs << int16_t(256);
 
-    BOOST_STATIC_ASSERT_MSG(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot write it in whole");
+    static_assert(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot write it in whole");
     fs.write(&colors[0].r, sizeof(colors));
 
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
@@ -150,7 +149,7 @@ uint8_t libsiedler2::ArchivItem_Palette::lookupOrDef(const ColorRGB& clr, uint8_
  *
  *  @param[in] index Index des zu liefernden Eintrags
  *
- *  @return Bei Erfolg einen Pointer auf einen, ansonsten NULL
+ *  @return Bei Erfolg einen Pointer auf einen, ansonsten nullptr
  */
 const libsiedler2::ColorRGB& libsiedler2::ArchivItem_Palette::operator[](unsigned index) const
 {

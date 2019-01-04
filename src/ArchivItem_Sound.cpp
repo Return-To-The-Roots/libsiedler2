@@ -65,7 +65,7 @@ ArchivItem_Sound* ArchivItem_Sound::findSubType(std::istream& file)
         else
         {
             fs.setPosition(oldpos);
-            return NULL;
+            return nullptr;
         }
     } else if(isChunk(header, "MThd"))
         sndType = SOUNDTYPE_MIDI;

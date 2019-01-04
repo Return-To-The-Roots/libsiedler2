@@ -20,14 +20,13 @@
 #ifndef fileFormatHelpers_h__
 #define fileFormatHelpers_h__
 
-#include <boost/static_assert.hpp>
 #include <cstring>
 
 /// Return true iff lhs identifies a given chunk. Example: if(isChunk(header, "RIFF")) ...
 template<size_t T_length, size_t T_lengthIdStr>
 inline bool isChunk(const char (&lhs)[T_length], const char (&chunkId)[T_lengthIdStr])
 {
-    BOOST_STATIC_ASSERT_MSG(T_length + 1 >= T_lengthIdStr, "Chunk id is not long enough");
+    static_assert(T_length + 1 >= T_lengthIdStr, "Chunk id is not long enough");
     return std::memcmp(lhs, chunkId, T_lengthIdStr - 1) == 0;
 }
 
@@ -35,7 +34,7 @@ inline bool isChunk(const char (&lhs)[T_length], const char (&chunkId)[T_lengthI
 template<size_t T_length, size_t T_lengthIdStr>
 inline void setChunkId(char (&target)[T_length], const char (&chunkId)[T_lengthIdStr])
 {
-    BOOST_STATIC_ASSERT_MSG(T_length + 1 >= T_lengthIdStr, "Chunk id is not long enough");
+    static_assert(T_length + 1 >= T_lengthIdStr, "Chunk id is not long enough");
     std::memcpy(target, chunkId, T_lengthIdStr - 1);
 }
 

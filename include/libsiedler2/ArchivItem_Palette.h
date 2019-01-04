@@ -21,7 +21,7 @@
 
 #include "ArchivItem.h"
 #include "ColorRGB.h"
-#include <boost/array.hpp>
+#include <array>
 #include <cstddef>
 #include <iosfwd>
 #include <stdint.h>
@@ -94,7 +94,7 @@ public:
     bool operator!=(const ArchivItem_Palette& other) const { return !(*this == other); }
 
 protected:
-    boost::array<ColorRGB, 256> colors; //-V730_NOINIT
+    std::array<ColorRGB, 256> colors; //-V730_NOINIT
     /// Transparent color index. Might be > UINT8_MAX which means 'no transparency' and will result in false for any comparison with
     /// another uint8_t (intended)
     uint16_t transparentIdx;

@@ -37,8 +37,8 @@ public:
     uint16_t getWidth() const { return width_; }
     uint16_t getHeight() const { return height_; }
     uint32_t getSize() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
-    uint8_t* getPixelPtr() { return pixels_.empty() ? NULL : reinterpret_cast<uint8_t*>(&pixels_[0]); }
-    const uint8_t* getPixelPtr() const { return pixels_.empty() ? NULL : reinterpret_cast<const uint8_t*>(&pixels_[0]); }
+    uint8_t* getPixelPtr() { return pixels_.empty() ? nullptr : reinterpret_cast<uint8_t*>(&pixels_[0]); }
+    const uint8_t* getPixelPtr() const { return pixels_.empty() ? nullptr : reinterpret_cast<const uint8_t*>(&pixels_[0]); }
     std::vector<T_Pixel>& getPixels() { return pixels_; }
     const std::vector<T_Pixel>& getPixels() const { return pixels_; }
     void clear();
