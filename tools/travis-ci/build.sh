@@ -5,7 +5,9 @@ set -euox pipefail
 BUILD_TYPE=${1}
 CMAKE_FLAGS=${2}
 
-mkdir build && cd build
+mkdir -p build
+pushd build
+
 cmake \
     --generator="Unix Makefiles" \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \

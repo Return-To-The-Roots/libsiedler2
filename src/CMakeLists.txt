@@ -1,23 +1,13 @@
+find_package(Boost 1.64.0 REQUIRED COMPONENTS filesystem iostreams)
 
-FIND_PACKAGE(Boost 1.64.0 REQUIRED COMPONENTS filesystem iostreams)
+get_filename_component(_parent_dir ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
+set(_include_dir ${_parent_dir}/include)
 
-IF (MSVC)
-	ADD_DEFINITIONS(/WX) # warning = error
-	ADD_DEFINITIONS(/MP) # parallel compilation
-	# disable MSVC posix functions
-	ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
-	ADD_DEFINITIONS(/wd"4250")
-ENDIF()
+file(GLOB _sources *.cpp)
+file(GLOB _headers ${_include_dir}/libsiedler2/*.h)
+add_library(siedler2 STATIC ${_sources} ${_headers})
 
-get_filename_component(parentPath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
-set(includePath ${parentPath}/include)
-INCLUDE_DIRECTORIES()
-
-FILE(GLOB SRC_FILES *.cpp *.h *.hpp)
-FILE(GLOB HEADER_FILES ${includePath}/libsiedler2/*.*)
-ADD_LIBRARY(siedler2 STATIC ${SRC_FILES} ${HEADER_FILES})
-
-target_include_directories(siedler2 INTERFACE ${includePath} PRIVATE ${includePath}/libsiedler2)
+target_include_directories(siedler2 INTERFACE ${_include_dir} PRIVATE ${_include_dir}/libsiedler2)
 target_link_libraries(siedler2 PUBLIC s25util PRIVATE nowide::static Boost::filesystem Boost::iostreams endian::interface)
 target_compile_features(siedler2 PUBLIC cxx_std_14)
 set_target_properties(siedler2 PROPERTIES CXX_EXTENSIONS OFF)
@@ -26,5 +16,5 @@ include(EnableWarnings)
 enable_warnings(siedler2)
 
 if(ClangFormat_FOUND)
-    add_clangFormat_files(${SRC_FILES} ${HEADER_FILES})
+    add_clangformat_files(${_sources} ${_headers})
 endif()
