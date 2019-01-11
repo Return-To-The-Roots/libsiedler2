@@ -1,4 +1,4 @@
-find_package(Boost 1.64.0 REQUIRED COMPONENTS filesystem iostreams)
+find_package(Boost 1.64.0 REQUIRED COMPONENTS system filesystem iostreams)
 
 get_filename_component(_parent_dir ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 set(_include_dir ${_parent_dir}/include)
