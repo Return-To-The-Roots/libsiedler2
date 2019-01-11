@@ -1,4 +1,4 @@
-find_package(Boost 1.64 REQUIRED COMPONENTS program_options)
+find_package(Boost 1.64 REQUIRED COMPONENTS system program_options)
 
 file(GLOB _sources *.cpp *.h)
 add_executable(chTransparentIdx ${_sources})
