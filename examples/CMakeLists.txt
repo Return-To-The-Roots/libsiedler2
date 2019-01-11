@@ -39,7 +39,6 @@ set(RTTR_PAL5_PATH "${RTTR_LIBSIEDLER2_DIR}/examples/pal5.act")
 add_subdirectory(chTransparentIdx)
 add_subdirectory(lstpacker)
 add_subdirectory(outline)
-add_subdirectory(test)
 
 if(ClangFormat_FOUND)
     add_clangformat_target("file")
