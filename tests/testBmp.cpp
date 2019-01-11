@@ -28,6 +28,7 @@
 #include "libsiedler2/PixelBufferARGB.h"
 #include "libsiedler2/PixelBufferPaletted.h"
 #include "libsiedler2/libsiedler2.h"
+#include <boost/array.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>

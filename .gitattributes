@@ -1,7 +1,7 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
 
-examples/test/testFiles/* binary
+tests/testFiles/* binary
 
 #sources
 *.txt text

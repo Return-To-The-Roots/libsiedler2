@@ -36,6 +36,16 @@
 #include "libsiedler2/ArchivItem_Sound_Midi.h"
 #include "libsiedler2/ArchivItem_Sound_XMidi.h"
 
+#ifdef __has_cpp_attribute
+    #if __has_cpp_attribute(fallthrough)
+        #define __explicit_fallthrough [[fallthrough]]
+    #else
+        #define __explicit_fallthrough
+    #endif
+#else
+    #define __explicit_fallthrough
+#endif
+
 using namespace std;
 using namespace libsiedler2;
 namespace bnw = boost::nowide;
@@ -192,42 +202,44 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     newfile << "rle.";
                     filenameAdjusted = true;
                 }
-            // no break
+                __explicit_fallthrough;
+                // no break
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
                 if(!filenameAdjusted)
                 {
                     newfile << "player.";
                     filenameAdjusted = true;
                 }
-            // no break
+                __explicit_fallthrough;
+                // no break
             case BOBTYPE_BITMAP_SHADOW: // Schatten
                 if(!filenameAdjusted)
                 {
                     newfile << "shadow.";
                     filenameAdjusted = true;
                 }
-            // no break
+                __explicit_fallthrough;
+                // no break
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-            {
-                Archiv items;
-                const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
-                items.pushC(bitmap);
-                newfile << "nx" << bitmap.getNx() << ".ny" << bitmap.getNy();
-                newfile << ".bmp";
+                {
+                    Archiv items;
+                    const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
+                    items.pushC(bitmap);
+                    newfile << "nx" << bitmap.getNx() << ".ny" << bitmap.getNy();
+                    newfile << ".bmp";
 
-                cout << "extracting " << newfile.str() << ": ";
+                    cout << "extracting " << newfile.str() << ": ";
 
-                if(Write(newfile.str(), items, palette) != 0)
-                    cout << "failed" << endl;
-                else
-                    cout << "done" << endl;
-                if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
-                    loader::WriteTxtPalette(newFileBaseName + "palette.txt", *bitmap.getPalette());
-            }
-            break;
+                    if(Write(newfile.str(), items, palette) != 0)
+                        cout << "failed" << endl;
+                    else
+                        cout << "done" << endl;
+                    if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
+                        loader::WriteTxtPalette(newFileBaseName + "palette.txt", *bitmap.getPalette());
+                }
+                break;
             case BOBTYPE_PALETTE_ANIM:
                 containsPalAnim = true;
-                break;
                 break;
             default: cerr << "Unhandled bobtype: " << item->getBobType() << endl;
         }

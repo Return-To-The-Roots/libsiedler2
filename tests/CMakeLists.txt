@@ -1,6 +1,6 @@
 include(AddMacros)
 
-add_testcase(siedler2-tests LIBS siedler2)
+add_testcase(NAME libsiedler2 LIBS siedler2)
 
 file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
 install(FILES ${RTTR_PAL5_PATH} DESTINATION .)
