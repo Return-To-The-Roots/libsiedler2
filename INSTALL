@@ -1,10 +1,9 @@
 Installation:
 
 mkdir build && cd build
-cmake ../
+cmake ..
 make
 make install
 
 To run all tests you need to put the original Settlers II folders (DATA and GFX)
 in the testFiles directory.
-
