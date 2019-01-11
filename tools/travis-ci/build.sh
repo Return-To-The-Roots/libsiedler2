@@ -1,16 +1,15 @@
 #!/bin/bash
 
-set -euox pipefail
+set -euo pipefail
 
-BUILD_TYPE=${1}
-CMAKE_FLAGS=${2}
+BUILD_TYPE="${1}"
+CMAKE_FLAGS="${2}"
 
-mkdir -p build
-pushd build
+mkdir build && cd build
 
 cmake \
     --generator="Unix Makefiles" \
-    -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+    -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
     -DRTTR_ENABLE_WERROR=ON \
     ${CMAKE_FLAGS} \
     ../examples
@@ -19,8 +18,5 @@ cmake \
 make -j2
 
 # Execute tests
-export CTEST_OUTPUT_ON_FAILURE=1
-export BOOST_TEST_CATCH_SYSTEM_ERRORS="no"
 export RTTR_DISABLE_ASSERT_BREAKPOINT=1
-
-make test
+ctest --output-on-failure -j2
