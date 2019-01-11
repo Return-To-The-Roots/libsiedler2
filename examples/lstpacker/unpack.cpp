@@ -36,16 +36,6 @@
 #include "libsiedler2/ArchivItem_Sound_Midi.h"
 #include "libsiedler2/ArchivItem_Sound_XMidi.h"
 
-#ifdef __has_cpp_attribute
-    #if __has_cpp_attribute(fallthrough)
-        #define __explicit_fallthrough [[fallthrough]]
-    #else
-        #define __explicit_fallthrough
-    #endif
-#else
-    #define __explicit_fallthrough
-#endif
-
 using namespace std;
 using namespace libsiedler2;
 namespace bnw = boost::nowide;
@@ -202,7 +192,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     newfile << "rle.";
                     filenameAdjusted = true;
                 }
-                __explicit_fallthrough;
+                BOOST_FALLTHROUGH;
                 // no break
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
                 if(!filenameAdjusted)
@@ -210,7 +200,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     newfile << "player.";
                     filenameAdjusted = true;
                 }
-                __explicit_fallthrough;
+                BOOST_FALLTHROUGH;
                 // no break
             case BOBTYPE_BITMAP_SHADOW: // Schatten
                 if(!filenameAdjusted)
@@ -218,7 +208,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     newfile << "shadow.";
                     filenameAdjusted = true;
                 }
-                __explicit_fallthrough;
+                BOOST_FALLTHROUGH;
                 // no break
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
                 {
