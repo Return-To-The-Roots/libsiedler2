@@ -22,7 +22,7 @@ addons:
         sources:
             - ubuntu-toolchain-r-test
         packages:
-            - g++-6.4
+            - g++-6
             - cmake
             - cmake-data
             - libminiupnpc-dev
@@ -66,11 +66,11 @@ matrix:
 install:
     - *installDeps
     - BOOST_VERSION="1.64.0"
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-6.4"; export CC="gcc-6.4"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-6"; export CC="gcc-6"; fi
     # Enable coverage analysis only in debug and for g++
     - |
         if [ "$CXX" = "g++" ] && [ "$BUILD_TYPE" = "Debug" ]; then
-            export GCOV="gcov-6.4"
+            export GCOV="gcov-6"
             
             # Install newer lcov (1.9 seems to fail: http://gronlier.fr/blog/2015/01/adding-code-coverage-to-your-c-project/)
             export LCOV_ROOT="$HOME/lcov"
