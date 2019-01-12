@@ -1,5 +1,5 @@
+# Example project using libsiedler2 creating useful tools
 cmake_minimum_required(VERSION 3.8)
-
 project(libsiedler2-examples)
 
 set(RTTR_LIBSIEDLER2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -19,12 +19,6 @@ list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake")
 include(CheckCXXSourceCompiles)
 
 # include Test
-include(RttrTestingCfg)
-
-# Require higher version as libsiedler2 because endian functions are not emulated here
-include(RttrBoostCfg)
-
-# Code coverage
 include(RttrCoverageCfg)
 
 # Use clang-format if available
