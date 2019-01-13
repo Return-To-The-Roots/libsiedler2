@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
+#include "test/config.h"
 
 #define BOOST_TEST_MODULE libSiedler2_Test
 #include <boost/filesystem.hpp>
@@ -25,14 +25,8 @@
 
 struct TestSetup
 {
-    TestSetup() { bfs::create_directories(testOutputPath); }
-
-    ~TestSetup() { bfs::remove_all(testOutputPath); }
+    TestSetup() { bfs::create_directories(libsiedler2::test::outputPath); }
+    ~TestSetup() { bfs::remove_all(libsiedler2::test::outputPath); }
 };
 
-#if BOOST_VERSION >= 105900
 BOOST_GLOBAL_FIXTURE(TestSetup);
-#else
-// Boost < 1.59 got the semicolon inside the macro causing an "extra ;" warning
-BOOST_GLOBAL_FIXTURE(TestSetup)
-#endif

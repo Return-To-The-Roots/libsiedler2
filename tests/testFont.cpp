@@ -17,7 +17,7 @@
 
 #include "LoadPalette.h"
 #include "cmpFiles.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Font.h"
 #include "libsiedler2/libsiedler2.h"
@@ -28,8 +28,8 @@ BOOST_FIXTURE_TEST_SUITE(Fonts, LoadPalette)
 
 BOOST_AUTO_TEST_CASE(LoadWriteFont)
 {
-    std::string inPath = "testFiles/testFonts.LST";
-    std::string outPath = testOutputPath + "/outFonts.lst";
+    std::string inPath = libsiedler2::test::inputPath + "/testFonts.LST";
+    std::string outPath = libsiedler2::test::outputPath + "/outFonts.lst";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);

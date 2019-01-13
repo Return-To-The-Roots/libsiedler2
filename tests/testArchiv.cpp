@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Raw.h"
 #include "libsiedler2/IAllocator.h"

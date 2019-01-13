@@ -1,14 +1,15 @@
 include(AddMacros)
 
-add_testcase(NAME libsiedler2 LIBS siedler2)
+get_filename_component(RTTR_LIBSIEDLER2_TEST_FILES_DIR "testFiles" ABSOLUTE)
+configure_file(config.h.cmake include/test/config.h @ONLY)
+unset(RTTR_LIBSIEDLER2_TEST_FILES_DIR)
 
-file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
-install(FILES ${RTTR_PAL5_PATH} DESTINATION .)
+add_library(siedler2-testConfig INTERFACE)
+target_include_directories(siedler2-testConfig INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-set(RTTR_TESTFILES_PATH "${CMAKE_CURRENT_SOURCE_DIR}/testFiles")
-file(COPY ${RTTR_TESTFILES_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
-install(DIRECTORY ${RTTR_TESTFILES_PATH} DESTINATION .)
+add_testcase(NAME libsiedler2 LIBS siedler2 siedler2-testConfig)
 
 if(ClangFormat_FOUND)
+    get_target_property(TEST_SOURCES Test_libsiedler2 SOURCES)
     add_clangFormat_files(${TEST_SOURCES})
 endif()

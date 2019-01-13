@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
@@ -45,7 +45,7 @@ void createTxt(libsiedler2::Archiv& archiv, const std::string& outFile, unsigned
 
 BOOST_AUTO_TEST_CASE(ReadWriteENG)
 {
-    std::string outFilepath = testOutputPath + "/outText.ENG";
+    std::string outFilepath = libsiedler2::test::outputPath + "/outText.ENG";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 3);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
 
 BOOST_AUTO_TEST_CASE(ReadWriteGER)
 {
-    std::string outFilepath = testOutputPath + "/outText.GER";
+    std::string outFilepath = libsiedler2::test::outputPath + "/outText.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 6);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
 
 BOOST_AUTO_TEST_CASE(ReadWritePlain)
 {
-    std::string outFilepath = testOutputPath + "/outTextPlain.GER";
+    std::string outFilepath = libsiedler2::test::outputPath + "/outTextPlain.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 1);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
 
 BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
 {
-    std::string inFilepath = "testFiles/txtAsLst.lst";
+    std::string inFilepath = libsiedler2::test::inputPath + "/txtAsLst.lst";
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inFilepath, archiv), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 7u);

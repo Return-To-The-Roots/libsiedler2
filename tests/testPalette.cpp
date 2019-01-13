@@ -17,7 +17,7 @@
 
 #include "ColorOutput.h"
 #include "cmpFiles.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/ArchivItem_PaletteAnimation.h"
@@ -31,8 +31,8 @@ BOOST_AUTO_TEST_SUITE(Palette)
 
 BOOST_AUTO_TEST_CASE(ReadWritePalette)
 {
-    std::string palPath = "pal5.act";
-    std::string palOutPath = testOutputPath + "/" + palPath;
+    std::string palPath = libsiedler2::test::inputPath + "/pal5.act";
+    std::string palOutPath = libsiedler2::test::outputPath + "/pal5.act";
     BOOST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
@@ -53,13 +53,13 @@ void createBBM(const std::string& palPath, const std::string& palOutPath)
 
 BOOST_AUTO_TEST_CASE(ReadWriteBBM)
 {
-    // createBBM("pal5.act", "testFiles/pal.bbm");
-    std::string palPath = "testFiles/pal.bbm";
-    std::string palOutPath = testOutputPath + "/palOut.bbm";
+    // createBBM("pal5.act", libsiedler2::test::inputPath + "/pal.bbm");
+    std::string palPath = libsiedler2::test::inputPath + "/pal.bbm";
+    std::string palOutPath = libsiedler2::test::outputPath + "/palOut.bbm";
     BOOST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act, act2;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load("pal5.act", act2), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(libsiedler2::test::inputPath + "/pal5.act", act2), 0);
     libsiedler2::ArchivItem_Palette* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     BOOST_REQUIRE(pal);
     BOOST_REQUIRE_EQUAL(pal->get(10), libsiedler2::ColorRGB(11, 22, 33));
@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_CASE(GetColor)
 
 BOOST_AUTO_TEST_CASE(ReadWritePalAnim)
 {
-    std::string outPath = testOutputPath + "/paletteAnims.txt";
+    std::string outPath = libsiedler2::test::outputPath + "/paletteAnims.txt";
 
     libsiedler2::Archiv archiv;
     libsiedler2::ArchivItem_PaletteAnimation anim;

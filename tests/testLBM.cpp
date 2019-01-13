@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "LoadPalette.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Bitmap.h"
 #include "libsiedler2/ArchivItem_BitmapBase.h"
@@ -29,7 +29,7 @@ BOOST_FIXTURE_TEST_SUITE(LbmFiles, LoadPalette)
 BOOST_AUTO_TEST_CASE(LoadLbmFile)
 {
     // Proprietary file. Copy S2 installation into the testFiles folder to test this
-    std::string inPath = "testFiles/GFX/TEXTURES/TEX5.LBM";
+    std::string inPath = libsiedler2::test::inputPath + "/GFX/TEXTURES/TEX5.LBM";
     if(!bfs::exists(inPath))
         return;
     libsiedler2::Archiv archiv;
@@ -49,8 +49,8 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
 
 BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
 {
-    std::string inPathBmp = "testFiles/pal.bmp";
-    std::string outPath = testOutputPath + "/out.lbm";
+    std::string inPathBmp = libsiedler2::test::inputPath + "/pal.bmp";
+    std::string outPath = libsiedler2::test::outputPath + "/out.lbm";
     // Load a paletted bmp and write it in lbm format
     libsiedler2::Archiv arBmp;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathBmp, arBmp, palette), 0);

@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "cmpFiles.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
@@ -26,8 +26,8 @@ BOOST_AUTO_TEST_SUITE(Maps)
 
 BOOST_AUTO_TEST_CASE(ReadWriteSWD)
 {
-    std::string mapPath = "testFiles/map.SWD";
-    std::string mapOutPath = testOutputPath + "/outMap.SWD";
+    std::string mapPath = libsiedler2::test::inputPath + "/map.SWD";
+    std::string mapOutPath = libsiedler2::test::outputPath + "/outMap.SWD";
     BOOST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(mapPath, act), 0);
@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteSWD)
 
 BOOST_AUTO_TEST_CASE(ReadWriteWLD)
 {
-    std::string mapPath = "testFiles/map.wld";
-    std::string mapOutPath = testOutputPath + "/outMap.wld";
+    std::string mapPath = libsiedler2::test::inputPath + "/map.wld";
+    std::string mapOutPath = libsiedler2::test::outputPath + "/outMap.wld";
     BOOST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(mapPath, act), 0);
@@ -49,9 +49,9 @@ BOOST_AUTO_TEST_CASE(ReadWriteWLD)
 BOOST_AUTO_TEST_CASE(ReadFaultyWLD)
 {
     // Copy of map.wld but has a 20B title with size afterwards and extra word
-    std::string mapPath = "testFiles/faultyMap.wld";
-    std::string mapOutPath = testOutputPath + "/faultyMap.wld";
-    std::string okMapPath = "testFiles/map.wld";
+    std::string mapPath = libsiedler2::test::inputPath + "/faultyMap.wld";
+    std::string mapOutPath = libsiedler2::test::outputPath + "/faultyMap.wld";
+    std::string okMapPath = libsiedler2::test::inputPath + "/map.wld";
     BOOST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(mapPath, act), 0);

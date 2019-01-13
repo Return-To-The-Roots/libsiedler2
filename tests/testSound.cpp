@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "cmpFiles.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Sound_Midi.h"
 #include "libsiedler2/ArchivItem_Sound_Other.h"
@@ -30,8 +30,8 @@ BOOST_AUTO_TEST_SUITE(Sounds)
 
 BOOST_AUTO_TEST_CASE(ReadWriteOgg)
 {
-    std::string inPath = "testFiles/test.ogg";
-    std::string outPath = testOutputPath + "/outTest.ogg";
+    std::string inPath = libsiedler2::test::inputPath + "/test.ogg";
+    std::string outPath = libsiedler2::test::outputPath + "/outTest.ogg";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE(testLoad(0, inPath, archiv));
@@ -48,8 +48,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteOgg)
 
 BOOST_AUTO_TEST_CASE(ReadOrigSnds)
 {
-    std::string inPathLst = "testFiles/DATA/SOUNDDAT/SOUND.LST";
-    std::string inPathSNG = "testFiles/DATA/SOUNDDAT/SNG/SNG_0001.DAT";
+    std::string inPathLst = libsiedler2::test::inputPath + "/DATA/SOUNDDAT/SOUND.LST";
+    std::string inPathSNG = libsiedler2::test::inputPath + "/DATA/SOUNDDAT/SNG/SNG_0001.DAT";
     if(!bfs::exists(inPathLst) || !bfs::exists(inPathSNG))
         return;
     libsiedler2::Archiv archivLst;
@@ -76,8 +76,8 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
 
 BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
 {
-    std::string inPath = "testFiles/testMono.wav";
-    std::string outPath = testOutputPath + "/outMono.wav";
+    std::string inPath = libsiedler2::test::inputPath + "/testMono.wav";
+    std::string outPath = libsiedler2::test::outputPath + "/outMono.wav";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
@@ -92,8 +92,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
 
 BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
 {
-    std::string inPath = "testFiles/testStereo.wav";
-    std::string outPath = testOutputPath + "/testStereo.wav";
+    std::string inPath = libsiedler2::test::inputPath + "/testStereo.wav";
+    std::string outPath = libsiedler2::test::outputPath + "/testStereo.wav";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
@@ -108,8 +108,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
 
 BOOST_AUTO_TEST_CASE(ReadWriteMid)
 {
-    std::string inPath = "testFiles/testMidi.mid";
-    std::string outPath = testOutputPath + "/outMidi.mid";
+    std::string inPath = libsiedler2::test::inputPath + "/testMidi.mid";
+    std::string outPath = libsiedler2::test::outputPath + "/outMidi.mid";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
@@ -122,8 +122,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteMid)
 
 BOOST_AUTO_TEST_CASE(ReadWriteXMid)
 {
-    std::string inPath = "testFiles/testXMidi.xmi";
-    std::string outPath = testOutputPath + "/outXMidi.xmi";
+    std::string inPath = libsiedler2::test::inputPath + "/testXMidi.xmi";
+    std::string outPath = libsiedler2::test::outputPath + "/outXMidi.xmi";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);

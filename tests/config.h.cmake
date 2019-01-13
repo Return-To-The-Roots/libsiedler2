@@ -1,4 +1,4 @@
-// Copyright (c) 2017 - 2017 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2017 - 2019 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -22,7 +22,15 @@
 
 #include <string>
 
-const std::string testOutputPath = "testOutput";
+#cmakedefine RTTR_LIBSIEDLER2_TEST_FILES_DIR "@RTTR_LIBSIEDLER2_TEST_FILES_DIR@"
+namespace libsiedler2
+{
+namespace test
+{
+const std::string inputPath = RTTR_LIBSIEDLER2_TEST_FILES_DIR;
+const std::string outputPath = "testOutput";
+}
+}
 
 namespace boost { namespace filesystem {
 }} // namespace boost::filesystem

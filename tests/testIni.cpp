@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "cmpFiles.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
@@ -26,8 +26,8 @@ BOOST_AUTO_TEST_SUITE(IniFiles)
 
 BOOST_AUTO_TEST_CASE(ReadWriteIni)
 {
-    std::string inPath = "testFiles/test.ini";
-    std::string outPath = testOutputPath + "/outTest.ini";
+    std::string inPath = libsiedler2::test::inputPath + "/test.ini";
+    std::string outPath = libsiedler2::test::outputPath + "/outTest.ini";
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, act), 0);

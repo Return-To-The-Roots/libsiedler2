@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "LoadPalette.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_BitmapBase.h"
 #include "libsiedler2/ArchivItem_Font.h"
@@ -31,8 +31,8 @@ BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
 {
     // Proprietary file. Copy S2 installation into the testFiles folder to test this
     // Both should work
-    std::string inPath = "testFiles/DATA/EDITRES.IDX";
-    std::string inPath2 = "testFiles/DATA/EDITRES.DAT";
+    std::string inPath = libsiedler2::test::inputPath + "/DATA/EDITRES.IDX";
+    std::string inPath2 = libsiedler2::test::inputPath + "/DATA/EDITRES.DAT";
     for(int i = 0; i < 2; i++)
     {
         if(!bfs::exists(inPath))

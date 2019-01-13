@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "LoadPalette.h"
-#include "config.h"
+#include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/ArchivItem_Bob.h"
@@ -29,7 +29,7 @@ BOOST_FIXTURE_TEST_SUITE(BobFiles, LoadPalette)
 BOOST_AUTO_TEST_CASE(LoadBobFile)
 {
     // Proprietary file. Copy S2 installation into the testFiles folder to test this
-    std::string inPath = "testFiles/DATA/BOBS/CARRIER.BOB";
+    std::string inPath = libsiedler2::test::inputPath + "/DATA/BOBS/CARRIER.BOB";
     if(!bfs::exists(inPath))
         return;
     libsiedler2::Archiv archiv;
