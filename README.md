@@ -2,13 +2,13 @@
 
 ### Current Build Info
 
-- Travis CI: ![Travis CI Build Info](https://travis-ci.org/Return-To-The-Roots/libsiedler2.svg?branch=master)
+- Travis CI: [![Travis CI Status](https://travis-ci.com/Return-To-The-Roots/libsiedler2.svg?branch=master)](https://travis-ci.com/Return-To-The-Roots/libsiedler2)
 
-- Appveyor: [![Build status](https://ci.appveyor.com/api/projects/status/elq18eld1ulhgm3k/branch/master?svg=true)](https://ci.appveyor.com/project/Flow86/libsiedler2/branch/master)
+- Appveyor: [![Appveyor Status](https://ci.appveyor.com/api/projects/status/elq18eld1ulhgm3k/branch/master?svg=true)](https://ci.appveyor.com/project/Flow86/libsiedler2/branch/master)
 
 - Coverage:
-[![Coverage Status](https://coveralls.io/repos/github/Return-To-The-Roots/libsiedler2/badge.svg?branch=master)](https://coveralls.io/github/Return-To-The-Roots/libsiedler2?branch=master)
-[![codecov](https://codecov.io/gh/Return-To-The-Roots/libsiedler2/branch/master/graph/badge.svg)](https://codecov.io/gh/Return-To-The-Roots/libsiedler2)
+[![Coveralls Status](https://coveralls.io/repos/github/Return-To-The-Roots/libsiedler2/badge.svg?branch=master)](https://coveralls.io/github/Return-To-The-Roots/libsiedler2?branch=master)
+[![Codecov Status](https://codecov.io/gh/Return-To-The-Roots/libsiedler2/branch/master/graph/badge.svg)](https://codecov.io/gh/Return-To-The-Roots/libsiedler2)
 
 
 ### Prerequisites:
