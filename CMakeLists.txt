@@ -14,7 +14,7 @@ target_link_libraries(siedler2 PUBLIC s25util PRIVATE nowide::static Boost::file
 target_compile_features(siedler2 PUBLIC cxx_std_14)
 set_target_properties(siedler2 PROPERTIES CXX_EXTENSIONS OFF)
 if(WIN32)
-  target_compile_definitions(siedler2 PUBLIC NOMINMAX)
+    target_compile_definitions(siedler2 PUBLIC NOMINMAX)
 endif()
 
 include(EnableWarnings)

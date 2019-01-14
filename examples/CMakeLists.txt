@@ -24,6 +24,9 @@ include(RttrCoverageCfg)
 # Use clang-format if available
 find_package(ClangFormat 5.0.0)
 
+# Must be done at top-level
+include(RttrTestingCfg)
+
 add_subdirectory(${RTTR_LIBUTIL_DIR} libutil)
 add_subdirectory(${RTTR_LIBENDIAN_DIR} libendian)
 add_subdirectory(${RTTR_LIBSIEDLER2_DIR} libsiedler2)
