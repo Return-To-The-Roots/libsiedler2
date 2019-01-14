@@ -1,31 +1,39 @@
 # libsiedler2 - Library for reading and writing 'The Settlers II' file formats
 
-# Current Build Info
+### Current Build Info
 
-Travis CI: ![Travis CI Build Info](https://travis-ci.org/Return-To-The-Roots/libsiedler2.svg?branch=master)
+- Travis CI: ![Travis CI Build Info](https://travis-ci.org/Return-To-The-Roots/libsiedler2.svg?branch=master)
 
-Appveyor: [![Build status](https://ci.appveyor.com/api/projects/status/elq18eld1ulhgm3k/branch/master?svg=true)](https://ci.appveyor.com/project/Flow86/libsiedler2/branch/master)
+- Appveyor: [![Build status](https://ci.appveyor.com/api/projects/status/elq18eld1ulhgm3k/branch/master?svg=true)](https://ci.appveyor.com/project/Flow86/libsiedler2/branch/master)
 
-Coverage:
+- Coverage:
 [![Coverage Status](https://coveralls.io/repos/github/Return-To-The-Roots/libsiedler2/badge.svg?branch=master)](https://coveralls.io/github/Return-To-The-Roots/libsiedler2?branch=master)
 [![codecov](https://codecov.io/gh/Return-To-The-Roots/libsiedler2/branch/master/graph/badge.svg)](https://codecov.io/gh/Return-To-The-Roots/libsiedler2)
 
 
 ### Texture format
+
 The bitmaps can be stored in memory in ARGB or paletted format.
+
 The ARGB format is byte BGRA, so 4 bytes define 1 pixel with blue first and alpha last.
+
 If this is interpreted as a 32bit word on a little endian machine than it is (word) ARGB format.
 That is the alpha value is the most significant byte.
+
 The used format can be set with `setTextureFormat`.
+
 All bitmaps loaded **after** this call will be in the given format with conversion beeing used if required.   
-Note: While it is possible to convert Paletted -> ARGB in all cases the reverse is not always possible.
-So using a paletted format may result in failure of loading ARGB bitmaps.
+
+*Note:* While it is possible to convert Paletted -> ARGB in all cases the reverse is not always possible.
+So using a paletted format may result in failure while loading ARGB bitmaps.
 
 ### Palettes
-As some files may contain embedded palettes care must be taken when reading, writing or using them.
 
-If the bitmap is paletted, it contains a palette.  
-If it is ARGB it may contain a palette and this palette may be invalid (not contain all colors) which can result in errors when converting to paletted.
+As some files may contain embedded palettes (i.e LBM files): Be careful when reading, writing or using them.
+
+- If the bitmap is paletted, the loaded result contains a palette.
+- If it is ARGB, it may contain a palette and this palette may be invalid (not contain all colors) which can result in errors when converting to paletted.
+
 Use `checkPalette` to make sure the palette is valid. (Trivially true for paletted bitmaps.)
 
 For the usage the following applies:
