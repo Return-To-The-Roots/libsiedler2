@@ -11,6 +11,22 @@
 [![codecov](https://codecov.io/gh/Return-To-The-Roots/libsiedler2/branch/master/graph/badge.svg)](https://codecov.io/gh/Return-To-The-Roots/libsiedler2)
 
 
+### Prerequisites:
+
+- boost ( http://www.boost.org )
+- libutil
+- libendian
+
+### Installation:
+
+```
+mkdir build && cd build
+cmake ..
+make install
+```
+
+To run all tests (`make test`) you need to put the original Settlers II folders (DATA and GFX) in the testFiles directory.
+
 ### Texture format
 
 The bitmaps can be stored in memory in ARGB or paletted format.
