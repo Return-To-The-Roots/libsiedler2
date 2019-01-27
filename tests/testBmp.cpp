@@ -538,7 +538,6 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     std::fill(outBufferPal.begin() + bh * w, outBufferPal.end(), 0u);
     std::fill(outBuffer.begin() + bh * w * 4, outBuffer.end(), 0u);
     std::vector<uint8_t> emptyBufferPal(outBufferPal);
-    std::vector<uint8_t> emptyBuffer(outBuffer);
     // First create paletted bmp
     ArchivItem_Bitmap_Raw bmpPal;
     // Any NULL should make this fail
@@ -702,7 +701,6 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     std::fill(outBufferPal.begin() + bh * w, outBufferPal.end(), 0u);
     std::fill(outBuffer.begin() + bh * w * 4, outBuffer.end(), 0u);
     std::vector<uint8_t> emptyBufferPal(outBufferPal);
-    std::vector<uint8_t> emptyBuffer(outBuffer);
 
     // First create paletted bmp
     ArchivItem_Bitmap_Player bmpPal;
