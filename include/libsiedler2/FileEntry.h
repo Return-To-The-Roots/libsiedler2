@@ -33,7 +33,7 @@ struct FileEntry
     /// Origin or delta (fonts)
     unsigned nx, ny;
 };
-bool operator<(const FileEntry& lhs, const FileEntry& rhs);
+bool operator<(const FileEntry& left, const FileEntry& right);
 } // namespace libsiedler2
 
 #endif // FileEntry_h__

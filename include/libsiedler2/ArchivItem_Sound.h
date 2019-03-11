@@ -29,7 +29,7 @@ namespace libsiedler2 {
 class ArchivItem_Sound : public ArchivItem
 {
 public:
-    ArchivItem_Sound(SoundType soundType_);
+    ArchivItem_Sound(SoundType soundType);
     ~ArchivItem_Sound() override;
 
     /// liefert den Typ des Sounds.
