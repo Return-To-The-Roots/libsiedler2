@@ -28,7 +28,7 @@
 #include <string>
 
 // Enable this to log status reports of the xmidi conversion to stdout
-//#define RTTR_LOG_XMIDI 1
+#define RTTR_LOG_XMIDI 0
 #if RTTR_LOG_XMIDI
 #include <iostream>
 #endif // RTTR_LOG_XMIDI
