@@ -385,15 +385,17 @@ int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette
     return ret;
 }
 
-unsigned hexToInt(const std::string& hexStr)
-{
-    s25util::ClassicImbuedStream<std::istringstream> sIn(hexStr);
-    unsigned tmp;
-    sIn >> std::hex >> tmp;
-    if(!sIn || !sIn.eof())
-        throw std::runtime_error("Invalid hex number 0x" + hexStr);
-    return tmp;
-}
+namespace {
+    unsigned hexToInt(const std::string& hexStr)
+    {
+        s25util::ClassicImbuedStream<std::istringstream> sIn(hexStr);
+        unsigned tmp;
+        sIn >> std::hex >> tmp;
+        if(!sIn || !sIn.eof())
+            throw std::runtime_error("Invalid hex number 0x" + hexStr);
+        return tmp;
+    }
+} // namespace
 
 std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
 {
