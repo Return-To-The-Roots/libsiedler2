@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalette)
     BOOST_REQUIRE(testFilesEqual(palOutPath, palPath));
 }
 
-void createBBM(const std::string& palPath, const std::string& palOutPath)
+static void createBBM(const std::string& palPath, const std::string& palOutPath)
 {
     BOOST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act;
@@ -53,7 +53,8 @@ void createBBM(const std::string& palPath, const std::string& palOutPath)
 
 BOOST_AUTO_TEST_CASE(ReadWriteBBM)
 {
-    // createBBM("pal5.act", libsiedler2::test::inputPath + "/pal.bbm");
+    if((false))
+        createBBM("pal5.act", libsiedler2::test::inputPath + "/pal.bbm");
     std::string palPath = libsiedler2::test::inputPath + "/pal.bbm";
     std::string palOutPath = libsiedler2::test::outputPath + "/palOut.bbm";
     BOOST_REQUIRE(bfs::exists(palPath));

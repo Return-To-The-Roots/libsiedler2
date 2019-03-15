@@ -35,6 +35,7 @@
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
 
+namespace {
 struct Rect
 {
     int x, y;
@@ -48,6 +49,7 @@ std::ostream& operator<<(std::ostream& os, const Rect& rect)
 {
     return os << "(" << rect.x << ", " << rect.y << ", " << rect.w << ", " << rect.h << ")";
 }
+} // namespace
 
 using namespace libsiedler2;
 using namespace boost::assign;
@@ -183,7 +185,7 @@ struct TestBitmaps
     }
 };
 
-ArchivItem_BitmapBase* getFirstBitmap(Archiv& archiv)
+static ArchivItem_BitmapBase* getFirstBitmap(Archiv& archiv)
 {
     for(unsigned j = 0; j < archiv.size(); j++)
     {

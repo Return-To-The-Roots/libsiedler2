@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
     bufBGRA[i++] = checkClr2.getRed();
     bufBGRA[i++] = checkClr2.getAlpha();
     BOOST_STATIC_ASSERT_MSG(sizeof(ColorARGB) == 4u, "Padding added to ColorARGB. Cannot read it as buffer");
-#if BOOST_BIG_ENDIAN
+#if BOOST_ENDIAN_BIG_BYTE
     // On big endian systems this is a word ARGB buffer. Swap it to BGRA
     boost::endian::endian_reverse_inplace(*reinterpret_cast<uint32_t*>(&bufBGRA[0]));
     boost::endian::endian_reverse_inplace(*reinterpret_cast<uint32_t*>(&bufBGRA[4]));

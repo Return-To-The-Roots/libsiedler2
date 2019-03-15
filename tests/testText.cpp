@@ -24,7 +24,7 @@
 
 BOOST_AUTO_TEST_SUITE(TextFiles)
 
-void createTxt(libsiedler2::Archiv& archiv, const std::string& outFile, unsigned numEntries)
+static void createTxt(libsiedler2::Archiv& archiv, const std::string& outFile, unsigned numEntries)
 {
     for(unsigned i = 0; i < numEntries; i++)
     {
