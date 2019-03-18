@@ -35,7 +35,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const Archiv& items)
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    const ArchivItem_Palette* palette = dynamic_cast<const ArchivItem_Palette*>(items[0]);
+    const auto* palette = dynamic_cast<const ArchivItem_Palette*>(items[0]);
     if(!palette)
         return ErrorCode::WRONG_ARCHIV;
 

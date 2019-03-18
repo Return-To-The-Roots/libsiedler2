@@ -35,7 +35,7 @@ int libsiedler2::loader::WriteMAP(const std::string& file, const Archiv& items)
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    const ArchivItem_Map* item = dynamic_cast<const ArchivItem_Map*>(items[0]);
+    const auto* item = dynamic_cast<const ArchivItem_Map*>(items[0]);
     if(!item)
         return ErrorCode::WRONG_ARCHIV;
 

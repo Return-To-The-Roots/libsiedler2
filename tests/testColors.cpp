@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(ColorRGBBuffer)
     buf2[5] = checkClr2.getBlue();
     BOOST_STATIC_ASSERT_MSG(sizeof(ColorRGB) == 3u, "Padding added to ColorRGB. Cannot read it as buffer");
     // Interpreting a buffer of RGBRGB values as ColorRGB should be possible
-    const ColorRGB* clrs = reinterpret_cast<const ColorRGB*>(&buf2[0]);
+    const auto* clrs = reinterpret_cast<const ColorRGB*>(&buf2[0]);
     BOOST_REQUIRE_EQUAL(clrs[0], checkClr);
     BOOST_REQUIRE_EQUAL(clrs[1], checkClr2);
 }
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
     boost::endian::endian_reverse_inplace(*reinterpret_cast<uint32_t*>(&bufBGRA[4]));
 #endif
     // Interpreting a buffer of BGRABGRA values as ColorARGB should be possible
-    const ColorARGB* clrs = reinterpret_cast<const ColorARGB*>(&bufBGRA[0]);
+    const auto* clrs = reinterpret_cast<const ColorARGB*>(&bufBGRA[0]);
     BOOST_REQUIRE_EQUAL(clrs[0], checkClr);
     BOOST_REQUIRE_EQUAL(clrs[1], checkClr2);
 }

@@ -43,7 +43,7 @@ int libsiedler2::loader::LoadACT(const std::string& file, Archiv& items)
     if(size != 256 * 3)
         return ErrorCode::WRONG_HEADER;
 
-    ArchivItem_Palette* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
+    auto* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
     if(int ec = palette->load(act, false))
     {
         delete palette;

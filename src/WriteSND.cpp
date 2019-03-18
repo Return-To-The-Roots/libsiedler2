@@ -31,7 +31,7 @@ int libsiedler2::loader::WriteSND(const std::string& file, const Archiv& items)
     if(items.size() != 1)
         return ErrorCode::WRONG_ARCHIV;
 
-    const ArchivItem_Sound* snd = dynamic_cast<const ArchivItem_Sound*>(items[0]);
+    const auto* snd = dynamic_cast<const ArchivItem_Sound*>(items[0]);
     if(!snd)
         return ErrorCode::WRONG_ARCHIV;
 

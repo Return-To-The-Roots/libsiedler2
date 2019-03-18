@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
         for(unsigned x = 1; x < buffer.getWidth(); x += 2)
             buffer.set(x, y, 1);
     }
-    baseArchivItem_Bitmap* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW));
+    auto* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW));
     shadowBmp->create(buffer, palette);
     bmp.clear();
     bmp.push(shadowBmp);
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
         for(unsigned x = 1; x < buffer.getWidth(); x += 2)
             buffer.set(x, y, 1);
     }
-    baseArchivItem_Bitmap* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RLE));
+    auto* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RLE));
     shadowBmp->create(buffer, palette);
     bmp.clear();
     bmp.push(shadowBmp);
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
     BOOST_REQUIRE(bfs::exists(bmpPath));
     Archiv archiv;
     BOOST_REQUIRE(testLoad(0, bmpPath, archiv));
-    ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase*>(archiv[0]);
+    auto* bmp = dynamic_cast<ArchivItem_BitmapBase*>(archiv[0]);
     BOOST_REQUIRE(bmp);
     BOOST_REQUIRE(bmp->getPalette());
     // We want to write as paletted again
@@ -189,7 +189,7 @@ static ArchivItem_BitmapBase* getFirstBitmap(Archiv& archiv)
 {
     for(unsigned j = 0; j < archiv.size(); j++)
     {
-        ArchivItem_BitmapBase* bmp = dynamic_cast<ArchivItem_BitmapBase*>(archiv[j]);
+        auto* bmp = dynamic_cast<ArchivItem_BitmapBase*>(archiv[j]);
         if(bmp)
             return bmp;
     }

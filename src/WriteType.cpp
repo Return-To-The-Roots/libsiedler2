@@ -53,7 +53,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
         {
             case BOBTYPE_SOUND: // WAVs, MIDIs
             {
-                const ArchivItem_Sound& i = dynamic_cast<const ArchivItem_Sound&>(item);
+                const auto& i = dynamic_cast<const ArchivItem_Sound&>(item);
                 libendian::EndianOStreamAdapter<false, std::ostream&> fs(lst);
                 const long sizePos = fs.getPosition();
                 fs << uint32_t(0);
@@ -67,7 +67,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
             {
-                const baseArchivItem_Bitmap_RLE& i = dynamic_cast<const baseArchivItem_Bitmap_RLE&>(item);
+                const auto& i = dynamic_cast<const baseArchivItem_Bitmap_RLE&>(item);
 
                 if(int ec = i.write(lst, palette))
                     return ec;
@@ -75,7 +75,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_FONT: // Font
             {
-                const ArchivItem_Font& i = dynamic_cast<const ArchivItem_Font&>(item);
+                const auto& i = dynamic_cast<const ArchivItem_Font&>(item);
 
                 if(int ec = i.write(lst, palette))
                     return ec;
@@ -83,7 +83,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
             {
-                const ArchivItem_Bitmap_Player& i = dynamic_cast<const ArchivItem_Bitmap_Player&>(item);
+                const auto& i = dynamic_cast<const ArchivItem_Bitmap_Player&>(item);
 
                 if(int ec = i.write(lst, palette))
                     return ec;
@@ -91,7 +91,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_PALETTE: // Palette
             {
-                const ArchivItem_Palette& i = dynamic_cast<const ArchivItem_Palette&>(item);
+                const auto& i = dynamic_cast<const ArchivItem_Palette&>(item);
 
                 if(int ec = i.write(lst))
                     return ec;
@@ -99,7 +99,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_BITMAP_SHADOW: // Schatten
             {
-                const baseArchivItem_Bitmap_Shadow& i = dynamic_cast<const baseArchivItem_Bitmap_Shadow&>(item);
+                const auto& i = dynamic_cast<const baseArchivItem_Bitmap_Shadow&>(item);
 
                 if(int ec = i.write(lst, palette))
                     return ec;
@@ -107,7 +107,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_BOB: // Bobfile
             {
-                const ArchivItem_Bob& i = dynamic_cast<const ArchivItem_Bob&>(item);
+                const auto& i = dynamic_cast<const ArchivItem_Bob&>(item);
 
                 if(int ec = i.write(lst, palette))
                     return ec;
@@ -115,7 +115,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_MAP: // Mapfile
             {
-                const ArchivItem_Map& i = dynamic_cast<const ArchivItem_Map&>(item);
+                const auto& i = dynamic_cast<const ArchivItem_Map&>(item);
 
                 if(int ec = i.write(lst))
                     return ec;
@@ -123,7 +123,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
-                const baseArchivItem_Bitmap_Raw& i = dynamic_cast<const baseArchivItem_Bitmap_Raw&>(item);
+                const auto& i = dynamic_cast<const baseArchivItem_Bitmap_Raw&>(item);
 
                 if(int ec = i.write(lst, palette))
                     return ec;
@@ -131,7 +131,7 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BOBTYPE_PALETTE_ANIM:
             {
-                const ArchivItem_PaletteAnimation& nitem = dynamic_cast<const ArchivItem_PaletteAnimation&>(item);
+                const auto& nitem = dynamic_cast<const ArchivItem_PaletteAnimation&>(item);
                 if(int ec = nitem.write(lst)) //-V522
                     return ec;
             }

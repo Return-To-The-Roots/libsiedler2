@@ -80,7 +80,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, Archiv& items, const A
 
         // bobtype des Items einlesen
         lst >> bobtype_s;
-        BobType bobtype = static_cast<BobType>(bobtype_s);
+        auto bobtype = static_cast<BobType>(bobtype_s);
 
         // Daten von Item auswerten
         ArchivItem* item;

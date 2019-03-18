@@ -66,7 +66,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, Archiv& items, cons
     // Platz für items anlegen
     items.alloc(count);
 
-    const uint32_t datFileSize = static_cast<uint32_t>(getIStreamSize(dat.getStream()));
+    const auto datFileSize = static_cast<uint32_t>(getIStreamSize(dat.getStream()));
 
     // items einlesen
     for(uint32_t i = 0; i < count; ++i)
@@ -97,7 +97,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, Archiv& items, cons
             assert(false); // Is this even valid?
             continue;
         }
-        BobType bobtype = static_cast<BobType>(bobtype_s);
+        auto bobtype = static_cast<BobType>(bobtype_s);
 
         // Daten von Item auswerten
         ArchivItem* item;

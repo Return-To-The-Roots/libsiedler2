@@ -111,7 +111,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             if(chunkLen != 256 * 3)
                 return ErrorCode::WRONG_FORMAT;
 
-            ArchivItem_Palette* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
+            auto* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
             bitmap->setPalette(palette);
             if(int ec = palette->load(lbm.getStream(), false))
                 return ec;

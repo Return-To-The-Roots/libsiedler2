@@ -52,8 +52,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
     BOOST_REQUIRE_EQUAL(archiv.size(), archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
     {
-        const libsiedler2::ArchivItem_Text* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
-        const libsiedler2::ArchivItem_Text* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[i]);
+        const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
+        const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[i]);
         if(txtOut)
             BOOST_REQUIRE(txtIn);
         else
@@ -72,8 +72,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
     BOOST_REQUIRE_EQUAL(archiv.size(), archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
     {
-        const libsiedler2::ArchivItem_Text* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
-        const libsiedler2::ArchivItem_Text* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[i]);
+        const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
+        const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[i]);
         if(txtOut)
             BOOST_REQUIRE(txtIn);
         else
@@ -90,8 +90,8 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
     createTxt(archiv, outFilepath, 1);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
     BOOST_REQUIRE_EQUAL(archivIn.size(), 1u);
-    const libsiedler2::ArchivItem_Text* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[0]);
-    const libsiedler2::ArchivItem_Text* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[0]);
+    const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[0]);
+    const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[0]);
     BOOST_REQUIRE(txtOut && txtIn);
     BOOST_REQUIRE_EQUAL(txtIn->getText(), txtOut->getText());
 }
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
     BOOST_REQUIRE_EQUAL(archiv.size(), 7u);
     for(unsigned i = 0; i < archiv.size(); i++)
     {
-        const libsiedler2::ArchivItem_Text* txt = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
+        const auto* txt = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
         // Item 4 is empty
         if(i == 4)
             BOOST_REQUIRE(!txt);

@@ -59,7 +59,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
 
     for(size_t i = 0; i < items.size(); ++i)
     {
-        const ArchivItem_Palette* palette = dynamic_cast<const ArchivItem_Palette*>(items[i]);
+        const auto* palette = dynamic_cast<const ArchivItem_Palette*>(items[i]);
         if(palette)
         {
             fs << cmap << uint32_t(256 * 3);

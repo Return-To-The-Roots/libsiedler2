@@ -45,7 +45,7 @@ static void createBBM(const std::string& palPath, const std::string& palOutPath)
     BOOST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
-    libsiedler2::ArchivItem_Palette* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
+    auto* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     act.pushC(*pal);
     pal->set(10, libsiedler2::ColorRGB(11, 22, 33));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(palOutPath, act), 0);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteBBM)
     libsiedler2::Archiv act, act2;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(libsiedler2::test::inputPath + "/pal5.act", act2), 0);
-    libsiedler2::ArchivItem_Palette* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
+    auto* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     BOOST_REQUIRE(pal);
     BOOST_REQUIRE_EQUAL(pal->get(10), libsiedler2::ColorRGB(11, 22, 33));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(palOutPath, act), 0);

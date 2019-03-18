@@ -102,7 +102,7 @@ int XMIDI_TrackConverter::ConvertTrackToList()
         status = (uint32_t)track.getData()[position++];
         LogStatus("Event #") << (curEvntNum++) << " d:" << delta;
 
-        const MidiStatus evntType = MidiStatus(status >> 4);
+        const auto evntType = MidiStatus(status >> 4);
         switch(evntType)
         {
             case MIDI_STATUS_NOTE_ON:
@@ -259,7 +259,7 @@ void XMIDI_TrackConverter::ConvertNote(int time, uint8_t status, int size)
 void XMIDI_TrackConverter::ConvertEvent(int time, uint8_t status, int size, first_state& fs)
 {
     int data = track.getData()[position++];
-    MidiStatus curStatus = MidiStatus(status >> 4);
+    auto curStatus = MidiStatus(status >> 4);
     uint8_t statValue = status & 0xF;
     // Bank changes are handled here
     if(curStatus == MIDI_STATUS_CONTROLLER && data == 0)
@@ -341,7 +341,7 @@ void XMIDI_TrackConverter::CreateNewEvent(int time)
 
     if(time < 0 || events->time > time)
     {
-        MIDI_Event* event = new MIDI_Event;
+        auto* event = new MIDI_Event;
         event->next = events;
         events = curEvent = event;
         numEvents++;
@@ -355,7 +355,7 @@ void XMIDI_TrackConverter::CreateNewEvent(int time)
     {
         if(curEvent->next->time > time)
         {
-            MIDI_Event* event = new MIDI_Event;
+            auto* event = new MIDI_Event;
 
             event->next = curEvent->next;
             curEvent->next = event;
@@ -538,7 +538,7 @@ void XMIDI_TrackConverter::ApplyFirstState(first_state& fs, int chan_mask)
     }
     // Tempo of 500.000 ms per quarter note
     // XMIDI has a fixed rate of 120Hz so PPQN should then be set to 60
-    MIDI_Event* ev = new MIDI_Event;
+    auto* ev = new MIDI_Event;
     ev->status = 0xFF;
     ev->data[0] = 0x51;
     ev->buffer.resize(3);

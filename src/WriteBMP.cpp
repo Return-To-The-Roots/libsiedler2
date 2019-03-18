@@ -45,7 +45,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    const ArchivItem_BitmapBase* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items[0]);
+    const auto* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items[0]);
     if(!bitmap)
         return ErrorCode::WRONG_ARCHIV;
 
@@ -116,14 +116,14 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
 
     if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
     {
-        const ArchivItem_Bitmap_Player* bmpPl = dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap);
+        const auto* bmpPl = dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap);
         if(!bmpPl)
             return ErrorCode::UNSUPPORTED_FORMAT;
         if(int ec = bmpPl->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette, 128))
             return ec;
     } else
     {
-        const baseArchivItem_Bitmap* bmpBase = dynamic_cast<const baseArchivItem_Bitmap*>(bitmap);
+        const auto* bmpBase = dynamic_cast<const baseArchivItem_Bitmap*>(bitmap);
         if(!bmpBase)
             return ErrorCode::UNSUPPORTED_FORMAT;
         if(int ec = bmpBase->print(&buffer.front(), bmih.width, bmih.height, bufFmt, palette))

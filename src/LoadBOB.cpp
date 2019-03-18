@@ -53,7 +53,7 @@ int libsiedler2::loader::LoadBOB(const std::string& file, Archiv& items, const A
     if(!bob || header != 0x01F501F6)
         return ErrorCode::WRONG_HEADER;
 
-    ArchivItem_Bob* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
+    auto* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
 
     boost::filesystem::path filePath(file);
     if(filePath.has_filename())

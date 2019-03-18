@@ -47,7 +47,7 @@ int libsiedler2::loader::WriteLST(const std::string& file, const Archiv& items, 
 
     int16_t header = 0x4E20;
     assert(items.size() < std::numeric_limits<uint32_t>::max());
-    uint32_t count = static_cast<uint32_t>(items.size());
+    auto count = static_cast<uint32_t>(items.size());
 
     // Header schreiben
     fs << header << count;

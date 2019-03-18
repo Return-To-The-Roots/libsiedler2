@@ -107,7 +107,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
 
     for(size_t i = 0; i < size(); ++i)
     {
-        const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(get(i));
+        const auto* item = dynamic_cast<const ArchivItem_Text*>(get(i));
         file << item->getName() << "=" << item->getText() << "\r\n"; //-V522
     }
 
@@ -122,7 +122,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
  */
 void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
-    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
+    auto* item = dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
     item->setText(value); //-V522
     item->setName(name);
 
@@ -131,7 +131,7 @@ void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::s
 
 std::string libsiedler2::ArchivItem_Ini::getValue(const std::string& name) const
 {
-    const ArchivItem_Text* item = dynamic_cast<const ArchivItem_Text*>(find(name));
+    const auto* item = dynamic_cast<const ArchivItem_Text*>(find(name));
     if(item)
     {
         return item->getText();
@@ -146,7 +146,7 @@ int libsiedler2::ArchivItem_Ini::getValueI(const std::string& name) const
 
 void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::string& value)
 {
-    ArchivItem_Text* item = dynamic_cast<ArchivItem_Text*>(find(name));
+    auto* item = dynamic_cast<ArchivItem_Text*>(find(name));
     if(item)
     {
         // setText überschreibt Namen, daher nochmals setzen

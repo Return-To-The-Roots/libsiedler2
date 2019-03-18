@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteOgg)
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE(testLoad(0, inPath, archiv));
-    libsiedler2::ArchivItem_Sound_Other* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Other*>(archiv[0]);
+    auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Other*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
     BOOST_REQUIRE_EQUAL(snd->getLength(), 105243u);
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     libsiedler2::Archiv archivLst;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathLst, archivLst), 0);
     BOOST_REQUIRE_EQUAL(archivLst.size(), 200u);
-    libsiedler2::ArchivItem_Sound* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[0]);
+    auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[0]);
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
     BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
-    libsiedler2::ArchivItem_Sound_Wave* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
+    auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
     BOOST_REQUIRE_EQUAL(snd->getLength(), 135944u);
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
-    libsiedler2::ArchivItem_Sound_Wave* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
+    auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
     BOOST_REQUIRE_EQUAL(snd->getLength(), 111414u);
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteMid)
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
-    libsiedler2::ArchivItem_Sound_Midi* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Midi*>(archiv[0]);
+    auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Midi*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteXMid)
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
-    libsiedler2::ArchivItem_Sound_XMidi* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[0]);
+    auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[0]);
     BOOST_REQUIRE(snd);
     // Hacky check
     for(unsigned i = 0; i < snd->getNumTracks(); i++)
@@ -153,10 +153,10 @@ BOOST_AUTO_TEST_CASE(Clone)
     archiv.pushC(snd2);
     archiv.pushC(snd3);
     archiv.pushC(snd4);
-    libsiedler2::ArchivItem_Sound_Midi* snd5 = dynamic_cast<libsiedler2::ArchivItem_Sound_Midi*>(archiv[0]);
-    libsiedler2::ArchivItem_Sound_XMidi* snd6 = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[1]);
-    libsiedler2::ArchivItem_Sound_Wave* snd7 = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[2]);
-    libsiedler2::ArchivItem_Sound_Other* snd8 = dynamic_cast<libsiedler2::ArchivItem_Sound_Other*>(archiv[3]);
+    auto* snd5 = dynamic_cast<libsiedler2::ArchivItem_Sound_Midi*>(archiv[0]);
+    auto* snd6 = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[1]);
+    auto* snd7 = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[2]);
+    auto* snd8 = dynamic_cast<libsiedler2::ArchivItem_Sound_Other*>(archiv[3]);
     BOOST_REQUIRE(snd5);
     BOOST_REQUIRE(snd6);
     BOOST_REQUIRE(snd7);

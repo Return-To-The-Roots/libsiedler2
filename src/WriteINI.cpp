@@ -43,7 +43,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const Archiv& items)
     bool first = true;
     for(size_t i = 0; i < items.size(); ++i)
     {
-        const ArchivItem_Ini* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
+        const auto* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
         if(!item)
             return ErrorCode::WRONG_ARCHIV;
         if(!first)

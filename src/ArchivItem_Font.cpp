@@ -83,7 +83,7 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
         // bobtype des Items einlesen
         if(!(fs >> bobtype_s))
             return ErrorCode::UNEXPECTED_EOF;
-        BobType bobtype = static_cast<BobType>(bobtype_s);
+        auto bobtype = static_cast<BobType>(bobtype_s);
 
         if(bobtype == BOBTYPE_NONE)
             continue;

@@ -125,8 +125,8 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
     init(width, height, buffer_format, palette);
 
     const unsigned bpp = getBBP();
-    size_t copyWidth = size_t(std::min(buffer_width, width));
-    size_t copyHeight = size_t(std::min(buffer_height, height));
+    auto copyWidth = size_t(std::min(buffer_width, width));
+    auto copyHeight = size_t(std::min(buffer_height, height));
     size_t rowSize = copyWidth * bpp;
 
     for(uint32_t y = 0; y < copyHeight; ++y)
@@ -147,8 +147,8 @@ void baseArchivItem_Bitmap::flipVertical()
         return;
     std::vector<uint8_t> tmp(getWidth() * getBBP());
     assert(buffer.size() >= tmp.size());
-    std::vector<uint8_t>::iterator topIt = buffer.begin();
-    std::vector<uint8_t>::iterator botIt = buffer.end() - tmp.size();
+    auto topIt = buffer.begin();
+    auto botIt = buffer.end() - tmp.size();
     for(unsigned y = 0; y < getHeight() / 2u; y++)
     {
         assert(topIt + tmp.size() <= botIt);

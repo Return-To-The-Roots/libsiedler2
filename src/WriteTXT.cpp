@@ -59,7 +59,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
     {
         // "archiviert"
         uint16_t header = 0xFDE7;
-        uint16_t count = static_cast<uint16_t>(items.size());
+        auto count = static_cast<uint16_t>(items.size());
         uint16_t unknown = 1;
 
         fs << header << count << unknown;
@@ -69,7 +69,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
         uint32_t size = count * sizeof(uint32_t);
         for(uint32_t i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = static_cast<const ArchivItem_Text*>(items[i]);
+            const auto* item = static_cast<const ArchivItem_Text*>(items[i]);
 
             if(item && !item->getText().empty())
             {
@@ -83,7 +83,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
         // Texte schreiben
         for(uint32_t i = 0; i < count; ++i)
         {
-            const ArchivItem_Text* item = static_cast<const ArchivItem_Text*>(items[i]);
+            const auto* item = static_cast<const ArchivItem_Text*>(items[i]);
 
             if(item)
             {

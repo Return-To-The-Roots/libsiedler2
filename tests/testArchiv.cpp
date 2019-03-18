@@ -32,12 +32,12 @@ BOOST_AUTO_TEST_CASE(Push)
 {
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE(archiv.empty());
-    libsiedler2::ArchivItem_Raw* rawItem = new libsiedler2::ArchivItem_Raw;
+    auto* rawItem = new libsiedler2::ArchivItem_Raw;
     rawItem->getData().push_back(42);
     archiv.pushC(*rawItem);
     BOOST_REQUIRE(!archiv.empty());
     BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
-    libsiedler2::ArchivItem_Raw* rawItemOut = dynamic_cast<libsiedler2::ArchivItem_Raw*>(archiv[0]);
+    auto* rawItemOut = dynamic_cast<libsiedler2::ArchivItem_Raw*>(archiv[0]);
     BOOST_REQUIRE(rawItemOut);
     // Should have copied
     BOOST_REQUIRE_NE(rawItem, rawItemOut);
@@ -60,10 +60,10 @@ BOOST_AUTO_TEST_CASE(Set)
     BOOST_REQUIRE_EQUAL(archiv.size(), 2u);
     // Archiv should have been cleared
     BOOST_REQUIRE(!archiv[0]);
-    libsiedler2::ArchivItem_Raw* rawItem = new libsiedler2::ArchivItem_Raw;
+    auto* rawItem = new libsiedler2::ArchivItem_Raw;
     rawItem->getData().push_back(42);
     archiv.setC(0, *rawItem);
-    libsiedler2::ArchivItem_Raw* rawItemOut = dynamic_cast<libsiedler2::ArchivItem_Raw*>(archiv[0]);
+    auto* rawItemOut = dynamic_cast<libsiedler2::ArchivItem_Raw*>(archiv[0]);
     BOOST_REQUIRE(rawItemOut);
     // Should have copied
     BOOST_REQUIRE_NE(rawItem, rawItemOut);
@@ -85,11 +85,11 @@ BOOST_AUTO_TEST_CASE(Set)
 BOOST_AUTO_TEST_CASE(Find)
 {
     libsiedler2::Archiv archiv;
-    libsiedler2::ArchivItem_Raw* rawItem1 = new libsiedler2::ArchivItem_Raw;
+    auto* rawItem1 = new libsiedler2::ArchivItem_Raw;
     rawItem1->setName("Foo1");
-    libsiedler2::ArchivItem_Raw* rawItem2 = new libsiedler2::ArchivItem_Raw;
+    auto* rawItem2 = new libsiedler2::ArchivItem_Raw;
     rawItem2->setName("Foo2");
-    libsiedler2::ArchivItem_Raw* rawItem3 = new libsiedler2::ArchivItem_Raw;
+    auto* rawItem3 = new libsiedler2::ArchivItem_Raw;
     rawItem3->setName("Foo3");
     archiv.push(rawItem1);
     archiv.push(rawItem2);
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
     libsiedler2::Archiv archiv;
     for(int i = 1; i < libsiedler2::NUM_BOB_TYPES; i++)
     {
-        libsiedler2::BobType bobType = libsiedler2::BobType(i);
+        auto bobType = libsiedler2::BobType(i);
         if(bobType == libsiedler2::BOBTYPE_UNSET || bobType == libsiedler2::BOBTYPE_SOUND)
             continue;
         libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(bobType);
@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
     }
     BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 0);
     // No delete
-    TestItem* item = new TestItem;
+    auto* item = new TestItem;
     {
         libsiedler2::Archiv archiv2;
         BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);

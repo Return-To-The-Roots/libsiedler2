@@ -259,7 +259,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     bmp = dynamic_cast<ArchivItem_BitmapBase*>(tmpItems[0]);
                     if(!bmp)
                         return ErrorCode::UNSUPPORTED_FORMAT;
-                    ArchivItem_BitmapBase* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(entry.bobtype));
+                    auto* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(entry.bobtype));
                     std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
                     if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
                         dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, curPal); //-V522
@@ -272,14 +272,14 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                         case BOBTYPE_BITMAP_SHADOW:
                         case BOBTYPE_BITMAP_RAW:
                         {
-                            baseArchivItem_Bitmap* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp);
+                            auto* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp);
                             assert(bmpBase);
                             bmpBase->create(bmp->getWidth(), bmp->getHeight(), buffer); //-V522
                             break;
                         }
                         case BOBTYPE_BITMAP_PLAYER:
                         {
-                            ArchivItem_Bitmap_Player* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp);
+                            auto* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp);
                             assert(bmpPl);
                             bmpPl->create(bmp->getWidth(), bmp->getHeight(), buffer, curPal); //-V522
                         }

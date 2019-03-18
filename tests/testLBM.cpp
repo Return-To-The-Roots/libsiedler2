@@ -58,8 +58,8 @@ BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
     // Load lbm and check if bitmaps are equal
     libsiedler2::Archiv arLbm;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outPath, arLbm, palette), 0);
-    const libsiedler2::ArchivItem_Bitmap* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arBmp[0]);
-    const libsiedler2::ArchivItem_Bitmap* bmpLbm = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arLbm[0]);
+    const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arBmp[0]);
+    const auto* bmpLbm = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arLbm[0]);
     BOOST_REQUIRE(bmp);
     BOOST_REQUIRE(bmpLbm);
     BOOST_REQUIRE_EQUAL(bmp->getWidth(), bmpLbm->getWidth());

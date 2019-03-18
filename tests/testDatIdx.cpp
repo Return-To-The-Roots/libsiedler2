@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
         BOOST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[3]));
         for(unsigned i = 4; i < archiv.size(); i++)
         {
-            const libsiedler2::ArchivItem_BitmapBase* bmp = dynamic_cast<const libsiedler2::ArchivItem_BitmapBase*>(archiv[i]);
+            const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_BitmapBase*>(archiv[i]);
             BOOST_REQUIRE(bmp);
             BOOST_REQUIRE_GT(bmp->getWidth(), 0u);
             BOOST_REQUIRE_GT(bmp->getHeight(), 0u);

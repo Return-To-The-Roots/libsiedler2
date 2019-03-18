@@ -54,7 +54,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
 
     clear();
 
-    ArchivItem_Map_Header* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
+    auto* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
     assert(header);
 
     int ec = header->load(file); //-V522
@@ -103,7 +103,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return ErrorCode::WRONG_FORMAT;
         }
 
-        ArchivItem_Raw* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
+        auto* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
         ec = layer->load(file, bHeader.blockLength); //-V522
         if(ec)
         {
@@ -149,7 +149,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    const ArchivItem_Map_Header* header = dynamic_cast<const ArchivItem_Map_Header*>(get(0));
+    const auto* header = dynamic_cast<const ArchivItem_Map_Header*>(get(0));
 
     if(!header)
         return ErrorCode::WRONG_ARCHIV;
@@ -169,7 +169,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     for(uint32_t i = 1; i < std::max(15u, uint32_t(size())); ++i)
     {
-        const ArchivItem_Raw* layer = dynamic_cast<const ArchivItem_Raw*>(get(i));
+        const auto* layer = dynamic_cast<const ArchivItem_Raw*>(get(i));
         fs << bHeader.id << bHeader.unknown << bHeader.w << bHeader.h;
         if(layer)
         {

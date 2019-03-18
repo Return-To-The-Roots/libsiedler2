@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(LoadWriteFont)
     BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
-    const libsiedler2::ArchivItem_Font* font = dynamic_cast<const libsiedler2::ArchivItem_Font*>(archiv[1]);
+    const auto* font = dynamic_cast<const libsiedler2::ArchivItem_Font*>(archiv[1]);
     BOOST_REQUIRE(font);
     BOOST_REQUIRE(!font->isUnicode);
     font = dynamic_cast<const libsiedler2::ArchivItem_Font*>(archiv[2]);

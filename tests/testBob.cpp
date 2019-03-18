@@ -41,14 +41,14 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     BOOST_REQUIRE_EQUAL(bob.size(), 698u);
     for(unsigned i = 0; i < bob.size(); i++)
     {
-        const libsiedler2::ArchivItem_Bitmap_Player* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[i]);
+        const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[i]);
         BOOST_REQUIRE(bmp);
         BOOST_REQUIRE_EQUAL(bmp->getNx(), 16);
         BOOST_REQUIRE_EQUAL(bmp->getWidth(), 32u);
         BOOST_REQUIRE_GT(bmp->getHeight(), 0u);
     }
     // Some fixed tests
-    const libsiedler2::ArchivItem_Bitmap_Player* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[0]);
+    const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[0]);
     BOOST_REQUIRE_EQUAL(bmp->getNy(), 12);
     BOOST_REQUIRE_EQUAL(bmp->getHeight(), 13u);
     bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[1]);

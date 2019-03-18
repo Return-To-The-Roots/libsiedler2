@@ -77,7 +77,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         if(!(fs >> starts >> ny))
             return ErrorCode::UNEXPECTED_EOF;
 
-        ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+        auto* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
         assert(image);
         image->setNx(16); //-V522
         image->setNy(ny);
@@ -153,7 +153,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         if(loaded[links[i]])
             continue;
 
-        ArchivItem_Bitmap_Player* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+        auto* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
         assert(image);
         image->setNx(16); //-V522
         image->setNy(ny[links[i]]);

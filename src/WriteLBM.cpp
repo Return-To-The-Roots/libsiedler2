@@ -31,7 +31,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    const baseArchivItem_Bitmap* bmp = dynamic_cast<const baseArchivItem_Bitmap*>(items[0]);
+    const auto* bmp = dynamic_cast<const baseArchivItem_Bitmap*>(items[0]);
     if(!bmp)
         return ErrorCode::WRONG_ARCHIV;
     if(bmp->getPalette())

@@ -138,7 +138,7 @@ const std::string& libsiedler2::ArchivItem_Text::getText() const
 std::string libsiedler2::ArchivItem_Text::getFileText(bool convertToOem) const
 {
     assert(text_.size() < std::numeric_limits<uint32_t>::max());
-    const uint32_t length = static_cast<uint32_t>(text_.size());
+    const auto length = static_cast<uint32_t>(text_.size());
     std::vector<char> textBuf;
     textBuf.reserve(length * 2 + 1);
 

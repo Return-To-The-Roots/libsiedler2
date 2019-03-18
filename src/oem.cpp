@@ -56,7 +56,7 @@ char* AnsiToOem(const char* from, char* to, uint32_t length)
     // und string umwandeln
     for(uint32_t x = 0; x < length; x++)
     {
-        uint8_t C = (uint8_t)from[x];
+        auto C = (uint8_t)from[x];
 
         // ab char 128 nötig
         if(C > 128)

@@ -63,7 +63,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
         if(fileSize >= sizeof(header))
             fs.setPositionRel(-2);
 
-        ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
+        auto* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
         int ec = item->load(fs.getStream(), conversion);
         if(ec)
             return ec;
@@ -124,7 +124,7 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
                 fs.setPosition(itemPos);
 
                 // einlesen
-                ArchivItem_Text* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
+                auto* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
                 int res = item->load(fs.getStream(), conversion, itemSize);
                 if(res)
                     return res;
