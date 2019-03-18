@@ -36,10 +36,10 @@ Archiv::Archiv() {}
 Archiv::Archiv(const Archiv& info)
 {
     data.reserve(info.size());
-    for(std::vector<ArchivItem*>::const_iterator it = info.data.begin(); it != info.data.end(); ++it)
+    for(auto it : info.data)
     {
-        if(*it)
-            pushC(**it);
+        if(it)
+            pushC(*it);
         else
             push(nullptr);
     }
@@ -51,10 +51,10 @@ Archiv& Archiv::operator=(const Archiv& info)
         return *this;
     clear();
     data.reserve(info.size());
-    for(std::vector<ArchivItem*>::const_iterator it = info.data.begin(); it != info.data.end(); ++it)
+    for(auto it : info.data)
     {
-        if(*it)
-            pushC(**it);
+        if(it)
+            pushC(*it);
         else
             push(nullptr);
     }
@@ -90,8 +90,8 @@ void Archiv::alloc_inc(size_t increment)
  */
 void Archiv::clear()
 {
-    for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
-        delete *it;
+    for(auto& it : data)
+        delete it;
     data.clear();
 }
 
@@ -133,10 +133,10 @@ void Archiv::pushC(const ArchivItem& item)
 
 const ArchivItem* Archiv::find(const std::string& name) const
 {
-    for(std::vector<ArchivItem*>::const_iterator it = data.begin(); it != data.end(); ++it)
+    for(auto it : data)
     {
-        if(*it && (*it)->getName() == name)
-            return *it;
+        if(it && it->getName() == name)
+            return it;
     }
 
     return nullptr;
@@ -144,10 +144,10 @@ const ArchivItem* Archiv::find(const std::string& name) const
 
 ArchivItem* Archiv::find(const std::string& name)
 {
-    for(std::vector<ArchivItem*>::iterator it = data.begin(); it != data.end(); ++it)
+    for(auto& it : data)
     {
-        if(*it && (*it)->getName() == name)
-            return *it;
+        if(it && it->getName() == name)
+            return it;
     }
 
     return nullptr;

@@ -183,9 +183,9 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
             fs << bHeader.multiplier << bHeader.blockLength;
     }
 
-    for(std::vector<ExtraAnimalInfo>::const_iterator it = extraInfo.begin(); it != extraInfo.end(); ++it)
+    for(auto it : extraInfo)
     {
-        fs << it->id << it->x << it->y;
+        fs << it.id << it.x << it.y;
     }
     fs << uint8_t(0xFF);
 

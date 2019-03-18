@@ -95,7 +95,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     // erstmal die 6 Farbblöcke fr die 6 Richtungen
     std::vector<uint8_t> raw[6];
 
-    for(uint32_t i = 0; i < 6; ++i)
+    for(auto& i : raw)
     {
         uint16_t id, size;
         if(!(fs >> id >> size))
@@ -105,8 +105,8 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         if(id != 0x01F5)
             return ErrorCode::WRONG_FORMAT;
 
-        raw[i].resize(size);
-        fs >> raw[i];
+        i.resize(size);
+        fs >> i;
     }
 
     // Anzahl Warenbilder
