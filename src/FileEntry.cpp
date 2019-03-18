@@ -17,7 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "FileEntry.h"
-#include <ctype.h>
+#include <cctype>
 
 bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
 {
