@@ -25,7 +25,7 @@
 #include <string>
 
 namespace libsiedler2 {
-typedef boost::iostreams::stream<boost::iostreams::mapped_file_source> MMStream;
+using MMStream = boost::iostreams::stream<boost::iostreams::mapped_file_source>;
 
 /// Open the given memory stream from a file and return an ErrorCode
 /// Writes exceptions to stderr

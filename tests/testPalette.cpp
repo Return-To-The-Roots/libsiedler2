@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalAnim)
     anim.firstClr = 2;
     anim.lastClr = 5;
     archiv.pushC(anim);
-    archiv.push(NULL);
+    archiv.push(nullptr);
     anim.isActive = false;
     anim.rate = 42;
     anim.firstClr = 3;

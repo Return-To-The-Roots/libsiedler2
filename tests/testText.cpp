@@ -30,7 +30,7 @@ static void createTxt(libsiedler2::Archiv& archiv, const std::string& outFile, u
     {
         // Add some empty entries
         if(i % 4 == 0 && i > 0)
-            archiv.push(NULL);
+            archiv.push(nullptr);
         libsiedler2::ArchivItem_Text txt;
         std::stringstream ss;
         ss << "Example data " << i << " with\r\n some \r\n line breaks and special chars";

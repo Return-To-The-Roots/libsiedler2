@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(Set)
     // Add with passing ownership
     archiv.set(4, rawItem);
     BOOST_REQUIRE_EQUAL(archiv[4], rawItem);
-    archiv.set(4, NULL);
+    archiv.set(4, nullptr);
     BOOST_REQUIRE(!archiv[4]);
 }
 
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(Find)
     rawItem3->setName("Foo3");
     archiv.push(rawItem1);
     archiv.push(rawItem2);
-    archiv.push(NULL);
+    archiv.push(nullptr);
     archiv.push(rawItem3);
     BOOST_REQUIRE_EQUAL(archiv.find(rawItem1->getName()), rawItem1);
     BOOST_REQUIRE_EQUAL(archiv.find(rawItem2->getName()), rawItem2);
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
     archiv.set(2, new libsiedler2::ArchivItem_Raw);
     BOOST_REQUIRE_EQUAL(archiv.size(), 3u);
     BOOST_REQUIRE_EQUAL(archiv[2], archiv.get(2));
-    BOOST_REQUIRE_THROW(archiv.set(3, NULL), std::out_of_range);
+    BOOST_REQUIRE_THROW(archiv.set(3, nullptr), std::out_of_range);
     BOOST_REQUIRE(!archiv[3]);
     BOOST_REQUIRE(!archiv.get(3));
     archiv.alloc_inc(2);

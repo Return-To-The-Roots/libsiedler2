@@ -30,7 +30,7 @@ template<typename T_Pixel>
 class PixelBuffer
 {
 public:
-    typedef T_Pixel PixelType;
+    using PixelType = T_Pixel;
 
     PixelBuffer() : width_(0), height_(0) {}
     PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue);
