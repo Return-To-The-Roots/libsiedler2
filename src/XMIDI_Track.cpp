@@ -21,9 +21,9 @@
 #include <iostream>
 
 namespace libsiedler2 {
-XMIDI_Track::XMIDI_Track() {}
+XMIDI_Track::XMIDI_Track() = default;
 
-XMIDI_Track::~XMIDI_Track() {}
+XMIDI_Track::~XMIDI_Track() = default;
 
 int XMIDI_Track::read(std::istream& file, size_t length)
 {

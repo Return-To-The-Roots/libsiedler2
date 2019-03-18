@@ -41,7 +41,7 @@
 
 libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem(BOBTYPE_TEXT) {}
 
-libsiedler2::ArchivItem_Text::~ArchivItem_Text() {}
+libsiedler2::ArchivItem_Text::~ArchivItem_Text() = default;
 
 /**
  *  liest den Text aus einer Datei.

@@ -46,7 +46,7 @@ libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArch
     bobtype_ = BOBTYPE_BITMAP_RLE;
 }
 
-libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE() {}
+libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE() = default;
 
 /**
  *  lädt die Bilddaten aus einer Datei.

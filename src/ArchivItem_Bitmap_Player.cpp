@@ -52,7 +52,7 @@ libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
     bobtype_ = BOBTYPE_BITMAP_PLAYER;
 }
 
-libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player() {}
+libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player() = default;
 
 /**
  *  lädt die Bilddaten aus einer Datei.

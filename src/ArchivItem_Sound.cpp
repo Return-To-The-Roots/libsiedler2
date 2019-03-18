@@ -31,7 +31,7 @@ namespace libsiedler2 {
 
 ArchivItem_Sound::ArchivItem_Sound(SoundType soundType) : ArchivItem(BOBTYPE_SOUND), soundType_(soundType) {}
 
-ArchivItem_Sound::~ArchivItem_Sound() {}
+ArchivItem_Sound::~ArchivItem_Sound() = default;
 
 /**
  *  liefert den Typ des Sounds.

@@ -23,11 +23,11 @@
 #include <limits>
 
 namespace libsiedler2 {
-MIDI_Track::MIDI_Track() {}
+MIDI_Track::MIDI_Track() = default;
 
 MIDI_Track::MIDI_Track(const std::vector<uint8_t>& data) : mid_data(data) {}
 
-MIDI_Track::~MIDI_Track() {}
+MIDI_Track::~MIDI_Track() = default;
 
 int MIDI_Track::read(std::istream& file, size_t length)
 {

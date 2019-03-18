@@ -37,7 +37,7 @@ struct BlockHeader
 
 libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(BOBTYPE_MAP) {}
 
-libsiedler2::ArchivItem_Map::~ArchivItem_Map() {}
+libsiedler2::ArchivItem_Map::~ArchivItem_Map() = default;
 
 /**
  *  lädt die Mapdaten aus einer Datei.

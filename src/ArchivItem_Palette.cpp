@@ -37,7 +37,7 @@
 
 libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BOBTYPE_PALETTE), transparentIdx(DEFAULT_TRANSPARENT_IDX) {}
 
-libsiedler2::ArchivItem_Palette::~ArchivItem_Palette() {}
+libsiedler2::ArchivItem_Palette::~ArchivItem_Palette() = default;
 
 /**
  *  liest die Farbwerte aus einer Datei.

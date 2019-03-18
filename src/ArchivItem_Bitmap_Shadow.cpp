@@ -46,7 +46,7 @@ libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const ba
     bobtype_ = BOBTYPE_BITMAP_SHADOW;
 }
 
-libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow() {}
+libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow() = default;
 
 /**
  *  lädt die Bilddaten aus einer Datei.

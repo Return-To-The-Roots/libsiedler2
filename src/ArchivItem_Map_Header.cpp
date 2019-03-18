@@ -37,7 +37,7 @@ libsiedler2::ArchivItem_Map_Header::ArchivItem_Map_Header()
     : ArchivItem(BOBTYPE_MAP_HEADER), width(0), height(0), gfxset(0), numPlayers(0), isInvalid(0), hasExtraWord_(false)
 {}
 
-libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header() {}
+libsiedler2::ArchivItem_Map_Header::~ArchivItem_Map_Header() = default;
 
 /**
  *  lädt den Mapheader aus einer Datei.
