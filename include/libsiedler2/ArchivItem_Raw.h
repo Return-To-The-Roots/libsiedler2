@@ -30,7 +30,7 @@ class ArchivItem_Raw : public ArchivItem
 {
 public:
     ArchivItem_Raw();
-    ArchivItem_Raw(const std::vector<uint8_t>& initialData);
+    ArchivItem_Raw(std::vector<uint8_t> initialData);
     RTTR_CLONEABLE(ArchivItem_Raw)
 
     /// lädt die Rawdaten aus einer Datei.

@@ -112,16 +112,16 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
             continue;
         libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(bobType);
         BOOST_REQUIRE(item);
-        item->setName("Item" + boost::lexical_cast<std::string>(i));
+        item->setName("Item" + std::to_string(i));
         archiv.push(item);
     }
     boost::array<SoundType, 6> soundTypes = {
       {SOUNDTYPE_WAVE, SOUNDTYPE_MIDI, SOUNDTYPE_XMIDI, SOUNDTYPE_MP3, SOUNDTYPE_OGG, SOUNDTYPE_OTHER}};
-    for(unsigned i = 0; i < soundTypes.size(); i++)
+    for(unsigned i = 0; i < boost::array<SoundType, 6>::size(); i++)
     {
         libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundTypes[i]);
         BOOST_REQUIRE(item);
-        item->setName("Sound" + boost::lexical_cast<std::string>(i));
+        item->setName("Sound" + std::to_string(i));
         archiv.push(item);
     }
     // Copy ctor

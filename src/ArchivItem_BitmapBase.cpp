@@ -32,9 +32,7 @@ namespace libsiedler2 {
  *  Basis-Basisklasse für Bitmapitems.
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase()
-    : ArchivItem(), nx_(0), ny_(0), width_(0), height_(0), palette_(nullptr), format_(FORMAT_BGRA)
-{}
+ArchivItem_BitmapBase::ArchivItem_BitmapBase() : nx_(0), ny_(0), width_(0), height_(0), palette_(nullptr), format_(FORMAT_BGRA) {}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem(item)
 {

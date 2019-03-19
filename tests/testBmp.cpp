@@ -34,13 +34,14 @@
 #include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace {
 struct Rect
 {
     int x, y;
     unsigned w, h;
-    Rect() {}
+    Rect() = default;
     Rect(int x, int y, unsigned w, unsigned h) : x(x), y(y), w(w), h(h) {}
     bool operator==(const Rect& rhs) const { return x == rhs.x && y == rhs.y && w == rhs.w && h == rhs.h; }
 };
@@ -167,9 +168,9 @@ struct TestBitmaps
     {
         std::string filename;
         bool isPaletted, containsPalette, supportsBoth;
-        Info() {}
-        Info(const std::string& filename, bool isPaletted, bool containsPalette, bool supportsBoth = false)
-            : filename(filename), isPaletted(isPaletted), containsPalette(containsPalette), supportsBoth(supportsBoth)
+        Info() = default;
+        Info(std::string filename, bool isPaletted, bool containsPalette, bool supportsBoth = false)
+            : filename(std::move(filename)), isPaletted(isPaletted), containsPalette(containsPalette), supportsBoth(supportsBoth)
         {}
     };
     std::vector<Info> files;

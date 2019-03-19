@@ -21,6 +21,7 @@
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
+#include <utility>
 
 namespace libsiedler2 {
 /** @class baseArchivItem_Raw
@@ -30,7 +31,7 @@ namespace libsiedler2 {
 
 ArchivItem_Raw::ArchivItem_Raw() : ArchivItem(BOBTYPE_RAW) {}
 
-ArchivItem_Raw::ArchivItem_Raw(const std::vector<uint8_t>& initialData) : ArchivItem(BOBTYPE_RAW), data(initialData) {}
+ArchivItem_Raw::ArchivItem_Raw(std::vector<uint8_t> initialData) : ArchivItem(BOBTYPE_RAW), data(std::move(initialData)) {}
 
 /**
  *  lädt die Rawdaten aus einer Datei.

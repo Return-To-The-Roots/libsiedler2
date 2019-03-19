@@ -29,7 +29,7 @@ class MIDI_Track
 {
 public:
     MIDI_Track();
-    MIDI_Track(const std::vector<uint8_t>& data);
+    MIDI_Track(std::vector<uint8_t> data);
     ~MIDI_Track();
 
     int read(std::istream& file, size_t length);
