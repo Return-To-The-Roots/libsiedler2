@@ -21,20 +21,21 @@
 #pragma once
 
 #include <boost/endian/arithmetic.hpp>
+#include <array>
 
 namespace libsiedler2 {
 struct WAV_Header
 {
-    char RIFF_ID[4]; /// "RIFF"
+    std::array<char, 4> RIFF_ID; /// "RIFF"
     boost::endian::little_uint32_t fileSize;
-    char WAVE_ID[4];                        /// "WAVE"
-    char fmt_ID[4];                         // "fmt "
+    std::array<char, 4> WAVE_ID;            /// "WAVE"
+    std::array<char, 4> fmt_ID;             // "fmt "
     boost::endian::little_uint32_t fmtSize; // 16
     boost::endian::little_uint16_t fmtTag;  // 1=PCM
     boost::endian::little_uint16_t numChannels;
     boost::endian::little_uint32_t samplesPerSec, bytesPerSec;
     boost::endian::little_uint16_t frameSize, bitsPerSample;
-    char data_ID[4]; // "data"
+    std::array<char, 4> data_ID; // "data"
     boost::endian::little_uint32_t dataSize;
 };
 

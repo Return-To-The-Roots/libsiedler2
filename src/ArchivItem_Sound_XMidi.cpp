@@ -46,7 +46,7 @@ int ArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
     // Position after the current item
     long endPos = fs.getPosition() + length;
 
-    char header[4];
+    std::array<char, 4> header;
 
     // ist es eine XMIDI-File? (Header "FORM")
     if(!(fs >> header) || !isChunk(header, "FORM"))
@@ -59,7 +59,7 @@ int ArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
         ++formHeaderLen;
     const long headerEndPos = fs.getPosition() + formHeaderLen;
 
-    char chunkId[4];
+    std::array<char, 4> chunkId;
     fs >> chunkId;
 
     // ist es eine singleTrack-XMIDI-File? (Typ "XMID")

@@ -71,9 +71,9 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, Archiv& items, cons
     // items einlesen
     for(uint32_t i = 0; i < count; ++i)
     {
-        char name[16];
+        std::array<char, 16> name;
         uint32_t offset;
-        uint8_t unknown[6];
+        std::array<uint8_t, 6> unknown;
         int16_t idxbobtype;
         int16_t bobtype_s;
 
@@ -106,7 +106,7 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, Archiv& items, cons
 
         // Name setzen
         if(item)
-            item->setName(std::string(name, sizeof(name)));
+            item->setName(std::string(name.begin(), name.end()));
         items.set(i, item);
     }
 

@@ -46,7 +46,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
         return ec;
     libendian::EndianIStreamAdapter<true, MMStream&> lbm(mmapStream);
 
-    char header[4], pbm[4];
+    std::array<char, 4> header, pbm;
     uint32_t length;
     // Header einlesen
     lbm >> header >> length >> pbm;
@@ -62,11 +62,11 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
 
     uint16_t width = 0, height = 0, transClr = 0;
     uint8_t compression = 0, mask = 0;
-    char chunk[4];
+    std::array<char, 4> chunk;
     bool headerRead = false;
     bool bodyRead = false;
     // Chunks einlesen
-    while(lbm.read(chunk, 4))
+    while(lbm.read(chunk))
     {
         uint32_t chunkLen;
         lbm >> chunkLen;

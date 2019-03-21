@@ -90,7 +90,7 @@ int main(int /*argc*/, char* /*argv*/[])
             to.pushC(out);
         }
     }
-    char file[512];
+    std::array<char, 512> file;
     snprintf(file, 512, "outline_fonts.lst");
     Write(file, to, palette);
 

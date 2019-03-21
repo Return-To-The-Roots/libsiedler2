@@ -60,7 +60,7 @@ int ArchivItem_Sound_Midi::load(std::istream& file, uint32_t length)
     uint16_t curTrack = 0;
     while(curTrack < numTracks)
     {
-        char chunk[4];
+        std::array<char, 4> chunk;
         uint32_t chunkLen;
         if(!(fs >> chunk >> chunkLen))
             return ErrorCode::UNEXPECTED_EOF;

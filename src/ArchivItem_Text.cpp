@@ -82,18 +82,19 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
         text[text.size() - 2] = 0;
 
     if(conversion)
-        OemToAnsi(&text.front(), &text.front()); //-V742
+        text_ = OemToAnsi(text.data());
+    else
+        text_ = text.data();
 
-    for(uint32_t i = 0; i + 1 < text.size(); ++i)
+    for(uint32_t i = 0; i + 1 < text_.size(); ++i)
     {
-        if(text[i] == '@' && text[i + 1] == '@')
+        if(text_[i] == '@' && text_[i + 1] == '@')
         {
-            text[i] = '\r';
-            text[i + 1] = '\n';
+            text_[i] = '\r';
+            text_[i + 1] = '\n';
         }
     }
 
-    this->text_ = &text.front();
     // Text setzen
     setName(this->text_);
 
@@ -156,8 +157,9 @@ std::string libsiedler2::ArchivItem_Text::getFileText(bool convertToOem) const
     textBuf.push_back('\0');
 
     if(convertToOem)
-        AnsiToOem(&textBuf.front(), &textBuf.front()); //-V742
-    return &textBuf.front();
+        return AnsiToOem(textBuf.data());
+    else
+        return textBuf.data();
 }
 
 /**

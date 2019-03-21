@@ -48,7 +48,7 @@ ArchivItem_Sound* ArchivItem_Sound::findSubType(std::istream& file)
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     long oldpos = fs.getPosition();
 
-    char header[4] = "\0\0\0";
+    std::array<char, 4> header;
     fs >> header;
 
     SoundType sndType;

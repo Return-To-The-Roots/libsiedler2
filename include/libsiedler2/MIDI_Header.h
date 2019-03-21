@@ -21,11 +21,12 @@
 #pragma once
 
 #include <boost/endian/arithmetic.hpp>
+#include <array>
 
 namespace libsiedler2 {
 struct MIDI_Header
 {
-    char id[4]; /// Must be MThd
+    std::array<char, 4> id; /// Must be MThd
     boost::endian::big_uint32_t headerSize;
     boost::endian::big_uint16_t format;
     boost::endian::big_uint16_t numTracks;

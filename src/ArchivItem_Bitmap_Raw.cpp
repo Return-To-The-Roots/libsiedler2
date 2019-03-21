@@ -124,7 +124,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::write(std::ostream& file, const Arch
     if(ec)
         return ec;
 
-    uint8_t unknown2[8] = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
+    std::array<uint8_t, 8> unknown2 = {0x00, 0x00, 0x02, 0x01, 0xF4, 0x06, 0x70, 0x00};
     fs << uint16_t(1) << uint32_t(buffer.getSize()) << buffer.getPixels() << nx_ << ny_ << width << height << unknown2;
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;

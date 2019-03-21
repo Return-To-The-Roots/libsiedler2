@@ -51,7 +51,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    char id[10];
+    std::array<char, 10> id;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     // Signatur einlesen
@@ -74,8 +74,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     std::array<char, 21> author;
     fs.readRaw(author.data(), 20);
     author.back() = '\0';
-    OemToAnsi(author.data(), author.data());
-    this->author_ = author.data();
+    this->author_ = OemToAnsi(author.data());
 
     fs >> playerHQx >> playerHQy;
 
@@ -114,8 +113,7 @@ int libsiedler2::ArchivItem_Map_Header::load(std::istream& file)
     name[nameLen] = '\0';
     fs.setPosition(curPos);
 
-    OemToAnsi(name.data(), name.data());
-    setName(name.data());
+    setName(OemToAnsi(name.data()));
 
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
@@ -134,15 +132,15 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
 
     libendian::EndianOStreamAdapter<false, std::ostream&> fs(file);
     // Signatur
-    char id[10];
+    std::array<char, 10> id;
     setChunkId(id, VALID_ID);
     fs << id;
 
     // Name einlesen
-    char name[24];
-    std::string tmpName = getName().substr(0, 23);
-    AnsiToOem(tmpName.c_str(), name);
-    std::fill(name + tmpName.length(), name + sizeof(name), '\0');
+    std::string tmpName = AnsiToOem(getName().substr(0, 23));
+    std::array<char, 24> name;
+    std::copy(tmpName.begin(), tmpName.end(), name.begin());
+    std::fill(name.begin() + tmpName.length(), name.end(), '\0');
     fs << name;
     // Actual map name length is only 20 bytes. The width and height is used for unlimited play only to display the size
     // We use it if the name (including trailing zero) fit into this space, otherwise we overwrite the size with the map name
@@ -155,10 +153,10 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     fs << gfxset << numPlayers;
 
     // Autor einlesen
-    char author[20];
-    tmpName = author_.substr(0, 19);
-    AnsiToOem(tmpName.c_str(), author);
-    std::fill(author + tmpName.length(), author + sizeof(author), '\0');
+    tmpName = AnsiToOem(author_.substr(0, 19));
+    std::array<char, 20> author;
+    std::copy(tmpName.begin(), tmpName.end(), author.begin());
+    std::fill(author.begin() + tmpName.length(), author.end(), '\0');
     fs << author << playerHQx << playerHQy;
 
     fs << isInvalid; // This should be checked, but it seems some editors wrongly leave it set

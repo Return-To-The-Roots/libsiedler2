@@ -42,7 +42,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, Archiv& items)
     if(int ec = openMemoryStream(file, mmStream))
         return ec;
 
-    char header[4], pbm[4], chunk[4];
+    std::array<char, 4> header, pbm, chunk;
     uint32_t i = 0;
 
     libendian::EndianIStreamAdapter<true, MMStream&> fs(mmStream);

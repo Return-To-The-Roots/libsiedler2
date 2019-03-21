@@ -19,23 +19,15 @@
 
 #pragma once
 
-#ifndef _WIN32
-#include <stdint.h>
+#include <cstdint>
+#include <string>
 
+namespace libsiedler2 {
 /// Wandelt einen String vom ANSI ins OEM Format um.
-char* AnsiToOem(const char* from, char* to, uint32_t length = 0);
+std::string AnsiToOem(const std::string& from);
 
 /// Wandelt einen String vom OEM ins ANSI Format um.
-char* OemToAnsi(const char* from, char* to, uint32_t length = 0);
-
-#else
-
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <windows.h>
-
-#endif // !_WIN32
+std::string OemToAnsi(const std::string& from);
+} // namespace libsiedler2
 
 #endif // !OEM_H_INCLUDED

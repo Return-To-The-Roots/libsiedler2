@@ -21,9 +21,6 @@
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#ifdef _DEBUG
-#include <crtdbg.h>
-#endif // _DEBUG
 #endif // !_WIN32
 
 #include <cstddef>
@@ -38,11 +35,6 @@ inline size_t getIStreamSize(T_Stream& stream)
     return (pos < 0) ? 0 : size_t(pos);
 }
 
-template<typename T>
-struct Deleter
-{
-    void operator()(T* p) { delete p; }
-};
 } // namespace libsiedler2
 
 namespace boost {

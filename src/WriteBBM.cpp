@@ -33,7 +33,7 @@
  */
 int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
 {
-    char header[4] = {'F', 'O', 'R', 'M'}, pbm[4] = {'P', 'B', 'M', ' '}, cmap[4] = {'C', 'M', 'A', 'P'};
+    std::array<char, 4> header = {'F', 'O', 'R', 'M'}, pbm = {'P', 'B', 'M', ' '}, cmap = {'C', 'M', 'A', 'P'};
 
     if(file.empty())
         return ErrorCode::INVALID_BUFFER;

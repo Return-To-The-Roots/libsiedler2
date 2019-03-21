@@ -50,7 +50,7 @@ int ArchivItem_Sound_Wave::load(std::istream& file, uint32_t length)
     bool hasHeader = false;
     if(length >= sizeof(header))
     {
-        char headerId[4];
+        std::array<char, 4> headerId;
         if(!(fs >> headerId))
             return ErrorCode::UNEXPECTED_EOF;
         fs.setPositionRel(-4);

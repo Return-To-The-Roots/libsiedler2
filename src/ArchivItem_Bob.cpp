@@ -93,7 +93,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     }
 
     // erstmal die 6 Farbblöcke fr die 6 Richtungen
-    std::vector<uint8_t> raw[6];
+    std::array<std::vector<uint8_t>, 6> raw;
 
     for(auto& i : raw)
     {

@@ -25,7 +25,7 @@
 namespace libsiedler2 {
 struct BmpFileHeader
 {
-    char header[2]; /// "BM"
+    std::array<char, 2> header; /// "BM"
     boost::endian::little_uint32_t fileSize;
     boost::endian::little_uint32_t reserved;    /// App specific
     boost::endian::little_uint32_t pixelOffset; /// Start adress of the pixel data
