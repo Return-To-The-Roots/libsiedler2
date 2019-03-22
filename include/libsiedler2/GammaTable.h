@@ -46,7 +46,7 @@ public:
 
         float sizef = table.size() - 1.f;
         for(unsigned i = 0; i < table.size(); i++)
-            table[i] = (T)(pow(i / sizef, 1 / gamma) * sizef);
+            table[i] = (T)(std::pow(i / sizef, 1 / gamma) * sizef);
     }
 
     const T& operator[](const T& i) const { return table[i]; }
