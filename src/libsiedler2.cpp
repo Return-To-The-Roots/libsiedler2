@@ -74,7 +74,7 @@ struct Initializer
     }
     ~Initializer() { libsiedler2::setAllocator(nullptr); }
 };
-static Initializer initializer__;
+Initializer initializer__;
 } // namespace
 
 /** @namespace libsiedler2
