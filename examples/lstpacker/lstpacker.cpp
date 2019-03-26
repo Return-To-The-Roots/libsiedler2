@@ -36,7 +36,7 @@ namespace bnw = boost::nowide;
 
 int main(int argc, char* argv[])
 {
-    bnw::args(argc, argv);
+    bnw::args _(argc, argv);
     bnw::nowide_filesystem();
 
     std::string texFmt, outFileExt;

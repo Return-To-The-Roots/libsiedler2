@@ -35,7 +35,7 @@ namespace bnw = boost::nowide;
 
 int main(int argc, char* argv[])
 {
-    bnw::args(argc, argv);
+    bnw::args _(argc, argv);
     bnw::nowide_filesystem();
 
     bpo::options_description desc("Usage:\n"
