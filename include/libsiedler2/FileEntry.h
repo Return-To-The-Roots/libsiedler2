@@ -20,11 +20,12 @@
 
 #include "enumTypes.h"
 #include <string>
+#include <utility>
 
 namespace libsiedler2 {
 struct FileEntry
 {
-    explicit FileEntry(const std::string& filePath) : filePath(filePath), nr(-1), bobtype(BOBTYPE_UNSET), nx(0), ny(0) {}
+    explicit FileEntry(std::string filePath) : filePath(std::move(filePath)), nr(-1), bobtype(BOBTYPE_UNSET), nx(0), ny(0) {}
     /// Path to file and (remaining) name
     std::string filePath, name;
     /// Index in the archiv/folder
