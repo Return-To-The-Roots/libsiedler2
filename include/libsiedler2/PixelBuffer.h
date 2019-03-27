@@ -21,7 +21,7 @@
 #define PixelBuffer_h__
 
 #include <cassert>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 namespace libsiedler2 {

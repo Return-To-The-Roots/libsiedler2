@@ -21,8 +21,8 @@
 
 #include "Archiv.h"
 #include "ArchivItem.h"
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 
 namespace libsiedler2 {
 class ArchivItem_Palette;

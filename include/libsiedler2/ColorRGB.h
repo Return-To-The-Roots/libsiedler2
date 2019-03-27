@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsiedler2 {
 struct ColorRGB

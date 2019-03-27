@@ -21,7 +21,7 @@
 #pragma once
 
 #include "ColorRGB.h"
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsiedler2 {
 /// Stores color information as a word

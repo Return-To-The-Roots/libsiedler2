@@ -21,8 +21,8 @@
 
 #include "Archiv.h"
 #include "ArchivItem.h"
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 #include <vector>
 
 namespace libsiedler2 {

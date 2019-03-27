@@ -30,7 +30,7 @@ namespace libsiedler2 {
 class PixelBufferARGB : public PixelBuffer<uint32_t>
 {
 public:
-    PixelBufferARGB() {}
+    PixelBufferARGB() = default;
     PixelBufferARGB(uint16_t width, uint16_t height, ColorARGB defValue = ColorARGB())
         : PixelBuffer<uint32_t>(width, height, defValue.clrValue)
     {}

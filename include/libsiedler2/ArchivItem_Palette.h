@@ -23,8 +23,8 @@
 #include "ColorRGB.h"
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 
 namespace libsiedler2 {
 

@@ -22,7 +22,7 @@
 #include "ArchivItem_Sound.h"
 #include "MIDI_Track.h"
 #include <array>
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsiedler2 {
 /// Klasse für MIDI-Sounds.

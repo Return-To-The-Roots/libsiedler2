@@ -29,7 +29,7 @@ class ArchivItem;
 class IAllocator
 {
 public:
-    virtual ~IAllocator() {}
+    virtual ~IAllocator() = default;
     virtual ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
 };
 

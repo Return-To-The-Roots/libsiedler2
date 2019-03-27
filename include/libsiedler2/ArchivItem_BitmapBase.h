@@ -20,8 +20,8 @@
 
 #include "ArchivItem.h"
 #include "enumTypes.h"
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 #include <vector>
 
 namespace libsiedler2 {
@@ -41,7 +41,7 @@ public:
 
     /// setzt einen Pixel auf einen bestimmten Wert.
     void setPixel(uint16_t x, uint16_t y, uint8_t colorIdx);
-    void setPixel(uint16_t x, uint16_t y, const ColorARGB clr);
+    void setPixel(uint16_t x, uint16_t y, ColorARGB clr);
 
     /// Return the color index at the given position using the current palette for ARGB conversion
     uint8_t getPixelClrIdx(uint16_t x, uint16_t y) const;

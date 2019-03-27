@@ -26,7 +26,7 @@ class ArchivItem;
 class StandardAllocator : public IAllocator
 {
 public:
-    ~StandardAllocator() override {}
+    ~StandardAllocator() override = default;
     ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const override;
 };
 

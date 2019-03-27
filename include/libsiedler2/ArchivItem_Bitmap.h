@@ -22,7 +22,7 @@
 #include "ArchivItem_BitmapBase.h"
 #include "GetFormat.h"
 #include "enumTypes.h"
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsiedler2 {
 class ArchivItem_Palette;

@@ -21,7 +21,7 @@
 
 #include "ArchivItem_Sound.h"
 #include "WAV_Header.h"
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 namespace libsiedler2 {

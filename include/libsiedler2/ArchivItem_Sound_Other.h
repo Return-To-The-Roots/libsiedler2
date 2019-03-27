@@ -20,7 +20,7 @@
 #pragma once
 
 #include "ArchivItem_Sound.h"
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 namespace libsiedler2 {

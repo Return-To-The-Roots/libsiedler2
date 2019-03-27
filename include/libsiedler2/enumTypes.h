@@ -18,7 +18,7 @@
 #ifndef enumTypes_h__
 #define enumTypes_h__
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsiedler2 {
 /** Supported texture formats */

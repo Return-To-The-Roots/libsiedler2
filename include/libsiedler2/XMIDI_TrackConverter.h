@@ -20,7 +20,7 @@
 #pragma once
 
 #include <array>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 namespace libsiedler2 {

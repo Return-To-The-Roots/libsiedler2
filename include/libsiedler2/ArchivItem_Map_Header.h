@@ -21,8 +21,8 @@
 
 #include "ArchivItem.h"
 #include <array>
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 #include <string>
 
 namespace libsiedler2 {
@@ -54,8 +54,8 @@ public:
     const std::string& getAuthor() const;
     void setAuthor(const std::string& author);
 
-    void setPlayerHQ(const uint32_t player, const uint16_t x, const uint16_t y);
-    void getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y);
+    void setPlayerHQ(uint32_t player, uint16_t x, uint16_t y);
+    void getPlayerHQ(uint32_t player, uint16_t& x, uint16_t& y);
 
     bool hasExtraWord() const { return hasExtraWord_; }
 

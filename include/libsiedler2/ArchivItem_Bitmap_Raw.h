@@ -45,7 +45,7 @@ public:
 class ArchivItem_Bitmap_Raw : public baseArchivItem_Bitmap_Raw, public ArchivItem_Bitmap
 {
 public:
-    ArchivItem_Bitmap_Raw() {}
+    ArchivItem_Bitmap_Raw() = default;
 
     ArchivItem_Bitmap_Raw(const ArchivItem_Bitmap_Raw& item)
         : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Raw(item), ArchivItem_Bitmap(item)

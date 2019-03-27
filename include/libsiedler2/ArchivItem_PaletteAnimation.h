@@ -19,7 +19,7 @@
 #define ArchivItem_PaletteAnimation_h__
 
 #include "ArchivItem.h"
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 namespace libsiedler2 {

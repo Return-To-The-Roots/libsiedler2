@@ -49,7 +49,7 @@ public:
 class ArchivItem_Bitmap_Shadow : public baseArchivItem_Bitmap_Shadow, public ArchivItem_Bitmap
 {
 public:
-    ArchivItem_Bitmap_Shadow() {}
+    ArchivItem_Bitmap_Shadow() = default;
 
     ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item)
         : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item), ArchivItem_Bitmap(item)

@@ -20,7 +20,7 @@
 #pragma once
 
 #include "ArchivItem.h"
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 namespace libsiedler2 {

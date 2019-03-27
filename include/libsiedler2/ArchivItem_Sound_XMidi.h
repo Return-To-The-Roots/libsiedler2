@@ -23,7 +23,7 @@
 #include "MIDI_Track.h"
 #include "XMIDI_Track.h"
 #include <array>
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsiedler2 {
 /// Klasse für XMIDI-Sounds.

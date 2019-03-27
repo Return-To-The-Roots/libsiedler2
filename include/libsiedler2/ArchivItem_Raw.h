@@ -20,8 +20,8 @@
 #pragma once
 
 #include "ArchivItem.h"
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 #include <vector>
 
 namespace libsiedler2 {

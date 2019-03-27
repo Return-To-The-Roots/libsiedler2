@@ -27,7 +27,7 @@ template<class T_Base>
 class ICloneable
 {
 public:
-    virtual ~ICloneable() {}
+    virtual ~ICloneable() = default;
     virtual T_Base* clone() const = 0;
 };
 

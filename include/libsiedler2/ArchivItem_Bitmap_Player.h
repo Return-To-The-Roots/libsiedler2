@@ -23,8 +23,8 @@
 #include "GetFormat.h"
 #include "PixelBufferPaletted.h"
 #include "enumTypes.h"
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 #include <vector>
 
 namespace libsiedler2 {
@@ -43,7 +43,7 @@ public:
 
     ArchivItem_Bitmap_Player();
 
-    ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& other) : ArchivItem_BitmapBase(other), tex_pdata(other.tex_pdata) {}
+    ArchivItem_Bitmap_Player(const ArchivItem_Bitmap_Player& other) = default;
 
     ~ArchivItem_Bitmap_Player() override;
 

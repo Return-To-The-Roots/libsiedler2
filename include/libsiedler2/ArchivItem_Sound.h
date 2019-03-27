@@ -21,8 +21,8 @@
 
 #include "ArchivItem.h"
 #include "enumTypes.h"
+#include <cstdint>
 #include <iosfwd>
-#include <stdint.h>
 
 namespace libsiedler2 {
 /// Klasse für Sounditems.

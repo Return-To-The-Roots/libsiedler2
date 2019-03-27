@@ -22,14 +22,14 @@
 
 #include "ArchivItem_Palette.h"
 #include "PixelBuffer.h"
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsiedler2 {
 
 class PixelBufferPaletted : public PixelBuffer<uint8_t>
 {
 public:
-    PixelBufferPaletted() {}
+    PixelBufferPaletted() = default;
     PixelBufferPaletted(uint16_t width, uint16_t height, uint8_t defValue = ArchivItem_Palette::DEFAULT_TRANSPARENT_IDX)
         : PixelBuffer<uint8_t>(width, height, defValue)
     {}
