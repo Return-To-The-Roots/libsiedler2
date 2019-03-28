@@ -29,9 +29,9 @@ class ArchivItem_Palette;
 } // namespace libsiedler2
 
 boost::test_tools::predicate_result testLoad(int expectedResult, const std::string& file, libsiedler2::Archiv& items,
-                                             const libsiedler2::ArchivItem_Palette* palette = NULL);
+                                             const libsiedler2::ArchivItem_Palette* palette = nullptr);
 boost::test_tools::predicate_result testWrite(int expectedResult, const std::string& file, libsiedler2::Archiv& items,
-                                              const libsiedler2::ArchivItem_Palette* palette = NULL);
+                                              const libsiedler2::ArchivItem_Palette* palette = nullptr);
 boost::test_tools::predicate_result testFilesEqual(const std::string& fileToCheck, const std::string& expectedFile);
 
 #endif // cmpFiles_h__
