@@ -400,12 +400,12 @@ namespace {
 std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
 {
     std::vector<FileEntry> entries;
-    for(bfs::directory_iterator it = bfs::directory_iterator(folderPath); it != bfs::directory_iterator(); ++it)
+    for(const auto& it : bfs::directory_iterator(folderPath))
     {
-        if(!bfs::is_regular_file(it->status()) && !bfs::is_directory(it->status()))
+        if(!bfs::is_regular_file(it.status()) && !bfs::is_directory(it.status()))
             continue;
 
-        bfs::path curPath = it->path();
+        bfs::path curPath = it.path();
         curPath.make_preferred();
 
         FileEntry file(curPath.string());

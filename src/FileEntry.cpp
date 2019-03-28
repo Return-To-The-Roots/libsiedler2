@@ -17,6 +17,7 @@
 
 #include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "FileEntry.h"
+#include <boost/range/combine.hpp>
 #include <cctype>
 
 bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
@@ -41,11 +42,14 @@ bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
             return false;
     }
     // Both negative or same
-    for(std::string::const_iterator lit = left.name.begin(), rit = right.name.begin(); lit != left.name.end() && rit != right.name.end();
-        ++lit, ++rit)
-        if(tolower(*lit) < tolower(*rit))
+    for(auto const& it : boost::combine(left.name, right.name))
+    {
+        auto const lhs = tolower(it.get<0>());
+        auto const rhs = tolower(it.get<1>());
+        if(lhs < rhs)
             return true;
-        else if(tolower(*lit) > tolower(*rit))
+        else if(lhs > rhs)
             return false;
+    }
     return left.name.size() < right.name.size();
 }
