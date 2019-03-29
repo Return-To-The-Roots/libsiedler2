@@ -18,9 +18,7 @@
 #include "ColorOutput.h"
 #include "libsiedler2/ColorARGB.h"
 #include "libsiedler2/ColorRGB.h"
-#include <boost/array.hpp>
 #include <boost/endian/conversion.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
 
@@ -76,25 +74,20 @@ BOOST_AUTO_TEST_CASE(ColorARGBCtor)
 BOOST_AUTO_TEST_CASE(ColorRGBBuffer)
 {
     // Read from buffer
-    ColorRGB checkClr(1, 42, 24);
-    boost::array<uint8_t, 3> buf;
-    buf[0] = checkClr.getBlue();
-    buf[1] = checkClr.getGreen();
-    buf[2] = checkClr.getRed();
+    const ColorRGB checkClr(1, 42, 24);
+    const ColorRGB checkClr2(5, 6, 23);
+    const std::array<uint8_t, 3> buf = {checkClr.getBlue(), checkClr.getGreen(), checkClr.getRed()};
     BOOST_REQUIRE_EQUAL(ColorRGB::fromBGR(&buf[0]), checkClr);
     // Write to buffer. Check by reading from it which is tested
-    ColorRGB checkClr2(5, 6, 23);
-    checkClr2.toBGR(&buf[0]);
-    BOOST_REQUIRE_EQUAL(ColorRGB::fromBGR(&buf[0]), checkClr2);
+    {
+        std::array<uint8_t, 3> bufWrite;
+        checkClr2.toBGR(&bufWrite[0]);
+        BOOST_REQUIRE_EQUAL(ColorRGB::fromBGR(&bufWrite[0]), checkClr2);
+    }
 
-    boost::array<uint8_t, 6> buf2;
-    buf2[0] = checkClr.getRed();
-    buf2[1] = checkClr.getGreen();
-    buf2[2] = checkClr.getBlue();
-    buf2[3] = checkClr2.getRed();
-    buf2[4] = checkClr2.getGreen();
-    buf2[5] = checkClr2.getBlue();
-    BOOST_STATIC_ASSERT_MSG(sizeof(ColorRGB) == 3u, "Padding added to ColorRGB. Cannot read it as buffer");
+    const std::array<uint8_t, 6> buf2 = {checkClr.getRed(),  checkClr.getGreen(),  checkClr.getBlue(),
+                                         checkClr2.getRed(), checkClr2.getGreen(), checkClr2.getBlue()};
+    static_assert(sizeof(ColorRGB) == 3u, "Padding added to ColorRGB. Cannot read it as buffer");
     // Interpreting a buffer of RGBRGB values as ColorRGB should be possible
     const auto* clrs = reinterpret_cast<const ColorRGB*>(&buf2[0]);
     BOOST_REQUIRE_EQUAL(clrs[0], checkClr);
@@ -105,7 +98,7 @@ BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
 {
     // Read from buffer
     ColorARGB checkClr(1, 42, 24, 99);
-    boost::array<uint8_t, 4> buf, buf2;
+    std::array<uint8_t, 4> buf, buf2;
     // BGRA
     buf[0] = checkClr.getBlue();
     buf[1] = checkClr.getGreen();
@@ -122,7 +115,7 @@ BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
     checkClr2.toARGB(&buf[0]);
     BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&buf[0]), checkClr2);
 
-    boost::array<uint8_t, 8> bufBGRA;
+    std::array<uint8_t, 8> bufBGRA;
     unsigned i = 0;
     bufBGRA[i++] = checkClr.getBlue();
     bufBGRA[i++] = checkClr.getGreen();
@@ -132,7 +125,7 @@ BOOST_AUTO_TEST_CASE(ColorARGBBuffer)
     bufBGRA[i++] = checkClr2.getGreen();
     bufBGRA[i++] = checkClr2.getRed();
     bufBGRA[i++] = checkClr2.getAlpha();
-    BOOST_STATIC_ASSERT_MSG(sizeof(ColorARGB) == 4u, "Padding added to ColorARGB. Cannot read it as buffer");
+    static_assert(sizeof(ColorARGB) == 4u, "Padding added to ColorARGB. Cannot read it as buffer");
 #if BOOST_ENDIAN_BIG_BYTE
     // On big endian systems this is a word ARGB buffer. Swap it to BGRA
     boost::endian::endian_reverse_inplace(*reinterpret_cast<uint32_t*>(&bufBGRA[0]));

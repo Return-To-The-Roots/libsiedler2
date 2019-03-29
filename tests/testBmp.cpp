@@ -28,7 +28,6 @@
 #include "libsiedler2/PixelBufferARGB.h"
 #include "libsiedler2/PixelBufferPaletted.h"
 #include "libsiedler2/libsiedler2.h"
-#include <boost/array.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
@@ -201,11 +200,10 @@ BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
 {
     const TestBitmaps testFiles;
     // Try all formats with all possible bmp types.
-    boost::array<TextureFormat, 3> fmts = {{FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA}};
-    BOOST_FOREACH(TextureFormat curFmt, fmts)
+    for(TextureFormat curFmt : {FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA})
     {
         FormatSetter fmtSetter(curFmt);
-        BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
+        for(const TestBitmaps::Info& testFile : testFiles.files)
         {
             Archiv archiv;
             int ec = Load(libsiedler2::test::inputPath + "/" + testFile.filename, archiv, palette);
@@ -231,11 +229,10 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
     ArchivItem_Palette emptyPal;
 
     // Try all formats with all possible bmp types.
-    boost::array<TextureFormat, 3> fmts = {{FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA}};
-    BOOST_FOREACH(TextureFormat curFmt, fmts)
+    for(TextureFormat curFmt : {FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA})
     {
         FormatSetter fmtSetter(curFmt);
-        BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
+        for(const TestBitmaps::Info& testFile : testFiles.files)
         {
             Archiv archiv;
             if((curFmt == FORMAT_PALETTED && !testFile.containsPalette) || (testFile.isPaletted && !testFile.containsPalette))
@@ -310,11 +307,10 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
     ArchivItem_Palette emptyPal;
 
     // Try all formats with all possible bmp types.
-    boost::array<TextureFormat, 3> fmts = {{FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA}};
-    BOOST_FOREACH(TextureFormat curFmt, fmts)
+    for(TextureFormat curFmt : {FORMAT_ORIGINAL, FORMAT_PALETTED, FORMAT_BGRA})
     {
         FormatSetter fmtSetter(curFmt);
-        BOOST_FOREACH(const TestBitmaps::Info& testFile, testFiles.files)
+        for(const TestBitmaps::Info& testFile : testFiles.files)
         {
             Archiv archiv;
             std::string inFilepath = libsiedler2::test::inputPath + "/" + testFile.filename;
@@ -923,7 +919,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
       Rect(3, 2, 3, 1), Rect(3, 2, 1, 3), Rect(0, h - 3, 2, 1), Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3),
       Rect(w - 4, h - 3, 4, 3), Rect(0, 0, w, h);
 
-    BOOST_FOREACH(const Rect& rect, testRects)
+    for(const Rect& rect : testRects)
     {
         // Test for non-player-color (127) and player color (128)
         for(unsigned i : {127, 128})

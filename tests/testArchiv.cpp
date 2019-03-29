@@ -21,9 +21,9 @@
 #include "libsiedler2/IAllocator.h"
 #include "libsiedler2/enumTypes.h"
 #include "libsiedler2/libsiedler2.h"
-#include <boost/array.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>
+#include <array>
 #include <stdexcept>
 
 BOOST_AUTO_TEST_SUITE(Archiv)
@@ -115,13 +115,11 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
         item->setName("Item" + std::to_string(i));
         archiv.push(item);
     }
-    boost::array<SoundType, 6> soundTypes = {
-      {SOUNDTYPE_WAVE, SOUNDTYPE_MIDI, SOUNDTYPE_XMIDI, SOUNDTYPE_MP3, SOUNDTYPE_OGG, SOUNDTYPE_OTHER}};
-    for(unsigned i = 0; i < boost::array<SoundType, 6>::size(); i++)
+    for(SoundType soundType : {SOUNDTYPE_WAVE, SOUNDTYPE_MIDI, SOUNDTYPE_XMIDI, SOUNDTYPE_MP3, SOUNDTYPE_OGG, SOUNDTYPE_OTHER})
     {
-        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundTypes[i]);
+        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundType);
         BOOST_REQUIRE(item);
-        item->setName("Sound" + std::to_string(i));
+        item->setName("Sound" + std::to_string(soundType));
         archiv.push(item);
     }
     // Copy ctor

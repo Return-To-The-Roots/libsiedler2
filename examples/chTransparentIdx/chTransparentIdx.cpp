@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 
     libsiedler2::ArchivItem_Palette* palette = (libsiedler2::ArchivItem_Palette*)bbm[0];
 
-    BOOST_FOREACH(const bfs::path& inputPath, options["file"].as<std::vector<bfs::path> >())
+    for(const bfs::path& inputPath : options["file"].as<std::vector<bfs::path> >())
     {
         if(!bfs::exists(inputPath))
         {

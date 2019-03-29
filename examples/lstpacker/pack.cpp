@@ -44,7 +44,7 @@ void pack(const std::string& directory, const std::string& file, const libsiedle
 
     std::cout << "Listing files to pack:" << std::endl;
     unsigned ct = 0;
-    BOOST_FOREACH(const FileEntry& entry, files)
+    for(const FileEntry& entry : files)
     {
         if(entry.nr >= 0 && static_cast<unsigned>(entry.nr) > ct)
             ct = static_cast<unsigned>(entry.nr);

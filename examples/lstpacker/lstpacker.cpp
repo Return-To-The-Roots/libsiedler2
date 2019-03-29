@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
     libsiedler2::ArchivItem_Palette* palette = (libsiedler2::ArchivItem_Palette*)bbm[0];
 
     std::vector<bfs::path> inputPaths(options["file"].as<std::vector<bfs::path> >());
-    BOOST_FOREACH(const bfs::path& inputPath, inputPaths)
+    for(const bfs::path& inputPath : inputPaths)
     {
         if(!bfs::exists(inputPath))
         {
