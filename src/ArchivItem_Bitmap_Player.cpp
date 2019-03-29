@@ -216,10 +216,6 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
     // Startadressen
     std::vector<uint16_t> starts(height);
 
-    const ArchivItem_Palette* bmpPal = getPalette();
-    if(!bmpPal)
-        bmpPal = palette;
-
     uint16_t position = 0;
     for(uint16_t y = 0; y < height; ++y)
     {
