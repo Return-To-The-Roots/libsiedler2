@@ -146,45 +146,11 @@ inline uint32_t ArchivItem_BitmapBase::getBBP(TextureFormat format)
 template<typename T>
 void ArchivItem_BitmapBase::doGetVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh, T&& isTransparent) const
 {
-    int x, y;
-    vx = vy = 0;
-    unsigned lx = -1, ly = -1;
-
-    // find empty rows at left
-    for(x = 0; x < width_; ++x)
+    // Find first non-transparent pixel from top
+    vy = -1;
+    for(int y = 0; y < height_; ++y)
     {
-        for(y = 0; y < height_; ++y)
-        {
-            if(!isTransparent(x, y))
-            {
-                vx = x;
-                break;
-            }
-        }
-
-        if(y != height_)
-            break;
-    }
-
-    // find empty rows at right
-    for(x = width_ - 1; x >= 0; --x)
-    {
-        for(y = 0; y < height_; ++y)
-        {
-            if(!isTransparent(x, y))
-            {
-                lx = x;
-                break;
-            }
-        }
-
-        if(y != height_)
-            break;
-    }
-
-    // find empty rows at top
-    for(y = 0; y < height_; ++y)
-    {
+        int x;
         for(x = 0; x < width_; ++x)
         {
             if(!isTransparent(x, y))
@@ -197,10 +163,18 @@ void ArchivItem_BitmapBase::doGetVisibleArea(int& vx, int& vy, unsigned& vw, uns
         if(x != width_)
             break;
     }
-
-    // find empty rows at bottom
-    for(y = height_ - 1; y >= 0; --y)
+    if(vy < 0)
     {
+        // No non-transparent pixels in whole image
+        vx = vy = vw = vh = 0;
+        return;
+    }
+
+    // Find first non-transparent pixel from bottom
+    int ly = vy;
+    for(int y = height_ - 1; y > vy; --y)
+    {
+        int x;
         for(x = 0; x < width_; ++x)
         {
             if(!isTransparent(x, y))
@@ -211,6 +185,42 @@ void ArchivItem_BitmapBase::doGetVisibleArea(int& vx, int& vy, unsigned& vw, uns
         }
 
         if(x != width_)
+            break;
+    }
+
+    // Find first non-transparent pixel from left
+    vx = 0;
+    for(int x = 0; x < width_; ++x)
+    {
+        int y;
+        for(y = vy; y <= ly; ++y)
+        {
+            if(!isTransparent(x, y))
+            {
+                vx = x;
+                break;
+            }
+        }
+
+        if(y != ly + 1)
+            break;
+    }
+
+    // Find first non-transparent pixel from right
+    int lx = vx;
+    for(int x = width_ - 1; x > vx; --x)
+    {
+        int y;
+        for(y = vy; y <= ly; ++y)
+        {
+            if(!isTransparent(x, y))
+            {
+                lx = x;
+                break;
+            }
+        }
+
+        if(y != ly + 1)
             break;
     }
 
