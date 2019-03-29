@@ -58,20 +58,20 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[0]);
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 39003u);
+    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
+    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 39003u);
     BOOST_REQUIRE(!archivLst[1]);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[51]);
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_WAVE);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(snd)->getLength(), 9943u);
+    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_Wave*>(snd)->getLength(), 9943u);
     libsiedler2::Archiv archivSNG;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathSNG, archivSNG), 0);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivSNG[0]);
     BOOST_REQUIRE(snd);
     BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
-    BOOST_REQUIRE_EQUAL(dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 6830u);
+    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
+    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 6830u);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteWavMono)

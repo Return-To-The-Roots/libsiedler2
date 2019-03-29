@@ -140,7 +140,7 @@ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const Arch
     }
 }
 
-libsiedler2::ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) const
+ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) const
 {
     assert(x < width_ && y < height_);
 
@@ -174,7 +174,7 @@ ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
     return ColorARGB::fromBGRA(&pxlData_[(y * width_ + x) * 4u]);
 }
 
-libsiedler2::TextureFormat ArchivItem_BitmapBase::getWantedFormat(TextureFormat origFormat)
+TextureFormat ArchivItem_BitmapBase::getWantedFormat(TextureFormat origFormat)
 {
     TextureFormat globFmt = getGlobalTextureFormat();
     if(globFmt == FORMAT_ORIGINAL)
@@ -305,105 +305,27 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
     return ErrorCode::NONE;
 }
 
-void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh)
+void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh) const
 {
-    int x, y, lx, ly;
-
-    vx = vy = 0;
-    lx = ly = -1;
-
     if((width_ == 0) || (height_ == 0))
+    {
+        vx = vy = vw = vh = 0;
         return;
+    }
 
     const ArchivItem_Palette* palette = getPalette();
-    if(palette && !getPalette()->hasTransparency())
+    if(getBBP() == 1 && !palette->hasTransparency())
     {
         vx = vy = 0;
         vw = width_;
         vh = height_;
-    }
-    // find empty rows at left
-    for(x = 0; x < width_; ++x)
-    {
-        for(y = 0; y < height_; ++y)
-        {
-            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
-            {
-                vx = x;
-                break;
-            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
-            {
-                vx = x;
-                break;
-            }
-        }
-
-        if(y != height_)
-            break;
+        return;
     }
 
-    // find empty rows at bottom
-    for(x = width_ - 1; x >= 0; --x)
-    {
-        for(y = 0; y < height_; ++y)
-        {
-            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
-            {
-                lx = x;
-                break;
-            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
-            {
-                lx = x;
-                break;
-            }
-        }
-
-        if(y != height_)
-            break;
-    }
-
-    // find empty rows at top
-    for(y = 0; y < height_; ++y)
-    {
-        for(x = 0; x < width_; ++x)
-        {
-            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
-            {
-                vy = y;
-                break;
-            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
-            {
-                vy = y;
-                break;
-            }
-        }
-
-        if(x != width_)
-            break;
-    }
-
-    // find empty rows at bottom
-    for(y = height_ - 1; y >= 0; --y)
-    {
-        for(x = 0; x < width_; ++x)
-        {
-            if((getBBP() == 1) && !palette->isTransparent(*getPixelPtr(x, y)))
-            {
-                ly = y;
-                break;
-            } else if((getBBP() == 4) && (getPixelPtr(x, y)[3] != 0x00))
-            {
-                ly = y;
-                break;
-            }
-        }
-
-        if(x != width_)
-            break;
-    }
-
-    vw = lx + 1 - vx;
-    vh = ly + 1 - vy;
+    if(getBBP() == 1)
+        doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) { return palette->isTransparent(getPalettedPixel(x, y)); });
+    else
+        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) { return getPixelPtr(x, y)[3] == 0u; });
 }
 
 bool ArchivItem_BitmapBase::checkPalette(const ArchivItem_Palette& palette) const

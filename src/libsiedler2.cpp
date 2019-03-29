@@ -262,9 +262,16 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     auto* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(entry.bobtype));
                     std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
                     if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
-                        dynamic_cast<ArchivItem_Bitmap_Player*>(bmp)->print(buffer, curPal); //-V522
-                    else
-                        dynamic_cast<baseArchivItem_Bitmap*>(bmp)->print(buffer);
+                    {
+                        auto* bmpPlayer = dynamic_cast<ArchivItem_Bitmap_Player*>(bmp);
+                        assert(bmpPlayer);
+                        bmpPlayer->print(buffer, curPal);
+                    } else
+                    {
+                        auto* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(bmp);
+                        assert(bmpBase);
+                        bmpBase->print(buffer);
+                    }
 
                     switch(entry.bobtype)
                     {

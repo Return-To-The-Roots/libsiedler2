@@ -926,7 +926,7 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
     BOOST_FOREACH(const Rect& rect, testRects)
     {
         // Test for non-player-color (127) and player color (128)
-        for(unsigned i = 127; i < 129; i++)
+        for(unsigned i : {127, 128})
         {
             inBufferPal[rect.x + rect.y * w] = i;
             inBufferPal[rect.x + rect.w - 1 + (rect.y + rect.h - 1) * w] = i;

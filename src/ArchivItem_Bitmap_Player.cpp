@@ -27,32 +27,34 @@
 #include <iostream>
 #include <vector>
 
-/** @class libsiedler2::ArchivItem_Bitmap_Player
+/** @class ArchivItem_Bitmap_Player
  *
  *  Basisklasse für Player-Bitmaps.
  */
 
-/** @class libsiedler2::ArchivItem_Bitmap_Player
+/** @class ArchivItem_Bitmap_Player
  *
  *  Klasse für Player-Bitmaps.
  */
 
-/** @var libsiedler2::ArchivItem_Bitmap_Player::tex_pdata
+/** @var ArchivItem_Bitmap_Player::tex_pdata
  *
  *  Die Spielerfarbedaten.
  */
 
-/** @var libsiedler2::ArchivItem_Bitmap_Player::tex_plength
+/** @var ArchivItem_Bitmap_Player::tex_plength
  *
  *  Länge der Spielerfarbendaten.
  */
 
-libsiedler2::ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
+namespace libsiedler2 {
+
+ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
 {
     bobtype_ = BOBTYPE_BITMAP_PLAYER;
 }
 
-libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player() = default;
+ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player() = default;
 
 /**
  *  lädt die Bilddaten aus einer Datei.
@@ -62,7 +64,7 @@ libsiedler2::ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player() = default;
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette* palette)
+int ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette* palette)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -119,8 +121,8 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(std::istream& file, const Archiv
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height, const std::vector<uint8_t>& image,
-                                                const std::vector<uint16_t>& starts, bool absoluteStarts, const ArchivItem_Palette* palette)
+int ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts,
+                                   bool absoluteStarts, const ArchivItem_Palette* palette)
 {
     if(!palette)
         return ErrorCode::PALETTE_MISSING;
@@ -195,7 +197,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height,
  *
  *  @todo unkomprimierte Pixel werden nicht geschrieben -> braucht viel Speicherplatz
  */
-int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette* palette) const
+int ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette* palette) const
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -285,7 +287,7 @@ int libsiedler2::ArchivItem_Bitmap_Player::write(std::ostream& file, const Archi
 /**
  *  alloziert Bildspeicher für die gewünschte Größe.
  */
-void libsiedler2::ArchivItem_Bitmap_Player::init(int16_t width, int16_t height, TextureFormat format)
+void ArchivItem_Bitmap_Player::init(int16_t width, int16_t height, TextureFormat format)
 {
     ArchivItem_BitmapBase::init(width, height, format);
 
@@ -295,7 +297,7 @@ void libsiedler2::ArchivItem_Bitmap_Player::init(int16_t width, int16_t height, 
 /**
  *  räumt den Bildspeicher auf.
  */
-void libsiedler2::ArchivItem_Bitmap_Player::clear()
+void ArchivItem_Bitmap_Player::clear()
 {
     ArchivItem_BitmapBase::clear();
     tex_pdata.clear();
@@ -322,9 +324,8 @@ void libsiedler2::ArchivItem_Bitmap_Player::clear()
  *  @param[in]     color         Grundfarbindex der benutzt werden soll
  *
  */
-int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width,
-                                                  uint16_t buffer_height, TextureFormat buffer_format, const ArchivItem_Palette* palette,
-                                                  uint8_t plClrStartIdx)
+int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
+                                     TextureFormat buffer_format, const ArchivItem_Palette* palette, uint8_t plClrStartIdx)
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;
@@ -396,10 +397,9 @@ int libsiedler2::ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t heigh
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
-                                                 TextureFormat buffer_format, const ArchivItem_Palette* palette, uint8_t plClrStartIdx,
-                                                 uint16_t to_x, uint16_t to_y, uint16_t from_x, uint16_t from_y, uint16_t from_w,
-                                                 uint16_t from_h, bool only_player) const
+int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
+                                    const ArchivItem_Palette* palette, uint8_t plClrStartIdx, uint16_t to_x, uint16_t to_y, uint16_t from_x,
+                                    uint16_t from_y, uint16_t from_w, uint16_t from_h, bool only_player) const
 {
     if(buffer_width == 0 || buffer_height == 0)
         return ErrorCode::NONE;
@@ -486,20 +486,18 @@ int libsiedler2::ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffe
     return ErrorCode::NONE;
 }
 
-void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh)
+void ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh) const
 {
-    int x, y, lx, ly;
+    const auto width = getWidth();
+    const auto height = getHeight();
 
-    vx = vy = 0;
-    lx = ly = -1;
-
-    const int width = getWidth();
-    const int height = getHeight();
-
-    if((width == 0) || (height == 0))
+    if(width == 0 || height == 0)
+    {
+        vx = vy = vw = vh = 0;
         return;
+    }
 
-    const unsigned texBpp = getBBP();
+    const auto texBpp = getBBP();
     const ArchivItem_Palette* palette = getPalette();
     if(texBpp == 1 && !palette->hasTransparency())
     {
@@ -509,74 +507,13 @@ void libsiedler2::ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, uns
         return;
     }
 
-    // find empty rows at left
-    for(x = 0; x < width; ++x)
-    {
-        for(y = 0; y < height; ++y)
-        {
-            if((tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX) || (texBpp == 1 && !palette->isTransparent(*getPixelPtr(x, y)))
-               || (texBpp == 4 && getPixelPtr(x, y)[3] != 0x00))
-            {
-                vx = x;
-                break;
-            }
-        }
-
-        if(y != height)
-            break;
-    }
-
-    // find empty rows at bottom
-    for(x = width - 1; x >= 0; --x)
-    {
-        for(y = 0; y < height; ++y)
-        {
-            if((tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX) || (texBpp == 1 && !palette->isTransparent(*getPixelPtr(x, y)))
-               || (texBpp == 4 && getPixelPtr(x, y)[3] != 0x00))
-            {
-                lx = x;
-                break;
-            }
-        }
-
-        if(y != height)
-            break;
-    }
-
-    // find empty rows at top
-    for(y = 0; y < height; ++y)
-    {
-        for(x = 0; x < width; ++x)
-        {
-            if((tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX) || (texBpp == 1 && !palette->isTransparent(*getPixelPtr(x, y)))
-               || (texBpp == 4 && getPixelPtr(x, y)[3] != 0x00))
-            {
-                vy = y;
-                break;
-            }
-        }
-
-        if(x != width)
-            break;
-    }
-
-    // find empty rows at bottom
-    for(y = height - 1; y >= 0; --y)
-    {
-        for(x = 0; x < width; ++x)
-        {
-            if((tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX) || (texBpp == 1 && !palette->isTransparent(*getPixelPtr(x, y)))
-               || (texBpp == 4 && getPixelPtr(x, y)[3] != 0x00))
-            {
-                ly = y;
-                break;
-            }
-        }
-
-        if(x != width)
-            break;
-    }
-
-    vw = lx + 1 - vx;
-    vh = ly + 1 - vy;
+    if(getBBP() == 1)
+        doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) {
+            return tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && palette->isTransparent(getPalettedPixel(x, y));
+        });
+    else
+        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) {
+            return tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && getPixelPtr(x, y)[3] == 0u;
+        });
 }
+} // namespace libsiedler2

@@ -66,7 +66,7 @@ public:
     /// räumt den Bildspeicher auf.
     void clear() override;
 
-    void getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh) override;
+    void getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh) const override;
 
     /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
     int print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,

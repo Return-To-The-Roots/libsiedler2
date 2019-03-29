@@ -103,7 +103,7 @@ public:
     /// Convert the bitmap to the new format using the internal palette
     virtual int convertFormat(TextureFormat newFormat);
 
-    virtual void getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh);
+    virtual void getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh) const;
 
     /// Return the bytes per pixel for a given format
     static uint32_t getBBP(TextureFormat format);
@@ -122,6 +122,8 @@ protected:
     ColorARGB getARGBPixel(uint16_t x, uint16_t y) const;
 
     std::vector<uint8_t>& getPixelData() { return pxlData_; }
+    template<typename T>
+    void doGetVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh, T&& isTransparent) const;
 
     int16_t nx_; /// X-Nullpunkt.
     int16_t ny_; /// Y-Nullpunkt.
@@ -139,6 +141,81 @@ private:
 inline uint32_t ArchivItem_BitmapBase::getBBP(TextureFormat format)
 {
     return (format == FORMAT_PALETTED) ? 1 : 4;
+}
+
+template<typename T>
+void ArchivItem_BitmapBase::doGetVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh, T&& isTransparent) const
+{
+    int x, y;
+    vx = vy = 0;
+    unsigned lx = -1, ly = -1;
+
+    // find empty rows at left
+    for(x = 0; x < width_; ++x)
+    {
+        for(y = 0; y < height_; ++y)
+        {
+            if(!isTransparent(x, y))
+            {
+                vx = x;
+                break;
+            }
+        }
+
+        if(y != height_)
+            break;
+    }
+
+    // find empty rows at right
+    for(x = width_ - 1; x >= 0; --x)
+    {
+        for(y = 0; y < height_; ++y)
+        {
+            if(!isTransparent(x, y))
+            {
+                lx = x;
+                break;
+            }
+        }
+
+        if(y != height_)
+            break;
+    }
+
+    // find empty rows at top
+    for(y = 0; y < height_; ++y)
+    {
+        for(x = 0; x < width_; ++x)
+        {
+            if(!isTransparent(x, y))
+            {
+                vy = y;
+                break;
+            }
+        }
+
+        if(x != width_)
+            break;
+    }
+
+    // find empty rows at bottom
+    for(y = height_ - 1; y >= 0; --y)
+    {
+        for(x = 0; x < width_; ++x)
+        {
+            if(!isTransparent(x, y))
+            {
+                ly = y;
+                break;
+            }
+        }
+
+        if(x != width_)
+            break;
+    }
+
+    vw = lx + 1 - vx;
+    vh = ly + 1 - vy;
 }
 
 } // namespace libsiedler2
