@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
     {
         libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundType);
         BOOST_REQUIRE(item);
-        item->setName("Sound" + std::to_string(soundType));
+        item->setName("Sound" + std::to_string(static_cast<int>(soundType)));
         archiv.push(item);
     }
     // Copy ctor

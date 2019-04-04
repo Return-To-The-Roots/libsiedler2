@@ -509,11 +509,11 @@ void ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, unsigned& vw, un
 
     if(getBBP() == 1)
         doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) {
-            return tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && palette->isTransparent(getPalettedPixel(x, y));
+            return this->tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && palette->isTransparent(this->getPalettedPixel(x, y));
         });
     else
         doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) {
-            return tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && getPixelPtr(x, y)[3] == 0u;
+            return this->tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && this->getPixelPtr(x, y)[3] == 0u;
         });
 }
 } // namespace libsiedler2

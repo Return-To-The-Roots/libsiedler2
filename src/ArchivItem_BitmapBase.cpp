@@ -323,9 +323,9 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     }
 
     if(getBBP() == 1)
-        doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) { return palette->isTransparent(getPalettedPixel(x, y)); });
+        doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) { return palette->isTransparent(this->getPalettedPixel(x, y)); });
     else
-        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) { return getPixelPtr(x, y)[3] == 0u; });
+        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) { return this->getPixelPtr(x, y)[3] == 0u; });
 }
 
 bool ArchivItem_BitmapBase::checkPalette(const ArchivItem_Palette& palette) const
