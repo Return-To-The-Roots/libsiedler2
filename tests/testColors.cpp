@@ -21,6 +21,7 @@
 #include <boost/endian/conversion.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
+#include <array>
 
 using libsiedler2::ColorARGB;
 using libsiedler2::ColorRGB;
