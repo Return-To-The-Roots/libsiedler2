@@ -19,6 +19,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
+#include "CopyPixelBuffer.h"
 #include "ErrorCodes.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
@@ -405,80 +406,68 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
         return ErrorCode::NONE;
     if(!buffer)
         return ErrorCode::INVALID_BUFFER;
-    if(palette == nullptr)
+    if(!palette)
+    {
         palette = getPalette();
-    if(palette == nullptr)
-        return ErrorCode::PALETTE_MISSING;
+        if(!palette)
+            return ErrorCode::PALETTE_MISSING;
+    }
 
-    if(from_x >= getWidth() || from_y >= getHeight() || to_x >= buffer_width || to_y >= buffer_height)
-        return ErrorCode::NONE;
-
-    if(from_w == 0 || from_x + from_w > getWidth())
+    if(from_w == 0 && from_x < getWidth())
         from_w = getWidth() - from_x;
-    if(from_h == 0 || from_y + from_h > getHeight())
+    if(from_h == 0 && from_y < getHeight())
         from_h = getHeight() - from_y;
 
-    const unsigned bpp = getBBP(buffer_format);
-    const ArchivItem_Palette* bmpPal = getPalette();
-    if(!bmpPal)
-        bmpPal = palette;
+    const Rect fromRect = clipRect(Rect{from_x, from_y, from_w, from_h}, getWidth(), getHeight());
+    const Rect toRect = clipRect(Rect{to_x, to_y, buffer_width, buffer_height}, buffer_width, buffer_height);
 
-    for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
+    if(!only_player)
     {
-        for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
-        {
-            size_t posBuffer = (y2 * size_t(buffer_width) + x2) * bpp;
-            const uint8_t* pxlPtr = getPixelPtr(x, y);
-            if(getFormat() == FORMAT_PALETTED)
+        auto doCall = [this, fromRect, toRect](auto&& dstBuf) {
+            if(this->getFormat() == FORMAT_PALETTED)
             {
-                if(buffer_format == FORMAT_PALETTED)
-                {
-                    if(tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX)
-                    {
-                        // Playerfarbe setzen
-                        buffer[posBuffer] = tex_pdata.get(x, y) + plClrStartIdx;
-                    } else if(!only_player && !bmpPal->isTransparent(*pxlPtr))
-                    {
-                        buffer[posBuffer] = *pxlPtr;
-                    }
-                } else
-                {
-                    // Ziel ist RGB+A
-                    if(tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX)
-                    {
-                        // Playerfarbe setzen
-                        ColorARGB(palette->get(tex_pdata.get(x, y) + plClrStartIdx)).toBGRA(&buffer[posBuffer]);
-                    } else if(!only_player && !bmpPal->isTransparent(*pxlPtr))
-                    {
-                        // normale Pixel setzen
-                        ColorARGB(palette->get(*pxlPtr)).toBGRA(&buffer[posBuffer]);
-                    }
-                }
+                const PixelBufferPalettedRef srcBuf = this->getBufferPaletted();
+                CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
             } else
             {
+                const PixelBufferARGBRef srcBuf = this->getBufferARGB();
+                CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
+            }
+        };
+
+        if(buffer_format == FORMAT_PALETTED)
+        {
+            PixelBufferPalettedRef dstBuf(buffer, buffer_width, buffer_height, *palette);
+            doCall(dstBuf);
+        } else
+        {
+            PixelBufferARGBRef dstBuf(reinterpret_cast<uint32_t*>(buffer), buffer_width, buffer_height);
+            doCall(dstBuf);
+        }
+    }
+
+    const uint16_t copyWidth = std::min(fromRect.w, toRect.w);
+    const uint16_t copyHeight = std::min(fromRect.h, toRect.h);
+    const size_t bufferBBP = getBBP(buffer_format);
+
+    for(uint16_t y = 0; y < copyHeight; ++y)
+    {
+        size_t posBuffer = ((y + toRect.y) * buffer_width + toRect.x) * bufferBBP;
+        for(uint16_t x = 0; x < copyWidth; ++x)
+        {
+            const uint8_t playerClr = tex_pdata.get(x + fromRect.y, y + fromRect.y);
+            // Don't change if transparent
+            if(playerClr != TRANSPARENT_PLAYER_CLR_IDX)
+            {
                 if(buffer_format == FORMAT_PALETTED)
+                    buffer[posBuffer] = playerClr + plClrStartIdx;
+                else
                 {
-                    // Ziel ist Paletted
-                    if(tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX)
-                    {
-                        // Playerfarbe setzen
-                        buffer[posBuffer] = tex_pdata.get(x, y) + plClrStartIdx;
-                    } else if(!only_player && pxlPtr[3] != 0)
-                    {
-                        // normale Pixel setzen
-                        buffer[posBuffer] = getPixelClrIdx(x, y, palette);
-                    }
-                } else
-                {
-                    // Ziel ist auch RGB+A
-                    if(tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX)
-                    {
-                        // Playerfarbe setzen
-                        ColorARGB(palette->get(tex_pdata.get(x, y) + plClrStartIdx), pxlPtr[3]).toBGRA(&buffer[posBuffer]);
-                    } else if(!only_player && pxlPtr[3] != 0)
-                        std::memcpy(&buffer[posBuffer], pxlPtr, 4);
+                    const uint8_t srcAlpha = (getFormat() == FORMAT_PALETTED) ? 255 : getPixelPtr(x + fromRect.x, y + fromRect.y)[3];
+                    ColorARGB(palette->get(playerClr + plClrStartIdx), srcAlpha).toBGRA(&buffer[posBuffer]);
                 }
             }
+            posBuffer += bufferBBP;
         }
     }
 

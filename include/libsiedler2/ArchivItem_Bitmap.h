@@ -37,8 +37,8 @@ class baseArchivItem_Bitmap : public virtual ArchivItem_BitmapBase
 public:
     /// schreibt das Bitmap in einen Puffer.
     int print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
-              const ArchivItem_Palette* palette = nullptr, uint16_t to_x = 0, uint16_t to_y = 0, uint16_t from_x = 0, uint16_t from_y = 0,
-              uint16_t from_w = 0, uint16_t from_h = 0) const;
+              const ArchivItem_Palette* dstPalette = nullptr, uint16_t to_x = 0, uint16_t to_y = 0, uint16_t from_x = 0,
+              uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0) const;
     template<class T_PixelBuffer>
     int print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette = nullptr, uint16_t to_x = 0, uint16_t to_y = 0,
               uint16_t from_x = 0, uint16_t from_y = 0, uint16_t from_w = 0, uint16_t from_h = 0) const;
@@ -63,11 +63,11 @@ class ArchivItem_Bitmap : public virtual baseArchivItem_Bitmap
 {};
 
 template<class T_PixelBuffer>
-inline int baseArchivItem_Bitmap::print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* palette, uint16_t to_x, uint16_t to_y,
+inline int baseArchivItem_Bitmap::print(T_PixelBuffer& pixelBuffer, const ArchivItem_Palette* dstPalette, uint16_t to_x, uint16_t to_y,
                                         uint16_t from_x, uint16_t from_y, uint16_t from_w, uint16_t from_h) const
 {
     return print(pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(), traits::GetFormat<T_PixelBuffer>::value,
-                 palette, to_x, to_y, from_x, from_y, from_w, from_h);
+                 dstPalette, to_x, to_y, from_x, from_y, from_w, from_h);
 }
 
 inline int baseArchivItem_Bitmap::create(const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,

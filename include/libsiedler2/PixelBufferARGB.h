@@ -45,7 +45,7 @@ inline ColorARGB PixelBufferARGB::get(uint16_t x, uint16_t y) const
     return get(calcIdx(x, y));
 }
 
-inline libsiedler2::ColorARGB PixelBufferARGB::get(uint32_t idx) const
+inline ColorARGB PixelBufferARGB::get(uint32_t idx) const
 {
     return ColorARGB::fromBGRA(&pixels_[idx]);
 }

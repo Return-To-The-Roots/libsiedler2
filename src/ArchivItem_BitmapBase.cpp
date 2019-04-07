@@ -174,6 +174,21 @@ ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
     return ColorARGB::fromBGRA(&pxlData_[(y * width_ + x) * 4u]);
 }
 
+PixelBufferPalettedRef ArchivItem_BitmapBase::getBufferPaletted() const
+{
+    if(getFormat() != FORMAT_PALETTED)
+        throw std::logic_error("Image not paletted");
+    assert(palette_);
+    return PixelBufferPalettedRef(const_cast<uint8_t*>(pxlData_.data()), width_, height_, *palette_);
+}
+
+PixelBufferARGBRef ArchivItem_BitmapBase::getBufferARGB() const
+{
+    if(getFormat() != FORMAT_BGRA)
+        throw std::logic_error("Image not BGRA");
+    return PixelBufferARGBRef(reinterpret_cast<uint32_t*>(const_cast<uint8_t*>(pxlData_.data())), width_, height_);
+}
+
 TextureFormat ArchivItem_BitmapBase::getWantedFormat(TextureFormat origFormat)
 {
     TextureFormat globFmt = getGlobalTextureFormat();

@@ -19,7 +19,9 @@
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
+#include "CopyPixelBuffer.h"
 #include "ErrorCodes.h"
+#include "PixelBufferRef.h"
 #include <cassert>
 #include <cstddef>
 #include <cstring>
@@ -28,7 +30,11 @@
 namespace libsiedler2 {
 
 /**
- *  schreibt das Bitmap in einen Puffer.
+ *  Write the bitmap into a buffer.
+ *  Conditions: If the bitmap is paletted it has a palette
+ *              If the buffer is paletted it has a palette (parameter)
+ *  If both are paletted values are copied (no translation)
+ *  Transparent source pixels are not copied
  *
  *  @param[in,out] buffer        Zielpuffer
  *  @param[in]     buffer_width  Breite des Puffers
@@ -45,53 +51,49 @@ namespace libsiedler2 {
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
 int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
-                                 const ArchivItem_Palette* palette /*= nullptr*/, uint16_t to_x /*= 0*/, uint16_t to_y /*= 0*/,
+                                 const ArchivItem_Palette* dstPalette /*= nullptr*/, uint16_t to_x /*= 0*/, uint16_t to_y /*= 0*/,
                                  uint16_t from_x /*= 0*/, uint16_t from_y /*= 0*/, uint16_t from_w /*= 0*/, uint16_t from_h /*= 0*/) const
 {
     if(buffer_width == 0 || buffer_height == 0)
         return ErrorCode::NONE;
     if(!buffer)
         return ErrorCode::INVALID_BUFFER;
-    if(!palette)
-        palette = getPalette();
-    if(!palette && buffer_format == FORMAT_PALETTED)
-        return ErrorCode::PALETTE_MISSING;
 
-    if(from_x >= getWidth() || from_y >= getHeight() || to_x >= buffer_width || to_y >= buffer_height)
-        return ErrorCode::NONE;
-
-    if(from_w == 0 || from_x + from_w > getWidth())
+    if(from_w == 0 && from_x < getWidth())
         from_w = getWidth() - from_x;
-    if(from_h == 0 || from_y + from_h > getHeight())
+    if(from_h == 0 && from_y < getHeight())
         from_h = getHeight() - from_y;
 
-    const unsigned bufBpp = getBBP(buffer_format);
-    for(uint16_t y = from_y, y2 = to_y; y2 < buffer_height && y < from_y + from_h; ++y, ++y2)
-    {
-        for(uint16_t x = from_x, x2 = to_x; x2 < buffer_width && x < from_x + from_w; ++x, ++x2)
-        {
-            size_t posBuf = (y2 * size_t(buffer_width) + x2) * bufBpp;
-            const uint8_t* pxlPtr = getPixelPtr(x, y);
-            if(getFormat() == FORMAT_PALETTED)
-            {
-                if(getPalette()->isTransparent(*pxlPtr)) // bei Transparenz wird buffer nicht verändert
-                    continue;
-                if(buffer_format == FORMAT_PALETTED)
-                    buffer[posBuf] = *pxlPtr;
-                else
-                    ColorARGB(palette->get(*pxlPtr)).toBGRA(&buffer[posBuf]); //-V522
-            } else
-            {
-                if(pxlPtr[3] == 0) // bei Transparenz wird buffer nicht verändert
-                    continue;
-                if(buffer_format == FORMAT_PALETTED)
-                    buffer[posBuf] = getPixelClrIdx(x, y, palette);
-                else
-                    std::memcpy(&buffer[posBuf], pxlPtr, 4);
-            }
-        }
-    }
+    const Rect fromRect{from_x, from_y, from_w, from_h};
+    const Rect toRect{to_x, to_y, buffer_width, buffer_height};
 
+    auto doCall = [this, fromRect, toRect](auto&& dstBuf) {
+        if(this->getFormat() == FORMAT_PALETTED)
+        {
+            const PixelBufferPalettedRef srcBuf = this->getBufferPaletted();
+            CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
+        } else
+        {
+            const PixelBufferARGBRef srcBuf = this->getBufferARGB();
+            CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
+        }
+    };
+
+    if(buffer_format == FORMAT_PALETTED)
+    {
+        if(!dstPalette)
+        {
+            dstPalette = getPalette();
+            if(!dstPalette)
+                return ErrorCode::PALETTE_MISSING;
+        }
+        PixelBufferPalettedRef dstBuf(buffer, buffer_width, buffer_height, *dstPalette);
+        doCall(dstBuf);
+    } else
+    {
+        PixelBufferARGBRef dstBuf(reinterpret_cast<uint32_t*>(buffer), buffer_width, buffer_height);
+        doCall(dstBuf);
+    }
     // Alles ok
     return ErrorCode::NONE;
 }

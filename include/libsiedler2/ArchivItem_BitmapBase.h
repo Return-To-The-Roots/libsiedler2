@@ -19,6 +19,7 @@
 #define ARCHIVITEM_BITMAPBASE_H_INCLUDED
 
 #include "ArchivItem.h"
+#include "PixelBufferRef.h"
 #include "enumTypes.h"
 #include <cstdint>
 #include <iosfwd>
@@ -120,6 +121,8 @@ protected:
     uint8_t getPalettedPixel(uint16_t x, uint16_t y) const;
     /// Return the pixel at the given position assuming the bitmap is ARGB
     ColorARGB getARGBPixel(uint16_t x, uint16_t y) const;
+    PixelBufferPalettedRef getBufferPaletted() const;
+    PixelBufferARGBRef getBufferARGB() const;
 
     std::vector<uint8_t>& getPixelData() { return pxlData_; }
     template<typename T>
