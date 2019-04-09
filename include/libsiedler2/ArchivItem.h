@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "ICloneable.h" // IWYU pragma: exports
+#include "ICloneable.h" // IWYU pragma: export
 #include "enumTypes.h"
 #include <boost/config.hpp>
 #include <string>
