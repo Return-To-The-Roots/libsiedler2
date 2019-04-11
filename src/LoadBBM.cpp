@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
@@ -80,8 +79,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, Archiv& items)
                 return ErrorCode::WRONG_FORMAT;
 
             // Daten von Item auswerten
-            auto* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
-            items.push(palette);
+            auto palette = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
 
             boost::filesystem::path filePath(file);
             if(filePath.has_filename())
@@ -93,6 +91,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, Archiv& items)
 
             if(int ec = palette->load(fs.getStream(), false))
                 return ec;
+            items.push(std::move(palette));
 
             ++i;
         } else

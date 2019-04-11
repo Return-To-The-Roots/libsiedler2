@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem.h"
 #include <stdexcept>
@@ -32,11 +31,13 @@ namespace libsiedler2 {
  */
 
 Archiv::Archiv() = default;
+Archiv::Archiv(Archiv&&) noexcept = default;
+Archiv& Archiv::operator=(Archiv&&) noexcept = default;
 
 Archiv::Archiv(const Archiv& info)
 {
     data.reserve(info.size());
-    for(auto it : info.data)
+    for(const auto& it : info.data)
     {
         if(it)
             pushC(*it);
@@ -51,7 +52,7 @@ Archiv& Archiv::operator=(const Archiv& info)
         return *this;
     clear();
     data.reserve(info.size());
-    for(auto it : info.data)
+    for(const auto& it : info.data)
     {
         if(it)
             pushC(*it);
@@ -64,10 +65,7 @@ Archiv& Archiv::operator=(const Archiv& info)
 /**
  *  Destruktor von @p Archiv, räumt automatisch auf.
  */
-Archiv::~Archiv()
-{
-    clear();
-}
+Archiv::~Archiv() = default;
 
 /**
  *  erstellt den Datensatz in einer bestimmten Größe.
@@ -90,8 +88,6 @@ void Archiv::alloc_inc(size_t increment)
  */
 void Archiv::clear()
 {
-    for(auto& it : data)
-        delete it;
     data.clear();
 }
 
@@ -102,12 +98,11 @@ void Archiv::clear()
  *  @param[in] item  Item mit dem zu setzenden Inhalt
  */
 
-void Archiv::set(size_t index, ArchivItem* item)
+void Archiv::set(size_t index, std::unique_ptr<ArchivItem> item)
 {
     if(index >= size())
         throw std::out_of_range("Index out of range");
-    delete data[index];
-    data[index] = item;
+    data[index] = std::move(item);
 }
 
 /**
@@ -118,7 +113,12 @@ void Archiv::set(size_t index, ArchivItem* item)
  */
 void Archiv::setC(size_t index, const ArchivItem& item)
 {
-    set(index, item.clone());
+    set(index, std::unique_ptr<ArchivItem>(item.clone()));
+}
+
+void Archiv::push(std::unique_ptr<ArchivItem> item)
+{
+    data.emplace_back(std::move(item));
 }
 
 /**
@@ -128,15 +128,15 @@ void Archiv::setC(size_t index, const ArchivItem& item)
  */
 void Archiv::pushC(const ArchivItem& item)
 {
-    data.push_back(item.clone());
+    data.emplace_back(item.clone());
 }
 
 const ArchivItem* Archiv::find(const std::string& name) const
 {
-    for(auto it : data)
+    for(const auto& it : data)
     {
         if(it && it->getName() == name)
-            return it;
+            return it.get();
     }
 
     return nullptr;
@@ -147,19 +147,17 @@ ArchivItem* Archiv::find(const std::string& name)
     for(auto& it : data)
     {
         if(it && it->getName() == name)
-            return it;
+            return it.get();
     }
 
     return nullptr;
 }
 
-ArchivItem* Archiv::release(size_t index)
+std::unique_ptr<ArchivItem> Archiv::release(size_t index)
 {
     if(index >= size())
         return nullptr;
-    ArchivItem* result = data[index];
-    data[index] = nullptr;
-    return result;
+    return std::move(data[index]);
 }
 
 } // namespace libsiedler2

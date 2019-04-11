@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "StandardAllocator.h"
 #include "ArchivItem_PaletteAnimation.h"
 #include "archives.h"
@@ -29,7 +28,7 @@ namespace libsiedler2 {
  *  @param[in] subtype Der Subtyp des Items
  *
  */
-ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
+std::unique_ptr<ArchivItem> StandardAllocator::create(BobType type, SoundType subtype) const
 {
     switch(type)
     {
@@ -38,26 +37,26 @@ ArchivItem* StandardAllocator::create(BobType type, SoundType subtype) const
             switch(subtype)
             {
                 case SOUNDTYPE_NONE: return nullptr;
-                case SOUNDTYPE_MIDI: return new ArchivItem_Sound_Midi();
-                case SOUNDTYPE_WAVE: return new ArchivItem_Sound_Wave();
-                case SOUNDTYPE_XMIDI: return new ArchivItem_Sound_XMidi();
-                default: return new ArchivItem_Sound_Other(subtype);
+                case SOUNDTYPE_MIDI: return std::make_unique<ArchivItem_Sound_Midi>();
+                case SOUNDTYPE_WAVE: return std::make_unique<ArchivItem_Sound_Wave>();
+                case SOUNDTYPE_XMIDI: return std::make_unique<ArchivItem_Sound_XMidi>();
+                default: return std::make_unique<ArchivItem_Sound_Other>(subtype);
             }
             break;
         }
-        case BOBTYPE_BITMAP_RLE: return new ArchivItem_Bitmap_RLE();
-        case BOBTYPE_FONT: return new ArchivItem_Font();
-        case BOBTYPE_BITMAP_PLAYER: return new ArchivItem_Bitmap_Player();
-        case BOBTYPE_PALETTE: return new ArchivItem_Palette();
-        case BOBTYPE_BOB: return new ArchivItem_Bob();
-        case BOBTYPE_BITMAP_SHADOW: return new ArchivItem_Bitmap_Shadow();
-        case BOBTYPE_MAP: return new ArchivItem_Map();
-        case BOBTYPE_TEXT: return new ArchivItem_Text();
-        case BOBTYPE_RAW: return new ArchivItem_Raw();
-        case BOBTYPE_MAP_HEADER: return new ArchivItem_Map_Header();
-        case BOBTYPE_INI: return new ArchivItem_Ini();
-        case BOBTYPE_BITMAP_RAW: return new ArchivItem_Bitmap_Raw();
-        case BOBTYPE_PALETTE_ANIM: return new ArchivItem_PaletteAnimation();
+        case BOBTYPE_BITMAP_RLE: return std::make_unique<ArchivItem_Bitmap_RLE>();
+        case BOBTYPE_FONT: return std::make_unique<ArchivItem_Font>();
+        case BOBTYPE_BITMAP_PLAYER: return std::make_unique<ArchivItem_Bitmap_Player>();
+        case BOBTYPE_PALETTE: return std::make_unique<ArchivItem_Palette>();
+        case BOBTYPE_BOB: return std::make_unique<ArchivItem_Bob>();
+        case BOBTYPE_BITMAP_SHADOW: return std::make_unique<ArchivItem_Bitmap_Shadow>();
+        case BOBTYPE_MAP: return std::make_unique<ArchivItem_Map>();
+        case BOBTYPE_TEXT: return std::make_unique<ArchivItem_Text>();
+        case BOBTYPE_RAW: return std::make_unique<ArchivItem_Raw>();
+        case BOBTYPE_MAP_HEADER: return std::make_unique<ArchivItem_Map_Header>();
+        case BOBTYPE_INI: return std::make_unique<ArchivItem_Ini>();
+        case BOBTYPE_BITMAP_RAW: return std::make_unique<ArchivItem_Bitmap_Raw>();
+        case BOBTYPE_PALETTE_ANIM: return std::make_unique<ArchivItem_PaletteAnimation>();
         default: return nullptr;
     }
     return nullptr;

@@ -15,11 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "OpenMemoryStream.h"
 #include "ErrorCodes.h"
 #include <boost/filesystem/operations.hpp>
 #include <iostream>
+
+namespace bfs = boost::filesystem;
 
 namespace libsiedler2 {
 int openMemoryStream(const std::string& file, MMStream& stream)

@@ -19,7 +19,6 @@
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
-#include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(TextFiles)

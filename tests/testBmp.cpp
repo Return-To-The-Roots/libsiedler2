@@ -30,7 +30,6 @@
 #include "libsiedler2/libsiedler2.h"
 #include <boost/assign/std/vector.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
 #include <utility>
@@ -95,10 +94,10 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
         for(unsigned x = 1; x < buffer.getWidth(); x += 2)
             buffer.set(x, y, 1);
     }
-    auto* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW));
+    auto shadowBmp = getAllocator().create<baseArchivItem_Bitmap>(BOBTYPE_BITMAP_SHADOW);
     shadowBmp->create(buffer, palette);
     bmp.clear();
-    bmp.push(shadowBmp);
+    bmp.push(std::move(shadowBmp));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
 }
 
@@ -119,10 +118,10 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
         for(unsigned x = 1; x < buffer.getWidth(); x += 2)
             buffer.set(x, y, 1);
     }
-    auto* shadowBmp = dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RLE));
+    auto shadowBmp = getAllocator().create<baseArchivItem_Bitmap>(BOBTYPE_BITMAP_RLE);
     shadowBmp->create(buffer, palette);
     bmp.clear();
-    bmp.push(shadowBmp);
+    bmp.push(std::move(shadowBmp));
     BOOST_REQUIRE_EQUAL(Write(bmpOutPath, bmp, palette), 0);
 }
 
@@ -328,7 +327,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
             // a) no palette
             if(bmp->getFormat() == FORMAT_BGRA)
             {
-                libsiedler2::ArchivItem_Palette* bmpPal = bmp->getPalette() ? bmp->getPalette()->clone() : nullptr;
+                std::unique_ptr<libsiedler2::ArchivItem_Palette> bmpPal(bmp->getPalette() ? bmp->getPalette()->clone() : nullptr);
                 bmp->removePalette();
                 // If conversion is required -> error
                 if(testFile.isPaletted && !testFile.supportsBoth)
@@ -346,7 +345,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
                     BOOST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef)); // Still stored as RGB
                 else
                     BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
-                bmp->setPalette(bmpPal);
+                bmp->setPalette(std::move(bmpPal));
             }
             // b) use bitmaps palette if none passed
             if(!bmp->getPalette())

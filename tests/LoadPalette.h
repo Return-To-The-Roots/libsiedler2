@@ -38,8 +38,9 @@ struct LoadPalette
         BOOST_REQUIRE_EQUAL(libsiedler2::Load(libsiedler2::test::inputPath + "/pal5.act", paletteArchiv), 0);
         palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(0));
         BOOST_REQUIRE(palette);
-        modPal = palette->clone();
-        paletteArchiv.push(modPal);
+        paletteArchiv.push(std::unique_ptr<libsiedler2::ArchivItem_Palette>(palette->clone()));
+        modPal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(1));
+        BOOST_REQUIRE(modPal);
         BOOST_REQUIRE_NE(modPal->get(modClr1), modPal->get(modClr1 + 1));
         BOOST_REQUIRE_NE(modPal->get(modClr2), modPal->get(modClr2 + 1));
         libsiedler2::ColorRGB clr = modPal->get(modClr1);

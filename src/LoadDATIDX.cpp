@@ -15,14 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem.h"
 #include "ErrorCodes.h"
+#include "GetIStreamSize.h"
 #include "OpenMemoryStream.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include <boost/filesystem.hpp>
+
+namespace bfs = boost::filesystem;
 
 /**
  *  lädt eine DAT/IDX-File in ein Archiv.
@@ -100,14 +102,14 @@ int libsiedler2::loader::LoadDATIDX(const std::string& file, Archiv& items, cons
         auto bobtype = static_cast<BobType>(bobtype_s);
 
         // Daten von Item auswerten
-        ArchivItem* item;
+        std::unique_ptr<ArchivItem> item;
         if(int ec = LoadType(bobtype, dat.getStream(), item, palette))
             return ec;
 
         // Name setzen
         if(item)
             item->setName(std::string(name.begin(), name.end()));
-        items.set(i, item);
+        items.set(i, std::move(item));
     }
 
     return ErrorCode::NONE;

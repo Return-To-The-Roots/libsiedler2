@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "XMIDI_TrackConverter.h"
 #include "GammaTable.h"
 #include "MIDI_Track.h"
@@ -47,7 +46,7 @@ struct LogStatus
 #if RTTR_LOG_XMIDI
         std::cout << el;
 #else
-        RTTR_UNUSED(el);
+        (void)el;
 #endif // RTTR_LOG_XMIDI
         return *this;
     }

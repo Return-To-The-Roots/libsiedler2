@@ -23,6 +23,7 @@
 #include "enumTypes.h"
 #include <cstdint>
 #include <iosfwd>
+#include <memory>
 
 namespace libsiedler2 {
 /// Klasse für Sounditems.
@@ -41,7 +42,7 @@ public:
     /// schreibt die Sound-Daten in eine Datei.
     virtual int write(std::ostream& file) const = 0;
 
-    static ArchivItem_Sound* findSubType(std::istream& file);
+    static std::unique_ptr<ArchivItem_Sound> findSubType(std::istream& file);
 
 private:
     SoundType soundType_;

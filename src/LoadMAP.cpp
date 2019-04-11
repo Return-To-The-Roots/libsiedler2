@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Map.h"
 #include "ErrorCodes.h"
@@ -38,15 +37,12 @@ int libsiedler2::loader::LoadMAP(const std::string& file, Archiv& items, bool on
     if(int ec = openMemoryStream(file, map))
         return ec;
 
-    auto* item = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP));
+    auto item = getAllocator().create<ArchivItem_Map>(BOBTYPE_MAP);
     if(int ec = item->load(map, only_header)) //-V522
-    {
-        delete item;
         return ec;
-    }
 
     items.clear();
-    items.push(item);
+    items.push(std::move(item));
 
     return ErrorCode::NONE;
 }

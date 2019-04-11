@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Ini.h"
 #include "ErrorCodes.h"
@@ -41,12 +40,12 @@ int libsiedler2::loader::LoadINI(const std::string& file, Archiv& items)
 
     while(!ini.eof())
     {
-        std::unique_ptr<ArchivItem_Ini> item(dynamic_cast<ArchivItem_Ini*>(getAllocator().create(BOBTYPE_INI)));
+        auto item = getAllocator().create<ArchivItem_Ini>(BOBTYPE_INI);
 
         if(int ec = item->load(ini))
             return ec;
 
-        items.push(item.release());
+        items.push(std::move(item));
     }
 
     return ErrorCode::NONE;

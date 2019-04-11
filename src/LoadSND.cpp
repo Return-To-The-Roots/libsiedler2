@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Sound.h"
 #include "ErrorCodes.h"
+#include "GetIStreamSize.h"
 #include "OpenMemoryStream.h"
 #include "prototypen.h"
 
@@ -36,7 +36,7 @@ int libsiedler2::loader::LoadSND(const std::string& file, Archiv& items)
     if(int ec = openMemoryStream(file, snd))
         return ec;
 
-    ArchivItem_Sound* sound = ArchivItem_Sound::findSubType(snd);
+    auto sound = ArchivItem_Sound::findSubType(snd);
 
     if(!sound)
         return ErrorCode::WRONG_HEADER;
@@ -46,7 +46,7 @@ int libsiedler2::loader::LoadSND(const std::string& file, Archiv& items)
         return ec;
 
     items.clear();
-    items.push(sound);
+    items.push(std::move(sound));
 
     return ErrorCode::NONE;
 }

@@ -15,13 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Palette.h"
 #include "BmpHeader.h"
-#include "ColorARGB.h"
 #include "ErrorCodes.h"
 #include "fileFormatHelpers.h"
 #include "prototypen.h"
@@ -86,7 +84,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     bmpHd.fileSize = (width * bmih.bpp / 8 + numLineAlignBytes) * height + bmpHd.pixelOffset;
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, bnw::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, boost::nowide::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

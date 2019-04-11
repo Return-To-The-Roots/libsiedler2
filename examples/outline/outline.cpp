@@ -27,7 +27,7 @@
 
 using namespace libsiedler2;
 
-int main(int /*argc*/, char* /*argv*/[])
+int main(int /*argc*/, char* /*argv*/ [])
 {
     Archiv lst, bbm;
 
@@ -91,8 +91,8 @@ int main(int /*argc*/, char* /*argv*/[])
         }
     }
     std::array<char, 512> file;
-    snprintf(file, 512, "outline_fonts.lst");
-    Write(file, to, palette);
+    snprintf(file.data(), file.size(), "outline_fonts.lst");
+    Write(file.data(), to, palette);
 
     getchar();
     return 0;

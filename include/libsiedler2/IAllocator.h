@@ -18,7 +18,9 @@
 #ifndef IALLOCATOR_H_INCLUDED
 #define IALLOCATOR_H_INCLUDED
 
+#include "dynamicUniqueCast.h"
 #include "enumTypes.h"
+#include <memory>
 
 namespace libsiedler2 {
 class ArchivItem;
@@ -30,7 +32,12 @@ class IAllocator
 {
 public:
     virtual ~IAllocator() = default;
-    virtual ArchivItem* create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
+    virtual std::unique_ptr<ArchivItem> create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
+    template<class T>
+    std::unique_ptr<T> create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const
+    {
+        return dynamicUniqueCast<T>(create(type, subtype));
+    }
 };
 
 } // namespace libsiedler2

@@ -1,4 +1,4 @@
-// Copyright (c) 2005 - 2017 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2005 - 2019 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -14,19 +14,28 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef OEM_H_INCLUDED
-#define OEM_H_INCLUDED
 
-#pragma once
+#ifndef DYNAMIC_UNIQUE_CAST_H_INCLUDED
+#define DYNAMIC_UNIQUE_CAST_H_INCLUDED
 
-#include <string>
+#include <memory>
+#include <type_traits>
 
 namespace libsiedler2 {
-/// Wandelt einen String vom ANSI ins OEM Format um.
-std::string AnsiToOem(const std::string& from);
+class ArchivItem;
 
-/// Wandelt einen String vom OEM ins ANSI Format um.
-std::string OemToAnsi(const std::string& from);
+template<class T, class U>
+std::unique_ptr<T> dynamicUniqueCast(std::unique_ptr<U>&& src)
+{
+    static_assert(std::has_virtual_destructor<T>::value, "Can't cast this unique_ptr");
+    return std::unique_ptr<T>(dynamic_cast<T*>(src.release()));
+}
+template<class T, class U>
+std::unique_ptr<T> dynamicUniqueCast(std::unique_ptr<U>& src)
+{
+    return dynamicUniqueCast<T>(std::move(src));
+}
+
 } // namespace libsiedler2
 
-#endif // !OEM_H_INCLUDED
+#endif // DYNAMIC_UNIQUE_CAST_H_INCLUDED

@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Ini.h"
 #include "ErrorCodes.h"
@@ -36,7 +35,7 @@ int libsiedler2::loader::WriteINI(const std::string& file, const Archiv& items)
         return ErrorCode::INVALID_BUFFER;
 
     // Datei zum schreiben öffnen
-    bnw::ofstream fs(file, std::ios_base::binary);
+    boost::nowide::ofstream fs(file, std::ios_base::binary);
     if(!fs)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 

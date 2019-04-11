@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Map.h"
 #include "ArchivItem_Map_Header.h"
 #include "ArchivItem_Raw.h"
@@ -54,24 +53,24 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
 
     clear();
 
-    auto* header = dynamic_cast<ArchivItem_Map_Header*>(getAllocator().create(BOBTYPE_MAP_HEADER));
-    assert(header);
-
-    int ec = header->load(file); //-V522
-    if(ec)
     {
-        delete header;
-        return ec;
-    }
+        auto header = getAllocator().create<ArchivItem_Map_Header>(BOBTYPE_MAP_HEADER);
+        assert(header);
 
-    push(header);
+        int ec = header->load(file); //-V522
+        if(ec)
+            return ec;
+
+        push(std::move(header));
+    }
 
     // nur der Header?
     if(only_header)
         return ErrorCode::NONE;
 
-    const uint16_t w = header->getWidth();
-    const uint16_t h = header->getHeight();
+    const auto& header = static_cast<const ArchivItem_Map_Header&>(*get(0));
+    const uint16_t w = header.getWidth();
+    const uint16_t h = header.getHeight();
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     for(uint32_t i = 1; i < 15; ++i)
@@ -103,14 +102,10 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return ErrorCode::WRONG_FORMAT;
         }
 
-        auto* layer = dynamic_cast<ArchivItem_Raw*>(getAllocator().create(BOBTYPE_RAW));
-        ec = layer->load(file, bHeader.blockLength); //-V522
-        if(ec)
-        {
-            delete layer;
+        auto layer = getAllocator().create<ArchivItem_Raw>(BOBTYPE_RAW);
+        if(auto ec = layer->load(file, bHeader.blockLength)) //-V522
             return ec;
-        }
-        if(i == 1 && header->hasExtraWord())
+        if(i == 1 && header.hasExtraWord())
         {
             // Work around for map file bug: There are 2 extra bytes inbetween the header which would actually belong to the first block
             fs.setPositionRel(-2);
@@ -119,7 +114,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             data[data.size() - 1] = data[data.size() - 2] = data[data.size() - 3];
         }
 
-        push(layer);
+        push(std::move(layer));
     }
 
     extraInfo.clear();

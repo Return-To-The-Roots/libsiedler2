@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "libsiedler2.h"
 #include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
@@ -33,8 +32,9 @@
 #include <algorithm>
 #include <iostream>
 #include <memory>
-#include <sstream>
 #include <stdexcept>
+
+namespace bfs = boost::filesystem;
 
 /** @mainpage libsiedler2
  *
@@ -214,7 +214,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         // Ignore
         if(entry.bobtype == BOBTYPE_UNSET)
             continue;
-        ArchivItem* newItem = nullptr;
+        std::unique_ptr<ArchivItem> newItem;
         if(entry.bobtype == BOBTYPE_FONT)
         {
             auto font = std::make_unique<ArchivItem_Font>();
@@ -229,7 +229,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             if(ec)
                 return ec;
 
-            newItem = font.release();
+            newItem = std::move(font);
         } else if(entry.bobtype != BOBTYPE_NONE)
         {
             const ArchivItem_Palette* curPal = palette;
@@ -248,18 +248,16 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 if(tmpItems.size() != 1)
                     return ErrorCode::UNSUPPORTED_FORMAT;
 
-                ArchivItem_BitmapBase* bmp;
-
                 if(entry.bobtype == tmpItems[0]->getBobType())
                 {
                     // No conversion->Just take it
-                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(tmpItems.release(0));
+                    newItem = tmpItems.release(0);
                 } else
                 {
-                    bmp = dynamic_cast<ArchivItem_BitmapBase*>(tmpItems[0]);
+                    auto* bmp = dynamic_cast<ArchivItem_BitmapBase*>(tmpItems[0]);
                     if(!bmp)
                         return ErrorCode::UNSUPPORTED_FORMAT;
-                    auto* convertedBmp = dynamic_cast<ArchivItem_BitmapBase*>(getAllocator().create(entry.bobtype));
+                    auto convertedBmp = getAllocator().create<ArchivItem_BitmapBase>(entry.bobtype);
                     std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
                     if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
                     {
@@ -279,28 +277,27 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                         case BOBTYPE_BITMAP_SHADOW:
                         case BOBTYPE_BITMAP_RAW:
                         {
-                            auto* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp);
+                            auto* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp.get());
                             assert(bmpBase);
                             bmpBase->create(bmp->getWidth(), bmp->getHeight(), buffer); //-V522
                             break;
                         }
                         case BOBTYPE_BITMAP_PLAYER:
                         {
-                            auto* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp);
+                            auto* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp.get());
                             assert(bmpPl);
                             bmpPl->create(bmp->getWidth(), bmp->getHeight(), buffer, curPal); //-V522
                         }
                         break;
                         default: return ErrorCode::UNSUPPORTED_FORMAT;
                     }
-                    bmp = convertedBmp;
+                    newItem = std::move(convertedBmp);
                 }
+                auto* bmp = static_cast<ArchivItem_BitmapBase*>(newItem.get());
                 bmp->setName(entry.name);
                 bmp->setNx(entry.nx);
                 bmp->setNy(entry.ny);
                 bmp->setPaletteCopy(*curPal);
-
-                newItem = bmp;
             } else if(entry.bobtype == BOBTYPE_PALETTE_ANIM)
             {
                 for(unsigned i = 0; i < tmpItems.size(); i++)
@@ -328,9 +325,9 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         {
             if(static_cast<unsigned>(entry.nr) >= items.size())
                 items.alloc_inc(entry.nr - items.size() + 1);
-            items.set(entry.nr, newItem);
+            items.set(entry.nr, std::move(newItem));
         } else
-            items.push(newItem);
+            items.push(std::move(newItem));
     }
     return ErrorCode::NONE;
 }

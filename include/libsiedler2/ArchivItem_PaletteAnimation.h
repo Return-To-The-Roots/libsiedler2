@@ -20,7 +20,7 @@
 
 #include "ArchivItem.h"
 #include <cstdint>
-#include <string>
+#include <memory>
 
 namespace libsiedler2 {
 
@@ -47,7 +47,7 @@ public:
     /// First and last color used. Note the wrapping: lastClr + 1 = firstClr
     uint8_t firstClr, lastClr;
     /// Creates a new palette from the given one with the rotation applied
-    ArchivItem_Palette* apply(const ArchivItem_Palette& pal) const;
+    std::unique_ptr<ArchivItem_Palette> apply(const ArchivItem_Palette& pal) const;
 };
 
 } // namespace libsiedler2

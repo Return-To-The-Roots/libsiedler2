@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Palette.h"
 #include "ArchivItem_PaletteAnimation.h"
@@ -27,6 +26,8 @@
 #include <boost/nowide/fstream.hpp>
 #include <iomanip>
 #include <memory>
+
+namespace bnw = boost::nowide;
 
 namespace libsiedler2 { namespace loader {
     static const std::string txtPalHeader = "Bitmap palette V1";
@@ -40,7 +41,7 @@ namespace libsiedler2 { namespace loader {
         std::string header;
         if(!std::getline(fs, header) || header != txtPalHeader)
             return ErrorCode::WRONG_HEADER;
-        std::unique_ptr<ArchivItem_Palette> pal(dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE)));
+        auto pal = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
         items.alloc(1);
         std::string transparency, sColor;
         unsigned hasTransparency, transpColorIdx;
@@ -59,7 +60,7 @@ namespace libsiedler2 { namespace loader {
             {
                 if(fs.eof())
                 {
-                    items.set(0, pal.release());
+                    items.set(0, std::move(pal));
                     return ErrorCode::NONE;
                 } else
                     return ErrorCode::WRONG_FORMAT;
@@ -103,13 +104,12 @@ namespace libsiedler2 { namespace loader {
                 else
                     return ErrorCode::WRONG_FORMAT;
             }
-            std::unique_ptr<ArchivItem_PaletteAnimation> anim(
-              dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM)));
+            auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BOBTYPE_PALETTE_ANIM);
             if(int ec = anim->loadFromTxt(fs))
                 return ec;
             if(idx >= items.size())
                 items.alloc_inc(idx - items.size() + 1);
-            items.set(idx, anim.release());
+            items.set(idx, std::move(anim));
         }
         return ErrorCode::UNEXPECTED_EOF;
     }

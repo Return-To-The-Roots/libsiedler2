@@ -28,7 +28,7 @@ namespace libsiedler2 {
 class ArchivItem_Sound_Other : public ArchivItem_Sound
 {
 public:
-    ArchivItem_Sound_Other(SoundType sndType);
+    explicit ArchivItem_Sound_Other(SoundType sndType);
     RTTR_CLONEABLE(ArchivItem_Sound_Other)
 
     /// lädt die Daten aus einer Datei.

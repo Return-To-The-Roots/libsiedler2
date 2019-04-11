@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
@@ -31,6 +30,9 @@
 #include <boost/filesystem/path.hpp>
 #include <iostream>
 #include <memory>
+
+namespace bfs = boost::filesystem;
+
 /**
  *  lädt eine LBM-File in ein Archiv.
  *
@@ -58,13 +60,12 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
     // (at least) 1 item
     items.alloc(1);
 
-    std::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    auto bitmap = getAllocator().create<baseArchivItem_Bitmap>(BOBTYPE_BITMAP_RAW);
 
     uint16_t width = 0, height = 0, transClr = 0;
     uint8_t compression = 0, mask = 0;
     std::array<char, 4> chunk;
     bool headerRead = false;
-    bool bodyRead = false;
     // Chunks einlesen
     while(lbm.read(chunk))
     {
@@ -77,7 +78,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
 
         if(isChunk(chunk, "BMHD"))
         {
-            if(headerRead || bodyRead)
+            if(headerRead || !bitmap)
                 return ErrorCode::WRONG_FORMAT;
             uint16_t xOrig, yOrig, pageW, pageH;
             uint8_t numPlanes, pad, xAspect, yAspect;
@@ -96,23 +97,21 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             headerRead = true;
         } else if(isChunk(chunk, "CRNG"))
         {
-            if(bodyRead)
+            if(!bitmap)
                 return ErrorCode::WRONG_FORMAT;
-            std::unique_ptr<ArchivItem_PaletteAnimation> anim(
-              dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM)));
+            auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BOBTYPE_PALETTE_ANIM);
             if(int ec = anim->load(lbm.getStream()))
                 return ec;
-            items.push(anim.release());
+            items.push(std::move(anim));
         } else if(isChunk(chunk, "CMAP"))
         {
-            if(bodyRead)
+            if(!bitmap)
                 return ErrorCode::WRONG_FORMAT;
             // Ist Länge wirklich so groß wie Farbtabelle?
             if(chunkLen != 256 * 3)
                 return ErrorCode::WRONG_FORMAT;
 
-            auto* palette = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
-            bitmap->setPalette(palette);
+            auto palette = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
             if(int ec = palette->load(lbm.getStream(), false))
                 return ec;
             if(mask == 2 && transClr < 256)
@@ -126,11 +125,11 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
                 else
                     palette->removeTransparency();
             }
+            bitmap->setPalette(std::move(palette));
         } else if(isChunk(chunk, "BODY"))
         {
-            if(!headerRead || bodyRead)
+            if(!headerRead || !bitmap)
                 return ErrorCode::WRONG_FORMAT;
-            bodyRead = true;
             // haben wir eine Palette erhalten?
             if(bitmap->getPalette() == nullptr)
                 return ErrorCode::PALETTE_MISSING;
@@ -204,7 +203,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
                     }
                 }
             }
-            items.set(0, bitmap.release());
+            items.set(0, std::move(bitmap));
+            bitmap = nullptr; // Also marker that BODY was found
         } else
         {
             // Skip this chunk
@@ -212,7 +212,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
         }
     }
 
-    if(items.empty() || !items[0] || !lbm.eof())
+    if(items.empty() || !items[0] || !lbm.eof() || bitmap)
         return ErrorCode::WRONG_FORMAT;
 
     return ErrorCode::NONE;

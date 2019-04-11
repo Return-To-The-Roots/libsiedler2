@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
+#include "GetIStreamSize.h"
 #include "IAllocator.h"
 #include "OpenMemoryStream.h"
 #include "libsiedler2.h"
@@ -63,11 +63,11 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
         if(fileSize >= sizeof(header))
             fs.setPositionRel(-2);
 
-        auto* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
+        auto item = getAllocator().create<ArchivItem_Text>(BOBTYPE_TEXT);
         int ec = item->load(fs.getStream(), conversion);
         if(ec)
             return ec;
-        items.push(item);
+        items.push(std::move(item));
     } else
     {
         // "archiviert"
@@ -124,12 +124,12 @@ int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool co
                 fs.setPosition(itemPos);
 
                 // einlesen
-                auto* item = (ArchivItem_Text*)getAllocator().create(BOBTYPE_TEXT);
+                auto item = getAllocator().create<ArchivItem_Text>(BOBTYPE_TEXT);
                 int res = item->load(fs.getStream(), conversion, itemSize);
                 if(res)
                     return res;
 
-                items.push(item);
+                items.push(std::move(item));
             } else
                 items.push(nullptr);
         }

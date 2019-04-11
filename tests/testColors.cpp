@@ -18,7 +18,6 @@
 #include "ColorOutput.h"
 #include "libsiedler2/ColorARGB.h"
 #include "libsiedler2/ColorRGB.h"
-#include <boost/endian/conversion.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
 #include <array>

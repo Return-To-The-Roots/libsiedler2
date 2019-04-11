@@ -20,6 +20,7 @@
 #pragma once
 
 #include "enumTypes.h"
+#include <memory>
 #include <string>
 
 namespace libsiedler2 {
@@ -31,7 +32,7 @@ class Archiv;
 /// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 namespace loader {
     /// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-    int LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette = nullptr);
+    int LoadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
     int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette = nullptr);

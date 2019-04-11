@@ -23,6 +23,7 @@
 #include "enumTypes.h"
 #include <cstdint>
 #include <iosfwd>
+#include <memory>
 #include <vector>
 
 namespace libsiedler2 {
@@ -90,11 +91,11 @@ public:
     virtual void clear();
 
     /// Return the currently used palette
-    const ArchivItem_Palette* getPalette() const { return palette_; }
+    const ArchivItem_Palette* getPalette() const { return palette_.get(); }
     /// Check if the given palette can be used for this bitmap. That is all ARGB colors are in the palette
     bool checkPalette(const ArchivItem_Palette& palette) const;
     /// Set the palette passing ownership
-    void setPalette(ArchivItem_Palette* palette);
+    void setPalette(std::unique_ptr<ArchivItem_Palette> palette);
     /// Set the palette NOT passing ownership
     void setPaletteCopy(const ArchivItem_Palette& palette);
     /// Remove the currently used palette
@@ -136,8 +137,8 @@ private:
 
     std::vector<uint8_t> pxlData_; /// Die Texturdaten.
 
-    const ArchivItem_Palette* palette_; /// Die Palette.
-    TextureFormat format_;              /// Das Texturformat.
+    std::unique_ptr<const ArchivItem_Palette> palette_; /// Die Palette.
+    TextureFormat format_;                              /// Das Texturformat.
 };
 
 // Define inline in header to allow optimizations

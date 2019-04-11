@@ -18,8 +18,8 @@
 #include "cmpFiles.h"
 #include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/libsiedler2.h"
-#include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
 
 namespace bfs = boost::filesystem;
 

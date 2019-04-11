@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
+#include "ArchivItem.h"
 #include "ErrorCodes.h"
 #include "OpenMemoryStream.h"
 #include "prototypen.h"
@@ -83,10 +83,10 @@ int libsiedler2::loader::LoadLST(const std::string& file, Archiv& items, const A
         auto bobtype = static_cast<BobType>(bobtype_s);
 
         // Daten von Item auswerten
-        ArchivItem* item;
+        std::unique_ptr<ArchivItem> item;
         if(int ec = LoadType(bobtype, lst.getStream(), item, palette))
             return ec;
-        items.push(item);
+        items.push(std::move(item));
     }
 
     return ErrorCode::NONE;

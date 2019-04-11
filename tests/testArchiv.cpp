@@ -21,10 +21,14 @@
 #include "libsiedler2/IAllocator.h"
 #include "libsiedler2/enumTypes.h"
 #include "libsiedler2/libsiedler2.h"
-#include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>
-#include <array>
 #include <stdexcept>
+
+template<class T>
+std::ostream& boost_test_print_type(std::ostream& ostr, std::unique_ptr<T> const& right)
+{
+    return ostr << right.get();
+}
 
 BOOST_AUTO_TEST_SUITE(Archiv)
 
@@ -32,7 +36,7 @@ BOOST_AUTO_TEST_CASE(Push)
 {
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE(archiv.empty());
-    auto* rawItem = new libsiedler2::ArchivItem_Raw;
+    auto rawItem = std::make_unique<libsiedler2::ArchivItem_Raw>();
     rawItem->getData().push_back(42);
     archiv.pushC(*rawItem);
     BOOST_REQUIRE(!archiv.empty());
@@ -40,13 +44,14 @@ BOOST_AUTO_TEST_CASE(Push)
     auto* rawItemOut = dynamic_cast<libsiedler2::ArchivItem_Raw*>(archiv[0]);
     BOOST_REQUIRE(rawItemOut);
     // Should have copied
-    BOOST_REQUIRE_NE(rawItem, rawItemOut);
+    BOOST_REQUIRE_NE(rawItem.get(), rawItemOut);
     BOOST_REQUIRE_EQUAL(rawItemOut->getData()[0], 42u);
     // Invalid indizes return NULL
     BOOST_REQUIRE(!archiv[1]);
     // Add with passing ownership
-    archiv.push(rawItem);
-    BOOST_REQUIRE_EQUAL(archiv[1], rawItem);
+    auto* rawItemPtr = rawItem.get();
+    archiv.push(std::move(rawItem));
+    BOOST_REQUIRE_EQUAL(archiv[1], rawItemPtr);
     archiv.clear();
     BOOST_REQUIRE(archiv.empty());
 }
@@ -55,18 +60,18 @@ BOOST_AUTO_TEST_CASE(Set)
 {
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE(archiv.empty());
-    archiv.push(new libsiedler2::ArchivItem_Raw);
+    archiv.push(std::make_unique<libsiedler2::ArchivItem_Raw>());
     archiv.alloc(2);
     BOOST_REQUIRE_EQUAL(archiv.size(), 2u);
     // Archiv should have been cleared
     BOOST_REQUIRE(!archiv[0]);
-    auto* rawItem = new libsiedler2::ArchivItem_Raw;
+    auto rawItem = std::make_unique<libsiedler2::ArchivItem_Raw>();
     rawItem->getData().push_back(42);
     archiv.setC(0, *rawItem);
     auto* rawItemOut = dynamic_cast<libsiedler2::ArchivItem_Raw*>(archiv[0]);
     BOOST_REQUIRE(rawItemOut);
     // Should have copied
-    BOOST_REQUIRE_NE(rawItem, rawItemOut);
+    BOOST_REQUIRE_NE(rawItem.get(), rawItemOut);
     BOOST_REQUIRE_EQUAL(rawItemOut->getData()[0], 42u);
     // Invalid indizes return NULL
     BOOST_REQUIRE(!archiv[1]);
@@ -74,10 +79,11 @@ BOOST_AUTO_TEST_CASE(Set)
     BOOST_REQUIRE_EQUAL(archiv.size(), 5u);
     BOOST_REQUIRE_EQUAL(archiv[0], rawItemOut);
     // Throw out of range exception
-    BOOST_REQUIRE_THROW(archiv.set(5, rawItem), std::out_of_range);
+    BOOST_REQUIRE_THROW(archiv.set(5, std::make_unique<libsiedler2::ArchivItem_Raw>()), std::out_of_range);
     // Add with passing ownership
-    archiv.set(4, rawItem);
-    BOOST_REQUIRE_EQUAL(archiv[4], rawItem);
+    auto* rawPtr = rawItem.get();
+    archiv.set(4, std::move(rawItem));
+    BOOST_REQUIRE_EQUAL(archiv[4], rawPtr);
     archiv.set(4, nullptr);
     BOOST_REQUIRE(!archiv[4]);
 }
@@ -85,19 +91,22 @@ BOOST_AUTO_TEST_CASE(Set)
 BOOST_AUTO_TEST_CASE(Find)
 {
     libsiedler2::Archiv archiv;
-    auto* rawItem1 = new libsiedler2::ArchivItem_Raw;
+    auto rawItem1 = std::make_unique<libsiedler2::ArchivItem_Raw>();
     rawItem1->setName("Foo1");
-    auto* rawItem2 = new libsiedler2::ArchivItem_Raw;
+    auto rawItem2 = std::make_unique<libsiedler2::ArchivItem_Raw>();
     rawItem2->setName("Foo2");
-    auto* rawItem3 = new libsiedler2::ArchivItem_Raw;
+    auto rawItem3 = std::make_unique<libsiedler2::ArchivItem_Raw>();
     rawItem3->setName("Foo3");
-    archiv.push(rawItem1);
-    archiv.push(rawItem2);
+    auto* rawPtr1 = rawItem1.get();
+    auto* rawPtr2 = rawItem2.get();
+    auto* rawPtr3 = rawItem3.get();
+    archiv.push(std::move(rawItem1));
+    archiv.push(std::move(rawItem2));
     archiv.push(nullptr);
-    archiv.push(rawItem3);
-    BOOST_REQUIRE_EQUAL(archiv.find(rawItem1->getName()), rawItem1);
-    BOOST_REQUIRE_EQUAL(archiv.find(rawItem2->getName()), rawItem2);
-    BOOST_REQUIRE_EQUAL(archiv.find(rawItem3->getName()), rawItem3);
+    archiv.push(std::move(rawItem3));
+    BOOST_REQUIRE_EQUAL(archiv.find(rawPtr1->getName()), rawPtr1);
+    BOOST_REQUIRE_EQUAL(archiv.find(rawPtr2->getName()), rawPtr2);
+    BOOST_REQUIRE_EQUAL(archiv.find(rawPtr3->getName()), rawPtr3);
     BOOST_REQUIRE(!archiv.find("NonExistant"));
 }
 
@@ -110,23 +119,23 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
         auto bobType = libsiedler2::BobType(i);
         if(bobType == libsiedler2::BOBTYPE_UNSET || bobType == libsiedler2::BOBTYPE_SOUND)
             continue;
-        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(bobType);
+        auto item = libsiedler2::getAllocator().create(bobType);
         BOOST_REQUIRE(item);
         item->setName("Item" + std::to_string(i));
-        archiv.push(item);
+        archiv.push(std::move(item));
     }
     for(SoundType soundType : {SOUNDTYPE_WAVE, SOUNDTYPE_MIDI, SOUNDTYPE_XMIDI, SOUNDTYPE_MP3, SOUNDTYPE_OGG, SOUNDTYPE_OTHER})
     {
-        libsiedler2::ArchivItem* item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundType);
+        auto item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundType);
         BOOST_REQUIRE(item);
         item->setName("Sound" + std::to_string(static_cast<int>(soundType)));
-        archiv.push(item);
+        archiv.push(std::move(item));
     }
     // Copy ctor
     libsiedler2::Archiv archiv2(archiv), archiv3;
     BOOST_REQUIRE_EQUAL(archiv.size(), archiv2.size());
     // Avoid ctor init
-    archiv3.push(new libsiedler2::ArchivItem_Raw);
+    archiv3.push(std::make_unique<libsiedler2::ArchivItem_Raw>());
     // Assign
     archiv3 = archiv;
     BOOST_REQUIRE_EQUAL(archiv.size(), archiv3.size());
@@ -165,10 +174,10 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
     BOOST_REQUIRE(!archiv[0]);
     BOOST_REQUIRE(!archiv[1]);
     BOOST_REQUIRE(!archiv[2]);
-    archiv.set(1, new libsiedler2::ArchivItem_Raw);
+    archiv.set(1, std::make_unique<libsiedler2::ArchivItem_Raw>());
     BOOST_REQUIRE(archiv[1]);
     BOOST_REQUIRE_EQUAL(archiv[1], archiv.get(1));
-    archiv.set(2, new libsiedler2::ArchivItem_Raw);
+    archiv.set(2, std::make_unique<libsiedler2::ArchivItem_Raw>());
     BOOST_REQUIRE_EQUAL(archiv.size(), 3u);
     BOOST_REQUIRE_EQUAL(archiv[2], archiv.get(2));
     BOOST_REQUIRE_THROW(archiv.set(3, nullptr), std::out_of_range);
@@ -187,20 +196,21 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
     {
         libsiedler2::Archiv archiv2;
         BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 0);
-        archiv2.push(new TestItem);
+        archiv2.push(std::make_unique<TestItem>());
         BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
     }
     BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 0);
     // No delete
-    auto* item = new TestItem;
+    std::unique_ptr<libsiedler2::ArchivItem> item = std::make_unique<TestItem>();
     {
         libsiedler2::Archiv archiv2;
         BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
-        archiv2.push(item);
-        BOOST_REQUIRE_EQUAL(archiv2.release(0), item);
+        auto* rawPtr = item.get();
+        archiv2.push(std::move(item));
+        item = archiv2.release(0);
+        BOOST_REQUIRE_EQUAL(item.get(), rawPtr);
     }
     BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
-    delete item;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

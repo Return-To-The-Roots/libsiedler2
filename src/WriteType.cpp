@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Bitmap_Raw.h"
@@ -30,7 +29,6 @@
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
-#include <stdexcept>
 
 /**
  *  schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.

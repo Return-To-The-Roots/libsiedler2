@@ -15,14 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Ini.h"
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "libsiedler2.h"
 #include "libutil/StringConversion.h"
-#include <boost/algorithm/string/trim.hpp>
 
 /** @class libsiedler2::ArchivItem_Ini
  *
@@ -122,11 +120,11 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
  */
 void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
-    auto* item = dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
+    auto item = getAllocator().create<ArchivItem_Text>(BOBTYPE_TEXT);
     item->setText(value); //-V522
     item->setName(name);
 
-    push(item);
+    push(std::move(item));
 }
 
 std::string libsiedler2::ArchivItem_Ini::getValue(const std::string& name) const

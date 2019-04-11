@@ -18,7 +18,7 @@
 #include "test/config.h"
 
 #define BOOST_TEST_MODULE libSiedler2_Test
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/test/unit_test.hpp>
 
 //#include <vld.h>

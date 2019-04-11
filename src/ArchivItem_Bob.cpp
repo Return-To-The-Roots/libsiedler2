@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bob.h"
 #include "ArchivItem_Bitmap_Player.h"
 #include "ErrorCodes.h"
@@ -77,19 +76,16 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         if(!(fs >> starts >> ny))
             return ErrorCode::UNEXPECTED_EOF;
 
-        auto* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+        auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BOBTYPE_BITMAP_PLAYER);
         assert(image);
         image->setNx(16); //-V522
         image->setNy(ny);
 
         int ec = image->load(32, height, raw_base, starts, true, palette);
         if(ec)
-        {
-            delete image;
             return ec;
-        }
 
-        set(i, image);
+        set(i, std::move(image));
     }
 
     // erstmal die 6 Farbblöcke fr die 6 Richtungen
@@ -153,19 +149,16 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         if(loaded[links[i]])
             continue;
 
-        auto* image = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+        auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BOBTYPE_BITMAP_PLAYER);
         assert(image);
         image->setNx(16); //-V522
         image->setNy(ny[links[i]]);
 
         int ec = image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, palette);
         if(ec)
-        {
-            delete image;
             return ec;
-        }
 
-        set(96 + links[i], image);
+        set(96 + links[i], std::move(image));
         loaded[links[i]] = true;
     }
 

@@ -15,12 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_BitmapBase.h"
 #include "ArchivItem_Palette.h"
 #include "ColorARGB.h"
 #include "ErrorCodes.h"
-#include "IAllocator.h"
 #include "PixelBufferARGB.h"
 #include "PixelBufferPaletted.h"
 #include "libsiedler2.h"
@@ -50,11 +48,7 @@ ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) 
     format_ = item.format_;
 }
 
-ArchivItem_BitmapBase::~ArchivItem_BitmapBase()
-{
-    delete palette_;
-    palette_ = nullptr;
-}
+ArchivItem_BitmapBase::~ArchivItem_BitmapBase() = default;
 
 /**
  *  setzt einen Pixel auf einen bestimmten Wert.
@@ -119,7 +113,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorARGB clr
  */
 uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y) const
 {
-    return getPixelClrIdx(x, y, palette_);
+    return getPixelClrIdx(x, y, palette_.get());
 }
 
 uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const
@@ -365,21 +359,16 @@ bool ArchivItem_BitmapBase::checkPalette(const ArchivItem_Palette& palette) cons
  *
  *  @param[in] palette Palette die zukünftig verwendet werden soll.
  */
-void ArchivItem_BitmapBase::setPalette(ArchivItem_Palette* palette)
+void ArchivItem_BitmapBase::setPalette(std::unique_ptr<ArchivItem_Palette> palette)
 {
-    // Can happen if we create the bitmap with its own palette
-    if(palette_ == palette)
-        return;
     if(!palette && format_ == FORMAT_PALETTED)
         throw std::runtime_error("Cannot remove palette from paletted image");
-    delete palette_;
-    palette_ = palette;
+    palette_ = std::move(palette);
 }
 
 void ArchivItem_BitmapBase::setPaletteCopy(const ArchivItem_Palette& palette)
 {
-    if(palette_ != &palette)
-        setPalette(palette.clone());
+    setPalette(std::unique_ptr<ArchivItem_Palette>(palette.clone()));
 }
 
 void ArchivItem_BitmapBase::removePalette()

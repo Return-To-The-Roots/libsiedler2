@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Font.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
@@ -89,14 +88,14 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
             continue;
 
         // Daten von Item auswerten
-        ArchivItem* item;
+        std::unique_ptr<ArchivItem> item;
         int ec = loader::LoadType(bobtype, file, item, palette);
         if(ec)
             return ec;
         std::stringstream name;
         name << "U+" << std::hex << i;
         item->setName(name.str());
-        set(i, item);
+        set(i, std::move(item));
     }
 
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;

@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
+#include "GetIStreamSize.h"
 #include "IAllocator.h"
 #include "OpenMemoryStream.h"
 #include "libsiedler2.h"
@@ -43,16 +43,13 @@ int libsiedler2::loader::LoadACT(const std::string& file, Archiv& items)
     if(size != 256 * 3)
         return ErrorCode::WRONG_HEADER;
 
-    auto* palette = (ArchivItem_Palette*)getAllocator().create(BOBTYPE_PALETTE);
+    auto palette = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
     if(int ec = palette->load(act, false))
-    {
-        delete palette;
         return ec;
-    }
 
     // einlesen
     items.clear();
-    items.push(palette);
+    items.push(std::move(palette));
 
     // Alles OK
     return ErrorCode::NONE;

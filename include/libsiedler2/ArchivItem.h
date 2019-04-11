@@ -21,7 +21,6 @@
 
 #include "ICloneable.h" // IWYU pragma: export
 #include "enumTypes.h"
-#include <boost/config.hpp>
 #include <string>
 
 namespace libsiedler2 {
@@ -34,6 +33,7 @@ class ArchivItem : public ICloneable<ArchivItem> //-V690
 public:
     ArchivItem(BobType bobtype = BOBTYPE_NONE);
     virtual ~ArchivItem() override;
+    ArchivItem& operator=(const ArchivItem&) = delete;
     /// liefert den Bobtype des Items.
     BobType getBobType() const { return bobtype_; }
     /// Set the name if the item
@@ -46,7 +46,6 @@ protected:
     BobType bobtype_; /// Type of the element
 private:
     std::string name_; /// Element name
-    BOOST_DELETED_FUNCTION(ArchivItem& operator=(const ArchivItem&))
 };
 } // namespace libsiedler2
 

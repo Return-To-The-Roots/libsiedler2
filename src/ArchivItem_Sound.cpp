@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Sound.h"
 #include "IAllocator.h"
 #include "fileFormatHelpers.h"
@@ -43,7 +42,7 @@ SoundType ArchivItem_Sound::getType() const
     return soundType_;
 }
 
-ArchivItem_Sound* ArchivItem_Sound::findSubType(std::istream& file)
+std::unique_ptr<ArchivItem_Sound> ArchivItem_Sound::findSubType(std::istream& file)
 {
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
     long oldpos = fs.getPosition();
@@ -77,6 +76,6 @@ ArchivItem_Sound* ArchivItem_Sound::findSubType(std::istream& file)
         sndType = SOUNDTYPE_WAVE;
 
     fs.setPosition(oldpos);
-    return dynamic_cast<ArchivItem_Sound*>(getAllocator().create(BOBTYPE_SOUND, sndType));
+    return getAllocator().create<ArchivItem_Sound>(BOBTYPE_SOUND, sndType);
 }
 } // namespace libsiedler2

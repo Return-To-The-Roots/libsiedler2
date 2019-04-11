@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Bob.h"
 #include "ErrorCodes.h"
@@ -53,21 +52,18 @@ int libsiedler2::loader::LoadBOB(const std::string& file, Archiv& items, const A
     if(!bob || header != 0x01F501F6)
         return ErrorCode::WRONG_HEADER;
 
-    auto* item = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
+    auto item = getAllocator().create<ArchivItem_Bob>(BOBTYPE_BOB);
 
     boost::filesystem::path filePath(file);
     if(filePath.has_filename())
         item->setName(filePath.filename().string()); //-V522
 
     if(int ec = item->load(bob.getStream(), palette))
-    {
-        delete item;
         return ec;
-    }
 
     // Item alloziieren und zuweisen
     items.clear();
-    items.push(item);
+    items.push(std::move(item));
 
     return ErrorCode::NONE;
 }

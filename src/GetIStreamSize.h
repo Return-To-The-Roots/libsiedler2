@@ -1,4 +1,4 @@
-// Copyright (c) 2005 - 2017 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2005 - 2019 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -14,14 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef LIB_SIEDLER2_DEFINES_H__
-#define LIB_SIEDLER2_DEFINES_H__
-
-#pragma once
-
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#endif // !_WIN32
+#ifndef GET_I_STREAM_SIZE_H__
+#define GET_I_STREAM_SIZE_H__
 
 #include <cstddef>
 
@@ -30,24 +24,11 @@ template<class T_Stream>
 inline size_t getIStreamSize(T_Stream& stream)
 {
     stream.seekg(0, T_Stream::end);
-    long pos = static_cast<long>(stream.tellg());
+    const auto pos = stream.tellg();
     stream.seekg(0, T_Stream::beg);
     return (pos < 0) ? 0 : size_t(pos);
 }
 
 } // namespace libsiedler2
 
-namespace boost {
-namespace filesystem {
-}
-namespace nowide {
-}
-} // namespace boost
-namespace bfs = boost::filesystem;
-namespace bnw = boost::nowide;
-
-#ifndef RTTR_UNUSED
-#define RTTR_UNUSED(x) (void)(x)
-#endif
-
-#endif // LIB_SIEDLER2_DEFINES_H__
+#endif // GET_I_STREAM_SIZE_H__

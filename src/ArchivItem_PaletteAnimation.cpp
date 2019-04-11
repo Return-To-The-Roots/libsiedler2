@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_PaletteAnimation.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
@@ -92,9 +91,9 @@ int ArchivItem_PaletteAnimation::writeToTxt(std::ostream& file) const
     return ErrorCode::NONE;
 }
 
-ArchivItem_Palette* ArchivItem_PaletteAnimation::apply(const ArchivItem_Palette& pal) const
+std::unique_ptr<ArchivItem_Palette> ArchivItem_PaletteAnimation::apply(const ArchivItem_Palette& pal) const
 {
-    ArchivItem_Palette* result = pal.clone();
+    std::unique_ptr<ArchivItem_Palette> result(pal.clone());
     if(isActive && firstClr < lastClr)
     {
         if(moveUp)

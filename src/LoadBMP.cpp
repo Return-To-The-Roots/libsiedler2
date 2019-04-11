@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
@@ -28,8 +27,10 @@
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
+#include <algorithm>
 #include <memory>
 #include <vector>
+
 /**
  *  liest eine Bitmapzeile
  */
@@ -98,7 +99,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(bmih.planes != 1)
         return ErrorCode::WRONG_FORMAT;
 
-    std::unique_ptr<baseArchivItem_Bitmap> bitmap(dynamic_cast<baseArchivItem_Bitmap*>(getAllocator().create(BOBTYPE_BITMAP_RAW)));
+    std::unique_ptr<baseArchivItem_Bitmap> bitmap(getAllocator().create<baseArchivItem_Bitmap>(BOBTYPE_BITMAP_RAW));
     bitmap->setName(file);
 
     // keine Kompression
@@ -109,7 +110,6 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(bmih.clrused == 0)
         bmih.clrused = 1u << uint32_t(bmih.bpp); // 2^n
 
-    ArchivItem_Palette* pal = nullptr;
     if(bmih.bpp == 8)
     {
         unsigned numClrsUsed = std::min<unsigned>(bmih.clrused, 256);
@@ -118,13 +118,13 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
         if(!bmpFs.read(colors[0], numClrsUsed * 4))
             return ErrorCode::UNEXPECTED_EOF;
 
-        pal = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
-        bitmap->setPalette(pal);
+        auto pal = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
         for(unsigned i = 0; i < numClrsUsed; ++i)
         {
             ColorARGB clr = ColorARGB::fromBGRA(&colors[i][0]); // NOTE: Alpha is always 0!
             pal->set(i, clr);                                   //-V522
         }
+        bitmap->setPalette(std::move(pal));
     }
 
     uint8_t bbp = (bmih.bpp / 8);
@@ -162,7 +162,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     }
 
     // Bitmap zuweisen
-    image.push(bitmap.release());
+    image.push(std::move(bitmap));
 
     return (!bmpFs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }

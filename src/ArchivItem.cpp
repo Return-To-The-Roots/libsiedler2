@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem.h"
 
 libsiedler2::ArchivItem::ArchivItem(BobType bobtype) : bobtype_(bobtype), name_("untitled") {}

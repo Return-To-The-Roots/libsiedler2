@@ -20,6 +20,7 @@
 #pragma once
 
 #include <cstddef>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -32,9 +33,11 @@ class Archiv
 public:
     Archiv();
     Archiv(const Archiv& info);
+    Archiv(Archiv&&) noexcept;
     /// Destruktor von @p Archiv, räumt automatisch auf.
     virtual ~Archiv();
     Archiv& operator=(const Archiv& info);
+    Archiv& operator=(Archiv&&) noexcept;
     /// Creates a dataset with a given size. Deletes all current entries
     void alloc(size_t count);
     /// Increases the element count by the given amount
@@ -42,25 +45,23 @@ public:
     /// Release all data and set size to 0
     void clear();
     /// Set the item at the given position
-    /// Transfers ownership!
-    void set(size_t index, ArchivItem* item);
+    void set(size_t index, std::unique_ptr<ArchivItem> item);
     /// Set the item at the given position to a copy of the given item
     void setC(size_t index, const ArchivItem& item);
-    /// Adds an element to the end. Transfers ownership!
-    void push(ArchivItem* item) { data.push_back(item); }
+    /// Adds an element to the end.
+    void push(std::unique_ptr<ArchivItem> item);
     /// Add a copy of the element to the end
     void pushC(const ArchivItem& item);
     /// Return the item at the given index or nullptr if the index is out of bounds
-    ArchivItem* get(size_t index) { return (index < size()) ? data[index] : nullptr; }
+    ArchivItem* get(size_t index) { return (index < size()) ? data[index].get() : nullptr; }
     /// Return the item at the given index or nullptr if the index is out of bounds
-    const ArchivItem* get(size_t index) const { return (index < size()) ? data[index] : nullptr; }
+    const ArchivItem* get(size_t index) const { return (index < size()) ? data[index].get() : nullptr; }
     /// Return the first item with the given name
     ArchivItem* find(const std::string& name);
     /// Return the first item with the given name
     const ArchivItem* find(const std::string& name) const;
     /// Return the item at the given position and remove it from the archive
-    /// Hence it transfers ownership! This is different then calling set(index, nullptr) which destroys the element
-    ArchivItem* release(size_t index);
+    std::unique_ptr<ArchivItem> release(size_t index);
     /// Return the number of entries (includes nullptr entries)
     size_t size() const { return data.size(); }
     /// True iff no entries stored
@@ -71,7 +72,7 @@ public:
     ArchivItem* operator[](size_t index) { return get(index); }
 
 private:
-    std::vector<ArchivItem*> data; /// elements
+    std::vector<std::unique_ptr<ArchivItem> > data; /// elements
 };
 } // namespace libsiedler2
 

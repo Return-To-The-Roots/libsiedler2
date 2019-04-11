@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "Archiv.h"
 #include "ArchivItem_Palette.h"
 #include "ErrorCodes.h"
@@ -47,7 +46,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<true, bnw::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<true, boost::nowide::ofstream> fs(file, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Bitmap_RLE.h"
 #include "ArchivItem_Bitmap_Raw.h"
@@ -33,7 +32,6 @@
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include <iostream>
-#include <stdexcept>
 
 /**
  *  lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
@@ -45,7 +43,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, ArchivItem*& item, const ArchivItem_Palette* palette)
+int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item, const ArchivItem_Palette* palette)
 {
     if(!lst)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -60,125 +58,92 @@ int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, ArchivItem
                 uint32_t length;
                 fs >> length;
 
-                ArchivItem_Sound* nitem = ArchivItem_Sound::findSubType(lst);
+                auto nitem = ArchivItem_Sound::findSubType(lst);
                 if(!nitem)
                     return ErrorCode::WRONG_HEADER;
                 if(int ec = nitem->load(lst, length))
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
             {
-                auto* nitem = dynamic_cast<baseArchivItem_Bitmap_RLE*>(getAllocator().create(BOBTYPE_BITMAP_RLE));
+                auto nitem = getAllocator().create<baseArchivItem_Bitmap_RLE>(BOBTYPE_BITMAP_RLE);
                 if(int ec = nitem->load(lst, palette)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_FONT: // Font
             {
-                auto* nitem = dynamic_cast<ArchivItem_Font*>(getAllocator().create(BOBTYPE_FONT));
+                auto nitem = getAllocator().create<ArchivItem_Font>(BOBTYPE_FONT);
                 if(int ec = nitem->load(lst, palette)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
             {
-                auto* nitem = dynamic_cast<ArchivItem_Bitmap_Player*>(getAllocator().create(BOBTYPE_BITMAP_PLAYER));
+                auto nitem = getAllocator().create<ArchivItem_Bitmap_Player>(BOBTYPE_BITMAP_PLAYER);
                 if(int ec = nitem->load(lst, palette)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_PALETTE: // Palette
             {
-                auto* nitem = dynamic_cast<ArchivItem_Palette*>(getAllocator().create(BOBTYPE_PALETTE));
+                auto nitem = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
                 if(int ec = nitem->load(lst)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_BOB: // Bobfile
             {
-                auto* nitem = dynamic_cast<ArchivItem_Bob*>(getAllocator().create(BOBTYPE_BOB));
+                auto nitem = getAllocator().create<ArchivItem_Bob>(BOBTYPE_BOB);
                 if(int ec = nitem->load(lst, palette)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_BITMAP_SHADOW: // Schatten
             {
-                auto* nitem = dynamic_cast<baseArchivItem_Bitmap_Shadow*>(getAllocator().create(BOBTYPE_BITMAP_SHADOW));
+                auto nitem = getAllocator().create<baseArchivItem_Bitmap_Shadow>(BOBTYPE_BITMAP_SHADOW);
                 if(int ec = nitem->load(lst, palette)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_MAP: // Mapfile
             {
-                auto* nitem = dynamic_cast<ArchivItem_Map*>(getAllocator().create(BOBTYPE_MAP));
+                auto nitem = getAllocator().create<ArchivItem_Map>(BOBTYPE_MAP);
                 if(int ec = nitem->load(lst, false)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_TEXT: // Textfile
             {
-                auto* nitem = dynamic_cast<ArchivItem_Text*>(getAllocator().create(BOBTYPE_TEXT));
+                auto nitem = getAllocator().create<ArchivItem_Text>(BOBTYPE_TEXT);
                 if(int ec = nitem->load(lst)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
             {
-                auto* nitem = dynamic_cast<baseArchivItem_Bitmap_Raw*>(getAllocator().create(BOBTYPE_BITMAP_RAW));
+                auto nitem = getAllocator().create<baseArchivItem_Bitmap_Raw>(BOBTYPE_BITMAP_RAW);
                 if(int ec = nitem->load(lst, palette)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_PALETTE_ANIM:
             {
-                auto* nitem = dynamic_cast<ArchivItem_PaletteAnimation*>(getAllocator().create(BOBTYPE_PALETTE_ANIM));
+                auto nitem = getAllocator().create<ArchivItem_PaletteAnimation>(BOBTYPE_PALETTE_ANIM);
                 if(int ec = nitem->load(lst)) //-V522
-                {
-                    delete nitem;
                     return ec;
-                }
-                item = nitem;
+                item = std::move(nitem);
             }
             break;
             case BOBTYPE_NONE: item = nullptr; break;

@@ -15,16 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#include "libSiedler2Defines.h" // IWYU pragma: keep
 #include "ArchivItem_Bitmap.h"
-#include "ArchivItem_Palette.h"
-#include "ColorARGB.h"
 #include "CopyPixelBuffer.h"
 #include "ErrorCodes.h"
 #include "PixelBufferRef.h"
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
-#include <cstring>
 #include <vector>
 
 namespace libsiedler2 {
