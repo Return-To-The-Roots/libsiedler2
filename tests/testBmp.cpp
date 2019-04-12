@@ -327,7 +327,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
             // a) no palette
             if(bmp->getFormat() == FORMAT_BGRA)
             {
-                std::unique_ptr<libsiedler2::ArchivItem_Palette> bmpPal(bmp->getPalette() ? bmp->getPalette()->clone() : nullptr);
+                auto bmpPal = clone(bmp->getPalette());
                 bmp->removePalette();
                 // If conversion is required -> error
                 if(testFile.isPaletted && !testFile.supportsBoth)

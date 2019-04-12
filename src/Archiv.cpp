@@ -113,7 +113,7 @@ void Archiv::set(size_t index, std::unique_ptr<ArchivItem> item)
  */
 void Archiv::setC(size_t index, const ArchivItem& item)
 {
-    set(index, std::unique_ptr<ArchivItem>(item.clone()));
+    set(index, clone(item));
 }
 
 void Archiv::push(std::unique_ptr<ArchivItem> item)
@@ -128,7 +128,7 @@ void Archiv::push(std::unique_ptr<ArchivItem> item)
  */
 void Archiv::pushC(const ArchivItem& item)
 {
-    data.emplace_back(item.clone());
+    data.emplace_back(clone(item));
 }
 
 const ArchivItem* Archiv::find(const std::string& name) const

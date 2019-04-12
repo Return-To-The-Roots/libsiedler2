@@ -26,7 +26,7 @@
 namespace libsiedler2 {
 /// Base class for all ArchivItems. Defined by a type and possibly a name
 /// Implements the cloneable concept:
-/// A copy of this object can be created by calling obj->clone();
+/// A copy of this object can be created by calling clone(obj)
 /// Note: All subclasses "TFoo" must use "RTTR_CLONEABLE(TFoo)" in the public declaration
 class ArchivItem : public ICloneable<ArchivItem> //-V690
 {

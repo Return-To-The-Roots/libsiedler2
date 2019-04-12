@@ -93,7 +93,7 @@ int ArchivItem_PaletteAnimation::writeToTxt(std::ostream& file) const
 
 std::unique_ptr<ArchivItem_Palette> ArchivItem_PaletteAnimation::apply(const ArchivItem_Palette& pal) const
 {
-    std::unique_ptr<ArchivItem_Palette> result(pal.clone());
+    auto result = libsiedler2::clone(pal);
     if(isActive && firstClr < lastClr)
     {
         if(moveUp)

@@ -368,7 +368,9 @@ void ArchivItem_BitmapBase::setPalette(std::unique_ptr<ArchivItem_Palette> palet
 
 void ArchivItem_BitmapBase::setPaletteCopy(const ArchivItem_Palette& palette)
 {
-    setPalette(std::unique_ptr<ArchivItem_Palette>(palette.clone()));
+    if(palette_.get() == &palette)
+        return; // Optimization for setting self palette
+    setPalette(libsiedler2::clone(palette));
 }
 
 void ArchivItem_BitmapBase::removePalette()

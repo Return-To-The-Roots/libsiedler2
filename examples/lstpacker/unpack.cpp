@@ -22,7 +22,9 @@
 #include "libsiedler2/ArchivItem_Font.h"
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/ArchivItem_Sound.h"
+#include "libsiedler2/ArchivItem_Sound_Midi.h"
 #include "libsiedler2/ArchivItem_Sound_Wave.h"
+#include "libsiedler2/ArchivItem_Sound_XMidi.h"
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
 #include "libsiedler2/prototypen.h"
@@ -33,8 +35,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include "libsiedler2/ArchivItem_Sound_Midi.h"
-#include "libsiedler2/ArchivItem_Sound_XMidi.h"
 
 using namespace std;
 using namespace libsiedler2;
@@ -99,7 +99,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
 
                         cout << "extracting " << newfile.str() << ": ";
 
-                        ArchivItem_Sound_XMidi* wave = dynamic_cast<ArchivItem_Sound_XMidi*>(item->clone());
+                        auto wave = clone(dynamic_cast<ArchivItem_Sound_XMidi*>(item));
                         const MIDI_Track& midiTrack = wave->getMidiTrack(0);
                         ArchivItem_Sound_Midi soundArchiv;
                         soundArchiv.addTrack(midiTrack);
@@ -153,12 +153,12 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
             {
                 const ArchivItem_Bob* bob = dynamic_cast<const ArchivItem_Bob*>(item);
                 unpack(directory, *bob, palette);
-                //links[][8][2][6]
+                // links[][8][2][6]
                 bnw::ofstream linksFile(directory + ".links");
-                for(unsigned i = 0; i < bob->getNumItems(); i ++)
+                for(unsigned i = 0; i < bob->getNumItems(); i++)
                 {
                     if(i % (8 * 2 * 6) == 0)
-                        linksFile << "Job ID " << i / (8*2*6) << std::endl;
+                        linksFile << "Job ID " << i / (8 * 2 * 6) << std::endl;
                     linksFile << i << ": " << bob->getLink(i) << std::endl;
                 }
             }
@@ -211,26 +211,24 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 BOOST_FALLTHROUGH;
                 // no break
             case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
-                {
-                    Archiv items;
-                    const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
-                    items.pushC(bitmap);
-                    newfile << "nx" << bitmap.getNx() << ".ny" << bitmap.getNy();
-                    newfile << ".bmp";
+            {
+                Archiv items;
+                const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
+                items.pushC(bitmap);
+                newfile << "nx" << bitmap.getNx() << ".ny" << bitmap.getNy();
+                newfile << ".bmp";
 
-                    cout << "extracting " << newfile.str() << ": ";
+                cout << "extracting " << newfile.str() << ": ";
 
-                    if(Write(newfile.str(), items, palette) != 0)
-                        cout << "failed" << endl;
-                    else
-                        cout << "done" << endl;
-                    if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
-                        loader::WriteTxtPalette(newFileBaseName + "palette.txt", *bitmap.getPalette());
-                }
-                break;
-            case BOBTYPE_PALETTE_ANIM:
-                containsPalAnim = true;
-                break;
+                if(Write(newfile.str(), items, palette) != 0)
+                    cout << "failed" << endl;
+                else
+                    cout << "done" << endl;
+                if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
+                    loader::WriteTxtPalette(newFileBaseName + "palette.txt", *bitmap.getPalette());
+            }
+            break;
+            case BOBTYPE_PALETTE_ANIM: containsPalAnim = true; break;
             default: cerr << "Unhandled bobtype: " << item->getBobType() << endl;
         }
     }

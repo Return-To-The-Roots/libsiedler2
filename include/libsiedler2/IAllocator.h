@@ -18,8 +18,8 @@
 #ifndef IALLOCATOR_H_INCLUDED
 #define IALLOCATOR_H_INCLUDED
 
-#include "dynamicUniqueCast.h"
 #include "enumTypes.h"
+#include "libutil/dynamicUniqueCast.h"
 #include <memory>
 
 namespace libsiedler2 {
@@ -36,7 +36,7 @@ public:
     template<class T>
     std::unique_ptr<T> create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const
     {
-        return dynamicUniqueCast<T>(create(type, subtype));
+        return libutil::dynamicUniqueCast<T>(create(type, subtype));
     }
 };
 

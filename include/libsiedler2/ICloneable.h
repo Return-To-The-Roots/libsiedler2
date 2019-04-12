@@ -20,7 +20,49 @@
 #ifndef ICloneable_h__
 #define ICloneable_h__
 
+#include <cassert>
+#include <memory>
+#include <type_traits>
+
 namespace libsiedler2 {
+
+template<typename T, typename U, typename = void>
+struct is_static_castable : std::false_type
+{
+};
+
+template<typename T, typename U>
+struct is_static_castable<T, U, decltype(void(static_cast<U>(std::declval<T>())))> : std::true_type
+{
+};
+
+template<typename To, typename From>
+std::enable_if_t<is_static_castable<From*, To*>::value, To*> safePtrCast(From* from)
+{
+    return static_cast<To*>(from);
+}
+
+template<typename To, typename From>
+std::enable_if_t<!is_static_castable<From*, To*>::value, To*> safePtrCast(From* from)
+{
+    return dynamic_cast<To*>(from);
+}
+
+template<class T, std::enable_if_t<!std::is_pointer<T>::value, int> = 0>
+auto clone(const T& obj)
+{
+    return std::unique_ptr<T>(safePtrCast<T>(obj.clone()));
+}
+template<class T>
+auto clone(const T* obj)
+{
+    return obj ? clone(*obj) : nullptr;
+}
+template<class T>
+auto clone(const std::unique_ptr<T>& obj)
+{
+    return clone(obj.get());
+}
 
 /// Class is cloneable. Calling clone() creates a copy of the correct subtype
 template<class T_Base>
