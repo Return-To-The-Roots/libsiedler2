@@ -68,6 +68,9 @@ public:
 
     void getVisibleArea(int& vx, int& vy, unsigned& vw, unsigned& vh) const override;
 
+    uint8_t getPlayerColorIdx(uint16_t x, uint16_t y) const { return tex_pdata.get(x, y); }
+    bool isPlayerColor(uint16_t x, uint16_t y) const { return tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX; }
+
     /// schreibt das Bitmap inkl. festgelegter Spielerfarbe in einen Puffer.
     int print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
               const ArchivItem_Palette* palette = nullptr, uint8_t plClrStartIdx = 128, uint16_t to_x = 0, uint16_t to_y = 0,

@@ -231,15 +231,15 @@ int ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette
         {
             uint16_t target = position++;
 
-            if(tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX)
+            if(isPlayerColor(x, y))
             {
                 // spielerfarbe Pixel
-                const uint8_t color = tex_pdata.get(x, y);
+                const uint8_t color = getPlayerColorIdx(x, y);
                 image[position++] = color;
                 uint8_t count = 1;
                 for(++x; x < width && count < 63; ++x, ++count)
                 {
-                    if(tex_pdata.get(x, y) != color)
+                    if(getPlayerColorIdx(x, y) != color)
                         break;
                 }
 
@@ -252,7 +252,7 @@ int ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette
                     uint8_t count = 1;
                     for(++x; x < width && count < 63; ++x, ++count)
                     {
-                        if(!palette->isTransparent(getPixelClrIdx(x, y, palette)) || tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX)
+                        if(!palette->isTransparent(getPixelClrIdx(x, y, palette)) || isPlayerColor(x, y))
                             break;
                     }
                     image[target] = count;
@@ -263,7 +263,7 @@ int ArchivItem_Bitmap_Player::write(std::ostream& file, const ArchivItem_Palette
                     uint8_t count = 1;
                     for(++x; x < width && count < 63; ++x, ++count)
                     {
-                        if(getPixelClrIdx(x, y, palette) != color || tex_pdata.get(x, y) != TRANSPARENT_PLAYER_CLR_IDX)
+                        if(getPixelClrIdx(x, y, palette) != color || isPlayerColor(x, y))
                             break;
                     }
                     image[target] = count + 0xC0;
@@ -454,7 +454,7 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
         size_t posBuffer = ((y + toRect.y) * buffer_width + toRect.x) * bufferBBP;
         for(uint16_t x = 0; x < copyWidth; ++x)
         {
-            const uint8_t playerClr = tex_pdata.get(x + fromRect.y, y + fromRect.y);
+            const uint8_t playerClr = getPlayerColorIdx(x + fromRect.x, y + fromRect.y);
             // Don't change if transparent
             if(playerClr != TRANSPARENT_PLAYER_CLR_IDX)
             {
@@ -497,11 +497,9 @@ void ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, unsigned& vw, un
 
     if(getBBP() == 1)
         doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) {
-            return this->tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && palette->isTransparent(this->getPalettedPixel(x, y));
+            return !this->isPlayerColor(x, y) && palette->isTransparent(this->getPalettedPixel(x, y));
         });
     else
-        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) {
-            return this->tex_pdata.get(x, y) == TRANSPARENT_PLAYER_CLR_IDX && this->getPixelPtr(x, y)[3] == 0u;
-        });
+        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) { return !this->isPlayerColor(x, y) && this->getPixelPtr(x, y)[3] == 0u; });
 }
 } // namespace libsiedler2

@@ -37,10 +37,15 @@ public:
     uint16_t getWidth() const { return width_; }
     uint16_t getHeight() const { return height_; }
     uint32_t getSize() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
+    uint32_t getNumPixels() const { return static_cast<uint32_t>(pixels_.size()); }
     uint8_t* getPixelPtr() { return pixels_.empty() ? nullptr : reinterpret_cast<uint8_t*>(&pixels_[0]); }
     const uint8_t* getPixelPtr() const { return pixels_.empty() ? nullptr : reinterpret_cast<const uint8_t*>(&pixels_[0]); }
     std::vector<T_Pixel>& getPixels() { return pixels_; }
     const std::vector<T_Pixel>& getPixels() const { return pixels_; }
+    auto begin() { return pixels_.begin(); }
+    auto begin() const { return pixels_.begin(); }
+    auto end() { return pixels_.end(); }
+    auto end() const { return pixels_.end(); }
     void clear();
 
     uint32_t calcIdx(uint32_t x, uint32_t y) const

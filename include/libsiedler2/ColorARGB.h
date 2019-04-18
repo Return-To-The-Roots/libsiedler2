@@ -80,10 +80,7 @@ inline ColorARGB::ColorARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b)
     clrValue = a << 24 | r << 16 | g << 8 | b;
 }
 
-inline ColorARGB::ColorARGB(ColorRGB clrRGB, uint8_t a)
-{
-    clrValue = ColorARGB(a, clrRGB.r, clrRGB.g, clrRGB.b).clrValue;
-}
+inline ColorARGB::ColorARGB(ColorRGB clrRGB, uint8_t a) : ColorARGB(a, clrRGB.r, clrRGB.g, clrRGB.b) {}
 
 inline ColorARGB::operator ColorRGB() const
 {

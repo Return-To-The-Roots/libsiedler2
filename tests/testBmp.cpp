@@ -32,6 +32,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
+#include <numeric>
+#include <random>
 #include <utility>
 
 namespace {
@@ -780,108 +782,176 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
 }
 
-BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmap)
+BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapPaletted)
 {
-    unsigned w = 5, h = 4;
-    // Use bigger size for bitmap
-    unsigned bw = w + 2, bh = h + 6;
-    // Original and target player color (start) idx
-    uint8_t playerClrStart = 200, playerClrStart2 = 210;
-    std::vector<uint8_t> inBufferPal(w * h, 10);
-    std::vector<uint8_t> inBufferPal2(inBufferPal);
-    // Set player colors
-    for(unsigned i = 0; i < 4; i++)
-    {
-        inBufferPal[i] = playerClrStart + i;
-        inBufferPal2[i] = playerClrStart2 + i;
-    }
-    // Buffer in (byte) BGRA format
-    std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u);
-    for(unsigned i = 0; i < inBufferPal.size(); i++)
-    {
-        palette->get(inBufferPal[i]).toBGR(&inBuffer[i * 4]);
-        inBuffer[i * 4 + 3] = 0xFF - i;
-    }
-    std::vector<uint8_t> inBuffer2(inBuffer);
-    for(unsigned i = 0; i < 4; i++)
-        palette->get(inBufferPal2[i]).toBGR(&inBuffer2[i * 4]);
+    PixelBufferPaletted inBuffer(5, 4, 10);
+    const uint8_t playerClrStart = 200;
+    std::iota(inBuffer.begin(), inBuffer.begin() + 4, playerClrStart);
 
-    // Buffer with alpha = 0xFF
-    std::vector<uint8_t> inBufferRGB(inBuffer);
-    std::vector<uint8_t> inBufferRGB2(inBuffer2);
-    for(unsigned i = 0; i < inBufferRGB.size(); i += 4)
-        inBufferRGB[i + 3] = inBufferRGB2[i + 3] = 0xFF;
-    std::vector<uint8_t> outBufferPal(inBufferPal.size(), 42);
-    std::vector<uint8_t> outBuffer(inBuffer.size(), 42);
-
-    // First create paletted bmp
-    ArchivItem_Bitmap_Player bmpPal;
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    // Now write to paletted buffer
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, nullptr, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
-    // Write to RGBA buffer
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, nullptr, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
-    std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
-    std::fill(outBuffer.begin(), outBuffer.end(), 42);
-    // paletted buffer, 2nd player color (recolor)
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, nullptr, playerClrStart2), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal2);
-    // Same for BGRA
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, nullptr, playerClrStart2), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB2);
-
-    std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
-    std::fill(outBuffer.begin(), outBuffer.end(), 42);
-    // Player colors only
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, nullptr, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, nullptr, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    for(unsigned i = 0; i < 4; i++)
-    {
-        BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB::fromARGB(&inBufferRGB2[i * 4]));
-    }
-    for(unsigned i = 4; i < outBufferPal.size(); i++)
-    {
-        BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB(42, 42, 42, 42));
-    }
-    // Test the same but create from BGRA buffer
-    std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
-    std::fill(outBuffer.begin(), outBuffer.end(), 42);
     ArchivItem_Bitmap_Player bmp;
-    BOOST_REQUIRE_EQUAL(bmp.create(bw, bh, &inBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
-    // Write to paletted
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
-    // Write to BGRA
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+    BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
 
-    std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
-    std::fill(outBuffer.begin(), outBuffer.end(), 42);
-    // recolored paletted
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart2), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal2);
-    // Same for BGRA
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart2), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer2);
-
-    std::fill(outBufferPal.begin(), outBufferPal.end(), 42);
-    std::fill(outBuffer.begin(), outBuffer.end(), 42);
-    // Player colors only
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart2, 0, 0, 0, 0, 0, 0, true), 0);
-    for(unsigned i = 0; i < 4; i++)
+    // Try with original and another player color
+    for(const uint8_t curPlrClr : {playerClrStart + 0u, 210u})
     {
-        BOOST_REQUIRE_EQUAL(outBufferPal[i], inBufferPal2[i]);
-        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB::fromARGB(&inBuffer2[i * 4]));
+        // Adjust expected result
+        std::iota(inBuffer.begin(), inBuffer.begin() + 4, curPlrClr);
+        // Print to paletted buffer
+        {
+            PixelBufferPaletted outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), 42);
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, nullptr, curPlrClr), 0);
+            RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+        }
+        // Print to RGB buffer
+        {
+            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, nullptr, curPlrClr), 0);
+            for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
+            {
+                BOOST_TEST_INFO("Position " << i);
+                BOOST_TEST(outBuffer.get(i) == palette->get(inBuffer.get(i)));
+            }
+        }
+        // Just player colors
+        // Print to paletted buffer
+        {
+            PixelBufferPaletted outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), 42);
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, nullptr, curPlrClr, 0, 0, 0, 0, 0, 0, true), 0);
+            for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
+            {
+                BOOST_TEST_INFO("Position " << i);
+                const auto expected = i < 4 ? inBuffer.get(i) : 42;
+                BOOST_REQUIRE_EQUAL(outBuffer.get(i), expected);
+            }
+        }
+        // Print to RGB buffer
+        {
+            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, nullptr, curPlrClr, 0, 0, 0, 0, 0, 0, true), 0);
+            for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
+            {
+                BOOST_TEST_INFO("Position " << i);
+                const auto expected = i < 4 ? ColorARGB(palette->get(inBuffer.get(i))) : ColorARGB(42);
+                BOOST_TEST(outBuffer.get(i) == expected);
+            }
+        }
     }
-    for(unsigned i = 4; i < outBufferPal.size(); i++)
+}
+
+BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapARGB)
+{
+    PixelBufferARGB inBuffer(5, 4, palette->get(3));
+    const uint8_t playerClrStart = 200;
+    for(int i = 0; i < 4; i++)
+        inBuffer.set(i, palette->get(i + playerClrStart));
+
+    ArchivItem_Bitmap_Player bmp;
+    BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
+
+    // Try with original and another player color
+    for(const uint8_t curPlrClr : {playerClrStart + 0u, 210u})
     {
-        BOOST_REQUIRE_EQUAL(outBufferPal[i], 42);
-        BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[i * 4]), ColorARGB(42, 42, 42, 42));
+        // Adjust expected result
+        for(int i = 0; i < 4; i++)
+            inBuffer.set(i, palette->get(i + curPlrClr));
+        // Print to paletted buffer
+        {
+            PixelBufferPaletted outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), 42);
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, palette, curPlrClr), 0);
+            for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
+            {
+                BOOST_TEST_INFO("Position " << i);
+                BOOST_TEST(outBuffer.get(i) == palette->lookup(inBuffer.get(i)));
+            }
+        }
+        // Print to RGB buffer
+        {
+            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, palette, curPlrClr), 0);
+            RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+        }
+        // Just player colors
+        // Print to paletted buffer
+        {
+            PixelBufferPaletted outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), 42);
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, palette, curPlrClr, 0, 0, 0, 0, 0, 0, true), 0);
+            for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
+            {
+                BOOST_TEST_INFO("Position " << i);
+                const auto expected = i < 4 ? palette->lookup(inBuffer.get(i)) : 42;
+                BOOST_REQUIRE_EQUAL(outBuffer.get(i), expected);
+            }
+        }
+        // Print to RGB buffer
+        {
+            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, palette, curPlrClr, 0, 0, 0, 0, 0, 0, true), 0);
+            for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
+            {
+                BOOST_TEST_INFO("Position " << i);
+                const auto expected = i < 4 ? inBuffer.get(i) : ColorARGB(42);
+                BOOST_TEST(outBuffer.get(i) == expected);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
+{
+    PixelBufferARGB inBuffer(23, 37);
+    const uint8_t playerClrStart = 200;
+    std::mt19937 mt(1337);
+    std::uniform_int_distribution<uint8_t> distr;
+    std::generate(inBuffer.begin(), inBuffer.end(), [&]() { return ColorARGB(this->palette->get(distr(mt)), distr(mt)).clrValue; });
+
+    ArchivItem_Bitmap_Player bmp;
+    BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
+
+    PixelBufferARGB outBuffer(inBuffer.getWidth() * 2, inBuffer.getHeight() * 2);
+    std::generate(outBuffer.begin(), outBuffer.end(), [&]() { return ColorARGB(distr(mt)).clrValue; });
+
+    std::uniform_int_distribution<unsigned> dw(0, outBuffer.getWidth());
+    std::uniform_int_distribution<unsigned> dh(0, outBuffer.getHeight());
+    std::uniform_int_distribution<unsigned> dw2(0, bmp.getWidth());
+    std::uniform_int_distribution<unsigned> dh2(0, bmp.getHeight());
+    unsigned toX = dw(mt);
+    unsigned toY = dh(mt);
+    unsigned fromX = dw2(mt);
+    unsigned fromW = dw2(mt) + 1; // avoid 0==all
+    unsigned fromY = dh2(mt);
+    unsigned fromH = dh2(mt) + 1; // avoid 0==all
+
+    const uint8_t playerClrStart2 = 234;
+    auto const outBufferIn = outBuffer;
+    BOOST_TEST_REQUIRE(bmp.print(outBuffer, palette, playerClrStart2, toX, toY, fromX, fromY, fromW, fromH) == 0);
+    for(unsigned y = 0; y < outBuffer.getHeight(); ++y)
+    {
+        for(unsigned x = 0; x < outBuffer.getWidth(); ++x)
+        {
+            BOOST_TEST_INFO("Position " << x << "x" << y);
+            ColorARGB expectedColor;
+            if(x < toX || y < toY || x >= toX + fromW || y >= toY + fromW)
+                expectedColor = outBufferIn.get(x, y);
+            else
+            {
+                unsigned bmpX = x - toX;
+                unsigned bmpY = y - toY;
+                if(bmpX + fromX < bmp.getWidth() && bmpY + fromY < bmp.getHeight())
+                {
+                    if(bmp.isPlayerColor(bmpX + fromX, bmpY + fromY))
+                    {
+                        expectedColor = palette->get(bmp.getPlayerColorIdx(bmpX + fromX, bmpY + fromY) - playerClrStart + playerClrStart2);
+                    } else
+                    {
+                        expectedColor = bmp.getPixel(bmpX + fromX, bmpY + fromY);
+                        if(expectedColor.getAlpha() == 0)
+                            expectedColor = outBufferIn.get(x, y);
+                    }
+                } else
+                    expectedColor = outBufferIn.get(x, y);
+            }
+            BOOST_TEST(outBuffer.get(x, y) == expectedColor);
+        }
     }
 }
 
