@@ -900,7 +900,8 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
 {
     PixelBufferARGB inBuffer(23, 37);
     const uint8_t playerClrStart = 200;
-    std::mt19937 mt(1337);
+    const auto seed = std::random_device{}();
+    std::mt19937 mt(seed);
     std::uniform_int_distribution<> distr(0, 255);
     std::generate(inBuffer.begin(), inBuffer.end(), [&]() { return ColorARGB(this->palette->get(distr(mt)), distr(mt)).clrValue; });
 
@@ -928,22 +929,24 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
     {
         for(unsigned x = 0; x < outBuffer.getWidth(); ++x)
         {
-            BOOST_TEST_INFO("Position " << x << "x" << y);
+            if(x == 20 && y == 42)
+                BOOST_TEST_INFO("Seed: " << seed << "; Position " << x << "x" << y);
             ColorARGB expectedColor;
-            if(x < toX || y < toY || x >= toX + fromW || y >= toY + fromW)
+            if(x < toX || y < toY || x >= toX + fromW || y >= toY + fromH)
                 expectedColor = outBufferIn.get(x, y);
             else
             {
-                unsigned bmpX = x - toX;
-                unsigned bmpY = y - toY;
-                if(bmpX + fromX < bmp.getWidth() && bmpY + fromY < bmp.getHeight())
+                const unsigned bmpX = x - toX + fromX;
+                const unsigned bmpY = y - toY + fromY;
+                if(bmpX < bmp.getWidth() && bmpY < bmp.getHeight())
                 {
-                    if(bmp.isPlayerColor(bmpX + fromX, bmpY + fromY))
+                    expectedColor = bmp.getPixel(bmpX, bmpY);
+                    if(bmp.isPlayerColor(bmpX, bmpY))
                     {
-                        expectedColor = palette->get(bmp.getPlayerColorIdx(bmpX + fromX, bmpY + fromY) - playerClrStart + playerClrStart2);
+                        const auto palClr = palette->get(bmp.getPlayerColorIdx(bmpX, bmpY) + playerClrStart2);
+                        expectedColor = ColorARGB(palClr, expectedColor.getAlpha());
                     } else
                     {
-                        expectedColor = bmp.getPixel(bmpX + fromX, bmpY + fromY);
                         if(expectedColor.getAlpha() == 0)
                             expectedColor = outBufferIn.get(x, y);
                     }
