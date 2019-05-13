@@ -901,7 +901,7 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
     PixelBufferARGB inBuffer(23, 37);
     const uint8_t playerClrStart = 200;
     std::mt19937 mt(1337);
-    std::uniform_int_distribution<uint8_t> distr;
+    std::uniform_int_distribution<> distr(0, 255);
     std::generate(inBuffer.begin(), inBuffer.end(), [&]() { return ColorARGB(this->palette->get(distr(mt)), distr(mt)).clrValue; });
 
     ArchivItem_Bitmap_Player bmp;
