@@ -99,7 +99,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
 
                         cout << "extracting " << newfile.str() << ": ";
 
-                        auto wave = clone(dynamic_cast<ArchivItem_Sound_XMidi*>(item));
+                        auto wave = clone(dynamic_cast<const ArchivItem_Sound_XMidi&>(*item));
                         const MIDI_Track& midiTrack = wave->getMidiTrack(0);
                         ArchivItem_Sound_Midi soundArchiv;
                         soundArchiv.addTrack(midiTrack);
