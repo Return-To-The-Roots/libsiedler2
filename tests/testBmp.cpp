@@ -896,11 +896,18 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapARGB)
     }
 }
 
+namespace {
+struct PrintParams
+{
+    unsigned toX, toY, fromX, fromW, fromY, fromH;
+};
+} // namespace
+
 BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
 {
     PixelBufferARGB inBuffer(23, 37);
     const uint8_t playerClrStart = 200;
-    const auto seed = std::random_device{}();
+    const auto seed = std ::random_device{}();
     std::mt19937 mt(seed);
     std::uniform_int_distribution<> distr(0, 255);
     std::generate(inBuffer.begin(), inBuffer.end(), [&]() { return ColorARGB(this->palette->get(distr(mt)), distr(mt)).clrValue; });
@@ -909,51 +916,68 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
     BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
 
     PixelBufferARGB outBuffer(inBuffer.getWidth() * 2, inBuffer.getHeight() * 2);
-    std::generate(outBuffer.begin(), outBuffer.end(), [&]() { return ColorARGB(distr(mt)).clrValue; });
 
-    std::uniform_int_distribution<unsigned> dw(0, outBuffer.getWidth());
-    std::uniform_int_distribution<unsigned> dh(0, outBuffer.getHeight());
-    std::uniform_int_distribution<unsigned> dw2(0, bmp.getWidth());
-    std::uniform_int_distribution<unsigned> dh2(0, bmp.getHeight());
-    unsigned toX = dw(mt);
-    unsigned toY = dh(mt);
-    unsigned fromX = dw2(mt);
-    unsigned fromW = dw2(mt) + 1; // avoid 0==all
-    unsigned fromY = dh2(mt);
-    unsigned fromH = dh2(mt) + 1; // avoid 0==all
+    std::uniform_int_distribution<unsigned> dw(1, outBuffer.getWidth() - 1);
+    std::uniform_int_distribution<unsigned> dh(1, outBuffer.getHeight() - 1);
+    std::uniform_int_distribution<unsigned> dw2(1, bmp.getWidth() / 2);
+    std::uniform_int_distribution<unsigned> dh2(1, bmp.getHeight() / 2);
 
-    const uint8_t playerClrStart2 = 234;
-    auto const outBufferIn = outBuffer;
-    BOOST_TEST_REQUIRE(bmp.print(outBuffer, palette, playerClrStart2, toX, toY, fromX, fromY, fromW, fromH) == 0);
-    for(unsigned y = 0; y < outBuffer.getHeight(); ++y)
+    std::vector<PrintParams> testParams;
+    // Full
+    testParams.emplace_back(PrintParams{});
+    testParams.emplace_back(PrintParams{0, 0, 0, bmp.getWidth(), 0, bmp.getHeight()});
+    // Partial with auto full width (zero)
+    testParams.emplace_back(PrintParams{dw(mt), dh(mt), dw2(mt), 0, dh2(mt), 0});
+    // Corner cases
+    testParams.emplace_back(PrintParams{outBuffer.getWidth(), outBuffer.getHeight(), 0, bmp.getWidth(), 0, bmp.getHeight()});
+    testParams.emplace_back(PrintParams{dw(mt), dh(mt), bmp.getWidth() / 2u, bmp.getWidth(), bmp.getHeight() / 2u, bmp.getHeight()});
+    testParams.emplace_back(PrintParams{dw(mt), dh(mt), bmp.getWidth(), bmp.getWidth(), bmp.getHeight(), bmp.getHeight()});
+    testParams.emplace_back(PrintParams{dw(mt), dh(mt), bmp.getWidth(), bmp.getWidth(), 0, 0});
     {
-        for(unsigned x = 0; x < outBuffer.getWidth(); ++x)
+        // Inside
+        testParams.emplace_back(PrintParams{dw(mt), dh(mt), dw2(mt), dw2(mt), dh2(mt), dh2(mt)});
+    }
+
+    for(const auto& p : testParams)
+    {
+        std::generate(outBuffer.begin(), outBuffer.end(), [&]() { return ColorARGB(distr(mt)).clrValue; });
+        auto const outBufferIn = outBuffer;
+
+        const uint8_t playerClrStart2 = 234;
+        BOOST_TEST_REQUIRE(bmp.print(outBuffer, palette, playerClrStart2, p.toX, p.toY, p.fromX, p.fromY, p.fromW, p.fromH) == 0);
+        // Zero width or height means full
+        const auto fromW = p.fromW ? p.fromW : bmp.getWidth();
+        const auto fromH = p.fromH ? p.fromH : bmp.getHeight();
+        for(unsigned y = 0; y < outBuffer.getHeight(); ++y)
         {
-            if(x == 20 && y == 42)
-                BOOST_TEST_INFO("Seed: " << seed << "; Position " << x << "x" << y);
-            ColorARGB expectedColor;
-            if(x < toX || y < toY || x >= toX + fromW || y >= toY + fromH)
-                expectedColor = outBufferIn.get(x, y);
-            else
+            for(unsigned x = 0; x < outBuffer.getWidth(); ++x)
             {
-                const unsigned bmpX = x - toX + fromX;
-                const unsigned bmpY = y - toY + fromY;
-                if(bmpX < bmp.getWidth() && bmpY < bmp.getHeight())
-                {
-                    expectedColor = bmp.getPixel(bmpX, bmpY);
-                    if(bmp.isPlayerColor(bmpX, bmpY))
-                    {
-                        const auto palClr = palette->get(bmp.getPlayerColorIdx(bmpX, bmpY) + playerClrStart2);
-                        expectedColor = ColorARGB(palClr, expectedColor.getAlpha());
-                    } else
-                    {
-                        if(expectedColor.getAlpha() == 0)
-                            expectedColor = outBufferIn.get(x, y);
-                    }
-                } else
+                if(x == 20 && y == 42)
+                    BOOST_TEST_INFO("Seed: " << seed << "; Position " << x << "x" << y);
+                ColorARGB expectedColor;
+                if(x < p.toX || y < p.toY || x >= p.toX + fromW || y >= p.toY + fromH)
                     expectedColor = outBufferIn.get(x, y);
+                else
+                {
+                    const unsigned bmpX = x - p.toX + p.fromX;
+                    const unsigned bmpY = y - p.toY + p.fromY;
+                    if(bmpX < bmp.getWidth() && bmpY < bmp.getHeight())
+                    {
+                        expectedColor = bmp.getPixel(bmpX, bmpY);
+                        if(bmp.isPlayerColor(bmpX, bmpY))
+                        {
+                            const auto palClr = palette->get(bmp.getPlayerColorIdx(bmpX, bmpY) + playerClrStart2);
+                            expectedColor = ColorARGB(palClr, expectedColor.getAlpha());
+                        } else
+                        {
+                            if(expectedColor.getAlpha() == 0)
+                                expectedColor = outBufferIn.get(x, y);
+                        }
+                    } else
+                        expectedColor = outBufferIn.get(x, y);
+                }
+                BOOST_TEST(outBuffer.get(x, y) == expectedColor);
             }
-            BOOST_TEST(outBuffer.get(x, y) == expectedColor);
         }
     }
 }

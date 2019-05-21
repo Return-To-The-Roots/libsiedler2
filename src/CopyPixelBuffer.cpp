@@ -78,6 +78,9 @@ void CopyPixelBuffer(const T_Src& src, T_Dst& dst, Rect srcRect, Rect dstRect)
     const uint16_t copyWidth = std::min(srcRect.w, dstRect.w);
     const uint16_t copyHeight = std::min(srcRect.h, dstRect.h);
 
+    if(copyWidth == 0)
+        return;
+
     for(uint16_t y = 0; y < copyHeight; ++y)
     {
         const auto* srcPtr = src.getPixelPtr(srcRect.x, y + srcRect.y);
