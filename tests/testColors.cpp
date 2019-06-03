@@ -18,6 +18,7 @@
 #include "ColorOutput.h"
 #include "libsiedler2/ColorARGB.h"
 #include "libsiedler2/ColorRGB.h"
+#include <boost/predef/other.h>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
 #include <array>
