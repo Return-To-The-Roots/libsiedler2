@@ -1,4 +1,4 @@
-// Copyright (c) 2005 - 2017 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2005 - 2019 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -14,19 +14,22 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
-
-#ifndef pack_h__
-#define pack_h__
+#ifndef libsiedler2_examples_lstpacker_pack_h
+#define libsiedler2_examples_lstpacker_pack_h
 
 #include <string>
 
 namespace libsiedler2 {
+
 class Archiv;
 class ArchivItem_Palette;
+
 } // namespace libsiedler2
 
 void pack(const std::string& directory, const std::string& file, const libsiedler2::ArchivItem_Palette* palette);
 
-#endif // pack_h__
+#endif // !libsiedler2_examples_lstpacker_pack_h

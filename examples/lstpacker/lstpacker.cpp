@@ -1,4 +1,4 @@
-// Copyright (c) 2005 - 2017 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2005 - 2019 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -14,18 +14,23 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "pack.h"
 #include "unpack.h"
+
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/libsiedler2.h"
+
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/nowide/args.hpp>
 #include <boost/nowide/integration/filesystem.hpp>
 #include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
+
 #include <iostream>
 #include <string>
 #include <vector>

@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2009 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2005 - 2019 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -14,14 +14,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
 
-///////////////////////////////////////////////////////////////////////////////
-// Header
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/ArchivItem_Font.h"
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/libsiedler2.h"
+
 #include <cstdio>
 #include <vector>
 
