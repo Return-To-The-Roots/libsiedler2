@@ -20,49 +20,23 @@
 #ifndef ImageBufferARGB_h__
 #define ImageBufferARGB_h__
 
-#include "ColorARGB.h"
+#include "ColorBGRA.h"
 #include "GetFormat.h"
 #include "PixelBuffer.h"
 #include "enumTypes.h"
 
 namespace libsiedler2 {
 
-class PixelBufferARGB : public PixelBuffer<uint32_t>
+class PixelBufferBGRA : public PixelBuffer<ColorBGRA>
 {
 public:
-    PixelBufferARGB() = default;
-    PixelBufferARGB(uint16_t width, uint16_t height, ColorARGB defValue = ColorARGB())
-        : PixelBuffer<uint32_t>(width, height, defValue.clrValue)
-    {}
-    ColorARGB get(uint16_t x, uint16_t y) const;
-    ColorARGB get(uint32_t idx) const;
-    void set(uint16_t x, uint16_t y, ColorARGB clr);
-    void set(uint32_t idx, ColorARGB clr);
+    PixelBufferBGRA() = default;
+    PixelBufferBGRA(uint16_t width, uint16_t height, ColorBGRA defValue = ColorBGRA()) : PixelBuffer<ColorBGRA>(width, height, defValue) {}
 };
-
-inline ColorARGB PixelBufferARGB::get(uint16_t x, uint16_t y) const
-{
-    return get(calcIdx(x, y));
-}
-
-inline ColorARGB PixelBufferARGB::get(uint32_t idx) const
-{
-    return ColorARGB::fromBGRA(&pixels_[idx]);
-}
-
-inline void PixelBufferARGB::set(uint16_t x, uint16_t y, ColorARGB clr)
-{
-    return set(calcIdx(x, y), clr);
-}
-
-inline void PixelBufferARGB::set(uint32_t idx, ColorARGB clr)
-{
-    return clr.toBGRA(&pixels_[idx]);
-}
 
 namespace traits {
     template<>
-    struct GetFormat<PixelBufferARGB>
+    struct GetFormat<PixelBufferBGRA>
     {
         static constexpr TextureFormat value = FORMAT_BGRA;
     };

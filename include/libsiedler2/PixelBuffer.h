@@ -36,12 +36,18 @@ public:
     PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue);
     uint16_t getWidth() const { return width_; }
     uint16_t getHeight() const { return height_; }
-    uint32_t getSize() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
+    uint32_t getSizeInBytes() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
     uint32_t getNumPixels() const { return static_cast<uint32_t>(pixels_.size()); }
     uint8_t* getPixelPtr() { return pixels_.empty() ? nullptr : reinterpret_cast<uint8_t*>(&pixels_[0]); }
     const uint8_t* getPixelPtr() const { return pixels_.empty() ? nullptr : reinterpret_cast<const uint8_t*>(&pixels_[0]); }
     std::vector<T_Pixel>& getPixels() { return pixels_; }
     const std::vector<T_Pixel>& getPixels() const { return pixels_; }
+
+    PixelType get(uint16_t x, uint16_t y) const { return get(calcIdx(x, y)); }
+    PixelType get(uint32_t idx) const { return pixels_[idx]; }
+    void set(uint16_t x, uint16_t y, PixelType clr) { set(calcIdx(x, y), clr); }
+    void set(uint32_t idx, PixelType clr) { pixels_[idx] = clr; }
+
     auto begin() { return pixels_.begin(); }
     auto begin() const { return pixels_.begin(); }
     auto end() { return pixels_.end(); }
@@ -63,7 +69,7 @@ protected:
 
 template<typename T_Pixel>
 inline PixelBuffer<T_Pixel>::PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue)
-    : width_(width), height_(height), pixels_(static_cast<uint32_t>(width) * height, defValue)
+    : width_(width), height_(height), pixels_(static_cast<size_t>(width) * height, defValue)
 {}
 
 template<typename T_Pixel>

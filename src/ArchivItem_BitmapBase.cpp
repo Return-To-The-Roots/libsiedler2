@@ -17,9 +17,9 @@
 
 #include "ArchivItem_BitmapBase.h"
 #include "ArchivItem_Palette.h"
-#include "ColorARGB.h"
+#include "ColorBGRA.h"
 #include "ErrorCodes.h"
-#include "PixelBufferARGB.h"
+#include "PixelBufferBGRA.h"
 #include "PixelBufferPaletted.h"
 #include "libsiedler2.h"
 #include <stdexcept>
@@ -72,7 +72,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, uint8_t colorIdx)
         if(palette_->isTransparent(colorIdx)) // Transparenz
             pxlPtr[3] = 0x00;
         else
-            ColorARGB(palette_->get(colorIdx)).toBGRA(pxlPtr);
+            ColorBGRA(palette_->get(colorIdx)).toBGRA(pxlPtr);
     }
 }
 
@@ -86,7 +86,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, uint8_t colorIdx)
  *  @param[in] b Blauer Wert
  *  @param[in] a Alpha Wert (bei paletted nur 0xFF/0x00 unterstützt)
  */
-void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorARGB clr)
+void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorBGRA clr)
 {
     assert(x < width_ && y < height_);
 
@@ -125,7 +125,7 @@ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const Arch
     else
     {
         assert(palette);
-        ColorARGB clr = getARGBPixel(x, y);
+        ColorBGRA clr = getARGBPixel(x, y);
         // Index von RGB+A liefern
         if(clr.getAlpha() == 0) // Transparenz
             return palette->getTransparentIdx();
@@ -134,14 +134,14 @@ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const Arch
     }
 }
 
-ColorARGB ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) const
+ColorBGRA ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) const
 {
     assert(x < width_ && y < height_);
 
     if(getFormat() == FORMAT_PALETTED)
     {
         uint8_t pxlVal = getPalettedPixel(x, y);
-        return (palette_->isTransparent(pxlVal)) ? ColorARGB(0) : ColorARGB(palette_->get(pxlVal));
+        return (palette_->isTransparent(pxlVal)) ? ColorBGRA() : ColorBGRA(palette_->get(pxlVal));
     } else
         return getARGBPixel(x, y);
 }
@@ -162,10 +162,10 @@ uint8_t ArchivItem_BitmapBase::getPalettedPixel(uint16_t x, uint16_t y) const
     return pxlData_[y * width_ + x];
 }
 
-ColorARGB ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
+ColorBGRA ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
 {
     assert(format_ == FORMAT_BGRA);
-    return ColorARGB::fromBGRA(&pxlData_[(y * width_ + x) * 4u]);
+    return ColorBGRA::fromBGRA(&pxlData_[(y * width_ + x) * 4u]);
 }
 
 PixelBufferPalettedRef ArchivItem_BitmapBase::getBufferPaletted() const
@@ -176,11 +176,11 @@ PixelBufferPalettedRef ArchivItem_BitmapBase::getBufferPaletted() const
     return PixelBufferPalettedRef(const_cast<uint8_t*>(pxlData_.data()), width_, height_, *palette_);
 }
 
-PixelBufferARGBRef ArchivItem_BitmapBase::getBufferARGB() const
+PixelBufferBGRARef ArchivItem_BitmapBase::getBufferARGB() const
 {
     if(getFormat() != FORMAT_BGRA)
         throw std::logic_error("Image not BGRA");
-    return PixelBufferARGBRef(reinterpret_cast<uint32_t*>(const_cast<uint8_t*>(pxlData_.data())), width_, height_);
+    return PixelBufferBGRARef(reinterpret_cast<uint32_t*>(const_cast<uint8_t*>(pxlData_.data())), width_, height_);
 }
 
 TextureFormat ArchivItem_BitmapBase::getWantedFormat(TextureFormat origFormat)
@@ -290,13 +290,13 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
         return ErrorCode::PALETTE_MISSING;
     if(newFormat == FORMAT_BGRA)
     {
-        PixelBufferARGB newBuffer(width_, height_);
+        PixelBufferBGRA newBuffer(width_, height_);
         for(unsigned y = 0; y < height_; y++)
         {
             for(unsigned x = 0; x < width_; x++)
                 newBuffer.set(x, y, getPixel(x, y));
         }
-        pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
+        pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSizeInBytes());
     } else
     {
         PixelBufferPaletted newBuffer(width_, height_);
@@ -304,11 +304,11 @@ int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
         {
             for(unsigned x = 0; x < width_; x++)
             {
-                ColorARGB clr = getARGBPixel(x, y);
+                ColorBGRA clr = getARGBPixel(x, y);
                 newBuffer.set(x, y, clr.getAlpha() == 0 ? palette_->getTransparentIdx() : palette_->lookup(clr));
             }
         }
-        pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSize());
+        pxlData_.assign(newBuffer.getPixelPtr(), newBuffer.getPixelPtr() + newBuffer.getSizeInBytes());
     }
     format_ = newFormat;
     return ErrorCode::NONE;
@@ -345,7 +345,7 @@ bool ArchivItem_BitmapBase::checkPalette(const ArchivItem_Palette& palette) cons
     {
         for(unsigned x = 0; x < width_; x++)
         {
-            ColorARGB clr = getARGBPixel(x, y);
+            ColorBGRA clr = getARGBPixel(x, y);
             uint8_t dummyIdx;
             if(clr.getAlpha() != 0 && !palette.lookup(clr, dummyIdx))
                 return false;

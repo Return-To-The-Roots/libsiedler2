@@ -21,7 +21,7 @@
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/ArchivItem_PaletteAnimation.h"
-#include "libsiedler2/ColorARGB.h"
+#include "libsiedler2/ColorBGRA.h"
 #include "libsiedler2/ColorRGB.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(GetColor)
     for(unsigned i = 0; i < 256; i++)
     {
         // BGRA buffer:
-        BOOST_REQUIRE_EQUAL(libsiedler2::ColorARGB::fromBGRA(&clrBuf[i * 4]), pal[i]);
+        BOOST_REQUIRE_EQUAL(libsiedler2::ColorBGRA::fromBGRA(&clrBuf[i * 4]), pal[i]);
     }
 }
 

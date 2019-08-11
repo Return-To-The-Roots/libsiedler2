@@ -48,7 +48,7 @@ private:
     uint16_t width_, height_;
 };
 
-using PixelBufferARGBRef = PixelBufferRefBase<uint32_t>;
+using PixelBufferBGRARef = PixelBufferRefBase<uint32_t>;
 
 class PixelBufferPalettedRef : public PixelBufferRefBase<uint8_t>
 {

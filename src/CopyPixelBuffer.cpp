@@ -17,7 +17,7 @@
 
 #include "CopyPixelBuffer.h"
 #include "ArchivItem_Palette.h"
-#include "ColorARGB.h"
+#include "ColorBGRA.h"
 #include <PixelBufferRef.h>
 #include <algorithm>
 
@@ -36,9 +36,9 @@ void clipValues(uint16_t& offset, uint16_t& size, const uint16_t maxSize)
     }
 }
 
-bool isTransparent(const PixelBufferARGBRef&, const uint32_t* pixelPtr)
+bool isTransparent(const PixelBufferBGRARef&, const uint32_t* pixelPtr)
 {
-    return ColorARGB::fromBGRA(pixelPtr).getAlpha() == 0;
+    return ColorBGRA::fromBGRA(pixelPtr).getAlpha() == 0;
 }
 bool isTransparent(const PixelBufferPalettedRef& buffer, const uint8_t* pixelPtr)
 {
@@ -50,13 +50,13 @@ void copyPixel(const T_Buf&, const T_Buf&, const T* srcPtr, T* dstPtr)
 {
     *dstPtr = *srcPtr;
 }
-void copyPixel(const PixelBufferPalettedRef& src, const PixelBufferARGBRef&, const uint8_t* srcPtr, uint32_t* dstPtr)
+void copyPixel(const PixelBufferPalettedRef& src, const PixelBufferBGRARef&, const uint8_t* srcPtr, uint32_t* dstPtr)
 {
-    ColorARGB(src.getPalette().get(*srcPtr)).toBGRA(dstPtr);
+    ColorBGRA(src.getPalette().get(*srcPtr)).toBGRA(dstPtr);
 }
-void copyPixel(const PixelBufferARGBRef&, const PixelBufferPalettedRef& dst, const uint32_t* srcPtr, uint8_t* dstPtr)
+void copyPixel(const PixelBufferBGRARef&, const PixelBufferPalettedRef& dst, const uint32_t* srcPtr, uint8_t* dstPtr)
 {
-    *dstPtr = dst.getPalette().lookup(ColorARGB::fromBGRA(srcPtr));
+    *dstPtr = dst.getPalette().lookup(ColorBGRA::fromBGRA(srcPtr));
 }
 } // namespace
 
@@ -99,7 +99,7 @@ void CopyPixelBuffer(const T_Src& src, T_Dst& dst, Rect srcRect, Rect dstRect)
 }
 
 template void CopyPixelBuffer(const PixelBufferPalettedRef&, PixelBufferPalettedRef&, Rect, Rect);
-template void CopyPixelBuffer(const PixelBufferARGBRef&, PixelBufferPalettedRef&, Rect, Rect);
-template void CopyPixelBuffer(const PixelBufferPalettedRef&, PixelBufferARGBRef&, Rect, Rect);
-template void CopyPixelBuffer(const PixelBufferARGBRef&, PixelBufferARGBRef&, Rect, Rect);
+template void CopyPixelBuffer(const PixelBufferBGRARef&, PixelBufferPalettedRef&, Rect, Rect);
+template void CopyPixelBuffer(const PixelBufferPalettedRef&, PixelBufferBGRARef&, Rect, Rect);
+template void CopyPixelBuffer(const PixelBufferBGRARef&, PixelBufferBGRARef&, Rect, Rect);
 } // namespace libsiedler2

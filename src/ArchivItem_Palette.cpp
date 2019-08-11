@@ -16,7 +16,7 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "ArchivItem_Palette.h"
-#include "ColorARGB.h"
+#include "ColorBGRA.h"
 #include "ErrorCodes.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
@@ -170,7 +170,7 @@ void libsiedler2::ArchivItem_Palette::copyToBGRA(uint8_t* buffer, size_t bufSize
 
     // Farben kopieren
     for(uint16_t i = 0; i < 256; ++i)
-        ColorARGB(colors[i]).toBGRA(&buffer[i * 4]);
+        ColorBGRA(colors[i]).toBGRA(&buffer[i * 4]);
 }
 
 bool libsiedler2::ArchivItem_Palette::isEqual(const ArchivItem_Palette& other) const

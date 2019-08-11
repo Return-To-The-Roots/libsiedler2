@@ -22,7 +22,7 @@
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Font.h"
 #include "ErrorCodes.h"
-#include "PixelBufferARGB.h"
+#include "PixelBufferBGRA.h"
 #include "StandardAllocator.h"
 #include "prototypen.h"
 #include "libutil/StringConversion.h"
@@ -208,7 +208,7 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
 int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette)
 {
     std::sort(folderInfos.begin(), folderInfos.end());
-    libsiedler2::PixelBufferARGB buffer(1000, 1000);
+    libsiedler2::PixelBufferBGRA buffer(1000, 1000);
     for(const FileEntry& entry : folderInfos)
     {
         // Ignore
@@ -258,7 +258,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     if(!bmp)
                         return ErrorCode::UNSUPPORTED_FORMAT;
                     auto convertedBmp = getAllocator().create<ArchivItem_BitmapBase>(entry.bobtype);
-                    std::fill(buffer.getPixels().begin(), buffer.getPixels().end(), 0u);
+                    std::fill(buffer.begin(), buffer.end(), ColorBGRA());
                     if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
                     {
                         auto* bmpPlayer = dynamic_cast<ArchivItem_Bitmap_Player*>(bmp);

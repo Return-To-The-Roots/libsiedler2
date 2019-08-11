@@ -20,7 +20,7 @@
 #ifndef ColorOutput_h__
 #define ColorOutput_h__
 
-#include "libsiedler2/ColorARGB.h"
+#include "libsiedler2/ColorBGRA.h"
 #include "libsiedler2/ColorRGB.h"
 #include <iostream>
 
@@ -29,7 +29,7 @@ inline std::ostream& operator<<(std::ostream& os, const ColorRGB& clr)
 {
     return os << "Color(" << unsigned(clr.r) << ", " << unsigned(clr.g) << ", " << unsigned(clr.b) << ")";
 }
-inline std::ostream& operator<<(std::ostream& os, const ColorARGB& clr)
+inline std::ostream& operator<<(std::ostream& os, const ColorBGRA& clr)
 {
     return os << "Color(" << unsigned(clr.getAlpha()) << ", " << unsigned(clr.getRed()) << ", " << unsigned(clr.getGreen()) << ", "
               << unsigned(clr.getBlue()) << ")";

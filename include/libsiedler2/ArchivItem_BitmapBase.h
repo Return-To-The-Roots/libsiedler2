@@ -29,7 +29,7 @@
 namespace libsiedler2 {
 
 class ArchivItem_Palette;
-struct ColorARGB;
+struct ColorBGRA;
 
 /**
  * Base class for all bitmaps (regular and player bitmaps)
@@ -43,14 +43,14 @@ public:
 
     /// setzt einen Pixel auf einen bestimmten Wert.
     void setPixel(uint16_t x, uint16_t y, uint8_t colorIdx);
-    void setPixel(uint16_t x, uint16_t y, ColorARGB clr);
+    void setPixel(uint16_t x, uint16_t y, ColorBGRA clr);
 
     /// Return the color index at the given position using the current palette for ARGB conversion
     uint8_t getPixelClrIdx(uint16_t x, uint16_t y) const;
     /// Return the color index at the given position using the given palette for ARGB conversion. Otherwise not required
     uint8_t getPixelClrIdx(uint16_t x, uint16_t y, const ArchivItem_Palette* palette) const;
     /// Return the color at the given position using the current palette for paletted bmps
-    ColorARGB getPixel(uint16_t x, uint16_t y) const;
+    ColorBGRA getPixel(uint16_t x, uint16_t y) const;
 
     /// lädt die Bilddaten aus einer Datei.
     virtual int load(std::istream& file, const ArchivItem_Palette* palette) = 0;
@@ -121,9 +121,9 @@ protected:
     /// Return the pixel at the given position assuming the bitmap is paletted
     uint8_t getPalettedPixel(uint16_t x, uint16_t y) const;
     /// Return the pixel at the given position assuming the bitmap is ARGB
-    ColorARGB getARGBPixel(uint16_t x, uint16_t y) const;
+    ColorBGRA getARGBPixel(uint16_t x, uint16_t y) const;
     PixelBufferPalettedRef getBufferPaletted() const;
-    PixelBufferARGBRef getBufferARGB() const;
+    PixelBufferBGRARef getBufferARGB() const;
 
     std::vector<uint8_t>& getPixelData() { return pxlData_; }
     template<typename T>

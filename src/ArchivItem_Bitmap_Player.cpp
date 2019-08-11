@@ -17,7 +17,7 @@
 
 #include "ArchivItem_Bitmap_Player.h"
 #include "ArchivItem_Palette.h"
-#include "ColorARGB.h"
+#include "ColorBGRA.h"
 #include "CopyPixelBuffer.h"
 #include "ErrorCodes.h"
 #include "libendian/EndianIStreamAdapter.h"
@@ -347,7 +347,7 @@ int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint
             // und Pixel setzen
             if(buffer_format == FORMAT_BGRA)
             {
-                ColorARGB clr = ColorARGB::fromBGRA(&buffer[posBuffer]); //-V522
+                ColorBGRA clr = ColorBGRA::fromBGRA(&buffer[posBuffer]); //-V522
                 if(clr.getAlpha() != 0)
                 {
                     uint8_t c = palette->lookup(clr);
@@ -429,7 +429,7 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
                 CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
             } else
             {
-                const PixelBufferARGBRef srcBuf = this->getBufferARGB();
+                const PixelBufferBGRARef srcBuf = this->getBufferARGB();
                 CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
             }
         };
@@ -440,7 +440,7 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
             doCall(dstBuf);
         } else
         {
-            PixelBufferARGBRef dstBuf(reinterpret_cast<uint32_t*>(buffer), buffer_width, buffer_height);
+            PixelBufferBGRARef dstBuf(reinterpret_cast<uint32_t*>(buffer), buffer_width, buffer_height);
             doCall(dstBuf);
         }
     }
@@ -463,7 +463,7 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
                 else
                 {
                     const uint8_t srcAlpha = (getFormat() == FORMAT_PALETTED) ? 255 : getPixelPtr(x + fromRect.x, y + fromRect.y)[3];
-                    ColorARGB(palette->get(playerClr + plClrStartIdx), srcAlpha).toBGRA(&buffer[posBuffer]);
+                    ColorBGRA(palette->get(playerClr + plClrStartIdx), srcAlpha).toBGRA(&buffer[posBuffer]);
                 }
             }
             posBuffer += bufferBBP;

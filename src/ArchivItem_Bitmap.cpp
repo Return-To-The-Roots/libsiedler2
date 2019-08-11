@@ -71,7 +71,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
             CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
         } else
         {
-            const PixelBufferARGBRef srcBuf = this->getBufferARGB();
+            const PixelBufferBGRARef srcBuf = this->getBufferARGB();
             CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
         }
     };
@@ -88,7 +88,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
         doCall(dstBuf);
     } else
     {
-        PixelBufferARGBRef dstBuf(reinterpret_cast<uint32_t*>(buffer), buffer_width, buffer_height);
+        PixelBufferBGRARef dstBuf(reinterpret_cast<uint32_t*>(buffer), buffer_width, buffer_height);
         doCall(dstBuf);
     }
     // Alles ok

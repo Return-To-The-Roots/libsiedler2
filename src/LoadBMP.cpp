@@ -19,7 +19,7 @@
 #include "ArchivItem_Bitmap.h"
 #include "ArchivItem_Palette.h"
 #include "BmpHeader.h"
-#include "ColorARGB.h"
+#include "ColorBGRA.h"
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "OpenMemoryStream.h"
@@ -47,7 +47,7 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, 
         for(uint16_t x = 0; x < width; ++x)
         {
             libsiedler2::ColorRGB clr = libsiedler2::ColorRGB::fromBGR(&tmpBuffer[x * 3]);
-            libsiedler2::ColorARGB clrOut;
+            libsiedler2::ColorBGRA clrOut;
             if(clr != libsiedler2::TRANSPARENT_COLOR)
                 clrOut = clr;
             clrOut.toBGRA(&buffer[(y * width + x) * 4]);
@@ -121,7 +121,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
         auto pal = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
         for(unsigned i = 0; i < numClrsUsed; ++i)
         {
-            ColorARGB clr = ColorARGB::fromBGRA(&colors[i][0]); // NOTE: Alpha is always 0!
+            ColorBGRA clr = ColorBGRA::fromBGRA(&colors[i][0]); // NOTE: Alpha is always 0!
             pal->set(i, clr);                                   //-V522
         }
         bitmap->setPalette(std::move(pal));

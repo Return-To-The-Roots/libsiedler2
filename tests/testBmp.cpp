@@ -22,10 +22,10 @@
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/ArchivItem_Bitmap_Raw.h"
-#include "libsiedler2/ColorARGB.h"
+#include "libsiedler2/ColorBGRA.h"
 #include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/IAllocator.h"
-#include "libsiedler2/PixelBufferARGB.h"
+#include "libsiedler2/PixelBufferBGRA.h"
 #include "libsiedler2/PixelBufferPaletted.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/assign/std/vector.hpp>
@@ -49,6 +49,12 @@ struct Rect
 std::ostream& operator<<(std::ostream& os, const Rect& rect)
 {
     return os << "(" << rect.x << ", " << rect.y << ", " << rect.w << ", " << rect.h << ")";
+}
+auto randColor()
+{
+    static std::mt19937 mt(std::random_device{}());
+    static std::uniform_int_distribution<> distr(0, 255);
+    return libsiedler2::ColorBGRA(distr(mt), distr(mt), distr(mt), distr(mt));
 }
 } // namespace
 
@@ -282,7 +288,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
                 {
                     for(unsigned x = 0; x < bmp->getWidth(); x++)
                     {
-                        ColorARGB clr = bmp->getPixel(x, y);
+                        ColorBGRA clr = bmp->getPixel(x, y);
                         if(clr.getAlpha() != 0 && clr.getBlue() != 0)
                         {
                             clrFound = true;
@@ -382,7 +388,7 @@ BOOST_AUTO_TEST_CASE(PaletteAfterCreateBitmap)
     ArchivItem_Bitmap_Player bmpPl;
     unsigned w = 10, h = 14;
     PixelBufferPaletted palBuffer(w, h);
-    PixelBufferARGB clrBuffer(w, h);
+    PixelBufferBGRA clrBuffer(w, h);
     // Paletted
     BOOST_REQUIRE_EQUAL(bmp.create(palBuffer, palette), 0);
     BOOST_REQUIRE_EQUAL(bmp.getFormat(), FORMAT_PALETTED);
@@ -502,11 +508,11 @@ BOOST_AUTO_TEST_CASE(CheckPalette)
     BOOST_REQUIRE(bmp.checkPalette(*palette));
     BOOST_REQUIRE(bmp.checkPalette(wrongPal));
     // Colored pixel but alpha == 0 -> Still transparent
-    bmp.setPixel(0, 0, ColorARGB(0, 1, 2, 3));
+    bmp.setPixel(0, 0, ColorBGRA(1, 2, 3, 0));
     BOOST_REQUIRE(bmp.checkPalette(*palette));
     BOOST_REQUIRE(bmp.checkPalette(wrongPal));
     // Colored pixel -> wrong
-    bmp.setPixel(0, 0, ColorARGB(1, 1, 2, 3));
+    bmp.setPixel(0, 0, ColorBGRA(2, 3, 1, 1));
     BOOST_REQUIRE(!bmp.checkPalette(wrongPal));
 }
 
@@ -592,12 +598,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
             if(x < xStart || y < yStart || x >= xStart + partW || y >= yStart + partH)
             {
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], 42u);
-                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB(42, 42, 42, 42));
+                BOOST_REQUIRE_EQUAL(ColorBGRA(&outBuffer[idx]), ColorBGRA(42, 42, 42, 42));
             } else
             {
                 unsigned inBufferIdx = x - xStart + xStartB + (y - yStart + yStartB) * w;
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], inBufferPal[inBufferIdx]);
-                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB::fromARGB(&inBufferRGB[inBufferIdx * 4]));
+                BOOST_REQUIRE_EQUAL(ColorBGRA(&outBuffer[idx]), ColorBGRA(&inBufferRGB[inBufferIdx * 4]));
             }
         }
     }
@@ -628,15 +634,6 @@ BOOST_AUTO_TEST_CASE(TransparentTex)
     std::vector<uint8_t> inBufferPal(w * h, palette->getTransparentIdx());
     // Buffer in (byte) BGRA format
     std::vector<uint8_t> inBuffer(inBufferPal.size() * 4u);
-    // With all 0
-    std::vector<uint8_t> inBufferRGB(inBufferPal.size() * 4u, 0u);
-    for(unsigned i = 0; i < inBuffer.size(); i += 4)
-    {
-        inBufferRGB[i] = rand();
-        inBufferRGB[i + 1] = rand();
-        inBufferRGB[i + 2] = rand();
-        inBufferRGB[i + 3] = 0; // Alpha
-    }
     // Create paletted
     ArchivItem_Bitmap_Raw bmpPal;
     ArchivItem_Bitmap_Player bmpPlayerPal;
@@ -756,12 +753,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
             if(x < xStart || y < yStart || x >= xStart + partW || y >= yStart + partH)
             {
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], 42u);
-                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB(42, 42, 42, 42));
+                BOOST_REQUIRE_EQUAL(ColorBGRA(&outBuffer[idx]), ColorBGRA(42, 42, 42, 42));
             } else
             {
                 unsigned inBufferIdx = x - xStart + xStartB + (y - yStart + yStartB) * w;
                 BOOST_REQUIRE_EQUAL(outBufferPal[idxPal], inBufferPal[inBufferIdx]);
-                BOOST_REQUIRE_EQUAL(ColorARGB::fromARGB(&outBuffer[idx]), ColorARGB::fromARGB(&inBufferRGB[inBufferIdx * 4]));
+                BOOST_REQUIRE_EQUAL(ColorBGRA(&outBuffer[idx]), ColorBGRA(&inBufferRGB[inBufferIdx * 4]));
             }
         }
     }
@@ -804,7 +801,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapPaletted)
         }
         // Print to RGB buffer
         {
-            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            PixelBufferBGRA outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), randColor());
             BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, nullptr, curPlrClr), 0);
             for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
             {
@@ -826,12 +823,13 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapPaletted)
         }
         // Print to RGB buffer
         {
-            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            const auto initialClr = randColor();
+            PixelBufferBGRA outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), initialClr);
             BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, nullptr, curPlrClr, 0, 0, 0, 0, 0, 0, true), 0);
             for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
             {
                 BOOST_TEST_INFO("Position " << i);
-                const auto expected = i < 4 ? ColorARGB(palette->get(inBuffer.get(i))) : ColorARGB(42);
+                const auto expected = i < 4 ? ColorBGRA(palette->get(inBuffer.get(i))) : initialClr;
                 BOOST_TEST(outBuffer.get(i) == expected);
             }
         }
@@ -840,7 +838,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapPaletted)
 
 BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapARGB)
 {
-    PixelBufferARGB inBuffer(5, 4, palette->get(3));
+    PixelBufferBGRA inBuffer(5, 4, palette->get(3));
     const uint8_t playerClrStart = 200;
     for(int i = 0; i < 4; i++)
         inBuffer.set(i, palette->get(i + playerClrStart));
@@ -866,7 +864,7 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapARGB)
         }
         // Print to RGB buffer
         {
-            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            PixelBufferBGRA outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), randColor());
             BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, palette, curPlrClr), 0);
             RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
         }
@@ -884,12 +882,13 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapARGB)
         }
         // Print to RGB buffer
         {
-            PixelBufferARGB outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), ColorARGB(42));
+            const auto initialClr = randColor();
+            PixelBufferBGRA outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), initialClr);
             BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, palette, curPlrClr, 0, 0, 0, 0, 0, 0, true), 0);
             for(unsigned i = 0; i < outBuffer.getNumPixels(); i++)
             {
                 BOOST_TEST_INFO("Position " << i);
-                const auto expected = i < 4 ? inBuffer.get(i) : ColorARGB(42);
+                const auto expected = i < 4 ? inBuffer.get(i) : initialClr;
                 BOOST_TEST(outBuffer.get(i) == expected);
             }
         }
@@ -905,17 +904,17 @@ struct PrintParams
 
 BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
 {
-    PixelBufferARGB inBuffer(23, 37);
+    PixelBufferBGRA inBuffer(23, 37);
     const uint8_t playerClrStart = 200;
     const auto seed = std ::random_device{}();
     std::mt19937 mt(seed);
     std::uniform_int_distribution<> distr(0, 255);
-    std::generate(inBuffer.begin(), inBuffer.end(), [&]() { return ColorARGB(this->palette->get(distr(mt)), distr(mt)).clrValue; });
+    std::generate(inBuffer.begin(), inBuffer.end(), [&]() { return ColorBGRA(this->palette->get(distr(mt)), distr(mt)); });
 
     ArchivItem_Bitmap_Player bmp;
     BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
 
-    PixelBufferARGB outBuffer(inBuffer.getWidth() * 2, inBuffer.getHeight() * 2);
+    PixelBufferBGRA outBuffer(inBuffer.getWidth() * 2, inBuffer.getHeight() * 2);
 
     std::uniform_int_distribution<unsigned> dw(1, outBuffer.getWidth() - 1);
     std::uniform_int_distribution<unsigned> dh(1, outBuffer.getHeight() - 1);
@@ -940,7 +939,7 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
 
     for(const auto& p : testParams)
     {
-        std::generate(outBuffer.begin(), outBuffer.end(), [&]() { return ColorARGB(distr(mt)).clrValue; });
+        std::generate(outBuffer.begin(), outBuffer.end(), [&]() { return randColor(); });
         auto const outBufferIn = outBuffer;
 
         const uint8_t playerClrStart2 = 234;
@@ -954,7 +953,7 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
             {
                 if(x == 20 && y == 42)
                     BOOST_TEST_INFO("Seed: " << seed << "; Position " << x << "x" << y);
-                ColorARGB expectedColor;
+                ColorBGRA expectedColor;
                 if(x < p.toX || y < p.toY || x >= p.toX + fromW || y >= p.toY + fromH)
                     expectedColor = outBufferIn.get(x, y);
                 else
@@ -967,7 +966,7 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
                         if(bmp.isPlayerColor(bmpX, bmpY))
                         {
                             const auto palClr = palette->get(bmp.getPlayerColorIdx(bmpX, bmpY) + playerClrStart2);
-                            expectedColor = ColorARGB(palClr, expectedColor.getAlpha());
+                            expectedColor = ColorBGRA(palClr, expectedColor.getAlpha());
                         } else
                         {
                             if(expectedColor.getAlpha() == 0)

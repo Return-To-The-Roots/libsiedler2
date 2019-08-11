@@ -33,31 +33,7 @@ public:
     PixelBufferPaletted(uint16_t width, uint16_t height, uint8_t defValue = ArchivItem_Palette::DEFAULT_TRANSPARENT_IDX)
         : PixelBuffer<uint8_t>(width, height, defValue)
     {}
-    uint8_t get(uint16_t x, uint16_t y) const;
-    uint8_t get(uint32_t idx) const;
-    void set(uint16_t x, uint16_t y, uint8_t clrIdx);
-    void set(uint32_t idx, uint8_t clrIdx);
 };
-
-inline uint8_t PixelBufferPaletted::get(uint16_t x, uint16_t y) const
-{
-    return get(calcIdx(x, y));
-}
-
-inline uint8_t PixelBufferPaletted::get(uint32_t idx) const
-{
-    return pixels_[idx];
-}
-
-inline void PixelBufferPaletted::set(uint16_t x, uint16_t y, uint8_t clrIdx)
-{
-    set(calcIdx(x, y), clrIdx);
-}
-
-inline void PixelBufferPaletted::set(uint32_t idx, uint8_t clrIdx)
-{
-    pixels_[idx] = clrIdx;
-}
 
 namespace traits {
     template<>
