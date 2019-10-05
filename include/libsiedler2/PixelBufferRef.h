@@ -34,6 +34,10 @@ public:
     PixelBufferRefBase(PixelType* buf, uint16_t width, uint16_t height) : pixels_(buf), width_(width), height_(height) {}
     uint16_t getWidth() const { return width_; }
     uint16_t getHeight() const { return height_; }
+    uint32_t getSizeInBytes() const { return getNumPixels() * sizeof(PixelType); }
+    uint32_t getNumPixels() const { return static_cast<uint32_t>(width_) * static_cast<uint32_t>(height_); }
+    uint8_t* getPixelPtr() { return reinterpret_cast<uint8_t*>(pixels_); }
+    const uint8_t* getPixelPtr() const { return reinterpret_cast<const uint8_t*>(pixels_); }
     PixelType* getPixelPtr(uint32_t x, uint32_t y) { return &pixels_[calcIdx(x, y)]; }
     const PixelType* getPixelPtr(uint32_t x, uint32_t y) const { return &pixels_[calcIdx(x, y)]; }
 

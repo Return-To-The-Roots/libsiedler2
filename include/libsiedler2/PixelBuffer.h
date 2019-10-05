@@ -36,7 +36,7 @@ public:
     PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue);
     uint16_t getWidth() const { return width_; }
     uint16_t getHeight() const { return height_; }
-    uint32_t getSizeInBytes() const { return static_cast<uint32_t>(pixels_.size() * sizeof(T_Pixel)); }
+    uint32_t getSizeInBytes() const { return static_cast<uint32_t>(getNumPixels() * sizeof(T_Pixel)); }
     uint32_t getNumPixels() const { return static_cast<uint32_t>(pixels_.size()); }
     uint8_t* getPixelPtr() { return pixels_.empty() ? nullptr : reinterpret_cast<uint8_t*>(&pixels_[0]); }
     const uint8_t* getPixelPtr() const { return pixels_.empty() ? nullptr : reinterpret_cast<const uint8_t*>(&pixels_[0]); }

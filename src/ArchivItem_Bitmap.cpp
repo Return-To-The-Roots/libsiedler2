@@ -141,25 +141,10 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
 
 void baseArchivItem_Bitmap::flipVertical()
 {
-    std::vector<uint8_t>& buffer = getPixelData();
-    if(buffer.empty())
-        return;
-    std::vector<uint8_t> tmp(getWidth() * getBBP());
-    assert(buffer.size() >= tmp.size());
-    auto topIt = buffer.begin();
-    auto botIt = buffer.end() - tmp.size();
-    for(unsigned y = 0; y < getHeight() / 2u; y++)
-    {
-        assert(topIt + tmp.size() <= botIt);
-        // Top row to tmp
-        std::copy(topIt, topIt + tmp.size(), tmp.begin());
-        // Bottom to top
-        std::copy(botIt, botIt + tmp.size(), topIt);
-        // Tmp to bottom
-        std::copy(tmp.begin(), tmp.end(), botIt);
-        topIt += tmp.size();
-        botIt -= tmp.size();
-    }
+    if(getFormat() == FORMAT_BGRA)
+        libsiedler2::flipVertical(getBufferARGB());
+    else
+        libsiedler2::flipVertical(getBufferPaletted());
 }
 
 } // namespace libsiedler2

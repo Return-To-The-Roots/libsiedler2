@@ -90,6 +90,29 @@ inline int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const 
                   traits::GetFormat<T_PixelBuffer>::value, palette);
 }
 
+template<class T_PixelBuffer>
+void flipVertical(T_PixelBuffer&& buffer)
+{
+    if(buffer.getNumPixels() == 0)
+        return;
+    std::vector<uint8_t> tmp(buffer.getWidth() * sizeof(typename std::remove_reference_t<T_PixelBuffer>::PixelType));
+    assert(buffer.getSizeInBytes() >= tmp.size());
+    uint8_t* topIt = buffer.getPixelPtr();
+    uint8_t* botIt = buffer.getPixelPtr() + buffer.getSizeInBytes() - tmp.size();
+    for(unsigned y = 0; y < buffer.getHeight() / 2u; y++)
+    {
+        assert(topIt + tmp.size() <= botIt);
+        // Top row to tmp
+        std::copy(topIt, topIt + tmp.size(), tmp.begin());
+        // Bottom to top
+        std::copy(botIt, botIt + tmp.size(), topIt);
+        // Tmp to bottom
+        std::copy(tmp.begin(), tmp.end(), botIt);
+        topIt += tmp.size();
+        botIt -= tmp.size();
+    }
+}
+
 } // namespace libsiedler2
 
 #endif // !ARCHIVITEM_BITMAP_H_INCLUDED
