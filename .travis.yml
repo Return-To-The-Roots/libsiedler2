@@ -25,6 +25,7 @@ cache:
   directories:
     - ${HOME}/.cache/libutil
     - ${HOME}/.cache/libendian
+    - ${HOME}/.cache/boost1.64.0
 
 jobs:
   include:
