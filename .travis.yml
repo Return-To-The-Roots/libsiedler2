@@ -27,7 +27,8 @@ cache:
 
 jobs:
   include:
-    - os: linux
+    - stage: test
+      os: linux
       compiler: gcc
       env: MATRIX_EVAL="CXX=g++-6 && CC=gcc-6" GCOV=gcov-6 BUILD_TYPE=Debug RTTR_COVERAGE=1
       addons:
@@ -37,12 +38,19 @@ jobs:
     - os: linux
       compiler: gcc
       env: MATRIX_EVAL="CXX=g++-6 && CC=gcc-6" BUILD_TYPE=Release
-    - os: linux
-      compiler: clang
-      env: BUILD_TYPE=Release
     - os: osx
       compiler: clang
       env: BUILD_TYPE=Debug
+    - stage: release
+      os: linux
+      compiler: clang
+      env: BUILD_TYPE=Release
+    - os: windows
+      env: BUILD_TYPE=Release
+
+stages:
+  - name: test
+  - name: release
 
 before_install:
   - eval "${MATRIX_EVAL}"
@@ -86,3 +94,31 @@ after_success:
       # Coveralls
       coveralls-lcov coverage.info
     fi
+
+before_deploy:
+  - |
+    if [[ $TRAVIS_TAG ]]; then
+      export DPL_NAME="Release $TRAVIS_TAG"
+      export DPL_PRERELEASE="false"
+    else
+      export TRAVIS_TAG="Nightly"
+      export DPL_NAME="Nightly"
+      export DPL_PRERELEASE="true"
+    fi
+    export DPL_FILENAME="rttrUtils-${TRAVIS_OS_NAME}-${TRAVIS_TAG}.tar.gz"
+  - (cd build/installed && tar -zcf "../${DPL_FILENAME}" *)
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  skip_cleanup: true
+  file: "build/${DPL_FILENAME}"
+  overwrite: true
+  prerelease: ${DPL_PRERELEASE}
+  draft: false
+  name: ${DPL_NAME}
+  body: Tools for working with the S2 file formats build on each commit.
+  on:
+    repo: Return-To-The-Roots/libsiedler2
+    branch: master
+    condition: $TRAVIS_BUILD_STAGE_NAME == Release

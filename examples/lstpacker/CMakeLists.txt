@@ -7,6 +7,7 @@ target_link_libraries(lstpacker siedler2 nowide::static Boost::program_options)
 
 file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
 install(FILES ${RTTR_PAL5_PATH} DESTINATION .)
+install(TARGETS lstpacker DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(MSVC)
     set_property(TARGET lstpacker PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

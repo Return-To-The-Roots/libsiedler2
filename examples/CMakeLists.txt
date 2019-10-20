@@ -34,14 +34,11 @@ add_subdirectory(${RTTR_LIBSIEDLER2_DIR} libsiedler2)
 
 set(RTTR_PAL5_PATH "${RTTR_LIBSIEDLER2_DIR}/examples/pal5.act")
 
+include(GNUInstallDirs)
+
 add_subdirectory(chTransparentIdx)
 add_subdirectory(lstpacker)
 add_subdirectory(outline)
-
-include(GNUInstallDirs)
-install(TARGETS chTransparentIdx lstpacker outline
-	DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
 
 if(ClangFormat_FOUND)
     add_clangformat_target("file")
