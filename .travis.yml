@@ -53,7 +53,7 @@ before_install:
 install:
   - |
     export LIBUTIL_DIR="$DEPS_DIR/libutil"
-    [ ! -d "$LIBUTIL_DIR/src" ] && git clone https://github.com/Return-To-The-Roots/libutil.git "$LIBUTIL_DIR" || true
+    [ ! -d "$LIBUTIL_DIR/libs" ] && git clone https://github.com/Return-To-The-Roots/libutil.git "$LIBUTIL_DIR" || true
     (cd ${LIBUTIL_DIR} && git clean -fxd && git checkout master && git fetch --all && git reset --hard origin/master)
 
     export LIBENDIAN_DIR="$DEPS_DIR/libendian"

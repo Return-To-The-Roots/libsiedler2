@@ -20,7 +20,7 @@
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "libsiedler2.h"
-#include "libutil/StringConversion.h"
+#include "s25util/StringConversion.h"
 
 /** @class libsiedler2::ArchivItem_Ini
  *

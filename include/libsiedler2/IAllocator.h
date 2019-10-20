@@ -19,7 +19,7 @@
 #define IALLOCATOR_H_INCLUDED
 
 #include "enumTypes.h"
-#include "libutil/dynamicUniqueCast.h"
+#include "s25util/dynamicUniqueCast.h"
 #include <memory>
 
 namespace libsiedler2 {

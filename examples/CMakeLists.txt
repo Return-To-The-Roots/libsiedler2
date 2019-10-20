@@ -4,7 +4,7 @@ project(libsiedler2-examples)
 
 set(RTTR_LIBSIEDLER2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-find_path(RTTR_LIBUTIL_DIR NAMES "include/libutil" HINTS ${RTTR_LIBSIEDLER2_DIR}/../libutil PATHS ENV LIBUTIL_DIR PATH_SUFFIXES ".." libutil)
+find_path(RTTR_LIBUTIL_DIR NAMES "libs/common/include/s25util" HINTS ${RTTR_LIBSIEDLER2_DIR}/../libutil PATHS ENV LIBUTIL_DIR PATH_SUFFIXES ".." libutil)
 if(NOT RTTR_LIBUTIL_DIR)
     message(FATAL_ERROR "Path to libutil not found! You can set the full path in the env var LIBUTIL_DIR ($ENV{LIBUTIL_DIR})")
 endif()

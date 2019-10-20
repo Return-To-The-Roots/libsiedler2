@@ -22,7 +22,7 @@
 #include "IAllocator.h"
 #include "libsiedler2.h"
 #include "prototypen.h"
-#include "libutil/StringConversion.h"
+#include "s25util/StringConversion.h"
 #include <boost/nowide/fstream.hpp>
 #include <iomanip>
 #include <memory>

@@ -25,8 +25,8 @@
 #include "PixelBufferBGRA.h"
 #include "StandardAllocator.h"
 #include "prototypen.h"
-#include "libutil/StringConversion.h"
-#include "libutil/Tokenizer.h"
+#include "s25util/StringConversion.h"
+#include "s25util/Tokenizer.h"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
 #include <algorithm>

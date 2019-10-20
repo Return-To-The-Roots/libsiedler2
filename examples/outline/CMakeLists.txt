@@ -1,6 +1,4 @@
-file(GLOB _sources *.cpp *.h)
-add_executable(outline ${_sources})
-
+add_executable(outline outline.cpp)
 target_link_libraries(outline siedler2)
 
 file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
