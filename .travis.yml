@@ -14,11 +14,11 @@ addons:
       - cmake
       - cmake-data
       - libminiupnpc-dev
-      - cmake
-      - cmake-data
   homebrew:
     packages:
       - miniupnpc
+      - ccache
+    update: true
 
 cache:
   ccache: true
