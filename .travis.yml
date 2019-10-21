@@ -23,9 +23,7 @@ addons:
 cache:
   ccache: true
   directories:
-    - ${HOME}/.cache/libutil
-    - ${HOME}/.cache/libendian
-    - ${HOME}/.cache/boost1.64.0
+    - ${HOME}/.cache
 
 jobs:
   include:
