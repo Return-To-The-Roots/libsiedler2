@@ -59,10 +59,10 @@ install:
     [ ! -d "$LIBENDIAN_DIR/src" ] && git clone https://github.com/Return-To-The-Roots/libendian.git "$LIBENDIAN_DIR" || true
     (cd ${LIBENDIAN_DIR} && git clean -fxd && git checkout master && git fetch && git reset --hard origin/master)
   - |
-    BOOST_VERSION=1.64.0
-    BOOST_DIR="${DEPS_DIR}/boost${BOOST_VERSION}"
-    export ADDITIONAL_CMAKE_FLAGS="${ADDITIONAL_CMAKE_FLAGS} -DBOOST_ROOT=${BOOST_DIR} -DBoost_NO_SYSTEM_PATHS=ON"
-    tools/travis-ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_DIR}"
+    BOOST_VERSION=1.67.0 # For MSVC 2017 support
+    export BOOST_ROOT="${DEPS_DIR}/boost${BOOST_VERSION}"
+    export ADDITIONAL_CMAKE_FLAGS="${ADDITIONAL_CMAKE_FLAGS} -DBoost_NO_SYSTEM_PATHS=ON"
+    $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,system,program_options,thread,test,locale,iostreams,regex"
   - |
     if [ "${RTTR_COVERAGE}" = "1" ]; then
       # Install coveralls tool
