@@ -40,6 +40,8 @@ add_subdirectory(chTransparentIdx)
 add_subdirectory(lstpacker)
 add_subdirectory(outline)
 
+install(FILES README.md DESTINATION .)
+
 if(ClangFormat_FOUND)
     add_clangformat_target("file")
 endif()
