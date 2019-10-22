@@ -1,5 +1,8 @@
 # Project meant to be used as part of a super project including libutil and libendian
 cmake_minimum_required(VERSION 3.8)
+if(POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
+endif()
 project(libsiedler2)
 
 include(RttrBoostCfg)
