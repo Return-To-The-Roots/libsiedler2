@@ -1,5 +1,8 @@
 # Example project using libsiedler2 creating useful tools
 cmake_minimum_required(VERSION 3.8)
+if(POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
+endif()
 project(libsiedler2-examples)
 
 set(RTTR_LIBSIEDLER2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
