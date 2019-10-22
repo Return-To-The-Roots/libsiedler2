@@ -5,7 +5,7 @@ add_executable(chTransparentIdx chTransparentIdx.cpp)
 target_link_libraries(chTransparentIdx siedler2 nowide::static Boost::program_options)
 
 file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
-install(FILES ${RTTR_PAL5_PATH} DESTINATION .)
+install(FILES ${RTTR_PAL5_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS chTransparentIdx DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(MSVC)
