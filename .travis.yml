@@ -98,13 +98,16 @@ after_success:
 before_deploy:
   - |
     if [[ $TRAVIS_TAG ]]; then
-      export DPL_NAME="Release $TRAVIS_TAG"
-      export DPL_PRERELEASE="false"
+      export RELEASES_NAME="Release $TRAVIS_TAG"
+      export RELEASES_PRERELEASE="false"
+      export RELEASES_TARGET_COMMITISH="$TRAVIS_COMMIT"
     else
       export TRAVIS_TAG="Nightly"
-      export DPL_NAME="Nightly"
-      export DPL_PRERELEASE="true"
+      export RELEASES_NAME="Nightly"
+      export RELEASES_PRERELEASE="true"
+      export RELEASES_TARGET_COMMITISH="master"
     fi
+    export RELEASES_TAG_NAME="$TRAVIS_TAG"
     export DPL_FILENAME="rttrUtils-${TRAVIS_OS_NAME}-${TRAVIS_TAG}.tar.gz"
   - (cd build/installed && tar -zcf "../${DPL_FILENAME}" *)
 
@@ -112,12 +115,13 @@ deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   skip_cleanup: true
-  file: "build/${DPL_FILENAME}"
+  file: build/${DPL_FILENAME}
   overwrite: true
-  prerelease: ${DPL_PRERELEASE}
   draft: false
-  name: ${DPL_NAME}
+  prerelease: ${RELEASES_PRERELEASE}
+  name: ${RELEASES_NAME}
   body: Tools for working with the S2 file formats build on each commit.
+  target_commitish: ${RELEASES_TARGET_COMMITISH}
   on:
     repo: Return-To-The-Roots/libsiedler2
     branch: master

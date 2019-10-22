@@ -14,4 +14,5 @@ With this tool you can change the index to another index.
 Use `chTransparentIdx --from <254> --to <255> <foo.lst>` to change all image in that lst file.
 
 ## Outline
-This is an internal helper tool to extract the fonts from the `RESOURCE.DAT` file and convert it into a font file usable by RTTR. Is is only kept for reference and no longer actually used.
+This is an internal helper tool to extract the fonts from the `RESOURCE.DAT` file and convert it into a font file usable by RTTR.
+Is is only kept for reference and no longer actually used.
