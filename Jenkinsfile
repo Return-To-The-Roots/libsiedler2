@@ -63,6 +63,7 @@ pipeline {
                             rm -rf build || true
                             export LIBUTIL_DIR="\$(pwd)/libutil"
                             export LIBENDIAN_DIR="\$(pwd)/libendian"
+                            export TRAVIS_OS_NAME=Unix
                             tools/travis-ci/build.sh Debug ""
                         """
                     }
