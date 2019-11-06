@@ -170,10 +170,10 @@ BOOST_AUTO_TEST_CASE(CreatePalettedBmp)
     int idx = 0;
     for(auto& c : buffer.getPixels())
     {
-        c = palette->get(idx);
+        c = palette->get(idx++);
+        idx %= 256;
         if(c == TRANSPARENT_COLOR)
             c = ColorBGRA();
-        idx = ++idx % 256;
     }
     ArchivItem_Bitmap_Raw bmp;
     bmp.create(buffer, palette);
