@@ -59,9 +59,19 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
        << uint8_t(0) << uint8_t(0)                                    // aspect ratio
        << int16_t(320) << uint16_t(200);                              // page size
 
+    const uint8_t transparentIdx = palette->hasTransparency() ? palette->getTransparentIdx() : 0;
     fs.write("CMAP", 4);
     fs << uint32_t(256 * 3); // len = numColors * RGB
-    if(int ec = palette->write(fs.getStream(), false))
+    // Hack due to S2 format: If the transparent index is not zero, make it zero
+    if(transparentIdx != 0)
+    {
+        ArchivItem_Palette tmpPal{*palette};
+        const auto clr0 = tmpPal[0];
+        tmpPal.set(0, tmpPal[transparentIdx]);
+        tmpPal.set(transparentIdx, clr0);
+        if(int ec = tmpPal.write(fs.getStream(), false))
+            return ec;
+    } else if(int ec = palette->write(fs.getStream(), false))
         return ec;
 
     for(unsigned i = 1; i < items.size(); i++)
@@ -75,9 +85,20 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
     }
 
     fs.write("BODY", 4);
-    PixelBufferPaletted pixels(width, height, 0); // Transparent index is always 0
+    PixelBufferPaletted pixels(width, height, transparentIdx);
     if(int ec = bmp->print(pixels, palette))
         return ec;
+    // Hack for S2 compatibility: Swap transparent Idx
+    if(transparentIdx != 0)
+    {
+        for(auto& c : pixels.getPixels())
+        {
+            if(c == transparentIdx)
+                c = 0;
+            else if(c == 0)
+                c = transparentIdx;
+        }
+    }
     fs << uint32_t(width * height) << pixels.getPixels();
 
     const long size = fs.getPosition();

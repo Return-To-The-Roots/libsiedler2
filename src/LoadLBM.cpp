@@ -118,12 +118,8 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
                 palette->setTransparentIdx(static_cast<uint8_t>(transClr));
             else
             {
-                // For S2 TEX*.LBMs the transparent index is always 0
-                std::string fileName = bfs::path(file).stem().string();
-                if(boost::algorithm::to_upper_copy(fileName.substr(0, 3)) == "TEX")
-                    palette->setTransparentIdx(0);
-                else
-                    palette->removeTransparency();
+                // For S2 *.LBMs the transparent index is always 0
+                palette->setTransparentIdx(0);
             }
             bitmap->setPalette(std::move(palette));
         } else if(isChunk(chunk, "BODY"))
