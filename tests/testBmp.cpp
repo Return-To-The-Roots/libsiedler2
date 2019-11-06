@@ -160,6 +160,38 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
     BOOST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
+BOOST_AUTO_TEST_CASE(CreatePalettedBmp)
+{
+    std::string bmpOutPath = test::outputPath + "/outPalNew.bmp";
+    PixelBufferBGRA buffer(17, 19);
+    BOOST_TEST_REQUIRE(palette->getTransparentIdx() > 0); // Default is 0, make sure the palette is not defaulted
+    // Fill with all colors from the palette
+    BOOST_TEST_REQUIRE(buffer.getNumPixels() >= 256u); // Make sure we use all colors
+    int idx = 0;
+    for(auto& c : buffer.getPixels())
+    {
+        c = palette->get(idx);
+        if(c == TRANSPARENT_COLOR)
+            c = ColorBGRA();
+        idx = ++idx % 256;
+    }
+    ArchivItem_Bitmap_Raw bmp;
+    bmp.create(buffer, palette);
+    // Store as paletted
+    BOOST_TEST_REQUIRE(bmp.convertFormat(FORMAT_PALETTED) == 0);
+    Archiv archiv;
+    archiv.pushC(bmp);
+    BOOST_TEST_REQUIRE(Write(bmpOutPath, archiv) == 0);
+
+    Archiv archivLoad;
+    BOOST_REQUIRE(testLoad(0, bmpOutPath, archivLoad, palette));
+    PixelBufferBGRA bufferLoad(buffer.getWidth(), buffer.getHeight());
+    auto* bmpLoad = dynamic_cast<ArchivItem_Bitmap_Raw*>(archivLoad[0]);
+    BOOST_REQUIRE(bmpLoad);
+    BOOST_TEST_REQUIRE(bmpLoad->print(bufferLoad) == 0);
+    BOOST_TEST_REQUIRE(bufferLoad == buffer, boost::test_tools::per_element());
+}
+
 struct FormatSetter
 {
     const TextureFormat orig;
@@ -274,14 +306,14 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
                 BOOST_REQUIRE(bmp->getPalette());
                 // If the file contains a palette, it has to be used, otherwise the default shall be used
                 if(testFile.containsPalette)
-                    BOOST_REQUIRE(!usedPalette->isEqual(*bmp->getPalette()));
+                    BOOST_REQUIRE(*usedPalette != *bmp->getPalette());
                 else
-                    BOOST_REQUIRE(usedPalette->isEqual(*bmp->getPalette()));
+                    BOOST_REQUIRE(*usedPalette == *bmp->getPalette());
             } else if(testFile.containsPalette)
             {
                 // If the file contains a palette, it has to be used, otherwise no palette
                 BOOST_REQUIRE(bmp->getPalette());
-                BOOST_REQUIRE(!usedPalette->isEqual(*bmp->getPalette()));
+                BOOST_REQUIRE(*usedPalette != *bmp->getPalette());
                 // If the empty palette is used, we will only find transparent and black pixels. Check that this did not happen
                 bool clrFound = false;
                 for(unsigned y = 0; y < bmp->getHeight(); y++)
@@ -348,7 +380,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
                     else
                         BOOST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
                 }
-                BOOST_REQUIRE(testWrite(0, outFilepath, archiv, palette));
+                BOOST_REQUIRE(testWrite(0, outFilepath, archiv, bmpPal ? bmpPal.get() : palette));
                 if(testFile.supportsBoth && testFile.isPaletted)
                     BOOST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef)); // Still stored as RGB
                 else
@@ -393,11 +425,11 @@ BOOST_AUTO_TEST_CASE(PaletteAfterCreateBitmap)
     BOOST_REQUIRE_EQUAL(bmp.create(palBuffer, palette), 0);
     BOOST_REQUIRE_EQUAL(bmp.getFormat(), FORMAT_PALETTED);
     BOOST_REQUIRE(bmp.getPalette());
-    BOOST_REQUIRE(bmp.getPalette()->isEqual(*palette));
+    BOOST_REQUIRE(*bmp.getPalette() == *palette);
     BOOST_REQUIRE_EQUAL(bmpPl.create(palBuffer, palette), 0);
     BOOST_REQUIRE_EQUAL(bmpPl.getFormat(), FORMAT_PALETTED);
     BOOST_REQUIRE(bmpPl.getPalette());
-    BOOST_REQUIRE(bmpPl.getPalette()->isEqual(*palette));
+    BOOST_REQUIRE(*bmpPl.getPalette() == *palette);
     // ARGB
     BOOST_REQUIRE_EQUAL(bmp.create(clrBuffer), 0);
     BOOST_REQUIRE_EQUAL(bmp.getFormat(), FORMAT_BGRA);
@@ -427,13 +459,17 @@ BOOST_AUTO_TEST_CASE(PaletteUsageForPrint)
     // Paletted -> Paletted: No palette used, plain copy
     std::vector<uint8_t> outBuffer(inBuffer.size(), 42);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+    BOOST_TEST_REQUIRE(outBuffer == inBuffer, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferPl);
+    BOOST_TEST_REQUIRE(outBuffer == inBufferPl, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+    BOOST_TEST_REQUIRE(outBuffer == inBuffer, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferPl);
+    BOOST_TEST_REQUIRE(outBuffer == inBufferPl, boost::test_tools::per_element());
+    ;
 
     // Paletted -> ARGB: Prefer contained
     bmp.setPaletteCopy(*palette);
@@ -442,10 +478,12 @@ BOOST_AUTO_TEST_CASE(PaletteUsageForPrint)
     std::vector<uint8_t> outBuffer2(outBuffer.size(), 42);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_PALETTED, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == outBuffer, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_PALETTED, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == outBuffer, boost::test_tools::per_element());
+    ;
 
     // ARGB
     BOOST_REQUIRE_EQUAL(bmp.convertFormat(FORMAT_BGRA), 0);
@@ -456,31 +494,39 @@ BOOST_AUTO_TEST_CASE(PaletteUsageForPrint)
     // ARGB -> ARGB: Plain copy
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == outBuffer, boost::test_tools::per_element());
+    ;
     // Same if palette is set
     bmp.setPaletteCopy(*modPal);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == outBuffer, boost::test_tools::per_element());
+    ;
 
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_BGRA, palette), 0);
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == outBuffer, boost::test_tools::per_element());
+    ;
     bmpPl.setPaletteCopy(*modPal);
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_BGRA, modPal), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, outBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == outBuffer, boost::test_tools::per_element());
+    ;
 
     // ARGB -> Palette: Prefer passed palette
     outBuffer2.resize(inBuffer.size());
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer2[0], w, h, FORMAT_PALETTED, palette), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == inBuffer, boost::test_tools::per_element());
+    ;
     bmp.setPaletteCopy(*palette);
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBuffer);
+    BOOST_TEST_REQUIRE(outBuffer2 == inBuffer, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer2[0], w, h, FORMAT_PALETTED, palette), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBufferPl);
+    BOOST_TEST_REQUIRE(outBuffer2 == inBufferPl, boost::test_tools::per_element());
+    ;
     bmpPl.setPaletteCopy(*palette);
     BOOST_REQUIRE_EQUAL(bmpPl.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer2, inBufferPl);
+    BOOST_TEST_REQUIRE(outBuffer2 == inBufferPl, boost::test_tools::per_element());
+    ;
 
     // Error when no palette
     bmp.removePalette();
@@ -573,15 +619,19 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     BOOST_REQUIRE_EQUAL(bmpPal.print(nullptr, w, h, FORMAT_PALETTED), ErrorCode::INVALID_BUFFER);
     // Do nothing
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == emptyBufferPal, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == emptyBufferPal, boost::test_tools::per_element());
+    ;
     // Succeed
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == inBufferPal, boost::test_tools::per_element());
+    ;
     // Write to RGBA buffer
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
+    BOOST_TEST_REQUIRE(outBuffer == inBufferRGB, boost::test_tools::per_element());
+    ;
 
     // Test partial write
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
@@ -621,9 +671,11 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     // Now write to paletted buffer
     // Succeed
     BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == inBufferPal, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+    BOOST_TEST_REQUIRE(outBuffer == inBuffer, boost::test_tools::per_element());
+    ;
 }
 
 BOOST_AUTO_TEST_CASE(TransparentTex)
@@ -648,24 +700,32 @@ BOOST_AUTO_TEST_CASE(TransparentTex)
     std::vector<uint8_t> outBuffer(inBuffer.size(), 42);
     std::vector<uint8_t> outBufferCheck(outBuffer);
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPlayerPal.print(&outBuffer[0], w, h, FORMAT_PALETTED), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
 
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPlayerPal.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
 
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_PALETTED, palette), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
 
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPlayer.print(&outBuffer[0], w, h, FORMAT_BGRA, palette), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, outBufferCheck);
+    BOOST_TEST_REQUIRE(outBuffer == outBufferCheck, boost::test_tools::per_element());
+    ;
 }
 
 BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
@@ -726,15 +786,19 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     // Fail on NULL
     BOOST_REQUIRE_EQUAL(bmpPal.print(nullptr, w, h, FORMAT_PALETTED, nullptr, playerClrStart), ErrorCode::INVALID_BUFFER);
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], 0, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == emptyBufferPal, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, 0, FORMAT_PALETTED, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, emptyBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == emptyBufferPal, boost::test_tools::per_element());
+    ;
     // Succeed
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == inBufferPal, boost::test_tools::per_element());
+    ;
     // Write to RGBA buffer
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBufferRGB);
+    BOOST_TEST_REQUIRE(outBuffer == inBufferRGB, boost::test_tools::per_element());
+    ;
 
     // Test partial write
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
@@ -774,9 +838,11 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     BOOST_REQUIRE_EQUAL(bmp.getHeight(), bh);
 
     BOOST_REQUIRE_EQUAL(bmp.print(&outBufferPal[0], w, h, FORMAT_PALETTED, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBufferPal, inBufferPal);
+    BOOST_TEST_REQUIRE(outBufferPal == inBufferPal, boost::test_tools::per_element());
+    ;
     BOOST_REQUIRE_EQUAL(bmp.print(&outBuffer[0], w, h, FORMAT_BGRA, palette, playerClrStart), 0);
-    RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+    BOOST_TEST_REQUIRE(outBuffer == inBuffer, boost::test_tools::per_element());
+    ;
 }
 
 BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapPaletted)
@@ -797,7 +863,8 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapPaletted)
         {
             PixelBufferPaletted outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), 42);
             BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, nullptr, curPlrClr), 0);
-            RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+            BOOST_TEST_REQUIRE(outBuffer == inBuffer, boost::test_tools::per_element());
+            ;
         }
         // Print to RGB buffer
         {
@@ -866,7 +933,8 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapARGB)
         {
             PixelBufferBGRA outBuffer(inBuffer.getWidth(), inBuffer.getHeight(), randColor());
             BOOST_REQUIRE_EQUAL(bmp.print(outBuffer, palette, curPlrClr), 0);
-            RTTR_REQUIRE_EQUAL_COLLECTIONS(outBuffer, inBuffer);
+            BOOST_TEST_REQUIRE(outBuffer == inBuffer, boost::test_tools::per_element());
+            ;
         }
         // Just player colors
         // Print to paletted buffer

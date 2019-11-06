@@ -124,6 +124,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
             ColorBGRA clr = ColorBGRA::fromBGRA(&colors[i][0]); // NOTE: Alpha is always 0!
             pal->set(i, clr);                                   //-V522
         }
+        pal->setDefaultTransparentIdx();
         bitmap->setPalette(std::move(pal));
     }
 
