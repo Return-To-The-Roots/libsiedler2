@@ -50,7 +50,7 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     const uint16_t width = bitmap->getWidth();
     const uint16_t height = bitmap->getHeight();
     BmpFileHeader bmpHd;
-    BitmapInfoHeader bmih;
+    BitmapInfoHeader bmih{};
     setChunkId(bmpHd.header, "BM");
     bmpHd.reserved = 0;
     bmih.headerSize = sizeof(bmih);
