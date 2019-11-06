@@ -31,6 +31,12 @@ class PixelBuffer
 {
 public:
     using PixelType = T_Pixel;
+    using Container = std::vector<T_Pixel>;
+    // Compatibility with Boost < 1.67
+    using iterator = typename Container::iterator;
+    using const_iterator = typename Container::const_iterator;
+    using value_type = typename Container::value_type;
+    auto size() const { return pixels_.size(); }
 
     PixelBuffer() : width_(0), height_(0) {}
     PixelBuffer(uint16_t width, uint16_t height, T_Pixel defValue);
@@ -64,7 +70,7 @@ private:
     uint16_t width_, height_;
 
 protected:
-    std::vector<T_Pixel> pixels_;
+    Container pixels_;
 };
 
 template<typename T_Pixel>

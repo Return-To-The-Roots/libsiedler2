@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE(CreatePalettedBmp)
     // Fill with all colors from the palette
     BOOST_TEST_REQUIRE(buffer.getNumPixels() >= 256u); // Make sure we use all colors
     int idx = 0;
-    for(auto& c : buffer.getPixels())
+    for(auto& c : buffer)
     {
         c = palette->get(idx++);
         idx %= 256;
