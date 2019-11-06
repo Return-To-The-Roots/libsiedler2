@@ -74,9 +74,8 @@ public:
     /// Copy palette to the buffer as BGRA. Ignores transparency
     void copyToBGRA(uint8_t* buffer, size_t bufSize) const;
 
-    /// Return true iff the 2 palettes specify the same colors
-    bool isEqual(const ArchivItem_Palette& other) const;
-
+    /// Set the transparent index to the first index containing TRANSPARENT_COLOR, or zero if not found
+    void setDefaultTransparentIdx();
     /// Return true iff transparency is enabled with this palette
     bool hasTransparency() const { return transparentIdx < 256; }
     /// Enable transparency for the given color index
