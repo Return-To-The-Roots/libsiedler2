@@ -11,7 +11,7 @@ See `lstpacker --help` for details on usage but mostly it is `lstpacker <foo.lst
 The image files have a special palette index that is used as the transparent color.
 With this tool you can change the index to another index.
 
-Use `chTransparentIdx --from <254> --to <255> <foo.lst>` to change all image in that lst file.
+Use `chTransparentIdx --from <254> --to <255> <foo.lst>` to change all images in that lst file.
 
 ## Outline
 This is an internal helper tool to extract the fonts from the `RESOURCE.DAT` file and convert it into a font file usable by RTTR.

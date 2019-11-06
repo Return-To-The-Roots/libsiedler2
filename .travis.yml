@@ -97,16 +97,12 @@ after_success:
 
 before_deploy:
   - |
-    if [[ $TRAVIS_TAG ]]; then
-      export RELEASES_NAME="Release $TRAVIS_TAG"
+    if [[ "$TRAVIS_TAG" == v* ]] && ! [[ "$TRAVIS_TAG" == *-rc* ]]; then
       export RELEASES_PRERELEASE="false"
-      export RELEASES_TARGET_COMMITISH="$TRAVIS_COMMIT"
     else
-      export TRAVIS_TAG="Nightly"
-      export RELEASES_NAME="Nightly"
       export RELEASES_PRERELEASE="true"
-      export RELEASES_TARGET_COMMITISH="master"
     fi
+    export RELEASES_NAME="Settlers 2 Tools $TRAVIS_TAG"
     export RELEASES_TAG_NAME="$TRAVIS_TAG"
     export DPL_FILENAME="rttrUtils-${TRAVIS_OS_NAME}-${TRAVIS_TAG}.tar.gz"
   - (cd build/installed && tar -zcf "../${DPL_FILENAME}" *)
@@ -126,3 +122,4 @@ deploy:
     repo: Return-To-The-Roots/libsiedler2
     branch: master
     condition: $TRAVIS_BUILD_STAGE_NAME == Release
+    tags: true
