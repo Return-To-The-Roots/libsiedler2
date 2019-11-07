@@ -1,6 +1,6 @@
 language: cpp
 dist: xenial
-if: branch = master
+if: branch = master OR tag IS present
 
 notifications:
   email: false
@@ -116,10 +116,9 @@ deploy:
   draft: false
   prerelease: ${RELEASES_PRERELEASE}
   name: ${RELEASES_NAME}
-  body: Tools for working with the S2 file formats build on each commit.
-  target_commitish: ${RELEASES_TARGET_COMMITISH}
+  body: Tools for working with the S2 file formats.
+  #target_commitish: ${RELEASES_TARGET_COMMITISH}
   on:
     repo: Return-To-The-Roots/libsiedler2
-    branch: master
     condition: $TRAVIS_BUILD_STAGE_NAME == Release
     tags: true
