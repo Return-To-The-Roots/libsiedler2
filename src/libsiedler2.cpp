@@ -217,7 +217,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         std::unique_ptr<ArchivItem> newItem;
         if(entry.bobtype == BOBTYPE_FONT)
         {
-            auto font = std::make_unique<ArchivItem_Font>();
+            auto font = getAllocator().create<ArchivItem_Font>(BOBTYPE_FONT);
             font->isUnicode = boost::algorithm::to_lower_copy(bfs::path(entry.filePath).extension().string()) == ".fonx";
             font->setDx(static_cast<uint8_t>(entry.nx));
             font->setDy(static_cast<uint8_t>(entry.ny));
