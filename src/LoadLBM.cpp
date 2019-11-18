@@ -31,8 +31,6 @@
 #include <iostream>
 #include <memory>
 
-namespace bfs = boost::filesystem;
-
 /**
  *  lädt eine LBM-File in ein Archiv.
  *
