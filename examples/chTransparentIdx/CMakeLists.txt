@@ -2,7 +2,7 @@ find_package(Boost 1.64 REQUIRED COMPONENTS system program_options)
 
 add_executable(chTransparentIdx chTransparentIdx.cpp)
 
-target_link_libraries(chTransparentIdx siedler2 nowide::static Boost::program_options)
+target_link_libraries(chTransparentIdx siedler2 Boost::nowide Boost::program_options)
 
 file(COPY ${RTTR_PAL5_PATH} DESTINATION "${CMAKE_BINARY_DIR}")
 install(FILES ${RTTR_PAL5_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})

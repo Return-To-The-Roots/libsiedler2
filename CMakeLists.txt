@@ -13,7 +13,7 @@ file(GLOB_RECURSE _headers include/*.h include/*.hpp)
 add_library(siedler2 STATIC ${_sources} ${_headers})
 
 target_include_directories(siedler2 INTERFACE include PRIVATE include/libsiedler2)
-target_link_libraries(siedler2 PUBLIC s25util::common PRIVATE nowide::static Boost::filesystem Boost::iostreams endian::interface)
+target_link_libraries(siedler2 PUBLIC s25util::common PRIVATE Boost::nowide Boost::filesystem Boost::iostreams endian::interface)
 target_compile_features(siedler2 PUBLIC cxx_std_14)
 set_target_properties(siedler2 PROPERTIES CXX_EXTENSIONS OFF)
 if(WIN32)
