@@ -49,8 +49,8 @@ int main(int argc, char* argv[])
     bpo::options_description desc("Usage:\n"
                                   "pack:   lstpacker <directory>\n"
                                   "unpack: lstpacker <file.lst> <file.lst> ...\n");
-    desc.add_options()("help,h", "Show help")("file,f", bpo::value<std::vector<bfs::path> >()->multitoken(),
-                                              "File to unpack or directory to pack")("palette,p", bpo::value<bfs::path>(),
+    desc.add_options()("help,h", "Show help")("file,f", bpo::value<std::vector<std::string>>()->multitoken(),
+                                              "File to unpack or directory to pack")("palette,p", bpo::value<std::string>(),
                                                                                      "Palette  (bbm/act) to use instead of default one")(
       "palAsTxt,t", "Output palettes as human readable txt files")(
       "texFmt", bpo::value<std::string>(&texFmt)->default_value("original"),
@@ -81,8 +81,8 @@ int main(int argc, char* argv[])
 
     if(options.count("palette"))
     {
-        bfs::path palPath = options["palette"].as<bfs::path>();
-        if(libsiedler2::Load(palPath.string(), bbm) != 0)
+        const auto palPath = options["palette"].as<std::string>();
+        if(libsiedler2::Load(palPath, bbm) != 0)
         {
             bnw::cerr << "Error: Could not load given palette: " << palPath << std::endl;
             bnw::cerr << "Retrying with default ones" << std::endl;
@@ -103,10 +103,10 @@ int main(int argc, char* argv[])
         }
     }
 
-    libsiedler2::ArchivItem_Palette* palette = (libsiedler2::ArchivItem_Palette*)bbm[0];
+    libsiedler2::ArchivItem_Palette* palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(bbm[0]);
 
-    std::vector<bfs::path> inputPaths(options["file"].as<std::vector<bfs::path> >());
-    for(const bfs::path& inputPath : inputPaths)
+    const auto inputPaths = options["file"].as<std::vector<std::string>>();
+    for(const bfs::path inputPath : inputPaths)
     {
         if(!bfs::exists(inputPath))
         {
