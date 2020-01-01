@@ -113,7 +113,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
     std::vector<bool> loaded(numGoodImgs, false);
 
     std::vector<uint8_t> heights(numGoodImgs);
-    std::vector<std::vector<uint16_t> > starts(numGoodImgs);
+    std::vector<std::vector<uint16_t>> starts(numGoodImgs);
     std::vector<uint8_t> ny(numGoodImgs);
 
     for(uint16_t i = 0; i < numGoodImgs; ++i)

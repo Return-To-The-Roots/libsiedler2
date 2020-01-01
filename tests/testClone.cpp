@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(CloneFromBasePtr)
     auto f = std::make_unique<Bar>(42, 1337);
     auto* basePtr = static_cast<BarBase*>(f.get());
     auto f2 = clone(basePtr);
-    static_assert(std::is_same<decltype(f2), std::unique_ptr<BarBase> >::value, "Must be the same");
+    static_assert(std::is_same<decltype(f2), std::unique_ptr<BarBase>>::value, "Must be the same");
     BOOST_TEST((f && f2 && basePtr));
     BOOST_TEST(f->i == 42);
     BOOST_TEST(f->j == 1337);

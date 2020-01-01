@@ -72,7 +72,7 @@ public:
     ArchivItem* operator[](size_t index) { return get(index); }
 
 private:
-    std::vector<std::unique_ptr<ArchivItem> > data; /// elements
+    std::vector<std::unique_ptr<ArchivItem>> data; /// elements
 };
 } // namespace libsiedler2
 

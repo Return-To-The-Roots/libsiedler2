@@ -13,5 +13,5 @@ include(EnableWarnings)
 enable_warnings(outline)
 
 if(ClangFormat_FOUND)
-    add_clangFormat_files(${_sources})
+    add_clangFormat_files(outline.cpp)
 endif()
