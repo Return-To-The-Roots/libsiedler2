@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
     bpo::options_description desc("Usage:\n"
                                   "unpack: chTransparentIdx <file.lst>\n"
                                   "Optionally pass a color palette file (bbm/act) to use instead of default one");
-    desc.add_options()("help,h", "Show help")("file,f", bpo::value<std::vector<bfs::path> >()->multitoken(),
-                                              "File(s) to repack")("palette,p", bpo::value<bfs::path>(), "Palette to use")(
+    desc.add_options()("help,h", "Show help")("file,f", bpo::value<std::vector<std::string>>()->multitoken(),
+                                              "File(s) to repack")("palette,p", bpo::value<std::string>(), "Palette to use")(
       "from", bpo::value<uint8_t>()->default_value(254), "Original transparent color index")("to", bpo::value<uint8_t>()->default_value(0),
                                                                                              "New transparent color index");
     bpo::positional_options_description positionalOptions;
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 
     if(options.count("palette"))
     {
-        bfs::path palPath = options["palette"].as<bfs::path>();
+        const bfs::path palPath = options["palette"].as<std::string>();
         if(libsiedler2::Load(palPath.string(), bbm) != 0)
         {
             bnw::cerr << "Error: Could not load given palette: " << palPath << std::endl;
@@ -88,9 +88,10 @@ int main(int argc, char* argv[])
         }
     }
 
-    libsiedler2::ArchivItem_Palette* palette = (libsiedler2::ArchivItem_Palette*)bbm[0];
+    libsiedler2::ArchivItem_Palette* palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(bbm[0]);
 
-    for(const bfs::path& inputPath : options["file"].as<std::vector<bfs::path> >())
+    const auto inputPaths = options["file"].as<std::vector<std::string>>();
+    for(const bfs::path inputPath : inputPaths)
     {
         if(!bfs::exists(inputPath))
         {
