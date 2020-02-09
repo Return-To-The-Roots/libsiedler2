@@ -41,7 +41,7 @@ bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
             return false;
     }
     // Both negative or same
-    for(auto const& it : boost::combine(left.name, right.name))
+    for(const auto it : boost::combine(left.name, right.name))
     {
         auto const lhs = tolower(it.get<0>());
         auto const rhs = tolower(it.get<1>());
