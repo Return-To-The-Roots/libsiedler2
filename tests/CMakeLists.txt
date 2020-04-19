@@ -1,4 +1,4 @@
-include(AddMacros)
+include(AddTestcase)
 
 get_filename_component(RTTR_LIBSIEDLER2_TEST_FILES_DIR "testFiles" ABSOLUTE)
 configure_file(config.h.cmake include/test/config.h @ONLY)
