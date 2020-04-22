@@ -22,7 +22,7 @@ cmake \
     -DRTTR_ENABLE_WERROR=ON \
     -DCMAKE_INSTALL_PREFIX="$PWD/installed" \
     ${CMAKE_FLAGS} \
-    ../examples
+    ..
 
 cmake --build . --target install --config "${BUILD_TYPE}" -- $BUILD_FLAGS
 
