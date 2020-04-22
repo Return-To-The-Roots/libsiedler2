@@ -27,7 +27,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/nowide/args.hpp>
-#include <boost/nowide/integration/filesystem.hpp>
+#include <boost/nowide/filesystem.hpp>
 #include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 

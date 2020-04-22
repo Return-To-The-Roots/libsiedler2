@@ -1,5 +1,4 @@
 version: 1.0.{build}
-clone_folder: C:\projects\libsiedler2
 branches:
   only:
   - master
@@ -14,8 +13,12 @@ platform:
   - Win32
   - x64
     
+environment:
+  global:
+    BOOST_DIR: 'C:\Libraries\boost_1_65_1'
+    RTTR_DISABLE_ASSERT_BREAKPOINT: 1
+
 install:
-  - set BOOST_DIR=C:\Libraries\boost_1_65_1
   - git clone https://github.com/Return-To-The-Roots/libutil.git libutil
   - git clone https://github.com/Return-To-The-Roots/libendian.git libendian
   - set CMAKE_PREFIX_PATH=%CMAKE_PREFIX_PATH%;%cd%\libutil;%cd%\libendian
@@ -25,15 +28,9 @@ before_build:
   - cd build
   - if "%platform%"=="Win32" set CMAKE_GENERATOR=Visual Studio 14 2015
   - if "%platform%"=="x64" set CMAKE_GENERATOR=Visual Studio 14 2015 Win64
-  - cmake -G "%CMAKE_GENERATOR%" -DRTTR_ENABLE_WERROR=ON -DBOOST_ROOT="%BOOST_DIR%" ..\examples
-  - cd ..
+  - cmake -G "%CMAKE_GENERATOR%" -DRTTR_ENABLE_WERROR=ON -DBOOST_ROOT="%BOOST_DIR%" ..
     
-build:
-  project: build/libsiedler2-examples.sln
-  parallel: true
+build_script: cmake --build . --config %configuration% -j3
 
-test_script:
-  - cd build
-  - set RTTR_DISABLE_ASSERT_BREAKPOINT="1"
-  - ctest --output-on-failure -C %configuration%
-  - cd ..
+test_script: ctest --output-on-failure -C %configuration% -j3
+
