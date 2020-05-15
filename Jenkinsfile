@@ -1,4 +1,4 @@
-dockerRegistry = "git.ra-doersch.de:5005/"
+dockerRegistry = "registry.mytrap.de/"
 dockerCredentials = "2d20af83-9ebd-4a5a-b6ee-c77bec430970"
 dockerImage = "rttr/cross-compiler/linux/linux-amd64-docker:master"
 
