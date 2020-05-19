@@ -173,7 +173,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bob::write(std::ostream&, const ArchivItem_Palette*) const
+int libsiedler2::ArchivItem_Bob::write(std::ostream&, const ArchivItem_Palette*)
 {
     return ErrorCode::UNSUPPORTED_FORMAT;
 }

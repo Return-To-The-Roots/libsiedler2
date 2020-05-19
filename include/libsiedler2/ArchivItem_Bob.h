@@ -43,7 +43,7 @@ public:
     int load(std::istream& file, const ArchivItem_Palette* palette);
 
     /// schreibt die Bobdaten in eine Datei.
-    int write(std::ostream& file, const ArchivItem_Palette* palette) const;
+    static int write(std::ostream& file, const ArchivItem_Palette* palette);
 
     uint32_t getNumGoodImgs() const { return numGoodImgs; }
     uint32_t getNumItems() const { return uint32_t(links.size()); }
