@@ -40,7 +40,7 @@ int libsiedler2::loader::LoadINI(const std::string& file, Archiv& items)
 
     while(!ini.eof())
     {
-        auto item = getAllocator().create<ArchivItem_Ini>(BOBTYPE_INI);
+        auto item = getAllocator().create<ArchivItem_Ini>(BobType::Ini);
 
         if(int ec = item->load(ini))
             return ec;

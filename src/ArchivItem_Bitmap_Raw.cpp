@@ -37,13 +37,13 @@ class ArchivItem_Palette;
 
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw()
 {
-    bobtype_ = BOBTYPE_BITMAP_RAW;
+    bobtype_ = BobType::Bitmap;
 }
 
 libsiedler2::baseArchivItem_Bitmap_Raw::baseArchivItem_Bitmap_Raw(const baseArchivItem_Bitmap_Raw& item)
     : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item)
 {
-    bobtype_ = BOBTYPE_BITMAP_RAW;
+    bobtype_ = BobType::Bitmap;
 }
 
 libsiedler2::baseArchivItem_Bitmap_Raw::~baseArchivItem_Bitmap_Raw() = default;
@@ -78,20 +78,20 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     if(length != static_cast<uint32_t>(width * height))
         return ErrorCode::WRONG_FORMAT;
 
-    TextureFormat outFormat = getWantedFormat(FORMAT_PALETTED);
+    TextureFormat outFormat = getWantedFormat(TextureFormat::Paletted);
     // Speicher anlegen
     if(length > 0)
     {
-        int ec = create(&data[0], width, height, FORMAT_PALETTED, palette);
+        int ec = create(&data[0], width, height, TextureFormat::Paletted, palette);
         if(ec)
             return ec;
         ec = convertFormat(outFormat);
         if(ec)
             return ec;
-        if(getFormat() == FORMAT_BGRA)
+        if(getFormat() == TextureFormat::BGRA)
             removePalette();
     } else
-        init(0, 0, outFormat, outFormat == FORMAT_PALETTED ? palette : nullptr);
+        init(0, 0, outFormat, outFormat == TextureFormat::Paletted ? palette : nullptr);
 
     // Unbekannte Daten überspringen
     fs.ignore(8);

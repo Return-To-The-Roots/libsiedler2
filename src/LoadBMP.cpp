@@ -99,7 +99,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(bmih.planes != 1)
         return ErrorCode::WRONG_FORMAT;
 
-    std::unique_ptr<baseArchivItem_Bitmap> bitmap(getAllocator().create<baseArchivItem_Bitmap>(BOBTYPE_BITMAP_RAW));
+    std::unique_ptr<baseArchivItem_Bitmap> bitmap(getAllocator().create<baseArchivItem_Bitmap>(BobType::Bitmap));
     bitmap->setName(file);
 
     // keine Kompression
@@ -118,7 +118,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
         if(!bmpFs.read(colors[0], numClrsUsed * 4))
             return ErrorCode::UNEXPECTED_EOF;
 
-        auto pal = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
+        auto pal = getAllocator().create<ArchivItem_Palette>(BobType::Palette);
         for(unsigned i = 0; i < numClrsUsed; ++i)
         {
             ColorBGRA clr = ColorBGRA::fromBGRA(&colors[i][0]); // NOTE: Alpha is always 0!
@@ -152,7 +152,8 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
     if(!bmpFs)
         return ErrorCode::UNEXPECTED_EOF;
 
-    if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height, (bbp == 1) ? FORMAT_PALETTED : FORMAT_BGRA))
+    if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height,
+                               (bbp == 1) ? TextureFormat::Paletted : TextureFormat::BGRA))
         return ec;
     if(ArchivItem_BitmapBase::getWantedFormat(bitmap->getFormat()) != bitmap->getFormat())
     {

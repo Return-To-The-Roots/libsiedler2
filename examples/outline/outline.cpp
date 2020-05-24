@@ -41,7 +41,7 @@ int main(int /*argc*/, char* /*argv*/ [])
     Archiv to;
     for(unsigned i = 0; i < 4; ++i)
     {
-        if(lst.get(i)->getBobType() == BOBTYPE_FONT)
+        if(lst.get(i)->getBobType() == BobType::Font)
         {
             ArchivItem_Font& font = dynamic_cast<ArchivItem_Font&>(*lst.get(i));
 

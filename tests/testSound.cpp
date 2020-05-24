@@ -26,6 +26,13 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
+namespace libsiedler2 {
+static std::ostream& boost_test_print_type(std::ostream& os, SoundType st)
+{
+    return os << static_cast<unsigned>(st);
+}
+} // namespace libsiedler2
+
 BOOST_AUTO_TEST_SUITE(Sounds)
 
 BOOST_AUTO_TEST_CASE(ReadWriteOgg)
@@ -57,19 +64,19 @@ BOOST_AUTO_TEST_CASE(ReadOrigSnds)
     BOOST_REQUIRE_EQUAL(archivLst.size(), 200u);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[0]);
     BOOST_REQUIRE(snd);
-    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
+    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SoundType::XMidi);
     BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
     BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 39003u);
     BOOST_REQUIRE(!archivLst[1]);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[51]);
     BOOST_REQUIRE(snd);
-    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_WAVE);
+    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SoundType::Wave);
     BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_Wave*>(snd)->getLength(), 9943u);
     libsiedler2::Archiv archivSNG;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathSNG, archivSNG), 0);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivSNG[0]);
     BOOST_REQUIRE(snd);
-    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SOUNDTYPE_XMIDI);
+    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SoundType::XMidi);
     BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
     BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 6830u);
 }
@@ -142,7 +149,7 @@ BOOST_AUTO_TEST_CASE(Clone)
     libsiedler2::ArchivItem_Sound_Midi snd1;
     libsiedler2::ArchivItem_Sound_XMidi snd2;
     libsiedler2::ArchivItem_Sound_Wave snd3;
-    libsiedler2::ArchivItem_Sound_Other snd4(libsiedler2::SOUNDTYPE_MP3);
+    libsiedler2::ArchivItem_Sound_Other snd4(libsiedler2::SoundType::MP3);
     // Add some data
     snd1.addTrack(libsiedler2::MIDI_Track());
     snd2.addTrack(libsiedler2::XMIDI_Track());

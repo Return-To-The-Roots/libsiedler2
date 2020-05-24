@@ -79,7 +79,7 @@ int libsiedler2::loader::LoadBBM(const std::string& file, Archiv& items)
                 return ErrorCode::WRONG_FORMAT;
 
             // Daten von Item auswerten
-            auto palette = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
+            auto palette = getAllocator().create<ArchivItem_Palette>(BobType::Palette);
 
             boost::filesystem::path filePath(file);
             if(filePath.has_filename())

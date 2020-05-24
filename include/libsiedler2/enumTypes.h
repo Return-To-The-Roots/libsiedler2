@@ -22,44 +22,48 @@
 
 namespace libsiedler2 {
 /** Supported texture formats */
-enum TextureFormat
+enum class TextureFormat
 {
-    FORMAT_ORIGINAL,
-    FORMAT_PALETTED,
-    FORMAT_BGRA
+    Original,
+    Paletted,
+    BGRA
 };
 
 /** Supported bob types */
-enum BobType
+enum class BobType
 {
-    BOBTYPE_NONE = 0,
-    BOBTYPE_SOUND = 1,
-    BOBTYPE_BITMAP_RLE = 2,
-    BOBTYPE_FONT = 3,
-    BOBTYPE_BITMAP_PLAYER = 4,
-    BOBTYPE_PALETTE = 5,
-    BOBTYPE_BOB = 6,
-    BOBTYPE_BITMAP_SHADOW = 7,
-    BOBTYPE_MAP = 8,
-    BOBTYPE_TEXT = 9,
-    BOBTYPE_RAW = 10,
-    BOBTYPE_MAP_HEADER = 11,
-    BOBTYPE_INI = 12,
-    BOBTYPE_UNSET,
-    BOBTYPE_BITMAP_RAW = 14,
-    BOBTYPE_PALETTE_ANIM
+    // Order matters
+    None,
+    Sound,
+    BitmapRLE,
+    Font,
+    BitmapPlayer,
+    Palette,
+    Bob,
+    BitmapShadow,
+    Map,
+    Text,
+    Raw,
+    MapHeader,
+    // Extension (not in S2)
+    Ini,
+    Unset,
+    Bitmap,
+    PaletteAnim
 };
-static const uint16_t NUM_BOB_TYPES = BOBTYPE_PALETTE_ANIM + 1;
+static constexpr auto NUM_BOB_TYPES = static_cast<unsigned>(BobType::PaletteAnim) + 1u;
 
-enum SoundType
+enum class SoundType
 {
-    SOUNDTYPE_NONE = 0,
-    SOUNDTYPE_WAVE = 1,
-    SOUNDTYPE_MIDI = 2,
-    SOUNDTYPE_XMIDI = 3,
-    SOUNDTYPE_MP3,
-    SOUNDTYPE_OGG,
-    SOUNDTYPE_OTHER = 99
+    // Order matters
+    None,
+    Wave,
+    Midi,
+    XMidi,
+    // Extension (not in S2)
+    MP3,
+    OGG,
+    Other = 99
 };
 
 /**
@@ -68,18 +72,19 @@ enum SoundType
  * representation in SWD.
  * @see http://settlers2.net/documentation/world-map-file-format-wldswd/
  */
-enum Animal
+enum class Animal : uint8_t
 {
-    A_None = 0x00,
-    A_Rabbit = 0x01,
-    A_Fox = 0x02,
-    A_Stag = 0x03,
-    A_Deer = 0x04,
-    A_Duck = 0x05,
-    A_Sheep = 0x06,
-    A_Deer2 = 0x07,
-    A_Duck2 = 0x08,
-    A_Donkey = 0x09
+    // Order matters
+    None,
+    Rabbit,
+    Fox,
+    Stag,
+    Deer,
+    Duck,
+    Sheep,
+    Deer2,
+    Duck2,
+    Donkey
 };
 
 /**

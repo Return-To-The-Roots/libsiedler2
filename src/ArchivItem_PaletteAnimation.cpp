@@ -24,7 +24,7 @@
 
 namespace libsiedler2 {
 ArchivItem_PaletteAnimation::ArchivItem_PaletteAnimation()
-    : ArchivItem(BOBTYPE_PALETTE_ANIM), isActive(false), moveUp(true), rate(16384), firstClr(0), lastClr(0)
+    : ArchivItem(BobType::PaletteAnim), isActive(false), moveUp(true), rate(16384), firstClr(0), lastClr(0)
 {}
 
 int ArchivItem_PaletteAnimation::load(std::istream& file)

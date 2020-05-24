@@ -29,7 +29,7 @@ namespace libsiedler2 {
  *  Klasse für WAVE-Sounds.
  */
 
-ArchivItem_Sound_Wave::ArchivItem_Sound_Wave() : ArchivItem_Sound(SOUNDTYPE_WAVE) {}
+ArchivItem_Sound_Wave::ArchivItem_Sound_Wave() : ArchivItem_Sound(SoundType::Wave) {}
 
 /**
  *  lädt die Wave-Daten aus einer Datei.

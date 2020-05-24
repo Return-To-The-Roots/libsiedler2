@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
         bnw::cout << "Repacking file " << inputPath << " to " << outPath << std::endl;
 
         palette->setTransparentIdx(options["from"].as<uint8_t>());
-        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
+        libsiedler2::setGlobalTextureFormat(libsiedler2::TextureFormat::BGRA);
         libsiedler2::Archiv lst;
         if(int ec = Load(inputPath.string(), lst, palette))
         {

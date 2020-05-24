@@ -58,7 +58,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
     // (at least) 1 item
     items.alloc(1);
 
-    auto bitmap = getAllocator().create<baseArchivItem_Bitmap>(BOBTYPE_BITMAP_RAW);
+    auto bitmap = getAllocator().create<baseArchivItem_Bitmap>(BobType::Bitmap);
 
     uint16_t width = 0, height = 0, transClr = 0;
     uint8_t compression = 0, mask = 0;
@@ -97,7 +97,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
         {
             if(!bitmap)
                 return ErrorCode::WRONG_FORMAT;
-            auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BOBTYPE_PALETTE_ANIM);
+            auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BobType::PaletteAnim);
             if(int ec = anim->load(lbm.getStream()))
                 return ec;
             items.push(std::move(anim));
@@ -109,7 +109,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             if(chunkLen != 256 * 3)
                 return ErrorCode::WRONG_FORMAT;
 
-            auto palette = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
+            auto palette = getAllocator().create<ArchivItem_Palette>(BobType::Palette);
             if(int ec = palette->load(lbm.getStream(), false))
                 return ec;
             if(mask == 2 && transClr < 256)
@@ -128,7 +128,7 @@ int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
             if(bitmap->getPalette() == nullptr)
                 return ErrorCode::PALETTE_MISSING;
 
-            bitmap->init(width, height, ArchivItem_BitmapBase::getWantedFormat(FORMAT_PALETTED));
+            bitmap->init(width, height, ArchivItem_BitmapBase::getWantedFormat(TextureFormat::Paletted));
 
             if(compression == 0) // unkomprimiert
             {

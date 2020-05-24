@@ -41,7 +41,7 @@ namespace libsiedler2 { namespace loader {
         std::string header;
         if(!std::getline(fs, header) || header != txtPalHeader)
             return ErrorCode::WRONG_HEADER;
-        auto pal = getAllocator().create<ArchivItem_Palette>(BOBTYPE_PALETTE);
+        auto pal = getAllocator().create<ArchivItem_Palette>(BobType::Palette);
         items.alloc(1);
         std::string transparency, sColor;
         unsigned hasTransparency, transpColorIdx;
@@ -104,7 +104,7 @@ namespace libsiedler2 { namespace loader {
                 else
                     return ErrorCode::WRONG_FORMAT;
             }
-            auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BOBTYPE_PALETTE_ANIM);
+            auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BobType::PaletteAnim);
             if(int ec = anim->loadFromTxt(fs))
                 return ec;
             if(idx >= items.size())
@@ -124,7 +124,7 @@ namespace libsiedler2 { namespace loader {
         {
             if(!items[idx])
                 continue;
-            if(items[idx]->getBobType() != BOBTYPE_PALETTE_ANIM)
+            if(items[idx]->getBobType() != BobType::PaletteAnim)
                 continue;
             fs << idx << '\t';
             if(int ec = dynamic_cast<const ArchivItem_PaletteAnimation*>(items[idx])->writeToTxt(fs))

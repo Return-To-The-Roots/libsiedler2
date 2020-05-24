@@ -25,7 +25,7 @@
 namespace libsiedler2 {
 struct FileEntry
 {
-    explicit FileEntry(std::string filePath) : FileEntry(std::move(filePath), "", -1, BOBTYPE_UNSET, 0, 0) {}
+    explicit FileEntry(std::string filePath) : FileEntry(std::move(filePath), "", -1, BobType::Unset, 0, 0) {}
     FileEntry(std::string filePath, std::string name, int nr, BobType bobtype, unsigned nx, unsigned ny)
         : filePath(std::move(filePath)), name(std::move(name)), nr(nr), bobtype(bobtype), nx(nx), ny(ny)
     {}

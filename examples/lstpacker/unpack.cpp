@@ -69,9 +69,9 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
 
         switch(item->getBobType())
         {
-            case BOBTYPE_SOUND: // WAVs, MIDIs
+            case BobType::Sound: // WAVs, MIDIs
             {
-                unsigned short subtype = SOUNDTYPE_NONE;
+                auto subtype = SoundType::None;
 
                 const ArchivItem_Sound* i = dynamic_cast<const ArchivItem_Sound*>(item);
                 if(item)
@@ -79,11 +79,8 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
 
                 switch(subtype)
                 {
-                    case SOUNDTYPE_NONE: cerr << "Unsupported sound ignored: " << newFileBaseName << endl; break;
-                    case SOUNDTYPE_MIDI: // MIDI
-                        cerr << "Unsupported midi sound ignored: " << newFileBaseName << endl;
-                        break;
-                    case SOUNDTYPE_WAVE: // WAV
+                    case SoundType::Midi: cerr << "Unsupported midi sound ignored: " << newFileBaseName << endl; break;
+                    case SoundType::Wave:
                     {
                         newfile << "wav";
 
@@ -98,7 +95,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                             cout << "failed" << endl;
                     }
                     break;
-                    case SOUNDTYPE_XMIDI: // XMIDI
+                    case SoundType::XMidi:
                     {
                         newfile << "midi";
 
@@ -117,13 +114,11 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                         cout << endl;
                         break;
                     }
-                    case SOUNDTYPE_OTHER: // Andere
-                        cerr << "Unsupported other sound ignored: " << newFileBaseName << endl;
-                        break;
+                    default: cerr << "Unsupported other sound ignored: " << newFileBaseName << endl; break;
                 }
             }
             break;
-            case BOBTYPE_FONT: // Font
+            case BobType::Font:
             {
                 cout << "extracting " << newFileBaseName << ": ";
 
@@ -138,7 +133,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 unpack(newfile.str(), *font, palette, font->isUnicode ? "U+" : "");
             }
             break;
-            case BOBTYPE_PALETTE: // Palette
+            case BobType::Palette:
             {
                 Archiv items;
                 items.pushC(*item);
@@ -154,7 +149,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     loader::WriteTxtPalette(newFileBaseName + "palette.txt", static_cast<const libsiedler2::ArchivItem_Palette&>(*item));
             }
             break;
-            case BOBTYPE_BOB: // Bobfiles
+            case BobType::Bob:
             {
                 const ArchivItem_Bob* bob = dynamic_cast<const ArchivItem_Bob*>(item);
                 unpack(directory, *bob, palette);
@@ -168,10 +163,8 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 }
             }
             break;
-            case BOBTYPE_MAP: // Mapfiles
-                cerr << "MapFile is not supported. Ignored: " << newfile.str() << endl;
-                break;
-            case BOBTYPE_TEXT: // Text
+            case BobType::Map: cerr << "MapFile is not supported. Ignored: " << newfile.str() << endl; break;
+            case BobType::Text:
             {
                 newfile << "txt";
                 cout << "extracting " << newfile.str() << ": ";
@@ -185,13 +178,9 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     cout << "failed" << endl;
             }
             break;
-            case BOBTYPE_RAW: // Raw-Item
-                cerr << "Raw item is not supported. Ignored: " << newFileBaseName << endl;
-                break;
-            case BOBTYPE_MAP_HEADER: // Mapheader-Item
-                cerr << "Map-header is not supported. Ignored: " << newFileBaseName << endl;
-                break;
-            case BOBTYPE_BITMAP_RLE: // RLE komprimiertes Bitmap
+            case BobType::Raw: cerr << "Raw item is not supported. Ignored: " << newFileBaseName << endl; break;
+            case BobType::MapHeader: cerr << "Map-header is not supported. Ignored: " << newFileBaseName << endl; break;
+            case BobType::BitmapRLE: // RLE komprimiertes Bitmap
                 if(!filenameAdjusted)
                 {
                     newfile << "rle.";
@@ -199,7 +188,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 }
                 BOOST_FALLTHROUGH;
                 // no break
-            case BOBTYPE_BITMAP_PLAYER: // Bitmap mit spezifischer Spielerfarbe
+            case BobType::BitmapPlayer: // Bitmap mit spezifischer Spielerfarbe
                 if(!filenameAdjusted)
                 {
                     newfile << "player.";
@@ -207,7 +196,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 }
                 BOOST_FALLTHROUGH;
                 // no break
-            case BOBTYPE_BITMAP_SHADOW: // Schatten
+            case BobType::BitmapShadow:
                 if(!filenameAdjusted)
                 {
                     newfile << "shadow.";
@@ -215,7 +204,7 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 }
                 BOOST_FALLTHROUGH;
                 // no break
-            case BOBTYPE_BITMAP_RAW: // unkomprimiertes Bitmap
+            case BobType::Bitmap: // uncompressed Bitmap
             {
                 Archiv items;
                 const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
@@ -233,8 +222,8 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     loader::WriteTxtPalette(newFileBaseName + "palette.txt", *bitmap.getPalette());
             }
             break;
-            case BOBTYPE_PALETTE_ANIM: containsPalAnim = true; break;
-            default: cerr << "Unhandled bobtype: " << item->getBobType() << endl;
+            case BobType::PaletteAnim: containsPalAnim = true; break;
+            default: cerr << "Unhandled bobtype: " << static_cast<unsigned>(item->getBobType()) << endl;
         }
     }
 

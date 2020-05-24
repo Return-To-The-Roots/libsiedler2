@@ -32,9 +32,9 @@ class IAllocator
 {
 public:
     virtual ~IAllocator() = default;
-    virtual std::unique_ptr<ArchivItem> create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const = 0;
+    virtual std::unique_ptr<ArchivItem> create(BobType type, SoundType subtype = SoundType::None) const = 0;
     template<class T>
-    std::unique_ptr<T> create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const
+    std::unique_ptr<T> create(BobType type, SoundType subtype = SoundType::None) const
     {
         return libutil::dynamicUniqueCast<T>(create(type, subtype));
     }

@@ -47,7 +47,14 @@ public:
 
 using namespace libsiedler2;
 
-void save(const ArchivItem_Bitmap_Raw& bmp, const boost::filesystem::path& path)
+namespace libsiedler2 {
+static std::ostream& boost_test_print_type(std::ostream& os, BobType bt)
+{
+    return os << static_cast<unsigned>(bt);
+}
+} // namespace libsiedler2
+
+static void save(const ArchivItem_Bitmap_Raw& bmp, const boost::filesystem::path& path)
 {
     libsiedler2::Archiv archive;
     archive.pushC(bmp);
@@ -84,11 +91,11 @@ BOOST_AUTO_TEST_CASE(ReadFolderInfoReturnsCorrectFiles)
     BOOST_TEST_REQUIRE(info.size() == 5);
     std::sort(info.begin(), info.end());
     const std::vector<FileEntry> infoExpected = {
-      FileEntry{(lstPath.get() / "1.player.nx5.ny7.bmp").string(), "", 1, BOBTYPE_BITMAP_PLAYER, 5, 7},
-      FileEntry{(lstPath.get() / "3.rle.nx1.ny9.bmp").string(), "", 3, BOBTYPE_BITMAP_RLE, 1, 9},
-      FileEntry{(lstPath.get() / "5.cooltext.txt").string(), "cooltext", 5, BOBTYPE_TEXT, 0, 0},
-      FileEntry{(lstPath.get() / "a.bmp").string(), "a", -1, BOBTYPE_BITMAP_RAW, 0, 0},
-      FileEntry{(lstPath.get() / "f.bmp").string(), "f", -1, BOBTYPE_BITMAP_RAW, 0, 0},
+      FileEntry{(lstPath.get() / "1.player.nx5.ny7.bmp").string(), "", 1, BobType::BitmapPlayer, 5, 7},
+      FileEntry{(lstPath.get() / "3.rle.nx1.ny9.bmp").string(), "", 3, BobType::BitmapRLE, 1, 9},
+      FileEntry{(lstPath.get() / "5.cooltext.txt").string(), "cooltext", 5, BobType::Text, 0, 0},
+      FileEntry{(lstPath.get() / "a.bmp").string(), "a", -1, BobType::Bitmap, 0, 0},
+      FileEntry{(lstPath.get() / "f.bmp").string(), "f", -1, BobType::Bitmap, 0, 0},
     };
     for(unsigned i = 0; i < infoExpected.size(); i++)
     {
@@ -110,22 +117,22 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
     BOOST_TEST_REQUIRE(archive.size() == 8);
     BOOST_TEST_REQUIRE(!archive[0]);
     BOOST_TEST_REQUIRE(archive[1]);
-    BOOST_TEST_REQUIRE(archive[1]->getBobType() == BOBTYPE_BITMAP_PLAYER);
+    BOOST_TEST_REQUIRE(archive[1]->getBobType() == BobType::BitmapPlayer);
     BOOST_TEST_REQUIRE(archive[1]->getName() == "");
     BOOST_TEST_REQUIRE(!archive[2]);
     BOOST_TEST_REQUIRE(archive[3]);
-    BOOST_TEST_REQUIRE(archive[3]->getBobType() == BOBTYPE_BITMAP_RLE);
+    BOOST_TEST_REQUIRE(archive[3]->getBobType() == BobType::BitmapRLE);
     BOOST_TEST_REQUIRE(archive[3]->getName() == "");
     BOOST_TEST_REQUIRE(!archive[4]);
     BOOST_TEST_REQUIRE(archive[5]);
-    BOOST_TEST_REQUIRE(archive[5]->getBobType() == BOBTYPE_TEXT);
+    BOOST_TEST_REQUIRE(archive[5]->getBobType() == BobType::Text);
     BOOST_TEST_REQUIRE(static_cast<ArchivItem_Text&>(*archive[5]).getText() == "Hello World");
     BOOST_TEST_REQUIRE(archive[5]->getName() == "cooltext");
     BOOST_TEST_REQUIRE(archive[6]);
-    BOOST_TEST_REQUIRE(archive[6]->getBobType() == BOBTYPE_BITMAP_RAW);
+    BOOST_TEST_REQUIRE(archive[6]->getBobType() == BobType::Bitmap);
     BOOST_TEST_REQUIRE(archive[6]->getName() == "a");
     BOOST_TEST_REQUIRE(archive[7]);
-    BOOST_TEST_REQUIRE(archive[7]->getBobType() == BOBTYPE_BITMAP_RAW);
+    BOOST_TEST_REQUIRE(archive[7]->getBobType() == BobType::Bitmap);
     BOOST_TEST_REQUIRE(archive[7]->getName() == "f");
 }
 

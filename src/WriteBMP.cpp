@@ -110,9 +110,9 @@ int libsiedler2::loader::WriteBMP(const std::string& file, const Archiv& items, 
     }
 
     std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4), isPaletted ? palette->getTransparentIdx() : 0);
-    TextureFormat bufFmt = isPaletted ? FORMAT_PALETTED : FORMAT_BGRA;
+    TextureFormat bufFmt = isPaletted ? TextureFormat::Paletted : TextureFormat::BGRA;
 
-    if(bitmap->getBobType() == BOBTYPE_BITMAP_PLAYER)
+    if(bitmap->getBobType() == BobType::BitmapPlayer)
     {
         const auto* bmpPl = dynamic_cast<const ArchivItem_Bitmap_Player*>(bitmap);
         if(!bmpPl)

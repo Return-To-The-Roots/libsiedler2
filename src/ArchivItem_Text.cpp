@@ -38,7 +38,7 @@
  *  Die Länge des Textes.
  */
 
-libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem(BOBTYPE_TEXT) {}
+libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem(BobType::Text) {}
 
 libsiedler2::ArchivItem_Text::~ArchivItem_Text() = default;
 

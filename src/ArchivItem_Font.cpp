@@ -39,7 +39,7 @@
  *  Y-Buchstabenabstand.
  */
 
-libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(BOBTYPE_FONT), isUnicode(false), dx(0), dy(0) {}
+libsiedler2::ArchivItem_Font::ArchivItem_Font() : ArchivItem(BobType::Font), isUnicode(false), dx(0), dy(0) {}
 
 /**
  *  lädt die Fontdaten aus einer Datei.
@@ -84,7 +84,7 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
             return ErrorCode::UNEXPECTED_EOF;
         auto bobtype = static_cast<BobType>(bobtype_s);
 
-        if(bobtype == BOBTYPE_NONE)
+        if(bobtype == BobType::None)
             continue;
 
         // Daten von Item auswerten
@@ -133,7 +133,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
     for(size_t i = 32; i < numChars; ++i)
     {
         const ArchivItem* item = get(i);
-        BobType bobtype = BOBTYPE_NONE;
+        BobType bobtype = BobType::None;
 
         if(item)
             bobtype = item->getBobType();

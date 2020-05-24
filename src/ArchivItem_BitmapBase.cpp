@@ -30,7 +30,7 @@ namespace libsiedler2 {
  *  Basis-Basisklasse für Bitmapitems.
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase() : nx_(0), ny_(0), width_(0), height_(0), palette_(nullptr), format_(FORMAT_BGRA) {}
+ArchivItem_BitmapBase::ArchivItem_BitmapBase() : nx_(0), ny_(0), width_(0), height_(0), palette_(nullptr), format_(TextureFormat::BGRA) {}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem(item)
 {
@@ -63,7 +63,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, uint8_t colorIdx)
     assert(x < width_ && y < height_);
 
     uint8_t* pxlPtr = getPixelPtr(x, y);
-    if(getFormat() == FORMAT_PALETTED)
+    if(getFormat() == TextureFormat::Paletted)
         *pxlPtr = colorIdx;
     else
     {
@@ -91,7 +91,7 @@ void ArchivItem_BitmapBase::setPixel(uint16_t x, uint16_t y, const ColorBGRA clr
     assert(x < width_ && y < height_);
 
     uint8_t* pxlPtr = getPixelPtr(x, y);
-    if(getFormat() == FORMAT_PALETTED)
+    if(getFormat() == TextureFormat::Paletted)
     {
         // Palettenindex setzen
         if(clr.getAlpha() == 0)
@@ -120,7 +120,7 @@ uint8_t ArchivItem_BitmapBase::getPixelClrIdx(uint16_t x, uint16_t y, const Arch
 {
     assert(x < width_ && y < height_);
 
-    if(getFormat() == FORMAT_PALETTED)
+    if(getFormat() == TextureFormat::Paletted)
         return getPalettedPixel(x, y);
     else
     {
@@ -138,7 +138,7 @@ ColorBGRA ArchivItem_BitmapBase::getPixel(uint16_t x, uint16_t y) const
 {
     assert(x < width_ && y < height_);
 
-    if(getFormat() == FORMAT_PALETTED)
+    if(getFormat() == TextureFormat::Paletted)
     {
         uint8_t pxlVal = getPalettedPixel(x, y);
         return (palette_->isTransparent(pxlVal)) ? ColorBGRA() : ColorBGRA(palette_->get(pxlVal));
@@ -158,19 +158,19 @@ const uint8_t* ArchivItem_BitmapBase::getPixelPtr(uint16_t x, uint16_t y) const
 
 uint8_t ArchivItem_BitmapBase::getPalettedPixel(uint16_t x, uint16_t y) const
 {
-    assert(format_ == FORMAT_PALETTED);
+    assert(format_ == TextureFormat::Paletted);
     return pxlData_[y * width_ + x];
 }
 
 ColorBGRA ArchivItem_BitmapBase::getARGBPixel(uint16_t x, uint16_t y) const
 {
-    assert(format_ == FORMAT_BGRA);
+    assert(format_ == TextureFormat::BGRA);
     return ColorBGRA::fromBGRA(&pxlData_[(y * width_ + x) * 4u]);
 }
 
 PixelBufferPalettedRef ArchivItem_BitmapBase::getBufferPaletted() const
 {
-    if(getFormat() != FORMAT_PALETTED)
+    if(getFormat() != TextureFormat::Paletted)
         throw std::logic_error("Image not paletted");
     assert(palette_);
     return PixelBufferPalettedRef(const_cast<uint8_t*>(pxlData_.data()), width_, height_, *palette_);
@@ -178,7 +178,7 @@ PixelBufferPalettedRef ArchivItem_BitmapBase::getBufferPaletted() const
 
 PixelBufferBGRARef ArchivItem_BitmapBase::getBufferARGB() const
 {
-    if(getFormat() != FORMAT_BGRA)
+    if(getFormat() != TextureFormat::BGRA)
         throw std::logic_error("Image not BGRA");
     return PixelBufferBGRARef(reinterpret_cast<uint32_t*>(const_cast<uint8_t*>(pxlData_.data())), width_, height_);
 }
@@ -186,7 +186,7 @@ PixelBufferBGRARef ArchivItem_BitmapBase::getBufferARGB() const
 TextureFormat ArchivItem_BitmapBase::getWantedFormat(TextureFormat origFormat)
 {
     TextureFormat globFmt = getGlobalTextureFormat();
-    if(globFmt == FORMAT_ORIGINAL)
+    if(globFmt == TextureFormat::Original)
         return origFormat;
     else
         return globFmt;
@@ -194,7 +194,7 @@ TextureFormat ArchivItem_BitmapBase::getWantedFormat(TextureFormat origFormat)
 
 void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat format)
 {
-    if(format == FORMAT_ORIGINAL)
+    if(format == TextureFormat::Original)
         throw std::logic_error("Must set the actual texture format!");
 
     clear();
@@ -204,25 +204,25 @@ void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat fo
     else if(height == 0)
         width = 0;
 
-    if(format == FORMAT_PALETTED && !palette_)
+    if(format == TextureFormat::Paletted && !palette_)
         throw std::runtime_error("Palette is missing");
 
     width_ = width;
     height_ = height;
     format_ = format;
 
-    uint8_t clear = (format == FORMAT_PALETTED) ? palette_->getTransparentIdx() : 0; //-V522
+    uint8_t clear = (format == TextureFormat::Paletted) ? palette_->getTransparentIdx() : 0; //-V522
 
     pxlData_.resize(width_ * height_ * getBBP(), clear);
 }
 
 void ArchivItem_BitmapBase::init(int16_t width, int16_t height, TextureFormat format, const ArchivItem_Palette* newPal)
 {
-    if(format == FORMAT_PALETTED && !newPal)
+    if(format == TextureFormat::Paletted && !newPal)
         throw std::runtime_error("Palette is missing");
     // Set new format to BGRA to allow removing of palette
-    if(format == FORMAT_BGRA)
-        format_ = FORMAT_BGRA;
+    if(format == TextureFormat::BGRA)
+        format_ = TextureFormat::BGRA;
     if(newPal)
         setPaletteCopy(*newPal);
     else
@@ -283,12 +283,12 @@ void ArchivItem_BitmapBase::setNy(int16_t ny)
 int ArchivItem_BitmapBase::convertFormat(TextureFormat newFormat)
 {
     // Nothing to do
-    if(newFormat == FORMAT_ORIGINAL || newFormat == format_)
+    if(newFormat == TextureFormat::Original || newFormat == format_)
         return ErrorCode::NONE;
 
     if(!palette_)
         return ErrorCode::PALETTE_MISSING;
-    if(newFormat == FORMAT_BGRA)
+    if(newFormat == TextureFormat::BGRA)
     {
         PixelBufferBGRA newBuffer(width_, height_);
         for(unsigned y = 0; y < height_; y++)
@@ -339,7 +339,7 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
 
 bool ArchivItem_BitmapBase::checkPalette(const ArchivItem_Palette& palette) const
 {
-    if(format_ == FORMAT_PALETTED)
+    if(format_ == TextureFormat::Paletted)
         return true;
     for(unsigned y = 0; y < height_; y++)
     {
@@ -361,7 +361,7 @@ bool ArchivItem_BitmapBase::checkPalette(const ArchivItem_Palette& palette) cons
  */
 void ArchivItem_BitmapBase::setPalette(std::unique_ptr<ArchivItem_Palette> palette)
 {
-    if(!palette && format_ == FORMAT_PALETTED)
+    if(!palette && format_ == TextureFormat::Paletted)
         throw std::runtime_error("Cannot remove palette from paletted image");
     palette_ = std::move(palette);
 }

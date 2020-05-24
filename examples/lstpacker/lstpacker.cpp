@@ -69,11 +69,11 @@ int main(int argc, char* argv[])
         return 1;
     }
     if(texFmt == "original" || texFmt == "o")
-        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_ORIGINAL);
+        libsiedler2::setGlobalTextureFormat(libsiedler2::TextureFormat::Original);
     else if(texFmt == "paletted" || texFmt == "p")
-        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_PALETTED);
+        libsiedler2::setGlobalTextureFormat(libsiedler2::TextureFormat::Paletted);
     else if(texFmt == "BGRA" || texFmt == "B" || texFmt == "bgra" || texFmt == "b")
-        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_BGRA);
+        libsiedler2::setGlobalTextureFormat(libsiedler2::TextureFormat::BGRA);
     else
         throw bpo::validation_error(bpo::validation_error::invalid_option_value, "texFmt");
 

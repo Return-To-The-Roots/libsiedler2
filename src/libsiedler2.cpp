@@ -70,7 +70,7 @@ struct Initializer
     {
         assert(libsiedler2::allocator == nullptr);
         libsiedler2::setAllocator(new libsiedler2::StandardAllocator());
-        libsiedler2::setGlobalTextureFormat(libsiedler2::FORMAT_ORIGINAL);
+        libsiedler2::setGlobalTextureFormat(libsiedler2::TextureFormat::Original);
     }
     ~Initializer() { libsiedler2::setAllocator(nullptr); }
 };
@@ -212,12 +212,12 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
     for(const FileEntry& entry : folderInfos)
     {
         // Ignore
-        if(entry.bobtype == BOBTYPE_UNSET)
+        if(entry.bobtype == BobType::Unset)
             continue;
         std::unique_ptr<ArchivItem> newItem;
-        if(entry.bobtype == BOBTYPE_FONT)
+        if(entry.bobtype == BobType::Font)
         {
-            auto font = getAllocator().create<ArchivItem_Font>(BOBTYPE_FONT);
+            auto font = getAllocator().create<ArchivItem_Font>(BobType::Font);
             font->isUnicode = boost::algorithm::to_lower_copy(bfs::path(entry.filePath).extension().string()) == ".fonx";
             font->setDx(static_cast<uint8_t>(entry.nx));
             font->setDy(static_cast<uint8_t>(entry.ny));
@@ -230,20 +230,20 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 return ec;
 
             newItem = std::move(font);
-        } else if(entry.bobtype != BOBTYPE_NONE)
+        } else if(entry.bobtype != BobType::None)
         {
             const ArchivItem_Palette* curPal = palette;
             if(entry.nr >= 0)
             {
-                if(static_cast<unsigned>(entry.nr) < items.size() && items[entry.nr]->getBobType() == BOBTYPE_PALETTE)
+                if(static_cast<unsigned>(entry.nr) < items.size() && items[entry.nr]->getBobType() == BobType::Palette)
                     curPal = static_cast<const ArchivItem_Palette*>(items[entry.nr]);
-            } else if(!items.empty() && items[items.size() - 1u]->getBobType() == BOBTYPE_PALETTE)
+            } else if(!items.empty() && items[items.size() - 1u]->getBobType() == BobType::Palette)
                 curPal = static_cast<const ArchivItem_Palette*>(items[items.size() - 1u]);
             Archiv tmpItems;
             if(int ec = Load(entry.filePath, tmpItems, curPal))
                 return ec;
-            if(entry.bobtype == BOBTYPE_BITMAP_PLAYER || entry.bobtype == BOBTYPE_BITMAP_RAW || entry.bobtype == BOBTYPE_BITMAP_RLE
-               || entry.bobtype == BOBTYPE_BITMAP_SHADOW)
+            if(entry.bobtype == BobType::BitmapPlayer || entry.bobtype == BobType::Bitmap || entry.bobtype == BobType::BitmapRLE
+               || entry.bobtype == BobType::BitmapShadow)
             {
                 if(tmpItems.size() != 1)
                     return ErrorCode::UNSUPPORTED_FORMAT;
@@ -259,7 +259,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                         return ErrorCode::UNSUPPORTED_FORMAT;
                     auto convertedBmp = getAllocator().create<ArchivItem_BitmapBase>(entry.bobtype);
                     std::fill(buffer.begin(), buffer.end(), ColorBGRA());
-                    if(bmp->getBobType() == BOBTYPE_BITMAP_PLAYER)
+                    if(bmp->getBobType() == BobType::BitmapPlayer)
                     {
                         auto* bmpPlayer = dynamic_cast<ArchivItem_Bitmap_Player*>(bmp);
                         assert(bmpPlayer);
@@ -275,9 +275,9 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
 
                     switch(entry.bobtype)
                     {
-                        case BOBTYPE_BITMAP_RLE:
-                        case BOBTYPE_BITMAP_SHADOW:
-                        case BOBTYPE_BITMAP_RAW:
+                        case BobType::BitmapRLE:
+                        case BobType::BitmapShadow:
+                        case BobType::Bitmap:
                         {
                             auto* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp.get());
                             assert(bmpBase);
@@ -285,7 +285,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                                 return ec;
                             break;
                         }
-                        case BOBTYPE_BITMAP_PLAYER:
+                        case BobType::BitmapPlayer:
                         {
                             auto* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp.get());
                             assert(bmpPl);
@@ -302,7 +302,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 bmp->setNy(entry.ny);
                 if(curPal)
                     bmp->setPaletteCopy(*curPal);
-            } else if(entry.bobtype == BOBTYPE_PALETTE_ANIM)
+            } else if(entry.bobtype == BobType::PaletteAnim)
             {
                 for(unsigned i = 0; i < tmpItems.size(); i++)
                 {
@@ -424,16 +424,16 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
         std::vector<std::string> wf = Tokenizer(fileName, ".").explode();
 
         if(wf.back() == "fon" || wf.back() == "fonx")
-            file.bobtype = BOBTYPE_FONT;
+            file.bobtype = BobType::Font;
         else if(wf.back() == "bmp")
-            file.bobtype = BOBTYPE_BITMAP_RAW;
+            file.bobtype = BobType::Bitmap;
         else if(wf.back() == "bbm" || wf.back() == "act")
-            file.bobtype = BOBTYPE_PALETTE;
+            file.bobtype = BobType::Palette;
         else if(wf.back() == "txt" || wf.back() == "ger" || wf.back() == "eng")
-            file.bobtype = BOBTYPE_TEXT;
+            file.bobtype = BobType::Text;
         else if(wf.back() == "empty")
-            file.bobtype = BOBTYPE_NONE;
-        if(file.bobtype != BOBTYPE_UNSET)
+            file.bobtype = BobType::None;
+        if(file.bobtype != BobType::Unset)
             wf.pop_back();
 
         std::string sNr = wf.empty() ? "" : wf.front();
@@ -449,15 +449,15 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
         for(const std::string& part : wf)
         {
             if(part == "rle")
-                file.bobtype = BOBTYPE_BITMAP_RLE;
+                file.bobtype = BobType::BitmapRLE;
             else if(part == "player")
-                file.bobtype = BOBTYPE_BITMAP_PLAYER;
+                file.bobtype = BobType::BitmapPlayer;
             else if(part == "shadow")
-                file.bobtype = BOBTYPE_BITMAP_SHADOW;
+                file.bobtype = BobType::BitmapShadow;
             else if(part == "paletteanims")
-                file.bobtype = BOBTYPE_PALETTE_ANIM;
+                file.bobtype = BobType::PaletteAnim;
             else if(part == "palette")
-                file.bobtype = BOBTYPE_PALETTE;
+                file.bobtype = BobType::Palette;
 
             else if(part.substr(0, 2) == "nx" || part.substr(0, 2) == "dx")
                 file.nx = s25util::fromStringClassic<unsigned>(part.substr(2));

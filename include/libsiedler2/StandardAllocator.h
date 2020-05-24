@@ -27,7 +27,7 @@ class StandardAllocator : public IAllocator
 {
 public:
     ~StandardAllocator() override = default;
-    std::unique_ptr<ArchivItem> create(BobType type, SoundType subtype = SOUNDTYPE_NONE) const override;
+    std::unique_ptr<ArchivItem> create(BobType type, SoundType subtype = SoundType::None) const override;
 };
 
 } // namespace libsiedler2

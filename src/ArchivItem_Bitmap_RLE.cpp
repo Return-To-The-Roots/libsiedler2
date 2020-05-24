@@ -36,13 +36,13 @@
 
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE()
 {
-    bobtype_ = BOBTYPE_BITMAP_RLE;
+    bobtype_ = BobType::BitmapRLE;
 }
 
 libsiedler2::baseArchivItem_Bitmap_RLE::baseArchivItem_Bitmap_RLE(const baseArchivItem_Bitmap_RLE& item)
     : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item)
 {
-    bobtype_ = BOBTYPE_BITMAP_RLE;
+    bobtype_ = BobType::BitmapRLE;
 }
 
 libsiedler2::baseArchivItem_Bitmap_RLE::~baseArchivItem_Bitmap_RLE() = default;
@@ -80,7 +80,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
     fs >> data;
 
     // Speicher anlegen
-    init(width, height, getWantedFormat(FORMAT_PALETTED), palette);
+    init(width, height, getWantedFormat(TextureFormat::Paletted), palette);
 
     if(length != 0)
     {
@@ -122,7 +122,7 @@ int libsiedler2::baseArchivItem_Bitmap_RLE::load(std::istream& file, const Archi
         if(position != length)
             return ErrorCode::WRONG_FORMAT;
     }
-    if(getFormat() == FORMAT_BGRA)
+    if(getFormat() == TextureFormat::BGRA)
         removePalette();
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;

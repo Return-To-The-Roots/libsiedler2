@@ -38,7 +38,7 @@ namespace traits {
     template<>
     struct GetFormat<PixelBufferBGRA>
     {
-        static constexpr TextureFormat value = FORMAT_BGRA;
+        static constexpr TextureFormat value = TextureFormat::BGRA;
     };
 } // namespace traits
 

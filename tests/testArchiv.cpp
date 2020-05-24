@@ -29,6 +29,12 @@ std::ostream& boost_test_print_type(std::ostream& ostr, std::unique_ptr<T> const
 {
     return ostr << right.get();
 }
+namespace libsiedler2 {
+static std::ostream& boost_test_print_type(std::ostream& os, libsiedler2::BobType bt)
+{
+    return os << static_cast<unsigned>(bt);
+}
+} // namespace libsiedler2
 
 BOOST_AUTO_TEST_SUITE(Archiv)
 
@@ -114,19 +120,19 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
 {
     using namespace libsiedler2;
     libsiedler2::Archiv archiv;
-    for(int i = 1; i < libsiedler2::NUM_BOB_TYPES; i++)
+    for(unsigned i = 1; i < NUM_BOB_TYPES; i++)
     {
-        auto bobType = libsiedler2::BobType(i);
-        if(bobType == libsiedler2::BOBTYPE_UNSET || bobType == libsiedler2::BOBTYPE_SOUND)
+        auto bobType = BobType(i);
+        if(bobType == BobType::Unset || bobType == BobType::Sound)
             continue;
-        auto item = libsiedler2::getAllocator().create(bobType);
+        auto item = getAllocator().create(bobType);
         BOOST_REQUIRE(item);
         item->setName("Item" + std::to_string(i));
         archiv.push(std::move(item));
     }
-    for(SoundType soundType : {SOUNDTYPE_WAVE, SOUNDTYPE_MIDI, SOUNDTYPE_XMIDI, SOUNDTYPE_MP3, SOUNDTYPE_OGG, SOUNDTYPE_OTHER})
+    for(SoundType soundType : {SoundType::Wave, SoundType::Midi, SoundType::XMidi, SoundType::MP3, SoundType::OGG, SoundType::Other})
     {
-        auto item = libsiedler2::getAllocator().create(libsiedler2::BOBTYPE_SOUND, soundType);
+        auto item = libsiedler2::getAllocator().create(BobType::Sound, soundType);
         BOOST_REQUIRE(item);
         item->setName("Sound" + std::to_string(static_cast<int>(soundType)));
         archiv.push(std::move(item));

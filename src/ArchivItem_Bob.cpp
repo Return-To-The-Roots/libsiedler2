@@ -28,7 +28,7 @@
  *  Klasse für Bobfiles.
  */
 
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BOBTYPE_BOB), numGoodImgs(0) {}
+libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BobType::Bob), numGoodImgs(0) {}
 
 libsiedler2::ArchivItem_Bob::~ArchivItem_Bob() = default;
 
@@ -76,7 +76,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         if(!(fs >> starts >> ny))
             return ErrorCode::UNEXPECTED_EOF;
 
-        auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BOBTYPE_BITMAP_PLAYER);
+        auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
         assert(image);
         image->setNx(16); //-V522
         image->setNy(ny);
@@ -149,7 +149,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         if(loaded[links[i]])
             continue;
 
-        auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BOBTYPE_BITMAP_PLAYER);
+        auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
         assert(image);
         image->setNx(16); //-V522
         image->setNy(ny[links[i]]);

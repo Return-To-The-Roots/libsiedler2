@@ -65,7 +65,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
     const Rect toRect{to_x, to_y, buffer_width, buffer_height};
 
     auto doCall = [this, fromRect, toRect](auto&& dstBuf) {
-        if(this->getFormat() == FORMAT_PALETTED)
+        if(this->getFormat() == TextureFormat::Paletted)
         {
             const PixelBufferPalettedRef srcBuf = this->getBufferPaletted();
             CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
@@ -76,7 +76,7 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
         }
     };
 
-    if(buffer_format == FORMAT_PALETTED)
+    if(buffer_format == TextureFormat::Paletted)
     {
         if(!dstPalette)
         {
@@ -115,9 +115,9 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;
-    if(!palette && buffer_format == FORMAT_PALETTED)
+    if(!palette && buffer_format == TextureFormat::Paletted)
         palette = getPalette();
-    if(!palette && buffer_format == FORMAT_PALETTED)
+    if(!palette && buffer_format == TextureFormat::Paletted)
         return ErrorCode::PALETTE_MISSING;
 
     // Texturspeicher anfordern
@@ -141,7 +141,7 @@ int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t
 
 void baseArchivItem_Bitmap::flipVertical()
 {
-    if(getFormat() == FORMAT_BGRA)
+    if(getFormat() == TextureFormat::BGRA)
         libsiedler2::flipVertical(getBufferARGB());
     else
         libsiedler2::flipVertical(getBufferPaletted());

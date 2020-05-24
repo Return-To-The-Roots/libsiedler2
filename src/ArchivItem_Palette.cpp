@@ -34,7 +34,7 @@
  *  Klasse für Paletten.
  */
 
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BOBTYPE_PALETTE), transparentIdx(DEFAULT_TRANSPARENT_IDX) {}
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BobType::Palette), transparentIdx(DEFAULT_TRANSPARENT_IDX) {}
 
 libsiedler2::ArchivItem_Palette::~ArchivItem_Palette() = default;
 

@@ -144,7 +144,7 @@ private:
 // Define inline in header to allow optimizations
 inline uint32_t ArchivItem_BitmapBase::getBBP(TextureFormat format)
 {
-    return (format == FORMAT_PALETTED) ? 1 : 4;
+    return (format == TextureFormat::Paletted) ? 1 : 4;
 }
 
 template<typename T>

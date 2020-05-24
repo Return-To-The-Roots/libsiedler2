@@ -27,9 +27,9 @@
  *  Klasse für INI-Dateien (genauer gesagt eine Sektion).
  */
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(BOBTYPE_INI) {}
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(BobType::Ini) {}
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(BOBTYPE_INI)
+libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(BobType::Ini)
 {
     setName(name);
 }
@@ -120,7 +120,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
  */
 void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
-    auto item = getAllocator().create<ArchivItem_Text>(BOBTYPE_TEXT);
+    auto item = getAllocator().create<ArchivItem_Text>(BobType::Text);
     item->setText(value); //-V522
     item->setName(name);
 

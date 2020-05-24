@@ -37,7 +37,7 @@ int libsiedler2::loader::LoadMAP(const std::string& file, Archiv& items, bool on
     if(int ec = openMemoryStream(file, map))
         return ec;
 
-    auto item = getAllocator().create<ArchivItem_Map>(BOBTYPE_MAP);
+    auto item = getAllocator().create<ArchivItem_Map>(BobType::Map);
     if(int ec = item->load(map, only_header)) //-V522
         return ec;
 

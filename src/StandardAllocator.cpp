@@ -32,31 +32,31 @@ std::unique_ptr<ArchivItem> StandardAllocator::create(BobType type, SoundType su
 {
     switch(type)
     {
-        case BOBTYPE_SOUND:
+        case BobType::Sound:
         {
             switch(subtype)
             {
-                case SOUNDTYPE_NONE: return nullptr;
-                case SOUNDTYPE_MIDI: return std::make_unique<ArchivItem_Sound_Midi>();
-                case SOUNDTYPE_WAVE: return std::make_unique<ArchivItem_Sound_Wave>();
-                case SOUNDTYPE_XMIDI: return std::make_unique<ArchivItem_Sound_XMidi>();
+                case SoundType::None: return nullptr;
+                case SoundType::Midi: return std::make_unique<ArchivItem_Sound_Midi>();
+                case SoundType::Wave: return std::make_unique<ArchivItem_Sound_Wave>();
+                case SoundType::XMidi: return std::make_unique<ArchivItem_Sound_XMidi>();
                 default: return std::make_unique<ArchivItem_Sound_Other>(subtype);
             }
             break;
         }
-        case BOBTYPE_BITMAP_RLE: return std::make_unique<ArchivItem_Bitmap_RLE>();
-        case BOBTYPE_FONT: return std::make_unique<ArchivItem_Font>();
-        case BOBTYPE_BITMAP_PLAYER: return std::make_unique<ArchivItem_Bitmap_Player>();
-        case BOBTYPE_PALETTE: return std::make_unique<ArchivItem_Palette>();
-        case BOBTYPE_BOB: return std::make_unique<ArchivItem_Bob>();
-        case BOBTYPE_BITMAP_SHADOW: return std::make_unique<ArchivItem_Bitmap_Shadow>();
-        case BOBTYPE_MAP: return std::make_unique<ArchivItem_Map>();
-        case BOBTYPE_TEXT: return std::make_unique<ArchivItem_Text>();
-        case BOBTYPE_RAW: return std::make_unique<ArchivItem_Raw>();
-        case BOBTYPE_MAP_HEADER: return std::make_unique<ArchivItem_Map_Header>();
-        case BOBTYPE_INI: return std::make_unique<ArchivItem_Ini>();
-        case BOBTYPE_BITMAP_RAW: return std::make_unique<ArchivItem_Bitmap_Raw>();
-        case BOBTYPE_PALETTE_ANIM: return std::make_unique<ArchivItem_PaletteAnimation>();
+        case BobType::BitmapRLE: return std::make_unique<ArchivItem_Bitmap_RLE>();
+        case BobType::Font: return std::make_unique<ArchivItem_Font>();
+        case BobType::BitmapPlayer: return std::make_unique<ArchivItem_Bitmap_Player>();
+        case BobType::Palette: return std::make_unique<ArchivItem_Palette>();
+        case BobType::Bob: return std::make_unique<ArchivItem_Bob>();
+        case BobType::BitmapShadow: return std::make_unique<ArchivItem_Bitmap_Shadow>();
+        case BobType::Map: return std::make_unique<ArchivItem_Map>();
+        case BobType::Text: return std::make_unique<ArchivItem_Text>();
+        case BobType::Raw: return std::make_unique<ArchivItem_Raw>();
+        case BobType::MapHeader: return std::make_unique<ArchivItem_Map_Header>();
+        case BobType::Ini: return std::make_unique<ArchivItem_Ini>();
+        case BobType::Bitmap: return std::make_unique<ArchivItem_Bitmap_Raw>();
+        case BobType::PaletteAnim: return std::make_unique<ArchivItem_PaletteAnimation>();
         default: return nullptr;
     }
     return nullptr;

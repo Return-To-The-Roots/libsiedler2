@@ -34,7 +34,7 @@ struct BlockHeader
     uint32_t blockLength;
 };
 
-libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(BOBTYPE_MAP) {}
+libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(BobType::Map) {}
 
 libsiedler2::ArchivItem_Map::~ArchivItem_Map() = default;
 
@@ -54,7 +54,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
     clear();
 
     {
-        auto header = getAllocator().create<ArchivItem_Map_Header>(BOBTYPE_MAP_HEADER);
+        auto header = getAllocator().create<ArchivItem_Map_Header>(BobType::MapHeader);
         assert(header);
 
         int ec = header->load(file); //-V522
@@ -102,7 +102,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return ErrorCode::WRONG_FORMAT;
         }
 
-        auto layer = getAllocator().create<ArchivItem_Raw>(BOBTYPE_RAW);
+        auto layer = getAllocator().create<ArchivItem_Raw>(BobType::Raw);
         if(auto ec = layer->load(file, bHeader.blockLength)) //-V522
             return ec;
         if(i == 1 && header.hasExtraWord())

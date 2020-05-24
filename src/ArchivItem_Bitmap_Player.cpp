@@ -51,7 +51,7 @@ namespace libsiedler2 {
 
 ArchivItem_Bitmap_Player::ArchivItem_Bitmap_Player()
 {
-    bobtype_ = BOBTYPE_BITMAP_PLAYER;
+    bobtype_ = BobType::BitmapPlayer;
 }
 
 ArchivItem_Bitmap_Player::~ArchivItem_Bitmap_Player() = default;
@@ -102,7 +102,7 @@ int ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette*
     if(ec)
         return ec;
     // Remove external palette
-    if(getFormat() == FORMAT_BGRA)
+    if(getFormat() == TextureFormat::BGRA)
         removePalette();
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
@@ -127,7 +127,7 @@ int ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height, const std::v
     if(!palette)
         return ErrorCode::PALETTE_MISSING;
     // Speicher anlegen
-    init(width, height, getWantedFormat(FORMAT_PALETTED), palette);
+    init(width, height, getWantedFormat(TextureFormat::Paletted), palette);
 
     if(image.empty())
         return ErrorCode::NONE;
@@ -335,7 +335,7 @@ int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint
         return ErrorCode::PALETTE_MISSING;
 
     // Texturspeicher anfordern
-    init(width, height, buffer_format, buffer_format == FORMAT_BGRA ? nullptr : palette);
+    init(width, height, buffer_format, buffer_format == TextureFormat::BGRA ? nullptr : palette);
 
     const unsigned bpp = getBBP(buffer_format);
 
@@ -345,7 +345,7 @@ int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint
         {
             size_t posBuffer = (y2 * size_t(buffer_width) + x2) * bpp;
             // und Pixel setzen
-            if(buffer_format == FORMAT_BGRA)
+            if(buffer_format == TextureFormat::BGRA)
             {
                 ColorBGRA clr = ColorBGRA::fromBGRA(&buffer[posBuffer]); //-V522
                 if(clr.getAlpha() != 0)
@@ -423,7 +423,7 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
     if(!only_player)
     {
         auto doCall = [this, fromRect, toRect](auto&& dstBuf) {
-            if(this->getFormat() == FORMAT_PALETTED)
+            if(this->getFormat() == TextureFormat::Paletted)
             {
                 const PixelBufferPalettedRef srcBuf = this->getBufferPaletted();
                 CopyPixelBuffer(srcBuf, dstBuf, fromRect, toRect);
@@ -434,7 +434,7 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
             }
         };
 
-        if(buffer_format == FORMAT_PALETTED)
+        if(buffer_format == TextureFormat::Paletted)
         {
             PixelBufferPalettedRef dstBuf(buffer, buffer_width, buffer_height, *palette);
             doCall(dstBuf);
@@ -458,11 +458,12 @@ int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint
             // Don't change if transparent
             if(playerClr != TRANSPARENT_PLAYER_CLR_IDX)
             {
-                if(buffer_format == FORMAT_PALETTED)
+                if(buffer_format == TextureFormat::Paletted)
                     buffer[posBuffer] = playerClr + plClrStartIdx;
                 else
                 {
-                    const uint8_t srcAlpha = (getFormat() == FORMAT_PALETTED) ? 255 : getPixelPtr(x + fromRect.x, y + fromRect.y)[3];
+                    const uint8_t srcAlpha =
+                      (getFormat() == TextureFormat::Paletted) ? 255 : getPixelPtr(x + fromRect.x, y + fromRect.y)[3];
                     ColorBGRA(palette->get(playerClr + plClrStartIdx), srcAlpha).toBGRA(&buffer[posBuffer]);
                 }
             }

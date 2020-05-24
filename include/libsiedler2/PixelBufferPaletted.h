@@ -39,7 +39,7 @@ namespace traits {
     template<>
     struct GetFormat<PixelBufferPaletted>
     {
-        static constexpr TextureFormat value = FORMAT_PALETTED;
+        static constexpr TextureFormat value = TextureFormat::Paletted;
     };
 } // namespace traits
 

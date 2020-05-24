@@ -76,7 +76,7 @@ int libsiedler2::loader::WriteLBM(const std::string& file, const Archiv& items, 
 
     for(unsigned i = 1; i < items.size(); i++)
     {
-        if(!items[i] || items[i]->getBobType() != BOBTYPE_PALETTE_ANIM)
+        if(!items[i] || items[i]->getBobType() != BobType::PaletteAnim)
             return ErrorCode::WRONG_ARCHIV;
         fs.write("CRNG", 4);
         fs << uint32_t(8);

@@ -31,7 +31,7 @@ namespace libsiedler2 {
 class ArchivItem : public ICloneable<ArchivItem> //-V690
 {
 public:
-    ArchivItem(BobType bobtype = BOBTYPE_NONE);
+    ArchivItem(BobType bobtype = BobType::None);
     virtual ~ArchivItem() override;
     ArchivItem& operator=(const ArchivItem&) = delete;
     /// liefert den Bobtype des Items.

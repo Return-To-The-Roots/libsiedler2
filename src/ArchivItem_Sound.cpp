@@ -28,7 +28,7 @@ namespace libsiedler2 {
  *  Klasse für Sounditems.
  */
 
-ArchivItem_Sound::ArchivItem_Sound(SoundType soundType) : ArchivItem(BOBTYPE_SOUND), soundType_(soundType) {}
+ArchivItem_Sound::ArchivItem_Sound(SoundType soundType) : ArchivItem(BobType::Sound), soundType_(soundType) {}
 
 ArchivItem_Sound::~ArchivItem_Sound() = default;
 
@@ -58,24 +58,24 @@ std::unique_ptr<ArchivItem_Sound> ArchivItem_Sound::findSubType(std::istream& fi
         fs >> length >> header;
 
         if(isChunk(header, "XMID") || isChunk(header, "XDIR"))
-            sndType = SOUNDTYPE_XMIDI;
+            sndType = SoundType::XMidi;
         else if(isChunk(header, "WAVE"))
-            sndType = SOUNDTYPE_WAVE;
+            sndType = SoundType::Wave;
         else
         {
             fs.setPosition(oldpos);
             return nullptr;
         }
     } else if(isChunk(header, "MThd"))
-        sndType = SOUNDTYPE_MIDI;
+        sndType = SoundType::Midi;
     else if(isChunk(header, "OggS"))
-        sndType = SOUNDTYPE_OGG;
+        sndType = SoundType::OGG;
     else if(isChunk(header, "ID3") || isChunk(header, "\xFF\xFB"))
-        sndType = SOUNDTYPE_MP3;
+        sndType = SoundType::MP3;
     else // wave-format ohne header?
-        sndType = SOUNDTYPE_WAVE;
+        sndType = SoundType::Wave;
 
     fs.setPosition(oldpos);
-    return getAllocator().create<ArchivItem_Sound>(BOBTYPE_SOUND, sndType);
+    return getAllocator().create<ArchivItem_Sound>(BobType::Sound, sndType);
 }
 } // namespace libsiedler2

@@ -35,9 +35,9 @@ bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
     // Palettes come first
     if(left.bobtype != right.bobtype)
     {
-        if(left.bobtype == BOBTYPE_PALETTE)
+        if(left.bobtype == BobType::Palette)
             return true;
-        else if(right.bobtype == BOBTYPE_PALETTE)
+        else if(right.bobtype == BobType::Palette)
             return false;
     }
     // Both negative or same

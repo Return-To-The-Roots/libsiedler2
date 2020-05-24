@@ -36,13 +36,13 @@
 
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow()
 {
-    bobtype_ = BOBTYPE_BITMAP_SHADOW;
+    bobtype_ = BobType::BitmapShadow;
 }
 
 libsiedler2::baseArchivItem_Bitmap_Shadow::baseArchivItem_Bitmap_Shadow(const baseArchivItem_Bitmap_Shadow& item)
     : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item)
 {
-    bobtype_ = BOBTYPE_BITMAP_SHADOW;
+    bobtype_ = BobType::BitmapShadow;
 }
 
 libsiedler2::baseArchivItem_Bitmap_Shadow::~baseArchivItem_Bitmap_Shadow() = default;
@@ -82,7 +82,7 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
     if(length == 0)
     {
         // Speicher anlegen
-        init(width, height, FORMAT_PALETTED, palette);
+        init(width, height, TextureFormat::Paletted, palette);
     } else
     {
         uint32_t position = height * 2;
@@ -125,10 +125,10 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::load(std::istream& file, const Ar
         int ec = create(buffer, palette);
         if(ec)
             return ec;
-        ec = convertFormat(getWantedFormat(FORMAT_PALETTED));
+        ec = convertFormat(getWantedFormat(TextureFormat::Paletted));
         if(ec)
             return ec;
-        if(getFormat() == FORMAT_BGRA)
+        if(getFormat() == TextureFormat::BGRA)
             removePalette();
     }
 
