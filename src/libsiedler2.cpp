@@ -263,12 +263,14 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     {
                         auto* bmpPlayer = dynamic_cast<ArchivItem_Bitmap_Player*>(bmp);
                         assert(bmpPlayer);
-                        bmpPlayer->print(buffer, curPal);
+                        if(int ec = bmpPlayer->print(buffer, curPal))
+                            return ec;
                     } else
                     {
                         auto* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(bmp);
                         assert(bmpBase);
-                        bmpBase->print(buffer);
+                        if(int ec = bmpBase->print(buffer))
+                            return ec;
                     }
 
                     switch(entry.bobtype)
@@ -279,14 +281,16 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                         {
                             auto* bmpBase = dynamic_cast<baseArchivItem_Bitmap*>(convertedBmp.get());
                             assert(bmpBase);
-                            bmpBase->create(bmp->getWidth(), bmp->getHeight(), buffer); //-V522
+                            if(int ec = bmpBase->create(bmp->getWidth(), bmp->getHeight(), buffer)) //-V522
+                                return ec;
                             break;
                         }
                         case BOBTYPE_BITMAP_PLAYER:
                         {
                             auto* bmpPl = dynamic_cast<ArchivItem_Bitmap_Player*>(convertedBmp.get());
                             assert(bmpPl);
-                            bmpPl->create(bmp->getWidth(), bmp->getHeight(), buffer, curPal); //-V522
+                            if(int ec = bmpPl->create(bmp->getWidth(), bmp->getHeight(), buffer, curPal)) //-V522
+                                return ec;
                         }
                         break;
                         default: return ErrorCode::UNSUPPORTED_FORMAT;
@@ -294,10 +298,10 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     newItem = std::move(convertedBmp);
                 }
                 auto* bmp = static_cast<ArchivItem_BitmapBase*>(newItem.get());
-                bmp->setName(entry.name);
                 bmp->setNx(entry.nx);
                 bmp->setNy(entry.ny);
-                bmp->setPaletteCopy(*curPal);
+                if(curPal)
+                    bmp->setPaletteCopy(*curPal);
             } else if(entry.bobtype == BOBTYPE_PALETTE_ANIM)
             {
                 for(unsigned i = 0; i < tmpItems.size(); i++)
@@ -320,6 +324,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 newItem = tmpItems.release(0);
             }
         }
+        newItem->setName(entry.name);
         // had the filename a number? then set it to the corresponding item.
         if(entry.nr >= 0)
         {
@@ -432,12 +437,14 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
             wf.pop_back();
 
         std::string sNr = wf.empty() ? "" : wf.front();
-        if(sNr.substr(0, 2) == "u+" || sNr.substr(0, 2) == "0x") // Allow unicode file names (e.g. U+1234)
+        if(sNr.substr(0, 2) == "u+" || sNr.substr(0, 2) == "0x") // Allow Unicode file names (e.g. U+1234)
         {
             file.nr = hexToInt(sNr.substr(2));
             wf.erase(wf.begin());
         } else if(s25util::tryFromStringClassic(sNr, file.nr))
             wf.erase(wf.begin());
+        else
+            file.nr = -1;
 
         for(const std::string& part : wf)
         {

@@ -33,22 +33,26 @@ struct LoadPalette
     libsiedler2::ArchivItem_Palette* modPal;
     static constexpr uint8_t modClr1 = 22;
     static constexpr uint8_t modClr2 = 44;
-    LoadPalette()
+    explicit LoadPalette(bool createModPal = true)
     {
-        BOOST_REQUIRE_EQUAL(libsiedler2::Load(libsiedler2::test::inputPath + "/pal5.act", paletteArchiv), 0);
+        BOOST_TEST_REQUIRE(libsiedler2::Load(libsiedler2::test::inputPath + "/pal5.act", paletteArchiv) == 0);
         palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(0));
         BOOST_REQUIRE(palette);
-        paletteArchiv.pushC(*palette);
-        modPal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(1));
-        BOOST_REQUIRE(modPal);
-        BOOST_REQUIRE_NE(modPal->get(modClr1), modPal->get(modClr1 + 1));
-        BOOST_REQUIRE_NE(modPal->get(modClr2), modPal->get(modClr2 + 1));
-        libsiedler2::ColorRGB clr = modPal->get(modClr1);
-        modPal->set(modClr1, modPal->get(modClr1 + 1));
-        modPal->set(modClr1 + 1, clr);
-        clr = modPal->get(modClr2);
-        modPal->set(modClr2, modPal->get(modClr2 + 1));
-        modPal->set(modClr2 + 1, clr);
+        if(createModPal)
+        {
+            paletteArchiv.pushC(*palette);
+            modPal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(1));
+            BOOST_TEST_REQUIRE(modPal);
+            BOOST_TEST_REQUIRE(modPal->get(modClr1) != modPal->get(modClr1 + 1));
+            BOOST_TEST_REQUIRE(modPal->get(modClr2) != modPal->get(modClr2 + 1));
+            libsiedler2::ColorRGB clr = modPal->get(modClr1);
+            modPal->set(modClr1, modPal->get(modClr1 + 1));
+            modPal->set(modClr1 + 1, clr);
+            clr = modPal->get(modClr2);
+            modPal->set(modClr2, modPal->get(modClr2 + 1));
+            modPal->set(modClr2 + 1, clr);
+        } else
+            modPal = nullptr;
     }
 
 private:

@@ -94,9 +94,6 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
         }
     }
 
-    // Text setzen
-    setName(this->text_);
-
     // Alles OK
     return ErrorCode::NONE;
 }
