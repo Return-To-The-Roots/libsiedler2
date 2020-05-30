@@ -27,7 +27,7 @@
 #include "prototypen.h"
 #include "s25util/StringConversion.h"
 #include "s25util/Tokenizer.h"
-#include <boost/algorithm/string/case_conv.hpp>
+#include "s25util/strAlgos.h"
 #include <boost/filesystem.hpp>
 #include <algorithm>
 #include <iostream>
@@ -149,8 +149,7 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
     bfs::path filePath(file);
     if(!filePath.has_extension())
         return ErrorCode::UNSUPPORTED_FORMAT;
-    std::string extension = filePath.extension().string().substr(1);
-    boost::algorithm::to_lower(extension);
+    const std::string extension = s25util::toLower(filePath.extension().string().substr(1));
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
@@ -184,9 +183,9 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
             ret = loader::LoadSND(file, items);
         else if(extension == "txt")
         {
-            bfs::path filename = filePath.stem();
-            std::string ext2 = (filename.has_extension()) ? filename.extension().string().substr(1) : filename.string();
-            boost::algorithm::to_lower(ext2);
+            const bfs::path filename = filePath.stem();
+            const std::string ext2 =
+              s25util::toLower((filename.has_extension()) ? filename.extension().string().substr(1) : filename.string());
             if(ext2 == "paletteanims")
                 ret = loader::LoadPaletteAnim(file, items);
             else if(ext2 == "palette")
@@ -218,7 +217,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         if(entry.bobtype == BobType::Font)
         {
             auto font = getAllocator().create<ArchivItem_Font>(BobType::Font);
-            font->isUnicode = boost::algorithm::to_lower_copy(bfs::path(entry.filePath).extension().string()) == ".fonx";
+            font->isUnicode = s25util::toLower(bfs::path(entry.filePath).extension().string()) == ".fonx";
             font->setDx(static_cast<uint8_t>(entry.nx));
             font->setDy(static_cast<uint8_t>(entry.ny));
             int ec;
@@ -354,8 +353,7 @@ int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette
     bfs::path filePath(file);
     if(!filePath.has_extension())
         return ErrorCode::UNSUPPORTED_FORMAT;
-    std::string extension = filePath.extension().string().substr(1);
-    boost::algorithm::to_lower(extension);
+    const std::string extension = s25util::toLower(filePath.extension().string().substr(1));
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
@@ -419,8 +417,7 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
 
         FileEntry file(curPath.string());
 
-        std::string fileName = curPath.filename().string();
-        boost::algorithm::to_lower(fileName);
+        const std::string fileName = s25util::toLower(curPath.filename().string());
         std::vector<std::string> wf = Tokenizer(fileName, ".").explode();
 
         if(wf.back() == "fon" || wf.back() == "fonx")

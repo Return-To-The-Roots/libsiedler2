@@ -16,8 +16,8 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #include "FileEntry.h"
+#include "s25util/strAlgos.h"
 #include <boost/range/combine.hpp>
-#include <cctype>
 
 bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
 {
@@ -43,8 +43,8 @@ bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
     // Both negative or same
     for(const auto it : boost::combine(left.name, right.name))
     {
-        auto const lhs = tolower(it.get<0>());
-        auto const rhs = tolower(it.get<1>());
+        auto const lhs = s25util::toLower(it.get<0>());
+        auto const rhs = s25util::toLower(it.get<1>());
         if(lhs < rhs)
             return true;
         else if(lhs > rhs)

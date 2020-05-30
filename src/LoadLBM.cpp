@@ -26,7 +26,7 @@
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
-#include <boost/algorithm/string/case_conv.hpp>
+#include "s25util/strAlgos.h"
 #include <boost/filesystem/path.hpp>
 #include <iostream>
 #include <memory>
