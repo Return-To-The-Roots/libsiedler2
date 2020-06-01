@@ -88,7 +88,7 @@ BOOST_FIXTURE_TEST_SUITE(Folder, FolderFixture)
 BOOST_AUTO_TEST_CASE(ReadFolderInfoReturnsCorrectFiles)
 {
     std::vector<FileEntry> info = ReadFolderInfo(lstPath.get().string());
-    BOOST_TEST_REQUIRE(info.size() == 5);
+    BOOST_TEST_REQUIRE(info.size() == 5u);
     std::sort(info.begin(), info.end());
     const std::vector<FileEntry> infoExpected = {
       FileEntry{(lstPath.get() / "1.player.nx5.ny7.bmp").string(), "", 1, BobType::BitmapPlayer, 5, 7},
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
     LoadPalette loadPal;
     Archiv archive;
     BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath.get().string()), archive, loadPal.palette) == 0);
-    BOOST_TEST_REQUIRE(archive.size() == 8);
+    BOOST_TEST_REQUIRE(archive.size() == 8u);
     BOOST_TEST_REQUIRE(!archive[0]);
     BOOST_TEST_REQUIRE(archive[1]);
     BOOST_TEST_REQUIRE(archive[1]->getBobType() == BobType::BitmapPlayer);
