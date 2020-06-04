@@ -65,3 +65,7 @@ For the usage the following applies:
 5. Creating: The `create` function resets the bitmap completely (size, palette, format, data).
              It will create a bitmap with the same format as the buffer.
              A palette is required and stored for paletted formats.
+             
+### Additional information
+
+A detailed description of the file formats are here: https://www.siedler25.org/formate/ (in german)
