@@ -19,8 +19,10 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivItem_PaletteAnimation.h"
 #include "ErrorCodes.h"
+#include "FileError.h"
 #include "IAllocator.h"
 #include "libsiedler2.h"
+#include "loadMapping.h"
 #include "prototypen.h"
 #include "s25util/StringConversion.h"
 #include <boost/nowide/fstream.hpp>
@@ -53,21 +55,19 @@ namespace libsiedler2 { namespace loader {
             pal->setTransparentIdx(transpColorIdx);
         else
             pal->setBackgroundColorIdx(transpColorIdx);
-        while(fs)
+        try
         {
-            unsigned idx, clr;
-            if(!(fs >> std::dec >> idx >> std::hex >> clr) || idx >= 256)
-            {
-                if(fs.eof())
-                {
-                    items.set(0, std::move(pal));
-                    return ErrorCode::NONE;
-                } else
-                    return ErrorCode::WRONG_FORMAT;
-            }
-            pal->set(idx, ColorRGB(clr >> 16, clr >> 8, clr));
+            loadMapping(fs, [&pal](unsigned idx, const std::string& sClr) {
+                if(idx >= 256)
+                    throw std::range_error("Palettes can only have 256 colors");
+                const auto clr = s25util::fromStringClassic<unsigned>(sClr, true);
+                pal->set(idx, ColorRGB(clr >> 16, clr >> 8, clr));
+            });
+        } catch(const std::runtime_error&)
+        {
+            return fs.eof() ? ErrorCode::UNEXPECTED_EOF : ErrorCode::WRONG_FORMAT;
         }
-        return ErrorCode::UNEXPECTED_EOF;
+        return ErrorCode::NONE;
     }
 
     int WriteTxtPalette(const std::string& file, const ArchivItem_Palette& palette)
@@ -94,24 +94,25 @@ namespace libsiedler2 { namespace loader {
         std::string header;
         if(!std::getline(fs, header) || header != palAnimHeader)
             return ErrorCode::WRONG_HEADER;
-        while(fs)
+        try
         {
-            unsigned idx;
-            if(!(fs >> idx))
-            {
-                if(fs.eof())
-                    return ErrorCode::NONE;
-                else
-                    return ErrorCode::WRONG_FORMAT;
-            }
-            auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BobType::PaletteAnim);
-            if(int ec = anim->loadFromTxt(fs))
-                return ec;
-            if(idx >= items.size())
-                items.alloc_inc(idx - items.size() + 1);
-            items.set(idx, std::move(anim));
+            loadMapping(fs, [&items](unsigned idx, const std::string& sItem) {
+                std::stringstream ss(sItem);
+                auto anim = getAllocator().create<ArchivItem_PaletteAnimation>(BobType::PaletteAnim);
+                if(int ec = anim->loadFromTxt(ss))
+                    throw FileError(ec);
+                if(idx >= items.size())
+                    items.alloc_inc(idx - items.size() + 1);
+                items.set(idx, std::move(anim));
+            });
+        } catch(const FileError& e)
+        {
+            return e.ec;
+        } catch(const std::runtime_error&)
+        {
+            return fs.eof() ? ErrorCode::UNEXPECTED_EOF : ErrorCode::WRONG_FORMAT;
         }
-        return ErrorCode::UNEXPECTED_EOF;
+        return ErrorCode::NONE;
     }
 
     int WritePaletteAnim(const std::string& file, const Archiv& items)
