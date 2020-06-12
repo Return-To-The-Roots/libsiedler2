@@ -98,7 +98,7 @@ int ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette*
     } else
         return ErrorCode::WRONG_FORMAT;
 
-    int ec = load(width, height, data, starts, false, palette);
+    int ec = load(width, data, starts, false, palette);
     if(ec)
         return ec;
     // Remove external palette
@@ -121,12 +121,13 @@ int ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette*
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts,
+int ArchivItem_Bitmap_Player::load(uint16_t width, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts,
                                    bool absoluteStarts, const ArchivItem_Palette* palette)
 {
     if(!palette)
         return ErrorCode::PALETTE_MISSING;
     // Speicher anlegen
+    const unsigned height = starts.size();
     init(width, height, getWantedFormat(TextureFormat::Paletted), palette);
 
     if(image.empty())
@@ -139,7 +140,7 @@ int ArchivItem_Bitmap_Player::load(uint16_t width, uint16_t height, const std::v
 
         uint32_t position = starts[y];
         if(!absoluteStarts)
-            position -= height * 2;
+            position -= height * sizeof(uint16_t);
 
         if(position > image.size())
             return ErrorCode::UNEXPECTED_EOF;

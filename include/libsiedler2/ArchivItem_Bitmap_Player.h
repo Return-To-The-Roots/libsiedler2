@@ -53,7 +53,7 @@ public:
     int load(std::istream& file, const ArchivItem_Palette* palette) override;
 
     /// lädt die Bilddaten aus einem Puffer.
-    int load(uint16_t width, uint16_t height, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts, bool absoluteStarts,
+    int load(uint16_t width, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts, bool absoluteStarts,
              const ArchivItem_Palette* palette);
 
     /// schreibt die Bilddaten in eine Datei.

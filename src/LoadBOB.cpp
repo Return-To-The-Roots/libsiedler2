@@ -44,12 +44,12 @@ int libsiedler2::loader::LoadBOB(const std::string& file, Archiv& items, const A
     libendian::EndianIStreamAdapter<false, MMStream&> bob(mmapStream);
 
     // Header einlesen
-    uint32_t header;
+    uint16_t header;
 
     bob >> header;
 
-    // ist es eine BOB-File? (Header 0xF601F501)
-    if(!bob || header != 0x01F501F6)
+    // ist es eine BOB-File?
+    if(!bob || header != 0x01F6)
         return ErrorCode::WRONG_HEADER;
 
     auto item = getAllocator().create<ArchivItem_Bob>(BobType::Bob);

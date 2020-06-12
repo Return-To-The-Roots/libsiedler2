@@ -49,6 +49,9 @@ public:
     uint32_t getNumItems() const { return uint32_t(links.size()); }
     uint16_t getLink(uint32_t idx) const { return (links[idx]); };
 
+    /// Write the links in mapping format (TAB separated entries with # comments)
+    void writeLinks(std::ostream& file);
+
 protected:
     uint16_t numGoodImgs;        /// Number of pictures for wares
     std::vector<uint16_t> links; /// "Links" (Zugehörigkeiten der Bilder)

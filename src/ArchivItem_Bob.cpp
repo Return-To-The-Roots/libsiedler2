@@ -23,14 +23,47 @@
 #include "libendian/EndianIStreamAdapter.h"
 #include <iostream>
 
-/** @class libsiedler2::ArchivItem_Bob
+namespace libsiedler2 {
+/// Read a block of colors used later
+static int readColorBlock(libendian::EndianIStreamAdapter<false, std::istream&>& fs, std::vector<uint8_t>& pixels)
+{
+    uint16_t id, size;
+    if(!(fs >> id >> size))
+        return ErrorCode::UNEXPECTED_EOF;
+
+    if(id != 0x01F5)
+        return ErrorCode::WRONG_FORMAT;
+
+    pixels.resize(size);
+    if(!(fs >> pixels))
+        return ErrorCode::UNEXPECTED_EOF;
+    return ErrorCode::NONE;
+}
+/// Read a chunk of image data (array with start indices into a color array and y-offset)
+static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& fs, std::vector<uint16_t>& starts, uint8_t& ny)
+{
+    uint16_t id;
+    uint8_t height;
+    if(!(fs >> id >> height))
+        return ErrorCode::UNEXPECTED_EOF;
+
+    if(id != 0x01F4)
+        return ErrorCode::WRONG_FORMAT;
+
+    starts.resize(height);
+    if(!(fs >> starts >> ny))
+        return ErrorCode::UNEXPECTED_EOF;
+    return ErrorCode::NONE;
+}
+
+/** @class ArchivItem_Bob
  *
  *  Klasse für Bobfiles.
  */
 
-libsiedler2::ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BobType::Bob), numGoodImgs(0) {}
+ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BobType::Bob), numGoodImgs(0) {}
 
-libsiedler2::ArchivItem_Bob::~ArchivItem_Bob() = default;
+ArchivItem_Bob::~ArchivItem_Bob() = default;
 
 /**
  *  lädt die Bobdaten aus einer Datei.
@@ -40,7 +73,7 @@ libsiedler2::ArchivItem_Bob::~ArchivItem_Bob() = default;
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
+int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -48,40 +81,27 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         return ErrorCode::PALETTE_MISSING;
 
     libendian::EndianIStreamAdapter<false, std::istream&> fs(file);
-    // Größe des ersten Farbblocks auslesen
-    uint16_t size;
-    if(!(fs >> size))
-        return ErrorCode::WRONG_HEADER;
 
-    // Farbblock auslesen
-    std::vector<uint8_t> raw_base(size);
-    if(!(fs >> raw_base))
-        return ErrorCode::WRONG_HEADER;
+    // Read body color block
+    std::vector<uint8_t> raw_base;
+    if(int ec = readColorBlock(fs, raw_base))
+        return ec;
 
     // Einzelner Bilder auslesen ( untere Körper ): 8 Animation Steps, 6 directions, 2 types (Fat, Non-Fat) = 96
     alloc(96);
     for(uint32_t i = 0; i < 96; ++i)
     {
-        uint16_t id;
-        uint8_t height;
-        if(!(fs >> id >> height))
-            return ErrorCode::UNEXPECTED_EOF;
-
-        // stimmt die ID? (ID 0xF401)
-        if(id != 0x01F4)
-            return (i == 0) ? ErrorCode::WRONG_HEADER : ErrorCode::WRONG_FORMAT;
-
-        std::vector<uint16_t> starts(height);
+        std::vector<uint16_t> starts;
         uint8_t ny;
-        if(!(fs >> starts >> ny))
-            return ErrorCode::UNEXPECTED_EOF;
+        if(int ec = readImageData(fs, starts, ny))
+            return ec;
 
         auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
         assert(image);
         image->setNx(16); //-V522
         image->setNy(ny);
 
-        int ec = image->load(32, height, raw_base, starts, true, palette);
+        int ec = image->load(32, raw_base, starts, true, palette);
         if(ec)
             return ec;
 
@@ -93,16 +113,8 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
     for(auto& i : raw)
     {
-        uint16_t id, size;
-        if(!(fs >> id >> size))
-            return ErrorCode::UNEXPECTED_EOF;
-
-        // stimmt die ID? (ID 0xF401)
-        if(id != 0x01F5)
-            return ErrorCode::WRONG_FORMAT;
-
-        i.resize(size);
-        fs >> i;
+        if(int ec = readColorBlock(fs, i))
+            return ec;
     }
 
     // Anzahl Warenbilder
@@ -112,22 +124,13 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
 
     std::vector<bool> loaded(numGoodImgs, false);
 
-    std::vector<uint8_t> heights(numGoodImgs);
     std::vector<std::vector<uint16_t>> starts(numGoodImgs);
     std::vector<uint8_t> ny(numGoodImgs);
 
     for(uint16_t i = 0; i < numGoodImgs; ++i)
     {
-        uint16_t id;
-        if(!(fs >> id >> heights[i]))
-            return ErrorCode::UNEXPECTED_EOF;
-
-        // stimmt die ID? (ID 0xF401)
-        if(id != 0x01F4)
-            return ErrorCode::WRONG_FORMAT;
-
-        starts[i].resize(heights[i]);
-        fs >> starts[i] >> ny[i];
+        if(int ec = readImageData(fs, starts[i], ny[i]))
+            return ec;
     }
 
     // Number of complete pictures.
@@ -154,7 +157,7 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
         image->setNx(16); //-V522
         image->setNy(ny[links[i]]);
 
-        int ec = image->load(32, heights[links[i]], raw[i % 6], starts[links[i]], true, palette);
+        int ec = image->load(32, raw[i % 6], starts[links[i]], true, palette);
         if(ec)
             return ec;
 
@@ -173,7 +176,9 @@ int libsiedler2::ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palet
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Bob::write(std::ostream&, const ArchivItem_Palette*)
+int ArchivItem_Bob::write(std::ostream&, const ArchivItem_Palette*)
 {
     return ErrorCode::UNSUPPORTED_FORMAT;
 }
+
+} // namespace libsiedler2
