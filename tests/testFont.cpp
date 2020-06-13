@@ -30,7 +30,6 @@ BOOST_AUTO_TEST_CASE(LoadWriteFont)
 {
     std::string inPath = libsiedler2::test::inputPath + "/testFonts.LST";
     std::string outPath = libsiedler2::test::outputPath + "/outFonts.lst";
-    BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     const auto* font = dynamic_cast<const libsiedler2::ArchivItem_Font*>(archiv[1]);

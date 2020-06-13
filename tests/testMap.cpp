@@ -22,6 +22,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
+namespace bfs = boost::filesystem;
+
 BOOST_AUTO_TEST_SUITE(Maps)
 
 BOOST_AUTO_TEST_CASE(ReadWriteSWD)

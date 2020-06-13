@@ -29,14 +29,12 @@ BOOST_FIXTURE_TEST_SUITE(DatIdxFiles, LoadPalette)
 
 BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
 {
-    // Proprietary file. Copy S2 installation into the testFiles folder to test this
+    if(!libsiedler2::test::hasS2Data)
+        return;
     // Both should work
-    std::string inPath = libsiedler2::test::inputPath + "/DATA/EDITRES.IDX";
-    std::string inPath2 = libsiedler2::test::inputPath + "/DATA/EDITRES.DAT";
-    for(int i = 0; i < 2; i++)
+    for(const auto file : {"EDITRES.IDX", "EDITRES.DAT"})
     {
-        if(!bfs::exists(inPath))
-            return;
+        const std::string inPath = libsiedler2::test::s2Path + "/DATA/" + file;
         libsiedler2::Archiv archiv;
         BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
         BOOST_REQUIRE_EQUAL(archiv.size(), 57u);
@@ -51,7 +49,6 @@ BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
             BOOST_REQUIRE_GT(bmp->getWidth(), 0u);
             BOOST_REQUIRE_GT(bmp->getHeight(), 0u);
         }
-        inPath = inPath2;
     }
 }
 

@@ -28,22 +28,7 @@
 #include <algorithm>
 #include <array>
 
-class TempFolder
-{
-    bfs::path folder;
-
-public:
-    TempFolder(const bfs::path& parent, const bfs::path& pattern = "%%%%-%%%%-%%%%-%%%%")
-    {
-        do
-        {
-            folder = bfs::unique_path(parent / pattern);
-        } while(bfs::exists(folder));
-        bfs::create_directories(folder);
-    }
-    ~TempFolder() { bfs::remove_all(folder); }
-    bfs::path get() const { return folder; }
-};
+namespace bfs = boost::filesystem;
 
 using namespace libsiedler2;
 
@@ -63,21 +48,22 @@ static void save(const ArchivItem_Bitmap_Raw& bmp, const boost::filesystem::path
 
 struct FolderFixture
 {
-    TempFolder lstPath;
+    bfs::path lstPath;
     std::array<ArchivItem_Bitmap_Raw, 4> bmps;
 
-    FolderFixture() : lstPath(libsiedler2::test::outputPath, "%%%%-%%%%.lst")
+    FolderFixture() : lstPath(bfs::unique_path(libsiedler2::test::outputPath + "/%%%%-%%%%.lst"))
     {
+        bfs::create_directories(lstPath);
         PixelBufferBGRA buffer(5, 3);
         std::array<std::string, std::tuple_size<decltype(bmps)>::value> names = {"a", "1.player.nx5.ny7", "f", "3.rle.nx1.ny9"};
 
         for(unsigned i = 0; i < bmps.size(); i++)
         {
             BOOST_TEST(bmps[i].create(buffer) == 0);
-            save(bmps[i], lstPath.get() / (names[i] + ".bmp"));
+            save(bmps[i], lstPath / (names[i] + ".bmp"));
         }
         {
-            boost::nowide::ofstream f(lstPath.get() / "5.cooltext.txt");
+            boost::nowide::ofstream f(lstPath / "5.cooltext.txt");
             f << "Hello World";
         }
     }
@@ -87,20 +73,20 @@ BOOST_FIXTURE_TEST_SUITE(Folder, FolderFixture)
 
 BOOST_AUTO_TEST_CASE(ReadFolderInfoReturnsCorrectFiles)
 {
-    std::vector<FileEntry> info = ReadFolderInfo(lstPath.get().string());
+    std::vector<FileEntry> info = ReadFolderInfo(lstPath.string());
     BOOST_TEST_REQUIRE(info.size() == 5u);
     std::sort(info.begin(), info.end());
     const std::vector<FileEntry> infoExpected = {
-      FileEntry{(lstPath.get() / "1.player.nx5.ny7.bmp").string(), "", 1, BobType::BitmapPlayer, 5, 7},
-      FileEntry{(lstPath.get() / "3.rle.nx1.ny9.bmp").string(), "", 3, BobType::BitmapRLE, 1, 9},
-      FileEntry{(lstPath.get() / "5.cooltext.txt").string(), "cooltext", 5, BobType::Text, 0, 0},
-      FileEntry{(lstPath.get() / "a.bmp").string(), "a", -1, BobType::Bitmap, 0, 0},
-      FileEntry{(lstPath.get() / "f.bmp").string(), "f", -1, BobType::Bitmap, 0, 0},
+      FileEntry{(lstPath / "1.player.nx5.ny7.bmp").string(), "", 1, BobType::BitmapPlayer, 5, 7},
+      FileEntry{(lstPath / "3.rle.nx1.ny9.bmp").string(), "", 3, BobType::BitmapRLE, 1, 9},
+      FileEntry{(lstPath / "5.cooltext.txt").string(), "cooltext", 5, BobType::Text, 0, 0},
+      FileEntry{(lstPath / "a.bmp").string(), "a", -1, BobType::Bitmap, 0, 0},
+      FileEntry{(lstPath / "f.bmp").string(), "f", -1, BobType::Bitmap, 0, 0},
     };
     for(unsigned i = 0; i < infoExpected.size(); i++)
     {
         BOOST_TEST_INFO("Item " << i);
-        BOOST_TEST(info[i].filePath == infoExpected[i].filePath);
+        BOOST_TEST(bfs::path(info[i].filePath).make_preferred() == bfs::path(infoExpected[i].filePath).make_preferred());
         BOOST_TEST(info[i].name == infoExpected[i].name);
         BOOST_TEST(info[i].nr == infoExpected[i].nr);
         BOOST_TEST(info[i].bobtype == infoExpected[i].bobtype);
@@ -113,7 +99,7 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
 {
     LoadPalette loadPal;
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath.get().string()), archive, loadPal.palette) == 0);
+    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath.string()), archive, loadPal.palette) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 8u);
     BOOST_TEST_REQUIRE(!archive[0]);
     BOOST_TEST_REQUIRE(archive[1]);

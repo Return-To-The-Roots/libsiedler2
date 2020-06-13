@@ -28,7 +28,6 @@
 #include "libsiedler2/PixelBufferBGRA.h"
 #include "libsiedler2/PixelBufferPaletted.h"
 #include "libsiedler2/libsiedler2.h"
-#include <boost/assign/std/vector.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
@@ -67,7 +66,7 @@ static std::ostream& operator<<(std::ostream& os, libsiedler2::TextureFormat fmt
 } // namespace libsiedler2
 
 using namespace libsiedler2;
-using namespace boost::assign;
+namespace bfs = boost::filesystem;
 
 BOOST_FIXTURE_TEST_SUITE(Bitmaps, LoadPalette)
 
@@ -1081,17 +1080,17 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
         BOOST_REQUIRE_EQUAL(vis2, Rect(0, 0, 0, 0));
     }
 
-    std::vector<Rect> testRects;
-    //                  left-top          top               right-top
-    testRects += Rect(0, 0, 1, 1), Rect(2, 0, 1, 1), Rect(w - 1, 0, 1, 1),
-      // left            middle            right
-      Rect(0, 3, 1, 1), Rect(3, 2, 1, 1), Rect(w - 1, 3, 1, 1),
-      // left-bottom     bottom-middle     bottom-right
-      Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1),
-      // doublePixelRects;
-      Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1),
-      Rect(3, 2, 3, 1), Rect(3, 2, 1, 3), Rect(0, h - 3, 2, 1), Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3),
-      Rect(w - 4, h - 3, 4, 3), Rect(0, 0, w, h);
+    std::vector<Rect> testRects = {// left-top          top               right-top
+                                   Rect(0, 0, 1, 1), Rect(2, 0, 1, 1), Rect(w - 1, 0, 1, 1),
+                                   // left            middle            right
+                                   Rect(0, 3, 1, 1), Rect(3, 2, 1, 1), Rect(w - 1, 3, 1, 1),
+                                   // left-bottom     bottom-middle     bottom-right
+                                   Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1),
+                                   // doublePixelRects;
+                                   Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1),
+                                   Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(3, 2, 3, 1), Rect(3, 2, 1, 3), Rect(0, h - 3, 2, 1),
+                                   Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3), Rect(w - 4, h - 3, 4, 3),
+                                   Rect(0, 0, w, h)};
 
     for(const Rect& rect : testRects)
     {

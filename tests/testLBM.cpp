@@ -28,10 +28,9 @@ BOOST_FIXTURE_TEST_SUITE(LbmFiles, LoadPalette)
 
 BOOST_AUTO_TEST_CASE(LoadLbmFile)
 {
-    // Proprietary file. Copy S2 installation into the testFiles folder to test this
-    std::string inPath = libsiedler2::test::inputPath + "/GFX/TEXTURES/TEX5.LBM";
-    if(!bfs::exists(inPath))
+    if(!libsiedler2::test::hasS2Data)
         return;
+    const std::string inPath = libsiedler2::test::s2Path + "/GFX/TEXTURES/TEX5.LBM";
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 17u);

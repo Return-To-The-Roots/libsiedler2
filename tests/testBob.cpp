@@ -30,10 +30,9 @@ BOOST_FIXTURE_TEST_SUITE(BobFiles, LoadPalette)
 
 BOOST_AUTO_TEST_CASE(LoadBobFile)
 {
-    // Proprietary file. Copy S2 installation into the testFiles folder to test this
-    std::string inPath = libsiedler2::test::inputPath + "/DATA/BOBS/CARRIER.BOB";
-    if(!bfs::exists(inPath))
+    if(!libsiedler2::test::hasS2Data)
         return;
+    const std::string inPath = libsiedler2::test::s2Path + "/DATA/BOBS/CARRIER.BOB";
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
@@ -64,10 +63,9 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
 
 BOOST_AUTO_TEST_CASE(WriteReadLinks)
 {
-    // Proprietary file. Copy S2 installation into the testFiles folder to test this
-    std::string inPath = libsiedler2::test::inputPath + "/DATA/BOBS/CARRIER.BOB";
-    if(!bfs::exists(inPath))
+    if(!libsiedler2::test::hasS2Data)
         return;
+    const std::string inPath = libsiedler2::test::s2Path + "/DATA/BOBS/CARRIER.BOB";
     libsiedler2::Archiv archiv;
     BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
     const libsiedler2::ArchivItem_Bob* bob = dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);

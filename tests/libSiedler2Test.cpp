@@ -25,8 +25,8 @@
 
 struct TestSetup
 {
-    TestSetup() { bfs::create_directories(libsiedler2::test::outputPath); }
-    ~TestSetup() { bfs::remove_all(libsiedler2::test::outputPath); }
+    TestSetup() { boost::filesystem::create_directories(libsiedler2::test::outputPath); }
+    ~TestSetup() { boost::filesystem::remove_all(libsiedler2::test::outputPath); }
 };
 
-BOOST_GLOBAL_FIXTURE(TestSetup);
+BOOST_TEST_GLOBAL_FIXTURE(TestSetup);

@@ -1,4 +1,4 @@
-// Copyright (c) 2017 - 2019 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2017 - 2020 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -23,19 +23,24 @@
 #include <string>
 
 #cmakedefine RTTR_LIBSIEDLER2_TEST_FILES_DIR "@RTTR_LIBSIEDLER2_TEST_FILES_DIR@"
+#cmakedefine RTTR_LIBSIEDLER2_S2_DIR "@RTTR_LIBSIEDLER2_S2_DIR@"
+
 namespace libsiedler2
 {
 namespace test
 {
+#ifdef RTTR_LIBSIEDLER2_S2_DIR
+const std::string s2Path =  RTTR_LIBSIEDLER2_S2_DIR;
+constexpr bool hasS2Data = true;
+#else
+// Proprietary files (from S2) required. Set RTTR_LIBSIEDLER2_S2_DIR cmake variable to enable more tests
+constexpr bool hasS2Data = false;
+const std::string s2Path;
+#endif
+
 const std::string inputPath = RTTR_LIBSIEDLER2_TEST_FILES_DIR;
-const std::string outputPath = "testOutput";
+const std::string outputPath = "@PROJECT_BINARY_DIR@/testOutput";
 }
 }
-
-namespace boost { namespace filesystem {
-}} // namespace boost::filesystem
-namespace bfs = boost::filesystem;
-
-#define RTTR_REQUIRE_EQUAL_COLLECTIONS(col1, col2) BOOST_REQUIRE_EQUAL_COLLECTIONS(col1.begin(), col1.end(), col2.begin(), col2.end())
 
 #endif // config_h__

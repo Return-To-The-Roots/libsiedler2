@@ -28,7 +28,6 @@ BOOST_AUTO_TEST_CASE(ReadWriteIni)
 {
     std::string inPath = libsiedler2::test::inputPath + "/test.ini";
     std::string outPath = libsiedler2::test::outputPath + "/outTest.ini";
-    BOOST_REQUIRE(bfs::exists(inPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, act), 0);
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, act), 0);
