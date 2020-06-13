@@ -31,14 +31,14 @@
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
 #include "libsiedler2/prototypen.h"
+#include "s25util/StringConversion.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/nowide/fstream.hpp>
 
 #include <fstream>
-#include <iomanip>
 #include <iostream>
-#include <sstream>
+#include <limits>
 #include <vector>
 
 using namespace std;
@@ -46,7 +46,16 @@ using namespace libsiedler2;
 namespace bnw = boost::nowide;
 namespace bfs = boost::filesystem;
 
-void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const libsiedler2::ArchivItem_Palette* palette,
+static std::string makeBaseFilename(unsigned idx, const std::string& fileNameHexPrefix)
+{
+    if(fileNameHexPrefix.empty())
+        return s25util::toStringClassic(idx);
+    std::string hexValue = (idx <= std::numeric_limits<uint16_t>::max()) ? s25util::toStringClassic(static_cast<uint16_t>(idx), true) :
+                                                                           s25util::toStringClassic(idx, true);
+    return fileNameHexPrefix + hexValue.substr(2); // Replace prefix
+}
+
+void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const libsiedler2::ArchivItem_Palette* palette,
             const std::string& fileNameHexPrefix, bool paletteAsTxt)
 {
     boost::filesystem::create_directories(directory);
@@ -59,13 +68,8 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
         if(!item)
             continue;
 
-        bool filenameAdjusted = false;
-        stringstream newfile;
-        newfile << directory << "/" << fileNameHexPrefix;
-        if(!fileNameHexPrefix.empty())
-            newfile << std::hex << std::setfill('0') << std::setw(4);
-        newfile << i << std::dec << ".";
-        std::string newFileBaseName = newfile.str();
+        const std::string newFileStem = makeBaseFilename(i, fileNameHexPrefix);
+        bfs::path newFilepath = directory / newFileStem;
 
         switch(item->getBobType())
         {
@@ -79,15 +83,15 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
 
                 switch(subtype)
                 {
-                    case SoundType::Midi: cerr << "Unsupported midi sound ignored: " << newFileBaseName << endl; break;
+                    case SoundType::Midi: cerr << "Unsupported midi sound ignored: " << newFileStem << endl; break;
                     case SoundType::Wave:
                     {
-                        newfile << "wav";
+                        newFilepath.replace_extension(".wav");
 
-                        cout << "extracting " << newfile.str() << ": ";
+                        cout << "extracting " << newFilepath << ": ";
 
                         const ArchivItem_Sound_Wave* wave = dynamic_cast<const ArchivItem_Sound_Wave*>(item);
-                        std::ofstream fwave(newfile.str().c_str(), ios::binary);
+                        bnw::ofstream fwave(newFilepath, ios::binary);
                         if(fwave && wave && wave->write(fwave, false) == 0)
                         {
                             cout << "done" << endl;
@@ -97,16 +101,16 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     break;
                     case SoundType::XMidi:
                     {
-                        newfile << "midi";
+                        newFilepath.replace_extension(".midi");
 
-                        cout << "extracting " << newfile.str() << ": ";
+                        cout << "extracting " << newFilepath << ": ";
 
                         auto wave = clone(dynamic_cast<const ArchivItem_Sound_XMidi&>(*item));
                         const MIDI_Track& midiTrack = wave->getMidiTrack(0);
                         ArchivItem_Sound_Midi soundArchiv;
                         soundArchiv.addTrack(midiTrack);
                         soundArchiv.setPPQ(wave->getPPQN());
-                        std::ofstream fwave(newfile.str().c_str(), ios::binary);
+                        bnw::ofstream fwave(newFilepath, ios::binary);
                         if(fwave && soundArchiv.write(fwave) == 0)
                             cout << "done";
                         else
@@ -114,39 +118,37 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                         cout << endl;
                         break;
                     }
-                    default: cerr << "Unsupported other sound ignored: " << newFileBaseName << endl; break;
+                    default: cerr << "Unsupported other sound ignored: " << newFileStem << endl; break;
                 }
             }
             break;
             case BobType::Font:
             {
-                cout << "extracting " << newFileBaseName << ": ";
-
                 const ArchivItem_Font* font = dynamic_cast<const ArchivItem_Font*>(item);
 
-                newfile << "dx" << (short)font->getDx() << ".dy" << (short)font->getDy() << ".";
-                if(font->isUnicode)
-                    newfile << "fonX";
-                else
-                    newfile << "fon";
+                newFilepath += ".dx" + s25util::toStringClassic((short)font->getDx());
+                newFilepath += ".dy" + s25util::toStringClassic((short)font->getDy());
+                newFilepath += (font->isUnicode) ? ".fonX" : ".fon";
+                cout << "extracting " << newFilepath << ": ";
 
-                unpack(newfile.str(), *font, palette, font->isUnicode ? "U+" : "");
+                unpack(newFilepath, *font, palette, font->isUnicode ? "U+" : "");
             }
             break;
             case BobType::Palette:
             {
                 Archiv items;
                 items.pushC(*item);
-                newfile << "bbm";
+                newFilepath.replace_extension(".bbm");
 
-                cout << "extracting " << newfile.str() << ": ";
+                cout << "extracting " << newFilepath << ": ";
 
-                if(Write(newfile.str().c_str(), items) != 0)
+                if(Write(newFilepath.string(), items) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
                 if(paletteAsTxt)
-                    loader::WriteTxtPalette(newFileBaseName + "palette.txt", static_cast<const libsiedler2::ArchivItem_Palette&>(*item));
+                    loader::WriteTxtPalette(newFilepath.replace_extension(".palette.txt").string(),
+                                            static_cast<const libsiedler2::ArchivItem_Palette&>(*item));
             }
             break;
             case BobType::Bob:
@@ -154,23 +156,18 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 const ArchivItem_Bob* bob = dynamic_cast<const ArchivItem_Bob*>(item);
                 unpack(directory, *bob, palette);
                 // links[][8][2][6]
-                bnw::ofstream linksFile(directory + ".links");
-                for(unsigned i = 0; i < bob->getNumItems(); i++)
-                {
-                    if(i % (8 * 2 * 6) == 0)
-                        linksFile << "Job ID " << i / (8 * 2 * 6) << std::endl;
-                    linksFile << i << ": " << bob->getLink(i) << std::endl;
-                }
+                bnw::ofstream linksFile(directory / "mapping.links");
+                bob->writeLinks(linksFile);
             }
             break;
-            case BobType::Map: cerr << "MapFile is not supported. Ignored: " << newfile.str() << endl; break;
+            case BobType::Map: cerr << "MapFile is not supported. Ignored: " << newFileStem << endl; break;
             case BobType::Text:
             {
-                newfile << "txt";
-                cout << "extracting " << newfile.str() << ": ";
+                newFilepath.replace_extension(".txt");
+                cout << "extracting " << newFilepath << ": ";
 
                 const ArchivItem_Text* txt = dynamic_cast<const ArchivItem_Text*>(item);
-                std::ofstream fTxt(newfile.str().c_str(), ios::binary);
+                bnw::ofstream fTxt(newFilepath, ios::binary);
                 if(fTxt && txt && txt->write(fTxt, false) == 0)
                 {
                     cout << "done" << endl;
@@ -178,30 +175,20 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                     cout << "failed" << endl;
             }
             break;
-            case BobType::Raw: cerr << "Raw item is not supported. Ignored: " << newFileBaseName << endl; break;
-            case BobType::MapHeader: cerr << "Map-header is not supported. Ignored: " << newFileBaseName << endl; break;
+            case BobType::Raw: cerr << "Raw item is not supported. Ignored: " << newFileStem << endl; break;
+            case BobType::MapHeader: cerr << "Map-header is not supported. Ignored: " << newFileStem << endl; break;
             case BobType::BitmapRLE: // RLE komprimiertes Bitmap
-                if(!filenameAdjusted)
-                {
-                    newfile << "rle.";
-                    filenameAdjusted = true;
-                }
+                newFilepath.replace_extension(".rle");
                 BOOST_FALLTHROUGH;
                 // no break
             case BobType::BitmapPlayer: // Bitmap mit spezifischer Spielerfarbe
-                if(!filenameAdjusted)
-                {
-                    newfile << "player.";
-                    filenameAdjusted = true;
-                }
+                if(!newFilepath.has_extension())
+                    newFilepath.replace_extension(".player");
                 BOOST_FALLTHROUGH;
                 // no break
             case BobType::BitmapShadow:
-                if(!filenameAdjusted)
-                {
-                    newfile << "shadow.";
-                    filenameAdjusted = true;
-                }
+                if(!newFilepath.has_extension())
+                    newFilepath.replace_extension(".shadow");
                 BOOST_FALLTHROUGH;
                 // no break
             case BobType::Bitmap: // uncompressed Bitmap
@@ -209,17 +196,19 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
                 Archiv items;
                 const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
                 items.pushC(bitmap);
-                newfile << "nx" << bitmap.getNx() << ".ny" << bitmap.getNy();
-                newfile << ".bmp";
 
-                cout << "extracting " << newfile.str() << ": ";
+                newFilepath += ".nx" + s25util::toStringClassic(bitmap.getNx());
+                newFilepath += ".ny" + s25util::toStringClassic(bitmap.getNy());
+                newFilepath += ".bmp";
 
-                if(Write(newfile.str(), items, palette) != 0)
+                cout << "extracting " << newFilepath << ": ";
+
+                if(Write(newFilepath.string(), items, palette) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
                 if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
-                    loader::WriteTxtPalette(newFileBaseName + "palette.txt", *bitmap.getPalette());
+                    loader::WriteTxtPalette((directory / newFileStem).replace_extension(".palette.txt").string(), *bitmap.getPalette());
             }
             break;
             case BobType::PaletteAnim: containsPalAnim = true; break;
@@ -229,12 +218,11 @@ void unpack(const std::string& directory, const libsiedler2::Archiv& lst, const 
 
     if(containsPalAnim)
     {
-        bfs::path newfile(directory);
-        newfile /= "paletteAnims.txt";
+        const bfs::path newfile = directory / "paletteAnims.txt";
 
-        cout << "extracting " << newfile.string() << ": ";
+        cout << "extracting " << newfile << ": ";
 
-        if(Write(newfile.string().c_str(), lst) != 0)
+        if(Write(newfile.string(), lst) != 0)
             cout << "failed" << endl;
         else
             cout << "done" << endl;
