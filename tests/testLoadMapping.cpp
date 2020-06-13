@@ -33,6 +33,7 @@ BOOST_AUTO_TEST_CASE(SimpleMapping)
       << "1 bb\n"
       << "2 c123\n"
       << "5 d e ff\n"
+      << "\n" // empty line
       << "10 some\tvalue\n"
       << "7 foobar\n"
       << "8\t1124\n";

@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
+#include "loadMapping.h"
 #include "s25util/StringConversion.h"
 #include <boost/filesystem/path.hpp>
 #include <boost/nowide/fstream.hpp>
