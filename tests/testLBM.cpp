@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
         return;
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
-    BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
+    BOOST_REQUIRE_EQUAL(archiv.size(), 17u);
     const libsiedler2::ArchivItem_BitmapBase* bmp = dynamic_cast<libsiedler2::ArchivItem_BitmapBase*>(archiv[0]);
     BOOST_REQUIRE(bmp);
     BOOST_REQUIRE_EQUAL(bmp->getWidth(), 256u);

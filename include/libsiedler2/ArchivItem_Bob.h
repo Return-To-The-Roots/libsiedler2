@@ -23,6 +23,7 @@
 #include "ArchivItem.h"
 #include <cstdint>
 #include <iosfwd>
+#include <map>
 #include <vector>
 
 namespace libsiedler2 {
@@ -50,7 +51,8 @@ public:
     uint16_t getLink(uint32_t idx) const { return (links[idx]); };
 
     /// Write the links in mapping format (TAB separated entries with # comments)
-    void writeLinks(std::ostream& file);
+    void writeLinks(std::ostream& file) const;
+    static std::map<unsigned, uint16_t> readLinks(std::istream& file);
 
 protected:
     uint16_t numGoodImgs;        /// Number of pictures for wares

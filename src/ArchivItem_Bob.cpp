@@ -20,7 +20,10 @@
 #include "ErrorCodes.h"
 #include "IAllocator.h"
 #include "libsiedler2.h"
+#include "loadMapping.h"
 #include "libendian/EndianIStreamAdapter.h"
+#include "s25util/StringConversion.h"
+#include <boost/range/adaptor/indexed.hpp>
 #include <iostream>
 
 namespace libsiedler2 {
@@ -122,8 +125,6 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 
     alloc_inc(numGoodImgs);
 
-    std::vector<bool> loaded(numGoodImgs, false);
-
     std::vector<std::vector<uint16_t>> starts(numGoodImgs);
     std::vector<uint8_t> ny(numGoodImgs);
 
@@ -142,12 +143,16 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         return ErrorCode::UNEXPECTED_EOF;
 
     links.resize(item_count);
+    std::vector<bool> loaded(numGoodImgs, false);
 
     for(uint32_t i = 0; i < item_count; ++i)
     {
         uint16_t unknown;
         if(!(fs >> links[i] >> unknown))
             return ErrorCode::UNEXPECTED_EOF;
+
+        if(links[i] >= numGoodImgs)
+            return ErrorCode::WRONG_FORMAT;
 
         if(loaded[links[i]])
             continue;
@@ -179,6 +184,24 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 int ArchivItem_Bob::write(std::ostream&, const ArchivItem_Palette*)
 {
     return ErrorCode::UNSUPPORTED_FORMAT;
+}
+
+void ArchivItem_Bob::writeLinks(std::ostream& file) const
+{
+    // links[][8][2][6]
+    for(const auto it : links | boost::adaptors::indexed())
+    {
+        if(it.index() % (8 * 2 * 6) == 0)
+            file << "# Job ID " << it.index() / (8 * 2 * 6) << "\n";
+        file << s25util::toStringClassic(it.index()) << "\t" << s25util::toStringClassic(it.value()) << "\n";
+    }
+}
+
+std::map<unsigned, uint16_t> ArchivItem_Bob::readLinks(std::istream& file)
+{
+    std::map<unsigned, uint16_t> result;
+    loadMapping(file, [&result](unsigned idx, const std::string& value) { result[idx] = s25util::fromStringClassic<uint16_t>(value); });
+    return result;
 }
 
 } // namespace libsiedler2

@@ -21,6 +21,8 @@
 #include "libsiedler2/ArchivItem_Bitmap_Player.h"
 #include "libsiedler2/ArchivItem_Bob.h"
 #include "libsiedler2/libsiedler2.h"
+#include "libsiedler2/loadMapping.h"
+#include "s25util/StringConversion.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -35,7 +37,8 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
-    const libsiedler2::ArchivItem_Bob& bob = *dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);
+    BOOST_TEST_REQUIRE(dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]));
+    const libsiedler2::ArchivItem_Bob& bob = *static_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);
     BOOST_REQUIRE_EQUAL(bob.getNumGoodImgs(), 602u);
     BOOST_REQUIRE_EQUAL(bob.getNumItems(), 3264u);
     BOOST_REQUIRE_EQUAL(bob.size(), 698u);
@@ -57,6 +60,28 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[697]);
     BOOST_REQUIRE_EQUAL(bmp->getNy(), 18);
     BOOST_REQUIRE_EQUAL(bmp->getHeight(), 12u);
+}
+
+BOOST_AUTO_TEST_CASE(WriteReadLinks)
+{
+    // Proprietary file. Copy S2 installation into the testFiles folder to test this
+    std::string inPath = libsiedler2::test::inputPath + "/DATA/BOBS/CARRIER.BOB";
+    if(!bfs::exists(inPath))
+        return;
+    libsiedler2::Archiv archiv;
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
+    const libsiedler2::ArchivItem_Bob* bob = dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);
+    BOOST_TEST_REQUIRE(bob);
+    std::stringstream s;
+    bob->writeLinks(s);
+    s.seekg(0);
+    const auto links = libsiedler2::ArchivItem_Bob::readLinks(s);
+    for(unsigned i = 0; i < bob->getNumItems(); i++)
+    {
+        const auto it = links.find(i);
+        BOOST_TEST_REQUIRE((it != links.end()));
+        BOOST_TEST_REQUIRE(it->second == bob->getLink(i));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
