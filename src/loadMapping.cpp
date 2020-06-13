@@ -22,7 +22,7 @@
 
 namespace libsiedler2 {
 
-void loadMapping(std::istream& stream, std::function<void(unsigned idx, const std::string&)> onItem)
+void loadMapping(std::istream& stream, const std::function<void(unsigned idx, const std::string&)>& onItem)
 {
     std::string line;
     const std::string delimiters(" \t");
@@ -52,7 +52,7 @@ void loadMapping(std::istream& stream, std::function<void(unsigned idx, const st
         throw std::runtime_error("Error getting line");
 }
 
-void loadMapping(const boost::filesystem::path& filepath, std::function<void(unsigned idx, const std::string&)> onItem)
+void loadMapping(const boost::filesystem::path& filepath, const std::function<void(unsigned idx, const std::string&)>& onItem)
 {
     boost::nowide::ifstream f(filepath);
     loadMapping(f, onItem);

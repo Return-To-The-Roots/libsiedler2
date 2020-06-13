@@ -33,9 +33,9 @@ namespace libsiedler2 {
 // <value> is file format specific
 
 /// Load a mapping from stream. Call the callback for each item
-void loadMapping(std::istream& stream, std::function<void(unsigned idx, const std::string&)> onItem);
+void loadMapping(std::istream& stream, const std::function<void(unsigned idx, const std::string&)>& onItem);
 /// Load a mapping from file. Call the callback for each item
-void loadMapping(const boost::filesystem::path& filepath, std::function<void(unsigned idx, const std::string&)> onItem);
+void loadMapping(const boost::filesystem::path& filepath, const std::function<void(unsigned idx, const std::string&)>& onItem);
 
 } // namespace libsiedler2
 

@@ -29,4 +29,4 @@ struct TestSetup
     ~TestSetup() { boost::filesystem::remove_all(libsiedler2::test::outputPath); }
 };
 
-BOOST_TEST_GLOBAL_FIXTURE(TestSetup);
+BOOST_GLOBAL_FIXTURE(TestSetup);

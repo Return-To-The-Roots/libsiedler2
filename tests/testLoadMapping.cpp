@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(IgnoreComments)
     BOOST_TEST(values[2] == Value(7, "foobar"));
 }
 
-auto makeExceptionCheck(std::string msgPart)
+static auto makeExceptionCheck(std::string msgPart)
 {
     return [msgPart = std::move(msgPart)](const std::runtime_error& e) { return std::string(e.what()).find(msgPart) != std::string::npos; };
 }
