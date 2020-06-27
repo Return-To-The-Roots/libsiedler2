@@ -176,12 +176,12 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
         else if(extension == "swd" || extension == "wld")
             ret = loader::LoadMAP(file, items);
         else if(extension == "ger" || extension == "eng")
-            ret = loader::LoadTXT(file, items);
+            ret = loader::LoadTXT(file, items, true);
         else if(extension == "ini")
             ret = loader::LoadINI(file, items);
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
             ret = loader::LoadSND(file, items);
-        else if(extension == "txt")
+        else if(extension == "txt" || extension == "links")
         {
             const bfs::path filename = filePath.stem();
             const std::string ext2 =
@@ -191,7 +191,7 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
             else if(ext2 == "palette")
                 ret = loader::LoadTxtPalette(file, items);
             else
-                ret = loader::LoadTXT(file, items);
+                ret = loader::LoadTXT(file, items, false);
         } else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
@@ -426,7 +426,7 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
             file.bobtype = BobType::Bitmap;
         else if(wf.back() == "bbm" || wf.back() == "act")
             file.bobtype = BobType::Palette;
-        else if(wf.back() == "txt" || wf.back() == "ger" || wf.back() == "eng")
+        else if(wf.back() == "txt" || wf.back() == "ger" || wf.back() == "eng" || wf.back() == "links")
             file.bobtype = BobType::Text;
         else if(wf.back() == "empty")
             file.bobtype = BobType::None;

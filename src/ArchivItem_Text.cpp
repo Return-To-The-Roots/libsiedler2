@@ -61,8 +61,6 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
     std::vector<char> text;
     if(length)
     {
-        // Avoid copy if we need to append nullptr terminator
-        text.reserve(length + 1);
         text.resize(length);
         if(!file.read(&text.front(), length))
             return ErrorCode::UNEXPECTED_EOF;
@@ -72,26 +70,53 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint
         text.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     }
 
-    // Add nullptr terminator if it is missing
-    if(text.empty() || text.back() != 0)
-        text.push_back(0);
-
-    /// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
-    if(text.size() >= 2 && text[text.size() - 2] == 26)
-        text[text.size() - 2] = 0;
+    // Remove nullptr terminator if present
+    if(!text.empty() && text.back() == '\0')
+        text.pop_back();
 
     if(conversion)
-        text_ = OemToAnsi(text.data());
-    else
-        text_ = text.data();
-
-    for(uint32_t i = 0; i + 1 < text_.size(); ++i)
     {
-        if(text_[i] == '@' && text_[i + 1] == '@')
+        /// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
+        if(!text.empty() && text.back() == 26)
+            text.pop_back();
+    } else
+    {
+        // Replace all \r\n or \r by \n
+        size_t insertPos = 0;
+        for(size_t i = 0; i < text.size(); ++i, ++insertPos)
         {
-            text_[i] = '\r';
-            text_[i + 1] = '\n';
+            if(text[i] == '\r')
+            {
+                text[insertPos] = '\n';
+                if(i + 1u < text.size() && text[i + 1u] == '\n')
+                    ++i;
+            } else
+                text[insertPos] = text[i];
         }
+        text.resize(insertPos);
+    }
+
+    text_.assign(text.begin(), text.end());
+    if(text_.empty())
+        return ErrorCode::NONE;
+
+    if(conversion)
+    {
+        text_ = OemToAnsi(text_);
+
+        // Replace all @@ by \n
+        size_t insertPos = 0;
+        for(size_t i = 0; i + 1u < text_.size(); ++i, ++insertPos)
+        {
+            if(text_[i] == '@' && text_[i + 1u] == '@')
+            {
+                text_[insertPos] = '\n';
+                ++i;
+            } else
+                text_[insertPos] = text_[i];
+        }
+        text_[insertPos++] = text_.back(); // Trailing char
+        text_.resize(insertPos);
     }
 
     // Alles OK
@@ -132,30 +157,27 @@ const std::string& libsiedler2::ArchivItem_Text::getText() const
     return text_;
 }
 
-std::string libsiedler2::ArchivItem_Text::getFileText(bool convertToOem) const
+std::string libsiedler2::ArchivItem_Text::getFileText(bool conversion) const
 {
+    if(!conversion)
+        return text_;
+
     assert(text_.size() < std::numeric_limits<uint32_t>::max());
     const auto length = static_cast<uint32_t>(text_.size());
     std::vector<char> textBuf;
-    textBuf.reserve(length * 2 + 1);
+    textBuf.reserve(length);
 
-    for(uint32_t i = 0; i < length; ++i)
+    for(char c : text_)
     {
-        if(this->text_[i] == '\n')
+        if(c == '\n')
         {
             textBuf.push_back('@');
             textBuf.push_back('@');
-        } else if(this->text_[i] == '\r')
-            continue;
-        else
-            textBuf.push_back(this->text_[i]);
+        } else if(c != '\r')
+            textBuf.push_back(c);
     }
-    textBuf.push_back('\0');
 
-    if(convertToOem)
-        return AnsiToOem(textBuf.data());
-    else
-        return textBuf.data();
+    return AnsiToOem(std::string(textBuf.begin(), textBuf.end()));
 }
 
 /**
@@ -163,13 +185,8 @@ std::string libsiedler2::ArchivItem_Text::getFileText(bool convertToOem) const
  *
  *  @param[in] text       Der Text der gesetzt werden soll, falls @p nullptr, wird
  *                        evtl vorhandener Text gelöscht
- *  @param[in] length     Länge des Textes, bei @p 0 wird @p strlen verwendet
  */
 void libsiedler2::ArchivItem_Text::setText(const std::string& text)
 {
     this->text_ = text;
-
-    // Name setzen
-    if(getName().empty())
-        setName(this->text_);
 }

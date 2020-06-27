@@ -19,6 +19,7 @@
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(TextFiles)
@@ -47,18 +48,18 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
     std::string outFilepath = libsiedler2::test::outputPath + "/outText.ENG";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 3);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
-    BOOST_REQUIRE_EQUAL(archiv.size(), archivIn.size());
+    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(archiv.size() == archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
     {
         const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
         const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[i]);
         if(txtOut)
-            BOOST_REQUIRE(txtIn);
+            BOOST_TEST(txtIn);
         else
-            BOOST_REQUIRE(!txtIn);
+            BOOST_TEST(!txtIn);
         if(txtIn && txtOut)
-            BOOST_REQUIRE_EQUAL(txtIn->getText(), txtOut->getText());
+            BOOST_TEST(txtIn->getText() == boost::algorithm::replace_all_copy(txtOut->getText(), "\r\n", "\n"));
     }
 }
 
@@ -67,18 +68,18 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
     std::string outFilepath = libsiedler2::test::outputPath + "/outText.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 6);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
-    BOOST_REQUIRE_EQUAL(archiv.size(), archivIn.size());
+    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(archiv.size() == archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
     {
         const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
         const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[i]);
         if(txtOut)
-            BOOST_REQUIRE(txtIn);
+            BOOST_TEST(txtIn);
         else
-            BOOST_REQUIRE(!txtIn);
+            BOOST_TEST(!txtIn);
         if(txtIn && txtOut)
-            BOOST_REQUIRE_EQUAL(txtIn->getText(), txtOut->getText());
+            BOOST_TEST(txtIn->getText() == boost::algorithm::replace_all_copy(txtOut->getText(), "\r\n", "\n"));
     }
 }
 
@@ -87,12 +88,12 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
     std::string outFilepath = libsiedler2::test::outputPath + "/outTextPlain.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 1);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(outFilepath, archivIn), 0);
-    BOOST_REQUIRE_EQUAL(archivIn.size(), 1u);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(archivIn.size() == 1u);
     const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[0]);
     const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[0]);
-    BOOST_REQUIRE(txtOut && txtIn);
-    BOOST_REQUIRE_EQUAL(txtIn->getText(), txtOut->getText());
+    BOOST_TEST_REQUIRE((txtOut && txtIn));
+    BOOST_TEST(txtIn->getText() == boost::algorithm::replace_all_copy(txtOut->getText(), "\r\n", "\n"));
 }
 
 BOOST_AUTO_TEST_CASE(ReadTxtAsLst)

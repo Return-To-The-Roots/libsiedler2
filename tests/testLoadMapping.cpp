@@ -40,6 +40,7 @@ BOOST_AUTO_TEST_CASE(SimpleMapping)
     s.seekg(0);
     std::vector<Value> values;
     libsiedler2::loadMapping(s, [&values](unsigned idx, const std::string& value) { values.emplace_back(idx, value); });
+    BOOST_TEST_REQUIRE(values.size() == 7u);
     BOOST_TEST(values[0] == Value(0, "a"));
     BOOST_TEST(values[1] == Value(1, "bb"));
     BOOST_TEST(values[2] == Value(2, "c123"));

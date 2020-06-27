@@ -64,14 +64,16 @@ namespace loader {
     /// schreibt ein Archiv in eine BMP-File.
     int WriteBMP(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
-    /// lädt eine GER/ENG-File in ein Archiv.
-    int LoadTXT(const std::string& file, Archiv& items, bool conversion = true);
+    /// load a GER/ENG-File into the archive.
+    /// If conversion is true then OEM conversion and @@-replacement is done, otherwise line endings are normalized to \n
+    int LoadTXT(const std::string& file, Archiv& items, bool conversion);
 
 #define LoadGER LoadTXT
 #define LoadENG LoadTXT
 
-    /// schreibt eine GER/ENG-File aus einem Archiv.
-    int WriteTXT(const std::string& file, const Archiv& items, bool conversion = true);
+    /// write a GER/ENG-File from an archive
+    /// If conversion is true then OEM conversion and @@-replacement is done
+    int WriteTXT(const std::string& file, const Archiv& items, bool conversion);
 
 #define WriteGER WriteTXT
 #define WriteENG WriteTXT

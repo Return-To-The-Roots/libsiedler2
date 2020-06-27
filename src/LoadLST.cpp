@@ -47,7 +47,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, Archiv& items, const A
 
     // ist es eine GER/ENG-File? (Header 0xE7FD)
     if(header == 0xFDE7)
-        return LoadTXT(file, items);
+        return LoadTXT(file, items, true);
 
     // ist es eine LST-File? (Header 0x204E)
     if(header != 0x4E20)

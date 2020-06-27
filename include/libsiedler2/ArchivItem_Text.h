@@ -42,7 +42,7 @@ public:
     // liefert den Text.
     const std::string& getText() const;
     // Get the text as it will be written to file
-    std::string getFileText(bool convertToOem) const;
+    std::string getFileText(bool conversion) const;
 
     // setzt den Text.
     void setText(const std::string& text);

@@ -48,7 +48,7 @@ public:
 
     uint32_t getNumGoodImgs() const { return numGoodImgs; }
     uint32_t getNumItems() const { return uint32_t(links.size()); }
-    uint16_t getLink(uint32_t idx) const { return (links[idx]); };
+    uint16_t getLink(uint32_t idx) const { return links[idx]; };
 
     /// Write the links in mapping format (TAB separated entries with # comments)
     void writeLinks(std::ostream& file) const;
