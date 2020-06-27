@@ -71,6 +71,12 @@ public:
     const ArchivItem* operator[](size_t index) const { return get(index); }
     ArchivItem* operator[](size_t index) { return get(index); }
 
+    // Range-based for support
+    friend auto begin(Archiv& archive) { return archive.data.begin(); }
+    friend auto end(Archiv& archive) { return archive.data.end(); }
+    friend auto begin(const Archiv& archive) { return archive.data.begin(); }
+    friend auto end(const Archiv& archive) { return archive.data.end(); }
+
 private:
     std::vector<std::unique_ptr<ArchivItem>> data; /// elements
 };

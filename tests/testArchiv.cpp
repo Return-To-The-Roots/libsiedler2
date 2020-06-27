@@ -24,11 +24,6 @@
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
 
-template<class T>
-std::ostream& boost_test_print_type(std::ostream& ostr, std::unique_ptr<T> const& right)
-{
-    return ostr << right.get();
-}
 namespace libsiedler2 {
 static std::ostream& boost_test_print_type(std::ostream& os, libsiedler2::BobType bt)
 {
@@ -217,6 +212,31 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
         BOOST_REQUIRE_EQUAL(item.get(), rawPtr);
     }
     BOOST_REQUIRE_EQUAL(TestItem::numLiveItems, 1);
+}
+
+BOOST_AUTO_TEST_CASE(RangeBasedIteration)
+{
+    libsiedler2::Archiv archive;
+    archive.alloc(5);
+    archive.set(0, std::make_unique<libsiedler2::ArchivItem_Raw>(std::vector<uint8_t>(1)));
+    archive.set(2, std::make_unique<libsiedler2::ArchivItem_Raw>(std::vector<uint8_t>(42)));
+    archive.set(3, std::make_unique<libsiedler2::ArchivItem_Raw>(std::vector<uint8_t>(1337)));
+    std::vector<std::unique_ptr<libsiedler2::ArchivItem>> items;
+    for(auto& i : archive)
+        items.push_back(std::move(i));
+    BOOST_TEST(!archive[0]);
+    BOOST_TEST(!archive[2]);
+    BOOST_TEST(!archive[3]);
+    BOOST_TEST_REQUIRE(items.size() == 5u);
+    // .get() is a workaround for a printing bug until Boost 1.69
+    BOOST_TEST(items[0].get());
+    BOOST_TEST(!items[1].get());
+    BOOST_TEST(items[2].get());
+    BOOST_TEST(items[3].get());
+    BOOST_TEST(!items[4].get());
+    BOOST_TEST(static_cast<libsiedler2::ArchivItem_Raw&>(*items[0]).getData().size() == 1u);
+    BOOST_TEST(static_cast<libsiedler2::ArchivItem_Raw&>(*items[2]).getData().size() == 42u);
+    BOOST_TEST(static_cast<libsiedler2::ArchivItem_Raw&>(*items[3]).getData().size() == 1337u);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
