@@ -34,31 +34,43 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
         return;
     const std::string inPath = libsiedler2::test::s2Path + "/DATA/BOBS/CARRIER.BOB";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
-    BOOST_REQUIRE_EQUAL(archiv.size(), 1u);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
+    BOOST_TEST_REQUIRE(archiv.size() == 1u);
     BOOST_TEST_REQUIRE(dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]));
-    const libsiedler2::ArchivItem_Bob& bob = *static_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);
-    BOOST_REQUIRE_EQUAL(bob.getNumGoodImgs(), 602u);
-    BOOST_REQUIRE_EQUAL(bob.getNumItems(), 3264u);
-    BOOST_REQUIRE_EQUAL(bob.size(), 698u);
+    libsiedler2::ArchivItem_Bob& bob = *static_cast<libsiedler2::ArchivItem_Bob*>(archiv[0]);
+    BOOST_TEST(bob.getNumOverlayImgs() == 602u);
+    BOOST_TEST(bob.getNumLinks() == 3264u);
+    BOOST_TEST(bob.size() == 698u);
     for(unsigned i = 0; i < bob.size(); i++)
     {
         const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[i]);
-        BOOST_REQUIRE(bmp);
-        BOOST_REQUIRE_EQUAL(bmp->getNx(), 16);
-        BOOST_REQUIRE_EQUAL(bmp->getWidth(), 32u);
-        BOOST_REQUIRE_GT(bmp->getHeight(), 0u);
+        BOOST_TEST_REQUIRE(bmp);
+        BOOST_TEST(bmp->getNx() == 16);
+        BOOST_TEST(bmp->getWidth() == 32u);
+        BOOST_TEST(bmp->getHeight() > 0u);
     }
     // Some fixed tests
     const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[0]);
-    BOOST_REQUIRE_EQUAL(bmp->getNy(), 12);
-    BOOST_REQUIRE_EQUAL(bmp->getHeight(), 13u);
+    BOOST_TEST(bmp->getNy() == 12);
+    BOOST_TEST(bmp->getHeight() == 13u);
     bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[1]);
-    BOOST_REQUIRE_EQUAL(bmp->getNy(), 13);
-    BOOST_REQUIRE_EQUAL(bmp->getHeight(), 14u);
+    BOOST_TEST(bmp->getNy() == 13);
+    BOOST_TEST(bmp->getHeight() == 14u);
     bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap_Player*>(bob[697]);
-    BOOST_REQUIRE_EQUAL(bmp->getNy(), 18);
-    BOOST_REQUIRE_EQUAL(bmp->getHeight(), 12u);
+    BOOST_TEST(bmp->getNy() == 18);
+    BOOST_TEST(bmp->getHeight() == 12u);
+
+    // Bodies are an array: array [fat][direction][animStep]: [2][6][8]
+    using libsiedler2::ImgDir;
+    BOOST_TEST(bob.getBody(true, ImgDir::W, 5));
+    BOOST_TEST(bob.getBody(true, ImgDir::W, 5) == bob[1 * 48 + 3 * 8 + 5]);
+    BOOST_TEST(bob.getBody(false, ImgDir::NW, 3));
+    BOOST_TEST(bob.getBody(false, ImgDir::NW, 3) == bob[0 * 48 + 4 * 8 + 3]);
+    // Overlay links are an array: [overlay][animStep][fat][direction]: [][8][2][6]
+    BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5));
+    BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5) == bob[bob.getOverlayIdx(21 * 96 + 5 * 12 + 3 + 1 * 6)]);
+    BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7));
+    BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7) == bob[bob.getOverlayIdx(13 * 96 + 7 * 12 + 4 + 0 * 6)]);
 }
 
 BOOST_AUTO_TEST_CASE(WriteReadLinks)
@@ -74,11 +86,11 @@ BOOST_AUTO_TEST_CASE(WriteReadLinks)
     bob->writeLinks(s);
     s.seekg(0);
     const auto links = libsiedler2::ArchivItem_Bob::readLinks(s);
-    for(unsigned i = 0; i < bob->getNumItems(); i++)
+    for(unsigned i = 0; i < bob->getNumLinks(); i++)
     {
         const auto it = links.find(i);
         BOOST_TEST_REQUIRE((it != links.end()));
-        BOOST_TEST_REQUIRE(it->second == bob->getLink(i));
+        BOOST_TEST_REQUIRE(it->second == bob->getOverlayIdx(i));
     }
 }
 

@@ -26,6 +26,18 @@
 #include <boost/range/adaptor/indexed.hpp>
 #include <iostream>
 
+namespace {
+constexpr uint16_t COLOR_BLOCK_HEADER = 0x01F5;
+constexpr uint16_t IMAGE_DATA_HEADER = 0x01F4;
+/// 8 Animation Steps, 6 directions, 2 types (Fat, Non-Fat) --> Array [fat][direction][animStep]
+constexpr unsigned NUM_BODY_IMAGES = 2 * 6 * 8;
+/// Same for links but Array [animStep][fat][direction]
+constexpr unsigned NUM_LINKS_PER_OVERLAY = 8 * 2 * 6;
+constexpr uint16_t SPRITE_WIDTH = 32;
+/// Draw offset in X
+constexpr uint16_t X_OFFSET = 16;
+} // namespace
+
 namespace libsiedler2 {
 /// Read a block of colors used later
 static int readColorBlock(libendian::EndianIStreamAdapter<false, std::istream&>& fs, std::vector<uint8_t>& pixels)
@@ -34,7 +46,7 @@ static int readColorBlock(libendian::EndianIStreamAdapter<false, std::istream&>&
     if(!(fs >> id >> size))
         return ErrorCode::UNEXPECTED_EOF;
 
-    if(id != 0x01F5)
+    if(id != COLOR_BLOCK_HEADER)
         return ErrorCode::WRONG_FORMAT;
 
     pixels.resize(size);
@@ -50,7 +62,7 @@ static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& 
     if(!(fs >> id >> height))
         return ErrorCode::UNEXPECTED_EOF;
 
-    if(id != 0x01F4)
+    if(id != IMAGE_DATA_HEADER)
         return ErrorCode::WRONG_FORMAT;
 
     starts.resize(height);
@@ -59,12 +71,7 @@ static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& 
     return ErrorCode::NONE;
 }
 
-/** @class ArchivItem_Bob
- *
- *  Klasse für Bobfiles.
- */
-
-ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BobType::Bob), numGoodImgs(0) {}
+ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BobType::Bob), numOverlayImgs(0) {}
 
 ArchivItem_Bob::~ArchivItem_Bob() = default;
 
@@ -90,9 +97,10 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
     if(int ec = readColorBlock(fs, raw_base))
         return ec;
 
-    // Einzelner Bilder auslesen ( untere Körper ): 8 Animation Steps, 6 directions, 2 types (Fat, Non-Fat) = 96
-    alloc(96);
-    for(uint32_t i = 0; i < 96; ++i)
+    // Read body images (to get full figure draw this then draw the item image (below) over it)
+    // They form an array [fat][direction][animStep]
+    alloc(NUM_BODY_IMAGES);
+    for(uint32_t i = 0; i < NUM_BODY_IMAGES; ++i)
     {
         std::vector<uint16_t> starts;
         uint8_t ny;
@@ -101,17 +109,17 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 
         auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
         assert(image);
-        image->setNx(16); //-V522
+        image->setNx(X_OFFSET);
         image->setNy(ny);
 
-        int ec = image->load(32, raw_base, starts, true, palette);
+        int ec = image->load(SPRITE_WIDTH, raw_base, starts, true, palette);
         if(ec)
             return ec;
 
         set(i, std::move(image));
     }
 
-    // erstmal die 6 Farbblöcke fr die 6 Richtungen
+    // Color blocks for each direction
     std::array<std::vector<uint8_t>, 6> raw;
 
     for(auto& i : raw)
@@ -120,38 +128,38 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
             return ec;
     }
 
-    // Anzahl Warenbilder
-    fs >> numGoodImgs;
+    // Number of overlay images (e.g. goods of carriers)
+    fs >> numOverlayImgs;
 
-    alloc_inc(numGoodImgs);
+    alloc_inc(numOverlayImgs);
 
-    std::vector<std::vector<uint16_t>> starts(numGoodImgs);
-    std::vector<uint8_t> ny(numGoodImgs);
+    std::vector<std::vector<uint16_t>> starts(numOverlayImgs);
+    std::vector<uint8_t> ny(numOverlayImgs);
 
-    for(uint16_t i = 0; i < numGoodImgs; ++i)
+    for(uint16_t i = 0; i < numOverlayImgs; ++i)
     {
         if(int ec = readImageData(fs, starts[i], ny[i]))
             return ec;
     }
 
     // Number of complete pictures.
-    // Links form an array: [ware][animStep][fat][direction]: [][8][2][6]
-    // the item at position 96 + link[ware][animStep][fat][direction] shall be combined
+    // Links form an array: [overlay][animStep][fat][direction]: [][8][2][6]
+    // the item at position NUM_BODY_IMAGES + link[overlay][animStep][fat][direction] shall be combined
     // with the appropriate body
-    uint16_t item_count;
-    if(!(fs >> item_count))
+    uint16_t numLinks;
+    if(!(fs >> numLinks))
         return ErrorCode::UNEXPECTED_EOF;
 
-    links.resize(item_count);
-    std::vector<bool> loaded(numGoodImgs, false);
+    links.resize(numLinks);
+    std::vector<bool> loaded(numOverlayImgs, false);
 
-    for(uint32_t i = 0; i < item_count; ++i)
+    for(uint32_t i = 0; i < numLinks; ++i)
     {
         uint16_t unknown;
         if(!(fs >> links[i] >> unknown))
             return ErrorCode::UNEXPECTED_EOF;
 
-        if(links[i] >= numGoodImgs)
+        if(links[i] >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
 
         if(loaded[links[i]])
@@ -159,16 +167,19 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 
         auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
         assert(image);
-        image->setNx(16); //-V522
+        image->setNx(X_OFFSET);
         image->setNy(ny[links[i]]);
 
-        int ec = image->load(32, raw[i % 6], starts[links[i]], true, palette);
+        int ec = image->load(SPRITE_WIDTH, raw[i % 6], starts[links[i]], true, palette);
         if(ec)
             return ec;
 
-        set(96 + links[i], std::move(image));
+        set(NUM_BODY_IMAGES + links[i], std::move(image));
         loaded[links[i]] = true;
     }
+    // Adjust links so they point to actual indices in the archive as we moved them by NUM_BODY_IMAGES
+    for(auto& link : links)
+        link += NUM_BODY_IMAGES;
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
@@ -186,21 +197,37 @@ int ArchivItem_Bob::write(std::ostream&, const ArchivItem_Palette*)
     return ErrorCode::UNSUPPORTED_FORMAT;
 }
 
+ArchivItem_Bitmap_Player* ArchivItem_Bob::getBody(bool fat, ImgDir direction, unsigned animationstep)
+{
+    // Array: [fat][direction][animStep]: [2][6][8]
+    const unsigned bodyIdx = (fat * 6 + static_cast<unsigned>(direction)) * 8 + animationstep;
+    return dynamic_cast<ArchivItem_Bitmap_Player*>(get(bodyIdx));
+}
+
+ArchivItem_Bitmap_Player* ArchivItem_Bob::getOverlay(unsigned overlayIdx, bool fat, ImgDir direction, unsigned animationstep)
+{
+    return dynamic_cast<ArchivItem_Bitmap_Player*>(get(getOverlayIdx(overlayIdx, fat, direction, animationstep)));
+}
+
 void ArchivItem_Bob::writeLinks(std::ostream& file) const
 {
     // links[][8][2][6]
     for(const auto it : links | boost::adaptors::indexed())
     {
-        if(it.index() % (8 * 2 * 6) == 0)
-            file << "# Job ID " << it.index() / (8 * 2 * 6) << "\n";
+        if(it.index() % NUM_LINKS_PER_OVERLAY == 0)
+            file << "# Job ID " << it.index() / NUM_LINKS_PER_OVERLAY << "\n";
         file << s25util::toStringClassic(it.index()) << "\t" << s25util::toStringClassic(it.value()) << "\n";
     }
 }
 
-std::map<unsigned, uint16_t> ArchivItem_Bob::readLinks(std::istream& file)
+std::map<uint16_t, uint16_t> ArchivItem_Bob::readLinks(std::istream& file)
 {
-    std::map<unsigned, uint16_t> result;
-    loadMapping(file, [&result](unsigned idx, const std::string& value) { result[idx] = s25util::fromStringClassic<uint16_t>(value); });
+    std::map<uint16_t, uint16_t> result;
+    loadMapping(file, [&result](unsigned idx, const std::string& value) {
+        if(idx > std::numeric_limits<uint16_t>::max())
+            throw std::range_error("Index " + std::to_string(idx) + " is to large");
+        result[idx] = s25util::fromStringClassic<uint16_t>(value);
+    });
     return result;
 }
 
