@@ -63,3 +63,7 @@ option(RTTR_BUILD_LIBSIEDLER2_EXAMPLES "Build example projects/tools of libsiedl
 if(RTTR_BUILD_LIBSIEDLER2_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+if(isTopLevel AND ClangFormat_FOUND)
+    add_clangformat_target("file")
+endif()
