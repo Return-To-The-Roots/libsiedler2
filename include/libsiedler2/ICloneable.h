@@ -28,13 +28,11 @@ namespace libsiedler2 {
 
 template<typename T, typename U, typename = void>
 struct is_static_castable : std::false_type
-{
-};
+{};
 
 template<typename T, typename U>
 struct is_static_castable<T, U, decltype(void(static_cast<U>(std::declval<T>())))> : std::true_type
-{
-};
+{};
 
 template<typename To, typename From>
 std::enable_if_t<is_static_castable<From*, To*>::value, To*> safePtrCast(From* from)

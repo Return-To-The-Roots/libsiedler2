@@ -64,10 +64,10 @@ BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
     BOOST_REQUIRE_EQUAL(bmp->getWidth(), bmpLbm->getWidth());
     BOOST_REQUIRE_EQUAL(bmp->getHeight(), bmpLbm->getHeight());
     std::vector<libsiedler2::ColorRGB> bmpData(bmp->getPixelData().size()), bmpLbmData(bmp->getPixelData().size());
-    std::transform(bmp->getPixelData().begin(), bmp->getPixelData().end(),
-                   bmpData.begin(), [pal = *bmp->getPalette()](uint8_t i) { return pal[i]; });
-    std::transform(bmpLbm->getPixelData().begin(), bmpLbm->getPixelData().end(),
-                   bmpLbmData.begin(), [pal = *bmpLbm->getPalette()](uint8_t i) { return pal[i]; });
+    std::transform(bmp->getPixelData().begin(), bmp->getPixelData().end(), bmpData.begin(),
+                   [pal = *bmp->getPalette()](uint8_t i) { return pal[i]; });
+    std::transform(bmpLbm->getPixelData().begin(), bmpLbm->getPixelData().end(), bmpLbmData.begin(),
+                   [pal = *bmpLbm->getPalette()](uint8_t i) { return pal[i]; });
     BOOST_TEST_REQUIRE(bmpData == bmpLbmData, boost::test_tools::per_element());
 }
 
