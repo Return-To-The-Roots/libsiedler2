@@ -21,7 +21,7 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake")
     include(RttrCoverageCfg)
     # Use clang-format if available
-    find_package(ClangFormat 5.0.0)
+    find_package(ClangFormat 9)
 else()
     set(isTopLevel FALSE)
 endif()
