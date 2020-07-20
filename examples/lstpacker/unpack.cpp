@@ -41,6 +41,13 @@
 #include <limits>
 #include <vector>
 
+#if BOOST_VERSION < 106500 && defined(BOOST_GCC) && __GNUC__ >= 7
+#ifdef BOOST_FALLTHROUGH
+#undef BOOST_FALLTHROUGH
+#endif
+#define BOOST_FALLTHROUGH __attribute__((fallthrough))
+#endif
+
 using namespace std;
 using namespace libsiedler2;
 namespace bnw = boost::nowide;
