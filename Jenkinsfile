@@ -57,7 +57,7 @@ pipeline {
                     withDockerContainer(
                         image: dockerRegistry+dockerImage,
                         args: " \
-                            -v $HOME/.ccache:/home/jenkins/.ccache \
+                            -v $HOME/.ccache:/.ccache \
                         ") {
                         sh """set -ex
                             rm -rf build || true
