@@ -84,7 +84,7 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
             {
                 auto subtype = SoundType::None;
 
-                const ArchivItem_Sound* i = dynamic_cast<const ArchivItem_Sound*>(item);
+                const auto* i = dynamic_cast<const ArchivItem_Sound*>(item);
                 if(item)
                     subtype = i->getType();
 
@@ -97,7 +97,7 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
 
                         cout << "extracting " << newFilepath << ": ";
 
-                        const ArchivItem_Sound_Wave* wave = dynamic_cast<const ArchivItem_Sound_Wave*>(item);
+                        const auto* wave = dynamic_cast<const ArchivItem_Sound_Wave*>(item);
                         bnw::ofstream fwave(newFilepath, ios::binary);
                         if(fwave && wave && wave->write(fwave, false) == 0)
                         {
@@ -131,7 +131,7 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
             break;
             case BobType::Font:
             {
-                const ArchivItem_Font* font = dynamic_cast<const ArchivItem_Font*>(item);
+                const auto* font = dynamic_cast<const ArchivItem_Font*>(item);
 
                 newFilepath += ".dx" + s25util::toStringClassic((short)font->getDx());
                 newFilepath += ".dy" + s25util::toStringClassic((short)font->getDy());
@@ -149,18 +149,18 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
 
                 cout << "extracting " << newFilepath << ": ";
 
-                if(Write(newFilepath.string(), items) != 0)
+                if(Write(newFilepath, items) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
                 if(paletteAsTxt)
-                    loader::WriteTxtPalette(newFilepath.replace_extension(".palette.txt").string(),
+                    loader::WriteTxtPalette(newFilepath.replace_extension(".palette.txt"),
                                             static_cast<const libsiedler2::ArchivItem_Palette&>(*item));
             }
             break;
             case BobType::Bob:
             {
-                const ArchivItem_Bob* bob = dynamic_cast<const ArchivItem_Bob*>(item);
+                const auto* bob = dynamic_cast<const ArchivItem_Bob*>(item);
                 unpack(directory, *bob, palette);
                 // links[][8][2][6]
                 bnw::ofstream linksFile(directory / "mapping.links");
@@ -173,7 +173,7 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
                 newFilepath.replace_extension(".txt");
                 cout << "extracting " << newFilepath << ": ";
 
-                const ArchivItem_Text* txt = dynamic_cast<const ArchivItem_Text*>(item);
+                const auto* txt = dynamic_cast<const ArchivItem_Text*>(item);
                 bnw::ofstream fTxt(newFilepath, ios::binary);
                 if(fTxt && txt && txt->write(fTxt, false) == 0)
                 {
@@ -201,7 +201,7 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
             case BobType::Bitmap: // uncompressed Bitmap
             {
                 Archiv items;
-                const ArchivItem_BitmapBase& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
+                const auto& bitmap = dynamic_cast<const ArchivItem_BitmapBase&>(*item);
                 items.pushC(bitmap);
 
                 newFilepath += ".nx" + s25util::toStringClassic(bitmap.getNx());
@@ -210,12 +210,12 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
 
                 cout << "extracting " << newFilepath << ": ";
 
-                if(Write(newFilepath.string(), items, palette) != 0)
+                if(Write(newFilepath, items, palette) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
                 if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
-                    loader::WriteTxtPalette((directory / newFileStem).replace_extension(".palette.txt").string(), *bitmap.getPalette());
+                    loader::WriteTxtPalette((directory / newFileStem).replace_extension(".palette.txt"), *bitmap.getPalette());
             }
             break;
             case BobType::PaletteAnim: containsPalAnim = true; break;
@@ -229,7 +229,7 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
 
         cout << "extracting " << newfile << ": ";
 
-        if(Write(newfile.string(), lst) != 0)
+        if(Write(newfile, lst) != 0)
             cout << "failed" << endl;
         else
             cout << "done" << endl;

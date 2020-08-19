@@ -19,22 +19,19 @@
 
 #include "pack.h"
 #include "util.h"
-
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/FileEntry.h"
 #include "libsiedler2/libsiedler2.h"
-
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
-
 #include <algorithm>
 #include <iostream>
 #include <vector>
 
 using namespace libsiedler2;
 
-void pack(const std::string& directory, const std::string& file, const libsiedler2::ArchivItem_Palette* palette)
+void pack(const boost::filesystem::path& directory, const boost::filesystem::path& outFilepath,
+          const libsiedler2::ArchivItem_Palette* palette)
 {
     Archiv lst;
 
@@ -64,8 +61,8 @@ void pack(const std::string& directory, const std::string& file, const libsiedle
     } else
         std::cout << "done" << std::endl;
 
-    std::cout << "Writing data to " << file << ": ";
-    if(int ec = Write(file, lst, palette))
+    std::cout << "Writing data to " << outFilepath << ": ";
+    if(int ec = Write(outFilepath, lst, palette))
         std::cout << "failed: " << getErrorString(ec) << std::endl;
     else
         std::cout << "done" << std::endl;

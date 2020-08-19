@@ -26,15 +26,15 @@
 /**
  *  lädt eine MAP-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der MAP-File
+ *  @param[in]  filepath    Dateiname der MAP-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadMAP(const std::string& file, Archiv& items, bool only_header)
+int libsiedler2::loader::LoadMAP(const boost::filesystem::path& filepath, Archiv& items, bool only_header)
 {
     MMStream map;
-    if(int ec = openMemoryStream(file, map))
+    if(int ec = openMemoryStream(filepath, map))
         return ec;
 
     auto item = getAllocator().create<ArchivItem_Map>(BobType::Map);

@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
 {
     if(!libsiedler2::test::hasS2Data)
         return;
-    const std::string inPath = libsiedler2::test::s2Path + "/GFX/TEXTURES/TEX5.LBM";
+    const boost::filesystem::path inPath = libsiedler2::test::s2Path / "GFX/TEXTURES/TEX5.LBM";
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 17u);
@@ -48,8 +48,8 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
 
 BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
 {
-    std::string inPathBmp = libsiedler2::test::inputPath + "/pal.bmp";
-    std::string outPath = libsiedler2::test::outputPath + "/out.lbm";
+    const boost::filesystem::path inPathBmp = libsiedler2::test::inputPath / "pal.bmp";
+    const boost::filesystem::path outPath = libsiedler2::test::outputPath / "out.lbm";
     // Load a paletted bmp and write it in lbm format
     libsiedler2::Archiv arBmp;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathBmp, arBmp, palette), 0);

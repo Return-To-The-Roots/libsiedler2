@@ -19,23 +19,25 @@
 #define FileEntry_h__
 
 #include "enumTypes.h"
+#include <boost/filesystem/path.hpp>
 #include <string>
 #include <utility>
 
 namespace libsiedler2 {
 struct FileEntry
 {
-    explicit FileEntry(std::string filePath) : FileEntry(std::move(filePath), "", -1, BobType::Unset, 0, 0) {}
-    FileEntry(std::string filePath, std::string name, int nr, BobType bobtype, unsigned nx, unsigned ny)
+    explicit FileEntry(boost::filesystem::path filePath) : filePath(std::move(filePath)) {}
+    FileEntry(boost::filesystem::path filePath, std::string name, int nr, BobType bobtype, unsigned nx, unsigned ny)
         : filePath(std::move(filePath)), name(std::move(name)), nr(nr), bobtype(bobtype), nx(nx), ny(ny)
     {}
     /// Path to file and (remaining) name
-    std::string filePath, name;
+    boost::filesystem::path filePath;
+    std::string name;
     /// Index in the archive/folder
-    int nr;
-    BobType bobtype;
+    int nr = -1;
+    BobType bobtype = BobType::Unset;
     /// Origin or delta (fonts)
-    unsigned nx, ny;
+    unsigned nx = 0, ny = 0;
 };
 bool operator<(const FileEntry& left, const FileEntry& right);
 } // namespace libsiedler2

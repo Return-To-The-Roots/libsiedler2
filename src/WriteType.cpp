@@ -34,7 +34,7 @@
  *  schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
  *
  *  @param[in]  bobtype Typ des Items
- *  @param[in]  file    Filehandle auf die auszulesende Datei
+ *  @param[in]  filepath    Filehandle auf die auszulesende Datei
  *  @param[in]  palette Grundpalette
  *  @param[out] item    ArchivItem-Struktur, welche gefüllt wird
  *

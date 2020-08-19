@@ -21,9 +21,9 @@
 #include "prototypen.h"
 #include <boost/nowide/fstream.hpp>
 
-int libsiedler2::loader::WriteSND(const std::string& file, const Archiv& items)
+int libsiedler2::loader::WriteSND(const boost::filesystem::path& filepath, const Archiv& items)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
     // Can only write single sounds
@@ -34,7 +34,7 @@ int libsiedler2::loader::WriteSND(const std::string& file, const Archiv& items)
     if(!snd)
         return ErrorCode::WRONG_ARCHIV;
 
-    boost::nowide::ofstream fs(file, std::ios_base::binary);
+    boost::nowide::ofstream fs(filepath, std::ios_base::binary);
     if(!fs)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 

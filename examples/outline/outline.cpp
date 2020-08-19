@@ -34,7 +34,7 @@ int main(int /*argc*/, char* /*argv*/[])
 
     Load("GFX/PALETTE/PAL5.BBM", bbm);
 
-    ArchivItem_Palette* palette = (ArchivItem_Palette*)bbm.get(0);
+    auto* palette = (ArchivItem_Palette*)bbm.get(0);
 
     Load("DATA/RESOURCE.DAT", lst, palette);
 
@@ -43,7 +43,7 @@ int main(int /*argc*/, char* /*argv*/[])
     {
         if(lst.get(i)->getBobType() == BobType::Font)
         {
-            ArchivItem_Font& font = dynamic_cast<ArchivItem_Font&>(*lst.get(i));
+            auto& font = dynamic_cast<ArchivItem_Font&>(*lst.get(i));
 
             // copy small font only
             if(i == 2)
@@ -60,10 +60,10 @@ int main(int /*argc*/, char* /*argv*/[])
 
             for(unsigned j = 0; j < font.size(); ++j)
             {
-                ArchivItem_Bitmap_Player* c = dynamic_cast<ArchivItem_Bitmap_Player*>(font.get(j));
+                auto* c = dynamic_cast<ArchivItem_Bitmap_Player*>(font.get(j));
                 ArchivItem_Bitmap_Player o;
 
-                if(c == NULL)
+                if(!c)
                     continue;
 
                 unsigned short w = c->getWidth() + 1, h = c->getHeight() + 1;

@@ -22,9 +22,11 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/test/unit_test.hpp>
 
+namespace bfs = boost::filesystem;
+
 BOOST_AUTO_TEST_SUITE(TextFiles)
 
-static void createTxt(libsiedler2::Archiv& archiv, const std::string& outFile, unsigned numEntries)
+static void createTxt(libsiedler2::Archiv& archiv, const bfs::path& outFile, unsigned numEntries)
 {
     for(unsigned i = 0; i < numEntries; i++)
     {
@@ -45,7 +47,7 @@ static void createTxt(libsiedler2::Archiv& archiv, const std::string& outFile, u
 
 BOOST_AUTO_TEST_CASE(ReadWriteENG)
 {
-    std::string outFilepath = libsiedler2::test::outputPath + "/outText.ENG";
+    const bfs::path outFilepath = libsiedler2::test::outputPath / "outText.ENG";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 3);
     BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
@@ -65,7 +67,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
 
 BOOST_AUTO_TEST_CASE(ReadWriteGER)
 {
-    std::string outFilepath = libsiedler2::test::outputPath + "/outText.GER";
+    const bfs::path outFilepath = libsiedler2::test::outputPath / "outText.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 6);
     BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
@@ -85,7 +87,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
 
 BOOST_AUTO_TEST_CASE(ReadWritePlain)
 {
-    std::string outFilepath = libsiedler2::test::outputPath + "/outTextPlain.GER";
+    const bfs::path outFilepath = libsiedler2::test::outputPath / "outTextPlain.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 1);
     BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
@@ -98,7 +100,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
 
 BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
 {
-    std::string inFilepath = libsiedler2::test::inputPath + "/txtAsLst.lst";
+    const bfs::path inFilepath = libsiedler2::test::inputPath / "txtAsLst.lst";
     libsiedler2::Archiv archiv;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(inFilepath, archiv), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), 7u);

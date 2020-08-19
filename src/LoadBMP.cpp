@@ -60,17 +60,17 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, 
 /**
  *  lädt eine BMP-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der BMP-File
+ *  @param[in]  filepath    Dateiname der BMP-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls einlesen.
  */
-int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const ArchivItem_Palette* palette /*= nullptr*/)
+int libsiedler2::loader::LoadBMP(const boost::filesystem::path& filepath, Archiv& image, const ArchivItem_Palette* palette /*= nullptr*/)
 {
     MMStream mmapStream;
-    if(int ec = openMemoryStream(file, mmapStream))
+    if(int ec = openMemoryStream(filepath, mmapStream))
         return ec;
     libendian::EndianIStreamAdapter<false, MMStream&> bmpFs(mmapStream);
 
@@ -100,7 +100,7 @@ int libsiedler2::loader::LoadBMP(const std::string& file, Archiv& image, const A
         return ErrorCode::WRONG_FORMAT;
 
     std::unique_ptr<baseArchivItem_Bitmap> bitmap(getAllocator().create<baseArchivItem_Bitmap>(BobType::Bitmap));
-    bitmap->setName(file);
+    bitmap->setName(filepath.string());
 
     // keine Kompression
     if(bmih.compression != 0)

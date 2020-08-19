@@ -20,16 +20,16 @@
 #ifndef OpenMemoryStream_h__
 #define OpenMemoryStream_h__
 
+#include <boost/filesystem/path.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
-#include <string>
 
 namespace libsiedler2 {
 using MMStream = boost::iostreams::stream<boost::iostreams::mapped_file_source>;
 
 /// Open the given memory stream from a file and return an ErrorCode
 /// Writes exceptions to stderr
-int openMemoryStream(const std::string& file, MMStream& stream);
+int openMemoryStream(const boost::filesystem::path& filepath, MMStream& stream);
 } // namespace libsiedler2
 
 #endif // OpenMemoryStream_h__

@@ -27,15 +27,15 @@
 /**
  *  lädt eine ACT-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der ACT-File
+ *  @param[in]  filepath    Dateiname der ACT-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadACT(const std::string& file, Archiv& items)
+int libsiedler2::loader::LoadACT(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream act;
-    if(int ec = openMemoryStream(file, act))
+    if(int ec = openMemoryStream(filepath, act))
         return ec;
 
     size_t size = getIStreamSize(act);

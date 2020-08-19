@@ -24,30 +24,30 @@
 namespace bfs = boost::filesystem;
 
 template<typename T_Func>
-boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResult, const std::string& file, libsiedler2::Archiv& items,
-                                                  const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResult, const boost::filesystem::path& filepath,
+                                                  libsiedler2::Archiv& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
-    int ec = func(file, items, palette);
+    int ec = func(filepath, items, palette);
     if(ec == expectedResult)
         return true;
     boost::test_tools::predicate_result result(false);
-    result.message() << libsiedler2::getErrorString(ec) << " != " << libsiedler2::getErrorString(expectedResult) << " for " << file;
+    result.message() << libsiedler2::getErrorString(ec) << " != " << libsiedler2::getErrorString(expectedResult) << " for " << filepath;
     return result;
 }
 
-boost::test_tools::predicate_result testLoad(int expectedResult, const std::string& file, libsiedler2::Archiv& items,
+boost::test_tools::predicate_result testLoad(int expectedResult, const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
                                              const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
-    return testLoadWrite(libsiedler2::Load, expectedResult, file, items, palette);
+    return testLoadWrite(libsiedler2::Load, expectedResult, filepath, items, palette);
 }
 
-boost::test_tools::predicate_result testWrite(int expectedResult, const std::string& file, libsiedler2::Archiv& items,
+boost::test_tools::predicate_result testWrite(int expectedResult, const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
                                               const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
-    return testLoadWrite(libsiedler2::Write, expectedResult, file, items, palette);
+    return testLoadWrite(libsiedler2::Write, expectedResult, filepath, items, palette);
 }
 
-boost::test_tools::predicate_result testFilesEqual(const std::string& fileToCheck, const std::string& expectedFile)
+boost::test_tools::predicate_result testFilesEqual(const boost::filesystem::path& fileToCheck, const boost::filesystem::path& expectedFile)
 {
     if(bfs::file_size(fileToCheck) != bfs::file_size(expectedFile))
     {

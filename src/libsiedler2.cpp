@@ -1,6 +1,6 @@
 // Copyright (c) 2005 - 2020 Settlers Freaks (sf-team at siedler25.org)
 //
-// This file is part of Return To The Roots.
+// This filepath is part of Return To The Roots.
 //
 // Return To The Roots is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -135,21 +135,20 @@ void setAllocator(IAllocator* newAllocator)
 /**
  *  Lädt die Datei im Format ihrer Endung.
  *
- *  @param[in]  file    Dateiname der Datei
+ *  @param[in]  filepath    Dateiname der Datei
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *  @param[in]  palette Palette, welche benutzt werden soll
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palette)
+int Load(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    bfs::path filePath(file);
-    if(!filePath.has_extension())
+    if(!filepath.has_extension())
         return ErrorCode::UNSUPPORTED_FORMAT;
-    const std::string extension = s25util::toLower(filePath.extension().string().substr(1));
+    const std::string extension = s25util::toLower(filepath.extension().string().substr(1));
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
@@ -157,47 +156,49 @@ int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palet
     {
         // Datei laden
         if(extension == "act")
-            ret = loader::LoadACT(file, items);
+            ret = loader::LoadACT(filepath, items);
         else if(extension == "bbm")
-            ret = loader::LoadBBM(file, items);
+            ret = loader::LoadBBM(filepath, items);
         else if(extension == "bmp")
-            ret = loader::LoadBMP(file, items, palette);
+            ret = loader::LoadBMP(filepath, items, palette);
         else if(extension == "bob")
-            ret = loader::LoadBOB(file, items, palette);
+            ret = loader::LoadBOB(filepath, items, palette);
         else if(extension == "dat" || extension == "idx")
         {
-            ret = loader::LoadDATIDX(file, items, palette);
+            ret = loader::LoadDATIDX(filepath, items, palette);
             if(ret == ErrorCode::WRONG_HEADER && extension == "dat")
-                ret = loader::LoadSND(file, items);
+                ret = loader::LoadSND(filepath, items);
         } else if(extension == "lbm")
-            ret = loader::LoadLBM(file, items);
+            ret = loader::LoadLBM(filepath, items);
         else if(extension == "lst")
-            ret = loader::LoadLST(file, items, palette);
+            ret = loader::LoadLST(filepath, items, palette);
         else if(extension == "swd" || extension == "wld")
-            ret = loader::LoadMAP(file, items);
+            ret = loader::LoadMAP(filepath, items);
         else if(extension == "ger" || extension == "eng")
-            ret = loader::LoadTXT(file, items, true);
+            ret = loader::LoadTXT(filepath, items, true);
         else if(extension == "ini")
-            ret = loader::LoadINI(file, items);
+            ret = loader::LoadINI(filepath, items);
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
-            ret = loader::LoadSND(file, items);
-        else if(extension == "txt" || extension == "links")
+            ret = loader::LoadSND(filepath, items);
+        else if(extension == "links")
+            ret = loader::LoadTXT(filepath, items, false);
+        else if(extension == "txt")
         {
-            const bfs::path filename = filePath.stem();
+            const bfs::path filename = filepath.stem();
             const std::string ext2 =
-              s25util::toLower((filename.has_extension()) ? filename.extension().string().substr(1) : filename.string());
+              s25util::toLower(filename.has_extension() ? filename.extension().string().substr(1) : filename.string());
             if(ext2 == "paletteanims")
-                ret = loader::LoadPaletteAnim(file, items);
+                ret = loader::LoadPaletteAnim(filepath, items);
             else if(ext2 == "palette")
-                ret = loader::LoadTxtPalette(file, items);
+                ret = loader::LoadTxtPalette(filepath, items);
             else
-                ret = loader::LoadTXT(file, items, false);
+                ret = loader::LoadTXT(filepath, items, false);
         } else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
     {
         std::cerr << "Error while reading: " << error.what() << std::endl;
-        // Mostly error on reading (e.g. unexpected end of file)
+        // Mostly error on reading (e.g. unexpected end of filepath)
         return ErrorCode::CUSTOM;
     }
 
@@ -217,7 +218,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         if(entry.bobtype == BobType::Font)
         {
             auto font = getAllocator().create<ArchivItem_Font>(BobType::Font);
-            font->isUnicode = s25util::toLower(bfs::path(entry.filePath).extension().string()) == ".fonx";
+            font->isUnicode = s25util::toLower(entry.filePath.extension().string()) == ".fonx";
             font->setDx(static_cast<uint8_t>(entry.nx));
             font->setDy(static_cast<uint8_t>(entry.ny));
             int ec;
@@ -339,21 +340,20 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
 /**
  *  Schreibt die Datei im Format ihrer Endung.
  *
- *  @param[in] file    Dateiname der Datei
+ *  @param[in] filepath    Dateiname der Datei
  *  @param[in] items   Archiv-Struktur, von welcher gelesen wird
  *  @param[in] palette Palette, welche benutzt werden soll
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette)
+int Write(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    bfs::path filePath(file);
-    if(!filePath.has_extension())
+    if(!filepath.has_extension())
         return ErrorCode::UNSUPPORTED_FORMAT;
-    const std::string extension = s25util::toLower(filePath.extension().string().substr(1));
+    const std::string extension = s25util::toLower(filepath.extension().string().substr(1));
 
     int ret = ErrorCode::UNSUPPORTED_FORMAT;
 
@@ -361,31 +361,31 @@ int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette
     {
         // Datei schreiben
         if(extension == "act")
-            ret = loader::WriteACT(file, items);
+            ret = loader::WriteACT(filepath, items);
         else if(extension == "bbm")
-            ret = loader::WriteBBM(file, items);
+            ret = loader::WriteBBM(filepath, items);
         else if(extension == "bmp")
-            ret = loader::WriteBMP(file, items, palette);
+            ret = loader::WriteBMP(filepath, items, palette);
         else if(extension == "lst")
-            ret = loader::WriteLST(file, items, palette);
+            ret = loader::WriteLST(filepath, items, palette);
         else if(extension == "swd" || extension == "wld")
-            ret = loader::WriteMAP(file, items);
+            ret = loader::WriteMAP(filepath, items);
         else if(extension == "ger" || extension == "eng")
-            ret = loader::WriteTXT(file, items, true);
+            ret = loader::WriteTXT(filepath, items, true);
         else if(extension == "ini")
-            ret = loader::WriteINI(file, items);
+            ret = loader::WriteINI(filepath, items);
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
-            ret = loader::WriteSND(file, items);
+            ret = loader::WriteSND(filepath, items);
         else if(extension == "lbm")
-            ret = loader::WriteLBM(file, items, palette);
+            ret = loader::WriteLBM(filepath, items, palette);
         else if(extension == "txt")
-            ret = loader::WritePaletteAnim(file, items);
+            ret = loader::WritePaletteAnim(filepath, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
     {
         std::cerr << "Error while writing: " << error.what() << std::endl;
-        // Mostly error on write to file
+        // Mostly error on write to filepath
         return ErrorCode::CUSTOM;
     }
 
@@ -404,7 +404,7 @@ namespace {
     }
 } // namespace
 
-std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
+std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath)
 {
     std::vector<FileEntry> entries;
     for(const auto& it : bfs::directory_iterator(folderPath))
@@ -415,56 +415,56 @@ std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath)
         bfs::path curPath = it.path();
         curPath.make_preferred();
 
-        FileEntry file(curPath.string());
+        FileEntry filepath(curPath);
 
         const std::string fileName = s25util::toLower(curPath.filename().string());
         std::vector<std::string> wf = Tokenizer(fileName, ".").explode();
 
         if(wf.back() == "fon" || wf.back() == "fonx")
-            file.bobtype = BobType::Font;
+            filepath.bobtype = BobType::Font;
         else if(wf.back() == "bmp")
-            file.bobtype = BobType::Bitmap;
+            filepath.bobtype = BobType::Bitmap;
         else if(wf.back() == "bbm" || wf.back() == "act")
-            file.bobtype = BobType::Palette;
+            filepath.bobtype = BobType::Palette;
         else if(wf.back() == "txt" || wf.back() == "ger" || wf.back() == "eng" || wf.back() == "links")
-            file.bobtype = BobType::Text;
+            filepath.bobtype = BobType::Text;
         else if(wf.back() == "empty")
-            file.bobtype = BobType::None;
-        if(file.bobtype != BobType::Unset)
+            filepath.bobtype = BobType::None;
+        if(filepath.bobtype != BobType::Unset)
             wf.pop_back();
 
         std::string sNr = wf.empty() ? "" : wf.front();
-        if(sNr.substr(0, 2) == "u+" || sNr.substr(0, 2) == "0x") // Allow Unicode file names (e.g. U+1234)
+        if(sNr.substr(0, 2) == "u+" || sNr.substr(0, 2) == "0x") // Allow Unicode filepath names (e.g. U+1234)
         {
-            file.nr = hexToInt(sNr.substr(2));
+            filepath.nr = hexToInt(sNr.substr(2));
             wf.erase(wf.begin());
-        } else if(s25util::tryFromStringClassic(sNr, file.nr))
+        } else if(s25util::tryFromStringClassic(sNr, filepath.nr))
             wf.erase(wf.begin());
         else
-            file.nr = -1;
+            filepath.nr = -1;
 
         for(const std::string& part : wf)
         {
             if(part == "rle")
-                file.bobtype = BobType::BitmapRLE;
+                filepath.bobtype = BobType::BitmapRLE;
             else if(part == "player")
-                file.bobtype = BobType::BitmapPlayer;
+                filepath.bobtype = BobType::BitmapPlayer;
             else if(part == "shadow")
-                file.bobtype = BobType::BitmapShadow;
+                filepath.bobtype = BobType::BitmapShadow;
             else if(part == "paletteanims")
-                file.bobtype = BobType::PaletteAnim;
+                filepath.bobtype = BobType::PaletteAnim;
             else if(part == "palette")
-                file.bobtype = BobType::Palette;
+                filepath.bobtype = BobType::Palette;
 
             else if(part.substr(0, 2) == "nx" || part.substr(0, 2) == "dx")
-                file.nx = s25util::fromStringClassic<unsigned>(part.substr(2));
+                filepath.nx = s25util::fromStringClassic<unsigned>(part.substr(2));
             else if(part.substr(0, 2) == "ny" || part.substr(0, 2) == "dy")
-                file.ny = s25util::fromStringClassic<unsigned>(part.substr(2));
+                filepath.ny = s25util::fromStringClassic<unsigned>(part.substr(2));
             else
-                file.name += (file.name.empty() ? "" : ".") + part;
+                filepath.name += (filepath.name.empty() ? "" : ".") + part;
         }
 
-        entries.push_back(file);
+        entries.push_back(filepath);
     }
     return entries;
 }

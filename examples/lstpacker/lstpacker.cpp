@@ -19,18 +19,14 @@
 
 #include "pack.h"
 #include "unpack.h"
-
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/libsiedler2.h"
-
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <boost/nowide/args.hpp>
 #include <boost/nowide/filesystem.hpp>
 #include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -93,9 +89,9 @@ int main(int argc, char* argv[])
     bfs::path pal5Path("GFX/PALETTE/PAL5.BBM");
     bfs::path pal5Path2("pal5.act");
 
-    if(bbm.empty() && (!bfs::exists(pal5Path) || Load(pal5Path.string(), bbm) != 0))
+    if(bbm.empty() && (!bfs::exists(pal5Path) || Load(pal5Path, bbm) != 0))
     {
-        if(Load(pal5Path2.string(), bbm) != 0)
+        if(Load(pal5Path2, bbm) != 0)
         {
             bnw::cerr << "Fatal Error: " << std::endl;
             bnw::cerr << "Neither " << pal5Path << " nor " << pal5Path2 << " was found or it cannot be opened" << std::endl;
@@ -103,7 +99,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    libsiedler2::ArchivItem_Palette* palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(bbm[0]);
+    auto* palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(bbm[0]);
 
     const auto inputPaths = options["file"].as<std::vector<std::string>>();
     for(const bfs::path inputPath : inputPaths)
@@ -121,12 +117,12 @@ int main(int argc, char* argv[])
                 bnw::cerr << "Input filepath has no extension: " << inputPath;
                 return 1;
             }
-            std::string outPath = inputPath.stem().string();
+            const auto outPath = inputPath.stem();
 
             bnw::cout << "Unpacking file " << inputPath << " to " << outPath << std::endl;
 
             libsiedler2::Archiv lst;
-            if(Load(inputPath.string(), lst, palette) != 0)
+            if(Load(inputPath, lst, palette) != 0)
             {
                 bnw::cerr << "Fatal Error: " << std::endl;
                 bnw::cerr << inputPath << " was not found or cannot be opened" << std::endl;
@@ -139,7 +135,7 @@ int main(int argc, char* argv[])
             bfs::path outFilepath = (inputPath / ".").parent_path(); // Get real path to parent dir
             outFilepath += ".NEW." + outFileExt;
             bnw::cout << "Packing directory " << inputPath << " to " << outFilepath << std::endl;
-            pack(inputPath.string(), outFilepath.string(), palette);
+            pack(inputPath, outFilepath, palette);
         } else
         {
             bnw::cerr << "Unknown type. Not a file or folder: " << inputPath;

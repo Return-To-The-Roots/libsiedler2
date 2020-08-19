@@ -28,18 +28,18 @@
 /**
  *  lädt eine BOB-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der BOB-File
+ *  @param[in]  filepath    Dateiname der BOB-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadBOB(const std::string& file, Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::LoadBOB(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
 {
     if(palette == nullptr)
         return ErrorCode::PALETTE_MISSING;
 
     MMStream mmapStream;
-    if(int ec = openMemoryStream(file, mmapStream))
+    if(int ec = openMemoryStream(filepath, mmapStream))
         return ec;
     libendian::EndianIStreamAdapter<false, MMStream&> bob(mmapStream);
 
@@ -54,9 +54,8 @@ int libsiedler2::loader::LoadBOB(const std::string& file, Archiv& items, const A
 
     auto item = getAllocator().create<ArchivItem_Bob>(BobType::Bob);
 
-    boost::filesystem::path filePath(file);
-    if(filePath.has_filename())
-        item->setName(filePath.filename().string()); //-V522
+    if(filepath.has_filename())
+        item->setName(filepath.filename().string()); //-V522
 
     if(int ec = item->load(bob.getStream(), palette))
         return ec;

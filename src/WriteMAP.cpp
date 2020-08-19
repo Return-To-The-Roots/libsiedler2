@@ -29,9 +29,9 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteMAP(const std::string& file, const Archiv& items)
+int libsiedler2::loader::WriteMAP(const boost::filesystem::path& filepath, const Archiv& items)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
     const auto* item = dynamic_cast<const ArchivItem_Map*>(items[0]);
@@ -39,7 +39,7 @@ int libsiedler2::loader::WriteMAP(const std::string& file, const Archiv& items)
         return ErrorCode::WRONG_ARCHIV;
 
     // Datei zum lesen öffnen
-    boost::nowide::ofstream fs(file, std::ios_base::binary);
+    boost::nowide::ofstream fs(filepath, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

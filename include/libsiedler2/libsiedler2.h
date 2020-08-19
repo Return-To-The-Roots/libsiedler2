@@ -21,6 +21,7 @@
 
 #include "FileEntry.h"
 #include "enumTypes.h"
+#include <boost/filesystem/path.hpp>
 #include <string>
 #include <vector>
 
@@ -40,11 +41,11 @@ const IAllocator& getAllocator();
 void setAllocator(IAllocator* newAllocator);
 
 /// Lädt die Datei im Format ihrer Endung.
-int Load(const std::string& file, Archiv& items, const ArchivItem_Palette* palette = nullptr);
+int Load(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 /// Schreibt die Datei im Format ihrer Endung.
-int Write(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
+int Write(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
 /// List all files in the folder and fills them into the vector
-std::vector<FileEntry> ReadFolderInfo(const std::string& folderPath);
+std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath);
 /// Load all files from the folderInfos into the archiv. Sorts the infos first
 int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 

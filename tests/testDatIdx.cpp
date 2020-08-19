@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
     // Both should work
     for(const auto file : {"EDITRES.IDX", "EDITRES.DAT"})
     {
-        const std::string inPath = libsiedler2::test::s2Path + "/DATA/" + file;
+        const boost::filesystem::path inPath = libsiedler2::test::s2Path / "DATA" / file;
         libsiedler2::Archiv archiv;
         BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
         BOOST_REQUIRE_EQUAL(archiv.size(), 57u);

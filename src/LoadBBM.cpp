@@ -30,15 +30,15 @@
 /**
  *  lädt eine BBM-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der BBM-File
+ *  @param[in]  filepath    Dateiname der BBM-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadBBM(const std::string& file, Archiv& items)
+int libsiedler2::loader::LoadBBM(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream mmStream;
-    if(int ec = openMemoryStream(file, mmStream))
+    if(int ec = openMemoryStream(filepath, mmStream))
         return ec;
 
     std::array<char, 4> header, pbm, chunk;
@@ -81,11 +81,10 @@ int libsiedler2::loader::LoadBBM(const std::string& file, Archiv& items)
             // Daten von Item auswerten
             auto palette = getAllocator().create<ArchivItem_Palette>(BobType::Palette);
 
-            boost::filesystem::path filePath(file);
-            if(filePath.has_filename())
+            if(filepath.has_filename())
             {
                 std::stringstream rName;
-                rName << filePath.filename().string() << "(" << i << ")";
+                rName << filepath.filename().string() << "(" << i << ")";
                 palette->setName(rName.str());
             }
 

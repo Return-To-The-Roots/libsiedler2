@@ -20,7 +20,7 @@
 #ifndef config_h__
 #define config_h__
 
-#include <string>
+#include <boost/filesystem/path.hpp>
 
 #cmakedefine RTTR_LIBSIEDLER2_TEST_FILES_DIR "@RTTR_LIBSIEDLER2_TEST_FILES_DIR@"
 #cmakedefine RTTR_LIBSIEDLER2_S2_DIR "@RTTR_LIBSIEDLER2_S2_DIR@"
@@ -30,16 +30,16 @@ namespace libsiedler2
 namespace test
 {
 #ifdef RTTR_LIBSIEDLER2_S2_DIR
-const std::string s2Path =  RTTR_LIBSIEDLER2_S2_DIR;
+const boost::filesystem::path s2Path =  RTTR_LIBSIEDLER2_S2_DIR;
 constexpr bool hasS2Data = true;
 #else
 // Proprietary files (from S2) required. Set RTTR_LIBSIEDLER2_S2_DIR cmake variable to enable more tests
 constexpr bool hasS2Data = false;
-const std::string s2Path;
+const boost::filesystem::path s2Path;
 #endif
 
-const std::string inputPath = RTTR_LIBSIEDLER2_TEST_FILES_DIR;
-const std::string outputPath = "@PROJECT_BINARY_DIR@/testOutput";
+const boost::filesystem::path inputPath = RTTR_LIBSIEDLER2_TEST_FILES_DIR;
+const boost::filesystem::path outputPath = "@PROJECT_BINARY_DIR@/testOutput";
 }
 }
 

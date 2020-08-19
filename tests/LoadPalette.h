@@ -35,7 +35,7 @@ struct LoadPalette
     static constexpr uint8_t modClr2 = 44;
     explicit LoadPalette(bool createModPal = true)
     {
-        BOOST_TEST_REQUIRE(libsiedler2::Load(libsiedler2::test::inputPath + "/pal5.act", paletteArchiv) == 0);
+        BOOST_TEST_REQUIRE(libsiedler2::Load(libsiedler2::test::inputPath / "pal5.act", paletteArchiv) == 0);
         palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(0));
         BOOST_REQUIRE(palette);
         if(createModPal)

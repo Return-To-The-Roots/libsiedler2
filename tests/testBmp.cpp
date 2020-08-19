@@ -72,8 +72,8 @@ BOOST_FIXTURE_TEST_SUITE(Bitmaps, LoadPalette)
 
 BOOST_AUTO_TEST_CASE(ReadWritePlayerBitmap)
 {
-    std::string bmpPath = libsiedler2::test::inputPath + "/bmpPlayer.lst";
-    std::string bmpOutPath = test::outputPath + "/bmp.lst";
+    const bfs::path bmpPath = libsiedler2::test::inputPath / "bmpPlayer.lst";
+    const bfs::path bmpOutPath = test::outputPath / "bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
@@ -83,8 +83,8 @@ BOOST_AUTO_TEST_CASE(ReadWritePlayerBitmap)
 
 BOOST_AUTO_TEST_CASE(ReadWriteRawBitmap)
 {
-    std::string bmpPath = libsiedler2::test::inputPath + "/bmpRaw.lst";
-    std::string bmpOutPath = test::outputPath + "/bmp.lst";
+    const bfs::path bmpPath = libsiedler2::test::inputPath / "bmpRaw.lst";
+    const bfs::path bmpOutPath = test::outputPath / "bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
@@ -94,8 +94,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteRawBitmap)
 
 BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
 {
-    std::string bmpPath = libsiedler2::test::inputPath + "/bmpShadow.lst";
-    std::string bmpOutPath = test::outputPath + "/bmp.lst";
+    const bfs::path bmpPath = libsiedler2::test::inputPath / "bmpShadow.lst";
+    const bfs::path bmpOutPath = test::outputPath / "bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
@@ -118,8 +118,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
 
 BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
 {
-    std::string bmpPath = libsiedler2::test::inputPath + "/bmpRLE.lst";
-    std::string bmpOutPath = test::outputPath + "/bmp.lst";
+    const bfs::path bmpPath = libsiedler2::test::inputPath / "bmpRLE.lst";
+    const bfs::path bmpOutPath = test::outputPath / "bmp.lst";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
@@ -142,8 +142,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
 
 BOOST_AUTO_TEST_CASE(ReadWriteBmp)
 {
-    std::string bmpPath = libsiedler2::test::inputPath + "/logo.bmp";
-    std::string bmpOutPath = test::outputPath + "/outLogo.bmp";
+    const bfs::path bmpPath = libsiedler2::test::inputPath / "logo.bmp";
+    const bfs::path bmpOutPath = test::outputPath / "outLogo.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_REQUIRE(testLoad(0, bmpPath, bmp));
@@ -153,8 +153,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteBmp)
 
 BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
 {
-    std::string bmpPath = libsiedler2::test::inputPath + "/pal.bmp";
-    std::string bmpOutPath = test::outputPath + "/outPal.bmp";
+    const bfs::path bmpPath = libsiedler2::test::inputPath / "pal.bmp";
+    const bfs::path bmpOutPath = test::outputPath / "outPal.bmp";
     BOOST_REQUIRE(bfs::exists(bmpPath));
     Archiv archiv;
     BOOST_REQUIRE(testLoad(0, bmpPath, archiv));
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
 
 BOOST_AUTO_TEST_CASE(CreatePalettedBmp)
 {
-    std::string bmpOutPath = test::outputPath + "/outPalNew.bmp";
+    const bfs::path bmpOutPath = test::outputPath / "outPalNew.bmp";
     PixelBufferBGRA buffer(17, 19);
     BOOST_TEST_REQUIRE(palette->getTransparentIdx() > 0); // Default is 0, make sure the palette is not defaulted
     // Fill with all colors from the palette
@@ -252,7 +252,7 @@ BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
         for(const TestBitmaps::Info& testFile : testFiles.files)
         {
             Archiv archiv;
-            int ec = Load(libsiedler2::test::inputPath + "/" + testFile.filename, archiv, palette);
+            int ec = Load(libsiedler2::test::inputPath / testFile.filename, archiv, palette);
             BOOST_REQUIRE_MESSAGE(ec == 0, "Error " << getErrorString(ec) << " loading " << testFile.filename);
             const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
             BOOST_REQUIRE(bmp);
@@ -284,11 +284,11 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
             if((curFmt == TextureFormat::Paletted && !testFile.containsPalette) || (testFile.isPaletted && !testFile.containsPalette))
             {
                 // Paletted files need a palette. For conversion to paletted we also need one
-                BOOST_REQUIRE(testLoad(ErrorCode::PALETTE_MISSING, libsiedler2::test::inputPath + "/" + testFile.filename, archiv));
+                BOOST_REQUIRE(testLoad(ErrorCode::PALETTE_MISSING, libsiedler2::test::inputPath / testFile.filename, archiv));
             } else
             {
                 // Non paletted file or palette contained
-                BOOST_REQUIRE(testLoad(0, libsiedler2::test::inputPath + "/" + testFile.filename, archiv));
+                BOOST_REQUIRE(testLoad(0, libsiedler2::test::inputPath / testFile.filename, archiv));
                 const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
                 // For paletted bitmaps we must have a palette, the others must not have one
                 if(bmp->getFormat() == TextureFormat::Paletted || testFile.containsPalette)
@@ -305,7 +305,7 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
             else
                 usedPalette = modPal; // Files are saved with palette, so use another one to detect difference
             archiv.clear();
-            BOOST_REQUIRE(testLoad(0, libsiedler2::test::inputPath + "/" + testFile.filename, archiv, usedPalette));
+            BOOST_REQUIRE(testLoad(0, libsiedler2::test::inputPath / testFile.filename, archiv, usedPalette));
             const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
             if(bmp->getFormat() == TextureFormat::Paletted)
             {
@@ -359,9 +359,9 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
         for(const TestBitmaps::Info& testFile : testFiles.files)
         {
             Archiv archiv;
-            std::string inFilepath = libsiedler2::test::inputPath + "/" + testFile.filename;
-            std::string outFilepathRef = test::outputPath + "/reference_" + testFile.filename;
-            std::string outFilepath = test::outputPath + "/" + testFile.filename;
+            const bfs::path inFilepath = libsiedler2::test::inputPath / testFile.filename;
+            const bfs::path outFilepathRef = test::outputPath / ("reference_" + testFile.filename);
+            const bfs::path outFilepath = test::outputPath / testFile.filename;
             BOOST_REQUIRE(testLoad(0, inFilepath, archiv, palette));
             ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
             // Not modified when writing with same palette

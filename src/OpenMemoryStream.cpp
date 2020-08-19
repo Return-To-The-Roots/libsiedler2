@@ -23,20 +23,20 @@
 namespace bfs = boost::filesystem;
 
 namespace libsiedler2 {
-int openMemoryStream(const std::string& file, MMStream& stream)
+int openMemoryStream(const boost::filesystem::path& filepath, MMStream& stream)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    if(!bfs::exists(file))
+    if(!bfs::exists(filepath))
         return ErrorCode::FILE_NOT_FOUND;
 
     try
     {
-        stream.open(bfs::path(file));
+        stream.open(filepath);
     } catch(std::exception& e)
     {
-        std::cerr << "Could not open '" << file << "': " << e.what() << std::endl;
+        std::cerr << "Could not open " << filepath << ": " << e.what() << std::endl;
         return ErrorCode::FILE_NOT_ACCESSIBLE;
     }
 

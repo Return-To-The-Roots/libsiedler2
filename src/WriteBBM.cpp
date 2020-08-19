@@ -30,11 +30,11 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
+int libsiedler2::loader::WriteBBM(const boost::filesystem::path& filepath, const Archiv& items)
 {
     std::array<char, 4> header = {'F', 'O', 'R', 'M'}, pbm = {'P', 'B', 'M', ' '}, cmap = {'C', 'M', 'A', 'P'};
 
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
     uint32_t numPalettes = 0;
@@ -46,7 +46,7 @@ int libsiedler2::loader::WriteBBM(const std::string& file, const Archiv& items)
     }
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<true, boost::nowide::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<true, boost::nowide::ofstream> fs(filepath, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

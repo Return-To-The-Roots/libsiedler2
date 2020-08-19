@@ -24,18 +24,18 @@
 /**
  *  schreibt ein Archiv in eine INI-File.
  *
- *  @param[in]  file    Dateiname der INI-File
+ *  @param[in]  filepath    Dateiname der INI-File
  *  @param[in] items    Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteINI(const std::string& file, const Archiv& items)
+int libsiedler2::loader::WriteINI(const boost::filesystem::path& filepath, const Archiv& items)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
     // Datei zum schreiben öffnen
-    boost::nowide::ofstream fs(file, std::ios_base::binary);
+    boost::nowide::ofstream fs(filepath, std::ios_base::binary);
     if(!fs)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 

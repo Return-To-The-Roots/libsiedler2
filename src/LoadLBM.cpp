@@ -34,15 +34,15 @@
 /**
  *  lädt eine LBM-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der LBM-File
+ *  @param[in]  filepath    Dateiname der LBM-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadLBM(const std::string& file, Archiv& items)
+int libsiedler2::loader::LoadLBM(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream mmapStream;
-    if(int ec = openMemoryStream(file, mmapStream))
+    if(int ec = openMemoryStream(filepath, mmapStream))
         return ec;
     libendian::EndianIStreamAdapter<true, MMStream&> lbm(mmapStream);
 

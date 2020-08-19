@@ -33,8 +33,8 @@ BOOST_AUTO_TEST_SUITE(Palette)
 
 BOOST_AUTO_TEST_CASE(ReadWritePalette)
 {
-    std::string palPath = libsiedler2::test::inputPath + "/pal5.act";
-    std::string palOutPath = libsiedler2::test::outputPath + "/pal5.act";
+    const bfs::path palPath = libsiedler2::test::inputPath / "pal5.act";
+    const bfs::path palOutPath = libsiedler2::test::outputPath / "pal5.act";
     BOOST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalette)
     BOOST_REQUIRE(testFilesEqual(palOutPath, palPath));
 }
 
-static void createBBM(const std::string& palPath, const std::string& palOutPath)
+static void createBBM(const bfs::path& palPath, const bfs::path& palOutPath)
 {
     BOOST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act;
@@ -56,13 +56,13 @@ static void createBBM(const std::string& palPath, const std::string& palOutPath)
 BOOST_AUTO_TEST_CASE(ReadWriteBBM)
 {
     if((false))
-        createBBM("pal5.act", libsiedler2::test::inputPath + "/pal.bbm");
-    std::string palPath = libsiedler2::test::inputPath + "/pal.bbm";
-    std::string palOutPath = libsiedler2::test::outputPath + "/palOut.bbm";
+        createBBM("pal5.act", libsiedler2::test::inputPath / "pal.bbm");
+    const bfs::path palPath = libsiedler2::test::inputPath / "pal.bbm";
+    const bfs::path palOutPath = libsiedler2::test::outputPath / "palOut.bbm";
     BOOST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act, act2;
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(palPath, act), 0);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(libsiedler2::test::inputPath + "/pal5.act", act2), 0);
+    BOOST_REQUIRE_EQUAL(libsiedler2::Load(libsiedler2::test::inputPath / "pal5.act", act2), 0);
     auto* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     BOOST_REQUIRE(pal);
     BOOST_REQUIRE_EQUAL(pal->get(10), libsiedler2::ColorRGB(11, 22, 33));
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(GetColor)
 
 BOOST_AUTO_TEST_CASE(ReadWritePalAnim)
 {
-    std::string outPath = libsiedler2::test::outputPath + "/paletteAnims.txt";
+    const bfs::path outPath = libsiedler2::test::outputPath / "paletteAnims.txt";
 
     libsiedler2::Archiv archiv;
     libsiedler2::ArchivItem_PaletteAnimation anim;

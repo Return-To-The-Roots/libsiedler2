@@ -29,7 +29,7 @@
 /**
  *  lädt eine GER/ENG-File in ein Archiv.
  *
- *  @param[in]  file       Dateiname der GER/ENG-File
+ *  @param[in]  filepath       Dateiname der GER/ENG-File
  *  @param[out] items      Archiv-Struktur, welche gefüllt wird
  *  @param[in]  conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
  *
@@ -37,10 +37,10 @@
  *
  *  @bug Keine Erkennung ob Plain-Text oder "Irgendwas".
  */
-int libsiedler2::loader::LoadTXT(const std::string& file, Archiv& items, bool conversion)
+int libsiedler2::loader::LoadTXT(const boost::filesystem::path& filepath, Archiv& items, bool conversion)
 {
     MMStream mmapStream;
-    if(int ec = openMemoryStream(file, mmapStream))
+    if(int ec = openMemoryStream(filepath, mmapStream))
         return ec;
     libendian::EndianIStreamAdapter<false, MMStream&> fs(mmapStream);
 

@@ -35,9 +35,9 @@ namespace libsiedler2 { namespace loader {
     static const std::string txtPalHeader = "Bitmap palette V1";
     static const std::string palAnimHeader = "Palette animations V1";
 
-    int LoadTxtPalette(const std::string& file, Archiv& items)
+    int LoadTxtPalette(const boost::filesystem::path& filepath, Archiv& items)
     {
-        s25util::ClassicImbuedStream<bnw::ifstream> fs(file);
+        s25util::ClassicImbuedStream<bnw::ifstream> fs(filepath);
         if(!fs)
             return ErrorCode::FILE_NOT_ACCESSIBLE;
         std::string header;
@@ -70,9 +70,9 @@ namespace libsiedler2 { namespace loader {
         return ErrorCode::NONE;
     }
 
-    int WriteTxtPalette(const std::string& file, const ArchivItem_Palette& palette)
+    int WriteTxtPalette(const boost::filesystem::path& filepath, const ArchivItem_Palette& palette)
     {
-        s25util::ClassicImbuedStream<bnw::ofstream> fs(file);
+        s25util::ClassicImbuedStream<bnw::ofstream> fs(filepath);
         if(!fs)
             return ErrorCode::FILE_NOT_ACCESSIBLE;
         fs << txtPalHeader << std::endl;
@@ -86,9 +86,9 @@ namespace libsiedler2 { namespace loader {
         return ErrorCode::NONE;
     }
 
-    int LoadPaletteAnim(const std::string& file, Archiv& items)
+    int LoadPaletteAnim(const boost::filesystem::path& filepath, Archiv& items)
     {
-        s25util::ClassicImbuedStream<bnw::ifstream> fs(file);
+        s25util::ClassicImbuedStream<bnw::ifstream> fs(filepath);
         if(!fs)
             return ErrorCode::FILE_NOT_ACCESSIBLE;
         std::string header;
@@ -115,9 +115,9 @@ namespace libsiedler2 { namespace loader {
         return ErrorCode::NONE;
     }
 
-    int WritePaletteAnim(const std::string& file, const Archiv& items)
+    int WritePaletteAnim(const boost::filesystem::path& filepath, const Archiv& items)
     {
-        s25util::ClassicImbuedStream<bnw::ofstream> fs(file);
+        s25util::ClassicImbuedStream<bnw::ofstream> fs(filepath);
         if(!fs)
             return ErrorCode::FILE_NOT_ACCESSIBLE;
         fs << palAnimHeader << std::endl;

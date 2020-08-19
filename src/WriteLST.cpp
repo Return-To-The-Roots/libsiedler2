@@ -32,13 +32,13 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteLST(const std::string& file, const Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::WriteLST(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
     // Datei zum schreiben öffnen
-    libendian::EndianOStreamAdapter<false, boost::nowide::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, boost::nowide::ofstream> fs(filepath, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

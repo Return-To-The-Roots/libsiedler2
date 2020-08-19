@@ -29,9 +29,9 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteACT(const std::string& file, const Archiv& items)
+int libsiedler2::loader::WriteACT(const boost::filesystem::path& filepath, const Archiv& items)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
     const auto* palette = dynamic_cast<const ArchivItem_Palette*>(items[0]);
@@ -39,7 +39,7 @@ int libsiedler2::loader::WriteACT(const std::string& file, const Archiv& items)
         return ErrorCode::WRONG_ARCHIV;
 
     // Datei zum schreiben öffnen
-    boost::nowide::ofstream fs(file, std::ios_base::binary);
+    boost::nowide::ofstream fs(filepath, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

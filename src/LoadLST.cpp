@@ -25,16 +25,16 @@
 /**
  *  lädt eine LST-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der LST-File
+ *  @param[in]  filepath    Dateiname der LST-File
  *  @param[in]  palette Grundpalette der LST-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadLST(const std::string& file, Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::LoadLST(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
 {
     MMStream mmapStream;
-    if(int ec = openMemoryStream(file, mmapStream))
+    if(int ec = openMemoryStream(filepath, mmapStream))
         return ec;
 
     libendian::EndianIStreamAdapter<false, MMStream&> lst(mmapStream);
@@ -47,7 +47,7 @@ int libsiedler2::loader::LoadLST(const std::string& file, Archiv& items, const A
 
     // ist es eine GER/ENG-File? (Header 0xE7FD)
     if(header == 0xFDE7)
-        return LoadTXT(file, items, true);
+        return LoadTXT(filepath, items, true);
 
     // ist es eine LST-File? (Header 0x204E)
     if(header != 0x4E20)

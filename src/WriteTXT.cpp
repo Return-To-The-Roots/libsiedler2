@@ -31,9 +31,9 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, bool conversion)
+int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const Archiv& items, bool conversion)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
     // All entries have to be texts or empty
@@ -45,7 +45,7 @@ int libsiedler2::loader::WriteTXT(const std::string& file, const Archiv& items, 
     }
 
     // Datei zum lesen öffnen
-    libendian::EndianOStreamAdapter<false, boost::nowide::ofstream> fs(file, std::ios_base::binary);
+    libendian::EndianOStreamAdapter<false, boost::nowide::ofstream> fs(filepath, std::ios_base::binary);
 
     // hat das geklappt?
     if(!fs)

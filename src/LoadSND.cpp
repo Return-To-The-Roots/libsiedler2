@@ -25,15 +25,15 @@
 /**
  *  lädt eine Sounddatei in ein Archiv. (midi, xmidi, wave)
  *
- *  @param[in]  file    Dateiname der Sounddatei
+ *  @param[in]  filepath    Dateiname der Sounddatei
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadSND(const std::string& file, Archiv& items)
+int libsiedler2::loader::LoadSND(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream snd;
-    if(int ec = openMemoryStream(file, snd))
+    if(int ec = openMemoryStream(filepath, snd))
         return ec;
 
     auto sound = ArchivItem_Sound::findSubType(snd);

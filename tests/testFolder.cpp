@@ -43,7 +43,7 @@ static void save(const ArchivItem_Bitmap_Raw& bmp, const boost::filesystem::path
 {
     libsiedler2::Archiv archive;
     archive.pushC(bmp);
-    BOOST_TEST_REQUIRE(Write(path.string(), archive) == 0);
+    BOOST_TEST_REQUIRE(Write(path, archive) == 0);
 }
 
 struct FolderFixture
@@ -51,7 +51,7 @@ struct FolderFixture
     bfs::path lstPath;
     std::array<ArchivItem_Bitmap_Raw, 4> bmps;
 
-    FolderFixture() : lstPath(bfs::unique_path(libsiedler2::test::outputPath + "/%%%%-%%%%.lst"))
+    FolderFixture() : lstPath(bfs::unique_path(libsiedler2::test::outputPath / "%%%%-%%%%.lst"))
     {
         bfs::create_directories(lstPath);
         PixelBufferBGRA buffer(5, 3);
@@ -73,15 +73,15 @@ BOOST_FIXTURE_TEST_SUITE(Folder, FolderFixture)
 
 BOOST_AUTO_TEST_CASE(ReadFolderInfoReturnsCorrectFiles)
 {
-    std::vector<FileEntry> info = ReadFolderInfo(lstPath.string());
+    std::vector<FileEntry> info = ReadFolderInfo(lstPath);
     BOOST_TEST_REQUIRE(info.size() == 5u);
     std::sort(info.begin(), info.end());
     const std::vector<FileEntry> infoExpected = {
-      FileEntry{(lstPath / "1.player.nx5.ny7.bmp").string(), "", 1, BobType::BitmapPlayer, 5, 7},
-      FileEntry{(lstPath / "3.rle.nx1.ny9.bmp").string(), "", 3, BobType::BitmapRLE, 1, 9},
-      FileEntry{(lstPath / "5.cooltext.txt").string(), "cooltext", 5, BobType::Text, 0, 0},
-      FileEntry{(lstPath / "a.bmp").string(), "a", -1, BobType::Bitmap, 0, 0},
-      FileEntry{(lstPath / "f.bmp").string(), "f", -1, BobType::Bitmap, 0, 0},
+      FileEntry{(lstPath / "1.player.nx5.ny7.bmp"), "", 1, BobType::BitmapPlayer, 5, 7},
+      FileEntry{(lstPath / "3.rle.nx1.ny9.bmp"), "", 3, BobType::BitmapRLE, 1, 9},
+      FileEntry{(lstPath / "5.cooltext.txt"), "cooltext", 5, BobType::Text, 0, 0},
+      FileEntry{(lstPath / "a.bmp"), "a", -1, BobType::Bitmap, 0, 0},
+      FileEntry{(lstPath / "f.bmp"), "f", -1, BobType::Bitmap, 0, 0},
     };
     for(unsigned i = 0; i < infoExpected.size(); i++)
     {
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
 {
     LoadPalette loadPal;
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath.string()), archive, loadPal.palette) == 0);
+    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive, loadPal.palette) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 8u);
     BOOST_TEST_REQUIRE(!archive[0]);
     BOOST_TEST_REQUIRE(archive[1]);

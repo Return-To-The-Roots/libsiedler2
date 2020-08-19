@@ -21,14 +21,11 @@
 #include "libsiedler2/ArchivItem_Palette.h"
 #include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/libsiedler2.h"
-
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <boost/nowide/args.hpp>
 #include <boost/nowide/filesystem.hpp>
 #include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -67,7 +64,7 @@ int main(int argc, char* argv[])
     if(options.count("palette"))
     {
         const bfs::path palPath = options["palette"].as<std::string>();
-        if(libsiedler2::Load(palPath.string(), bbm) != 0)
+        if(libsiedler2::Load(palPath, bbm) != 0)
         {
             bnw::cerr << "Error: Could not load given palette: " << palPath << std::endl;
             bnw::cerr << "Retrying with default ones" << std::endl;
@@ -78,9 +75,9 @@ int main(int argc, char* argv[])
     bfs::path pal5Path("GFX/PALETTE/PAL5.BBM");
     bfs::path pal5Path2("pal5.act");
 
-    if(bbm.empty() && (!bfs::exists(pal5Path) || Load(pal5Path.string(), bbm) != 0))
+    if(bbm.empty() && (!bfs::exists(pal5Path) || Load(pal5Path, bbm) != 0))
     {
-        if(Load(pal5Path2.string(), bbm) != 0)
+        if(Load(pal5Path2, bbm) != 0)
         {
             bnw::cerr << "Fatal Error: " << std::endl;
             bnw::cerr << "Neither " << pal5Path << " nor " << pal5Path2 << " was found or it cannot be opened" << std::endl;
@@ -88,7 +85,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    libsiedler2::ArchivItem_Palette* palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(bbm[0]);
+    auto* palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(bbm[0]);
 
     const auto inputPaths = options["file"].as<std::vector<std::string>>();
     for(const bfs::path inputPath : inputPaths)
@@ -112,13 +109,13 @@ int main(int argc, char* argv[])
         palette->setTransparentIdx(options["from"].as<uint8_t>());
         libsiedler2::setGlobalTextureFormat(libsiedler2::TextureFormat::BGRA);
         libsiedler2::Archiv lst;
-        if(int ec = Load(inputPath.string(), lst, palette))
+        if(int ec = Load(inputPath, lst, palette))
         {
             bnw::cerr << "Fatal Error during reading: " << libsiedler2::getErrorString(ec) << std::endl;
             return 3;
         }
         palette->setTransparentIdx(options["to"].as<uint8_t>());
-        if(int ec = Write(outPath.string(), lst, palette))
+        if(int ec = Write(outPath, lst, palette))
         {
             bnw::cerr << "Fatal Error during writing: " << libsiedler2::getErrorString(ec) << std::endl;
             return 4;

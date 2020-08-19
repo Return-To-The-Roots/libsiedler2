@@ -29,32 +29,31 @@ namespace bfs = boost::filesystem;
 /**
  *  lädt eine DAT/IDX-File in ein Archiv.
  *
- *  @param[in]  file    Dateiname der DAT/IDX-File
+ *  @param[in]  filepath    Dateiname der DAT/IDX-File
  *  @param[in]  palette Grundpalette der DAT/IDX-File
  *  @param[out] items   Archiv-Struktur, welche gefüllt wird
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadDATIDX(const std::string& file, Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::LoadDATIDX(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
 {
-    if(file.empty())
+    if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
 
-    if(!bfs::exists(file))
+    if(!bfs::exists(filepath))
         return ErrorCode::FILE_NOT_FOUND;
 
-    bfs::path filepath = file;
-    bfs::path datFilepath = filepath.replace_extension("DAT");
-    bfs::path idxFilepath = filepath.replace_extension("IDX");
+    const bfs::path datFilepath = bfs::path(filepath).replace_extension("DAT");
+    const bfs::path idxFilepath = bfs::path(filepath).replace_extension("IDX");
     // Both must exist or it is not a DATIDX file
     if(!bfs::exists(datFilepath) || !bfs::exists(idxFilepath))
         return ErrorCode::WRONG_HEADER;
 
     MMStream mmapStream, mmapStreamIdx;
-    if(int ec = openMemoryStream(datFilepath.string(), mmapStream))
+    if(int ec = openMemoryStream(datFilepath, mmapStream))
         return ec;
 
-    if(int ec = openMemoryStream(idxFilepath.string(), mmapStreamIdx))
+    if(int ec = openMemoryStream(idxFilepath, mmapStreamIdx))
         return ec;
 
     libendian::EndianIStreamAdapter<false, MMStream&> dat(mmapStream);
