@@ -16,13 +16,9 @@
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
-#ifndef GetFormat_h__
-#define GetFormat_h__
 
 namespace libsiedler2 { namespace traits {
     /// Return the texture/buffer format of the given type as the value member
     template<class T_PixelBuffer>
     struct GetFormat;
 }} // namespace libsiedler2::traits
-
-#endif // GetFormat_h__

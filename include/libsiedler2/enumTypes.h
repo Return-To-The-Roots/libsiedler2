@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef enumTypes_h__
-#define enumTypes_h__
+#pragma once
 
 #include <cstdint>
 
@@ -143,5 +142,3 @@ enum ObjectInfo
 const uint8_t HARBOR_MASK = 0x40;
 
 } // namespace libsiedler2
-
-#endif // enumTypes_h__

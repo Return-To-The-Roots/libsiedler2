@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef loadMapping_h__
-#define loadMapping_h__
+#pragma once
 
 #include <boost/filesystem/path.hpp>
 #include <functional>
@@ -38,5 +37,3 @@ void loadMapping(std::istream& stream, const std::function<void(unsigned idx, co
 void loadMapping(const boost::filesystem::path& filepath, const std::function<void(unsigned idx, const std::string&)>& onItem);
 
 } // namespace libsiedler2
-
-#endif // loadMapping_h__

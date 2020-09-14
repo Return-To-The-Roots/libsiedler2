@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef cmpFiles_h__
-#define cmpFiles_h__
-
 #include <boost/filesystem/path.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -33,5 +30,3 @@ boost::test_tools::predicate_result testLoad(int expectedResult, const boost::fi
 boost::test_tools::predicate_result testWrite(int expectedResult, const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
                                               const libsiedler2::ArchivItem_Palette* palette = nullptr);
 boost::test_tools::predicate_result testFilesEqual(const boost::filesystem::path& fileToCheck, const boost::filesystem::path& expectedFile);
-
-#endif // cmpFiles_h__

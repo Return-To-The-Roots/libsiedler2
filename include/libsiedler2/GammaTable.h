@@ -14,8 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef GAMMATABLE_H_
-#define GAMMATABLE_H_
+
+#pragma once
 
 #include <cmath>
 #include <vector>
@@ -51,5 +51,3 @@ public:
 
     const T& operator[](const T& i) const { return table[i]; }
 };
-
-#endif // GAMMATABLE_H_

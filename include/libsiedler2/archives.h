@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef ARCHIVES_H_INCLUDED
-#define ARCHIVES_H_INCLUDED
 
 #pragma once
 
@@ -36,5 +34,3 @@
 #include "ArchivItem_Sound_Wave.h"
 #include "ArchivItem_Sound_XMidi.h"
 #include "ArchivItem_Text.h"
-
-#endif // !ARCHIVES_H_INCLUDED

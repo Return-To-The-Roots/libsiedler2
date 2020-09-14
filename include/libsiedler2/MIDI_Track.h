@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef MIDI_TRACK_H_INCLUDED
-#define MIDI_TRACK_H_INCLUDED
 
 #pragma once
 
@@ -43,5 +41,3 @@ protected:
     std::vector<uint8_t> mid_data;
 };
 } // namespace libsiedler2
-
-#endif // !MIDI_TRACK_H_INCLUDED

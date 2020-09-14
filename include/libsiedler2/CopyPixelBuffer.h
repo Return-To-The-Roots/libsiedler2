@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CopyPixelBuffer_h__
-#define CopyPixelBuffer_h__
+#pragma once
 
 #include <cstdint>
 
@@ -38,5 +37,3 @@ Rect clipRect(Rect rect, uint16_t w, uint16_t h);
 template<class T_Src, class T_Dst>
 void CopyPixelBuffer(const T_Src& src, T_Dst& dst, Rect srcRect, Rect dstRect);
 } // namespace libsiedler2
-
-#endif // CopyPixelBuffer_h__

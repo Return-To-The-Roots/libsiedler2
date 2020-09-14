@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef STANDARD_ALLOCATOR_H_INCLUDED
-#define STANDARD_ALLOCATOR_H_INCLUDED
+#pragma once
 
 #include "IAllocator.h"
 
@@ -31,5 +30,3 @@ public:
 };
 
 } // namespace libsiedler2
-
-#endif // STANDARD_ALLOCATOR_H_INCLUDED

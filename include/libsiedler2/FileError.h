@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef FileError_h__
-#define FileError_h__
+#pragma once
 
 #include <stdexcept>
 
@@ -30,5 +29,3 @@ public:
     const char* what() const noexcept override;
 };
 } // namespace libsiedler2
-
-#endif // FileError_h__

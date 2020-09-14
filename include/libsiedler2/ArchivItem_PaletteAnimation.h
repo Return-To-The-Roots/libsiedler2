@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ArchivItem_PaletteAnimation_h__
-#define ArchivItem_PaletteAnimation_h__
+#pragma once
 
 #include "ArchivItem.h"
 #include <cstdint>
@@ -51,5 +50,3 @@ public:
 };
 
 } // namespace libsiedler2
-
-#endif // ArchivItem_PaletteAnimation_h__

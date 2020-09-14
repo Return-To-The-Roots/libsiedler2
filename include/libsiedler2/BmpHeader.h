@@ -15,9 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BmpHeader_h__
-#define BmpHeader_h__
-
 #pragma once
 
 #include <boost/endian/arithmetic.hpp>
@@ -46,5 +43,3 @@ struct BitmapInfoHeader
     boost::endian::little_int32_t clrimp;
 };
 } // namespace libsiedler2
-
-#endif // BmpHeader_h__

@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef config_h__
-#define config_h__
-
 #include <boost/filesystem/path.hpp>
 
 #cmakedefine RTTR_LIBSIEDLER2_TEST_FILES_DIR "@RTTR_LIBSIEDLER2_TEST_FILES_DIR@"
@@ -42,5 +39,3 @@ const boost::filesystem::path inputPath = RTTR_LIBSIEDLER2_TEST_FILES_DIR;
 const boost::filesystem::path outputPath = "@PROJECT_BINARY_DIR@/testOutput";
 }
 }
-
-#endif // config_h__

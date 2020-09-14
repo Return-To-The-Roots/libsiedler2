@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef fileFormatHelpers_h__
-#define fileFormatHelpers_h__
-
 #include <array>
 #include <cstring>
 
@@ -38,5 +35,3 @@ inline void setChunkId(std::array<char, T_length>& target, const char (&chunkId)
     static_assert(T_length + 1 >= T_lengthIdStr, "Chunk id is not long enough");
     std::memcpy(target.data(), chunkId, T_lengthIdStr - 1);
 }
-
-#endif // fileFormatHelpers_h__

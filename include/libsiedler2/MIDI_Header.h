@@ -15,9 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MIDI_Header_h__
-#define MIDI_Header_h__
-
 #pragma once
 
 #include <boost/endian/arithmetic.hpp>
@@ -35,5 +32,3 @@ struct MIDI_Header
 
 static_assert(sizeof(MIDI_Header) == 14u, "Invalid padding detected");
 } // namespace libsiedler2
-
-#endif // MIDI_Header_h__

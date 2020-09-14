@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef OEM_H_INCLUDED
-#define OEM_H_INCLUDED
 
 #pragma once
 
@@ -28,5 +26,3 @@ std::string AnsiToOem(const std::string& from);
 /// Wandelt einen String vom OEM ins ANSI Format um.
 std::string OemToAnsi(const std::string& from);
 } // namespace libsiedler2
-
-#endif // !OEM_H_INCLUDED

@@ -15,9 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ColorBGRA_h__
-#define ColorBGRA_h__
-
 #pragma once
 
 #include "ColorRGB.h"
@@ -103,5 +100,3 @@ inline void ColorBGRA::toBGRA(void* bgraBuffer) const
     std::memcpy(bgraBuffer, value.data(), 4);
 }
 } // namespace libsiedler2
-
-#endif // ColorBGRA_h__

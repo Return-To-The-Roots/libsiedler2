@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ARCHIVITEM_BITMAPBASE_H_INCLUDED
-#define ARCHIVITEM_BITMAPBASE_H_INCLUDED
+#pragma once
 
 #include "ArchivItem.h"
 #include "PixelBufferRef.h"
@@ -233,5 +232,3 @@ void ArchivItem_BitmapBase::doGetVisibleArea(int& vx, int& vy, unsigned& vw, uns
 }
 
 } // namespace libsiedler2
-
-#endif // ARCHIVITEM_BITMAPBASE_H_INCLUDED

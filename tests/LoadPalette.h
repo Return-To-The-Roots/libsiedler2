@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef LoadPalette_h__
-#define LoadPalette_h__
-
 #include "ColorOutput.h"
 #include "test/config.h"
 #include "libsiedler2/Archiv.h"
@@ -58,5 +55,3 @@ struct LoadPalette
 private:
     libsiedler2::Archiv paletteArchiv;
 };
-
-#endif // LoadPalette_h__

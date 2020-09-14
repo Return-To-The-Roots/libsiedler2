@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef ARCHIVITEM_BITMAP_RAW_H_INCLUDED
-#define ARCHIVITEM_BITMAP_RAW_H_INCLUDED
 
 #pragma once
 
@@ -54,5 +52,3 @@ public:
     RTTR_CLONEABLE(ArchivItem_Bitmap_Raw)
 };
 } // namespace libsiedler2
-
-#endif // !ARCHIVITEM_BITMAP_RAW_H_INCLUDED

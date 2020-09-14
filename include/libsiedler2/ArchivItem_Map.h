@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef ARCHIVITEM_MAP_H_INCLUDED
-#define ARCHIVITEM_MAP_H_INCLUDED
 
 #pragma once
 
@@ -47,5 +45,3 @@ public:
     std::vector<ExtraAnimalInfo> extraInfo;
 };
 } // namespace libsiedler2
-
-#endif // !ARCHIVITEM_MAP_H_INCLUDED

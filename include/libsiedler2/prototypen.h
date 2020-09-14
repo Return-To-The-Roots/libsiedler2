@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef PROTOTYP_H_INCLUDED
-#define PROTOTYP_H_INCLUDED
 
 #pragma once
 
@@ -120,5 +118,3 @@ namespace loader {
 
 } // namespace loader
 } // namespace libsiedler2
-
-#endif // !PROTOTYP_H_INCLUDED

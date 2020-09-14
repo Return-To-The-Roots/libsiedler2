@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef PixelBuffer_h__
-#define PixelBuffer_h__
-
 #include <cassert>
 #include <cstdint>
 #include <vector>
@@ -86,5 +83,3 @@ inline void libsiedler2::PixelBuffer<T_Pixel>::clear()
 }
 
 } // namespace libsiedler2
-
-#endif // PixelBuffer_h__

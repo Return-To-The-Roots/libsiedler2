@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IALLOCATOR_H_INCLUDED
-#define IALLOCATOR_H_INCLUDED
+#pragma once
 
 #include "enumTypes.h"
 #include "s25util/dynamicUniqueCast.h"
@@ -41,5 +40,3 @@ public:
 };
 
 } // namespace libsiedler2
-
-#endif // IALLOCATOR_H_INCLUDED

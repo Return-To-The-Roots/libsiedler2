@@ -15,9 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef WAV_Header_h__
-#define WAV_Header_h__
-
 #pragma once
 
 #include <boost/endian/arithmetic.hpp>
@@ -41,5 +38,3 @@ struct WAV_Header
 
 static_assert(sizeof(WAV_Header) == 44u, "Invalid padding detected");
 } // namespace libsiedler2
-
-#endif // WAV_Header_h__

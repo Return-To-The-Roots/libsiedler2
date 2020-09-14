@@ -18,8 +18,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
-#ifndef libsiedler2_examples_lstpacker_unpack_h
-#define libsiedler2_examples_lstpacker_unpack_h
 
 #include <boost/filesystem/path.hpp>
 #include <string>
@@ -33,5 +31,3 @@ class ArchivItem_Palette;
 
 void unpack(const boost::filesystem::path& directory, const libsiedler2::Archiv& lst, const libsiedler2::ArchivItem_Palette* palette,
             const std::string& fileNameHexPrefix = "", bool paletteAsTxt = false);
-
-#endif // !libsiedler2_examples_lstpacker_unpack_h

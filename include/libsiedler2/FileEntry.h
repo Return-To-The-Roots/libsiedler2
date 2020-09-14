@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef FileEntry_h__
-#define FileEntry_h__
+#pragma once
 
 #include "enumTypes.h"
 #include <boost/filesystem/path.hpp>
@@ -41,5 +40,3 @@ struct FileEntry
 };
 bool operator<(const FileEntry& left, const FileEntry& right);
 } // namespace libsiedler2
-
-#endif // FileEntry_h__

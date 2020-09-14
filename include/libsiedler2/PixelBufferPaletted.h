@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef PixelBufferPaletted_h__
-#define PixelBufferPaletted_h__
-
 #include "ArchivItem_Palette.h"
 #include "PixelBuffer.h"
 #include <cstdint>
@@ -44,5 +41,3 @@ namespace traits {
 } // namespace traits
 
 } // namespace libsiedler2
-
-#endif // PixelBufferPaletted_h__

@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef ImageBufferARGB_h__
-#define ImageBufferARGB_h__
-
 #include "ColorBGRA.h"
 #include "GetFormat.h"
 #include "PixelBuffer.h"
@@ -43,5 +40,3 @@ namespace traits {
 } // namespace traits
 
 } // namespace libsiedler2
-
-#endif // ImageBufferARGB_h__

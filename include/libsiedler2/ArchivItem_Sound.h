@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef ARCHIVITEM_SOUND_H_INCLUDED
-#define ARCHIVITEM_SOUND_H_INCLUDED
 
 #pragma once
 
@@ -49,5 +47,3 @@ private:
 };
 
 } // namespace libsiedler2
-
-#endif // !ARCHIVITEM_SOUND_H_INCLUDED

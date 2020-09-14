@@ -18,8 +18,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
-#ifndef libsiedler2_examples_lstpacker_util_h
-#define libsiedler2_examples_lstpacker_util_h
 
 #include <sstream>
 #include <string>
@@ -43,5 +41,3 @@ inline std::vector<std::string> explode(std::string const& line, const char deli
 
     return result;
 }
-
-#endif // !libsiedler2_examples_lstpacker_util_h

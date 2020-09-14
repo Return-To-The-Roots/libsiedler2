@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef LIBSIEDLER2_H_INCLUDED
-#define LIBSIEDLER2_H_INCLUDED
 
 #pragma once
 
@@ -50,5 +48,3 @@ std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath)
 int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
 } // namespace libsiedler2
-
-#endif // !LIBSIEDLER2_H_INCLUDED

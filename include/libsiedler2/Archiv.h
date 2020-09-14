@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef ARCHIVINFO_H_INCLUDED
-#define ARCHIVINFO_H_INCLUDED
 
 #pragma once
 
@@ -81,5 +79,3 @@ private:
     std::vector<std::unique_ptr<ArchivItem>> data; /// elements
 };
 } // namespace libsiedler2
-
-#endif // ARCHIVINFO_H_INCLUDED

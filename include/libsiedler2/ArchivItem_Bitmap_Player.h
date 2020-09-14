@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef ARCHIVITEM_BITMAP_PLAYER_H_INCLUDED
-#define ARCHIVITEM_BITMAP_PLAYER_H_INCLUDED
 
 #pragma once
 
@@ -127,5 +125,3 @@ inline int ArchivItem_Bitmap_Player::create(const T_PixelBuffer& pixelBuffer, co
 }
 
 } // namespace libsiedler2
-
-#endif // !ARCHIVITEM_BITMAP_PLAYER_H_INCLUDED

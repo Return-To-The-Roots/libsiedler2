@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PixelBufferRef_h__
-#define PixelBufferRef_h__
+#pragma once
 
 #include <cassert>
 #include <cstdint>
@@ -65,5 +64,3 @@ public:
     const ArchivItem_Palette& getPalette() const { return pal_; }
 };
 } // namespace libsiedler2
-
-#endif // PixelBufferRef_h__

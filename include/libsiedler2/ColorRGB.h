@@ -15,9 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ColorRGB_h__
-#define ColorRGB_h__
-
 #pragma once
 
 #include <cstdint>
@@ -55,5 +52,3 @@ inline void ColorRGB::toBGR(uint8_t* ptr) const
 // If this fails, then loading an array of RGB value (byte oriented: RGBRGB...) will fail
 static_assert(sizeof(ColorRGB) == 3u, "Invalid size of ColorRGB");
 } // namespace libsiedler2
-
-#endif // ColorRGB_h__

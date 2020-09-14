@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef ErrorCodes_h__
-#define ErrorCodes_h__
-
 #include <string>
 
 namespace libsiedler2 {
@@ -44,5 +41,3 @@ struct ErrorCode
 
 std::string getErrorString(int errorCode);
 } // namespace libsiedler2
-
-#endif // ErrorCodes_h__

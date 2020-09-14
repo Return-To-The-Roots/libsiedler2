@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef ColorOutput_h__
-#define ColorOutput_h__
-
 #include "libsiedler2/ColorBGRA.h"
 #include "libsiedler2/ColorRGB.h"
 #include <iostream>
@@ -35,5 +32,3 @@ inline std::ostream& operator<<(std::ostream& os, const ColorBGRA& clr)
               << unsigned(clr.getBlue()) << ")";
 }
 } // namespace libsiedler2
-
-#endif // ColorOutput_h__

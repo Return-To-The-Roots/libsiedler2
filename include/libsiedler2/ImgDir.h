@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef libsiedler2_imgdir_h__
-#define libsiedler2_imgdir_h__
+#pragma once
 
 namespace libsiedler2 {
 /// Direction that image figures are facing/walking
@@ -31,5 +30,3 @@ enum class ImgDir
     NE
 };
 } // namespace libsiedler2
-
-#endif // libsiedler2_imgdir_h__

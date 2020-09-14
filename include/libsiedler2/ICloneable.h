@@ -17,9 +17,6 @@
 
 #pragma once
 
-#ifndef ICloneable_h__
-#define ICloneable_h__
-
 #include <cassert>
 #include <memory>
 #include <type_traits>
@@ -78,5 +75,3 @@ public:
 /// RTTR_CLONEABLE(TFoo) in the public section of the class declaration
 #define RTTR_CLONEABLE(TYPE) \
     TYPE* clone() const override { return new TYPE(*this); }
-
-#endif // ICloneable_h__

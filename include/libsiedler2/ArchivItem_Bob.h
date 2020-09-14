@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
-#ifndef ARCHIVITEM_BOB_H_INCLUDED
-#define ARCHIVITEM_BOB_H_INCLUDED
 
 #pragma once
 
@@ -67,5 +65,3 @@ protected:
     std::vector<uint16_t> links; /// Array [overlayId][animStep=8][fat=2][direction=6] mapping to an overlay picture
 };
 } // namespace libsiedler2
-
-#endif // !ARCHIVITEM_BOB_H_INCLUDED
