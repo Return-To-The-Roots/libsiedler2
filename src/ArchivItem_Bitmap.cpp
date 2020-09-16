@@ -47,9 +47,10 @@ namespace libsiedler2 {
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
-                                 const ArchivItem_Palette* dstPalette /*= nullptr*/, uint16_t to_x /*= 0*/, uint16_t to_y /*= 0*/,
-                                 uint16_t from_x /*= 0*/, uint16_t from_y /*= 0*/, uint16_t from_w /*= 0*/, uint16_t from_h /*= 0*/) const
+int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
+                                 TextureFormat buffer_format, const ArchivItem_Palette* dstPalette /*= nullptr*/,
+                                 uint16_t to_x /*= 0*/, uint16_t to_y /*= 0*/, uint16_t from_x /*= 0*/,
+                                 uint16_t from_y /*= 0*/, uint16_t from_w /*= 0*/, uint16_t from_h /*= 0*/) const
 {
     if(buffer_width == 0 || buffer_height == 0)
         return ErrorCode::NONE;
@@ -110,8 +111,9 @@ int baseArchivItem_Bitmap::print(uint8_t* buffer, uint16_t buffer_width, uint16_
  *
  *  @return Null falls Bitmap erfolgreich erstellt worden ist, ungleich Null bei Fehler
  */
-int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
-                                  TextureFormat buffer_format, const ArchivItem_Palette* palette /*= nullptr*/)
+int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width,
+                                  uint16_t buffer_height, TextureFormat buffer_format,
+                                  const ArchivItem_Palette* palette /*= nullptr*/)
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;

@@ -30,16 +30,19 @@ class Archiv;
 /// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 namespace loader {
     /// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-    int LoadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item, const ArchivItem_Palette* palette = nullptr);
+    int LoadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item,
+                 const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item, const ArchivItem_Palette* palette = nullptr);
+    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item,
+                  const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine LST-File in ein Archiv.
     int LoadLST(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt ein Archiv eine LST-File.
-    int WriteLST(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
+    int WriteLST(const boost::filesystem::path& filepath, const Archiv& items,
+                 const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine BBM-File in ein Archiv.
     int LoadBBM(const boost::filesystem::path& filepath, Archiv& items);
@@ -60,10 +63,12 @@ namespace loader {
     int LoadBMP(const boost::filesystem::path& filepath, Archiv& image, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt ein Archiv in eine BMP-File.
-    int WriteBMP(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
+    int WriteBMP(const boost::filesystem::path& filepath, const Archiv& items,
+                 const ArchivItem_Palette* palette = nullptr);
 
     /// load a GER/ENG-File into the archive.
-    /// If conversion is true then OEM conversion and @@-replacement is done, otherwise line endings are normalized to \n
+    /// If conversion is true then OEM conversion and @@-replacement is done, otherwise line endings are normalized to
+    /// \n
     int LoadTXT(const boost::filesystem::path& filepath, Archiv& items, bool conversion);
 
 #define LoadGER LoadTXT
@@ -80,7 +85,8 @@ namespace loader {
     int LoadLBM(const boost::filesystem::path& filepath, Archiv& items);
 
     /// schreibt ein Archiv in eine LBM-File.
-    int WriteLBM(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
+    int WriteLBM(const boost::filesystem::path& filepath, const Archiv& items,
+                 const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine SWD/WSD-File in ein Archiv.
     int LoadMAP(const boost::filesystem::path& filepath, Archiv& items, bool only_header = false);

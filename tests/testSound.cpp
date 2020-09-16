@@ -179,8 +179,10 @@ BOOST_AUTO_TEST_CASE(Clone)
 
     BOOST_REQUIRE_EQUAL(snd5->getNumTracks(), 1u);
     BOOST_REQUIRE_EQUAL(snd6->getNumTracks(), 1u);
-    BOOST_REQUIRE_EQUAL_COLLECTIONS(snd7->getData().begin(), snd7->getData().end(), snd3.getData().begin(), snd3.getData().end());
-    BOOST_REQUIRE_EQUAL_COLLECTIONS(snd8->getData().begin(), snd8->getData().end(), snd4.getData().begin(), snd4.getData().end());
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(snd7->getData().begin(), snd7->getData().end(), snd3.getData().begin(),
+                                    snd3.getData().end());
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(snd8->getData().begin(), snd8->getData().end(), snd4.getData().begin(),
+                                    snd4.getData().end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

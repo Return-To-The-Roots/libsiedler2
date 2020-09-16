@@ -86,7 +86,8 @@ int ArchivItem_PaletteAnimation::writeToTxt(std::ostream& file) const
         return ErrorCode::FILE_NOT_ACCESSIBLE;
     std::string sActive = isActive ? "active" : "inactive";
     std::string sMoveUp = moveUp ? "forwards" : "backwards";
-    if(!(file << rate << '\t' << sActive << '\t' << sMoveUp << '\t' << uint32_t(firstClr) << '\t' << uint32_t(lastClr) << '\n'))
+    if(!(file << rate << '\t' << sActive << '\t' << sMoveUp << '\t' << uint32_t(firstClr) << '\t' << uint32_t(lastClr)
+              << '\n'))
         return ErrorCode::UNSUPPORTED_FORMAT;
     return ErrorCode::NONE;
 }

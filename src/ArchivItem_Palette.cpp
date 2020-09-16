@@ -34,7 +34,9 @@
  *  Klasse für Paletten.
  */
 
-libsiedler2::ArchivItem_Palette::ArchivItem_Palette() : ArchivItem(BobType::Palette), transparentIdx(DEFAULT_TRANSPARENT_IDX) {}
+libsiedler2::ArchivItem_Palette::ArchivItem_Palette()
+    : ArchivItem(BobType::Palette), transparentIdx(DEFAULT_TRANSPARENT_IDX)
+{}
 
 libsiedler2::ArchivItem_Palette::~ArchivItem_Palette() = default;
 
@@ -174,7 +176,7 @@ void libsiedler2::ArchivItem_Palette::copyToBGRA(uint8_t* buffer, size_t bufSize
 void libsiedler2::ArchivItem_Palette::setDefaultTransparentIdx()
 {
     // If the palette contains the transparent color, we use that, otherwise we use the default.
-    // This is mostly for backwards compatibility (we used to use index 254 which is that pink in PAL5) and ease of use (black as
-    // transparent color in bmps might be confusing)
+    // This is mostly for backwards compatibility (we used to use index 254 which is that pink in PAL5) and ease of use
+    // (black as transparent color in bmps might be confusing)
     transparentIdx = lookupOrDef(TRANSPARENT_COLOR, DEFAULT_TRANSPARENT_IDX);
 }

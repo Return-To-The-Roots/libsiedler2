@@ -157,7 +157,8 @@ int libsiedler2::baseArchivItem_Bitmap_Shadow::write(std::ostream& file, const A
 
     fs << nx_ << ny_ << uint32_t(0) << width << height << uint16_t(1);
 
-    // Maximum size: 1 byte/pixel + (1 byte FF + 2 extra bytes for first transparent and last solid pixel) per row + 1 byte FF final
+    // Maximum size: 1 byte/pixel + (1 byte FF + 2 extra bytes for first transparent and last solid pixel) per row + 1
+    // byte FF final
     std::vector<uint8_t> image(width * height + height * 3 + 1);
 
     // Startadressen

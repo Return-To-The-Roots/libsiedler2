@@ -46,9 +46,9 @@ int main(int argc, char* argv[])
                                   "pack:   lstpacker <directory>\n"
                                   "unpack: lstpacker <file.lst> <file.lst> ...\n");
     desc.add_options()("help,h", "Show help")("file,f", bpo::value<std::vector<std::string>>()->multitoken(),
-                                              "File to unpack or directory to pack")("palette,p", bpo::value<std::string>(),
-                                                                                     "Palette  (bbm/act) to use instead of default one")(
-      "palAsTxt,t", "Output palettes as human readable txt files")(
+                                              "File to unpack or directory to pack")(
+      "palette,p", bpo::value<std::string>(),
+      "Palette  (bbm/act) to use instead of default one")("palAsTxt,t", "Output palettes as human readable txt files")(
       "texFmt", bpo::value<std::string>(&texFmt)->default_value("original"),
       "Texture format to use (usually equal output format): (o)riginal, (p)paletted, (B)GRA")(
       "outFileFmt,o", bpo::value<std::string>(&outFileExt)->default_value("LST"), "Output file format (extension)");
@@ -94,7 +94,8 @@ int main(int argc, char* argv[])
         if(Load(pal5Path2, bbm) != 0)
         {
             bnw::cerr << "Fatal Error: " << std::endl;
-            bnw::cerr << "Neither " << pal5Path << " nor " << pal5Path2 << " was found or it cannot be opened" << std::endl;
+            bnw::cerr << "Neither " << pal5Path << " nor " << pal5Path2 << " was found or it cannot be opened"
+                      << std::endl;
             return 2;
         }
     }

@@ -31,7 +31,8 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadLST(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::LoadLST(const boost::filesystem::path& filepath, Archiv& items,
+                                 const ArchivItem_Palette* palette)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(filepath, mmapStream))

@@ -28,7 +28,9 @@ class PixelBufferBGRA : public PixelBuffer<ColorBGRA>
 {
 public:
     PixelBufferBGRA() = default;
-    PixelBufferBGRA(uint16_t width, uint16_t height, ColorBGRA defValue = ColorBGRA()) : PixelBuffer<ColorBGRA>(width, height, defValue) {}
+    PixelBufferBGRA(uint16_t width, uint16_t height, ColorBGRA defValue = ColorBGRA())
+        : PixelBuffer<ColorBGRA>(width, height, defValue)
+    {}
 };
 
 namespace traits {

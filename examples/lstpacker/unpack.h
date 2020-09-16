@@ -29,5 +29,6 @@ class ArchivItem_Palette;
 
 } // namespace libsiedler2
 
-void unpack(const boost::filesystem::path& directory, const libsiedler2::Archiv& lst, const libsiedler2::ArchivItem_Palette* palette,
-            const std::string& fileNameHexPrefix = "", bool paletteAsTxt = false);
+void unpack(const boost::filesystem::path& directory, const libsiedler2::Archiv& lst,
+            const libsiedler2::ArchivItem_Palette* palette, const std::string& fileNameHexPrefix = "",
+            bool paletteAsTxt = false);

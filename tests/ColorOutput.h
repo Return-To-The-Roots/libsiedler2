@@ -28,7 +28,7 @@ inline std::ostream& operator<<(std::ostream& os, const ColorRGB& clr)
 }
 inline std::ostream& operator<<(std::ostream& os, const ColorBGRA& clr)
 {
-    return os << "Color(" << unsigned(clr.getAlpha()) << ", " << unsigned(clr.getRed()) << ", " << unsigned(clr.getGreen()) << ", "
-              << unsigned(clr.getBlue()) << ")";
+    return os << "Color(" << unsigned(clr.getAlpha()) << ", " << unsigned(clr.getRed()) << ", "
+              << unsigned(clr.getGreen()) << ", " << unsigned(clr.getBlue()) << ")";
 }
 } // namespace libsiedler2

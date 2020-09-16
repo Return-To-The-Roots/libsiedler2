@@ -30,7 +30,9 @@ namespace libsiedler2 {
  *  Basis-Basisklasse für Bitmapitems.
  */
 
-ArchivItem_BitmapBase::ArchivItem_BitmapBase() : nx_(0), ny_(0), width_(0), height_(0), palette_(nullptr), format_(TextureFormat::BGRA) {}
+ArchivItem_BitmapBase::ArchivItem_BitmapBase()
+    : nx_(0), ny_(0), width_(0), height_(0), palette_(nullptr), format_(TextureFormat::BGRA)
+{}
 
 ArchivItem_BitmapBase::ArchivItem_BitmapBase(const ArchivItem_BitmapBase& item) : ArchivItem(item)
 {
@@ -332,7 +334,9 @@ void ArchivItem_BitmapBase::getVisibleArea(int& vx, int& vy, unsigned& vw, unsig
     }
 
     if(getBBP() == 1)
-        doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) { return palette->isTransparent(this->getPalettedPixel(x, y)); });
+        doGetVisibleArea(vx, vy, vw, vh, [this, palette](auto x, auto y) {
+            return palette->isTransparent(this->getPalettedPixel(x, y));
+        });
     else
         doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) { return this->getPixelPtr(x, y)[3] == 0u; });
 }

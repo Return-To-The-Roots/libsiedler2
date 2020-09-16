@@ -32,7 +32,8 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteLST(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::WriteLST(const boost::filesystem::path& filepath, const Archiv& items,
+                                  const ArchivItem_Palette* palette)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;

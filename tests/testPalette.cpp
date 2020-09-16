@@ -135,7 +135,8 @@ BOOST_AUTO_TEST_CASE(ReadWritePalAnim)
     BOOST_REQUIRE_EQUAL(libsiedler2::Load(outPath, archiv2), 0);
     BOOST_REQUIRE_EQUAL(archiv.size(), archiv2.size());
     BOOST_REQUIRE(!archiv2[1]);
-    const libsiedler2::ArchivItem_PaletteAnimation* anim2 = dynamic_cast<libsiedler2::ArchivItem_PaletteAnimation*>(archiv2[0]);
+    const libsiedler2::ArchivItem_PaletteAnimation* anim2 =
+      dynamic_cast<libsiedler2::ArchivItem_PaletteAnimation*>(archiv2[0]);
     BOOST_REQUIRE(anim2);
     BOOST_REQUIRE_EQUAL(anim2->isActive, true);
     BOOST_REQUIRE_EQUAL(anim2->moveUp, true);

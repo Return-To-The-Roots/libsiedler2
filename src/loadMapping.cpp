@@ -52,7 +52,8 @@ void loadMapping(std::istream& stream, const std::function<void(unsigned idx, co
         throw std::runtime_error("Error getting line");
 }
 
-void loadMapping(const boost::filesystem::path& filepath, const std::function<void(unsigned idx, const std::string&)>& onItem)
+void loadMapping(const boost::filesystem::path& filepath,
+                 const std::function<void(unsigned idx, const std::string&)>& onItem)
 {
     boost::nowide::ifstream f(filepath);
     loadMapping(f, onItem);

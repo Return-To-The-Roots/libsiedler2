@@ -42,10 +42,10 @@
 #include <vector>
 
 #if BOOST_VERSION < 106500 && defined(BOOST_GCC) && __GNUC__ >= 7
-#ifdef BOOST_FALLTHROUGH
-#undef BOOST_FALLTHROUGH
-#endif
-#define BOOST_FALLTHROUGH __attribute__((fallthrough))
+#    ifdef BOOST_FALLTHROUGH
+#        undef BOOST_FALLTHROUGH
+#    endif
+#    define BOOST_FALLTHROUGH __attribute__((fallthrough))
 #endif
 
 using namespace std;
@@ -57,8 +57,9 @@ static std::string makeBaseFilename(unsigned idx, const std::string& fileNameHex
 {
     if(fileNameHexPrefix.empty())
         return s25util::toStringClassic(idx);
-    std::string hexValue = (idx <= std::numeric_limits<uint16_t>::max()) ? s25util::toStringClassic(static_cast<uint16_t>(idx), true) :
-                                                                           s25util::toStringClassic(idx, true);
+    std::string hexValue = (idx <= std::numeric_limits<uint16_t>::max()) ?
+                             s25util::toStringClassic(static_cast<uint16_t>(idx), true) :
+                             s25util::toStringClassic(idx, true);
     return fileNameHexPrefix + hexValue.substr(2); // Replace prefix
 }
 
@@ -215,7 +216,8 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
                 else
                     cout << "done" << endl;
                 if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
-                    loader::WriteTxtPalette((directory / newFileStem).replace_extension(".palette.txt"), *bitmap.getPalette());
+                    loader::WriteTxtPalette((directory / newFileStem).replace_extension(".palette.txt"),
+                                            *bitmap.getPalette());
             }
             break;
             case BobType::PaletteAnim: containsPalAnim = true; break;

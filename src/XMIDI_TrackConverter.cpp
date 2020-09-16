@@ -29,7 +29,7 @@
 // Enable this to log status reports of the xmidi conversion to stdout
 #define RTTR_LOG_XMIDI 0
 #if RTTR_LOG_XMIDI
-#include <iostream>
+#    include <iostream>
 #endif // RTTR_LOG_XMIDI
 
 namespace libsiedler2 {
@@ -323,7 +323,8 @@ void XMIDI_TrackConverter::ConvertSystemMessage(int time, uint8_t status)
     if(!len)
         return;
 
-    std::copy(track.getData().begin() + position, track.getData().begin() + position + len, std::back_inserter(curEvent->buffer));
+    std::copy(track.getData().begin() + position, track.getData().begin() + position + len,
+              std::back_inserter(curEvent->buffer));
     position += len;
 }
 

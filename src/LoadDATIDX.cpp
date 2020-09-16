@@ -35,7 +35,8 @@ namespace bfs = boost::filesystem;
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadDATIDX(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::LoadDATIDX(const boost::filesystem::path& filepath, Archiv& items,
+                                    const ArchivItem_Palette* palette)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;

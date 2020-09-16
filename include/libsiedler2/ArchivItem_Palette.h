@@ -34,10 +34,11 @@ const ColorRGB TRANSPARENT_COLOR(0xff, 0, 0x8f);
 class ArchivItem_Palette : public ArchivItem
 {
 public:
-    /// The choice for the default transparent index is kind of arbitrary as in most files we have a separate encoding for transparent
-    /// pixels. However in the LBMs containing the terrain textures we do have parts that should be transparent (background of edges and
-    /// paths) and there index 0 is used consistently. Also PAL5 (default) contains more than 1 black color and index 0 does not seem to be
-    /// used for black in the S2 LST files. For compatibility we use this only if the palette does not contain TRANSPARENT_COLOR.
+    /// The choice for the default transparent index is kind of arbitrary as in most files we have a separate encoding
+    /// for transparent pixels. However in the LBMs containing the terrain textures we do have parts that should be
+    /// transparent (background of edges and paths) and there index 0 is used consistently. Also PAL5 (default) contains
+    /// more than 1 black color and index 0 does not seem to be used for black in the S2 LST files. For compatibility we
+    /// use this only if the palette does not contain TRANSPARENT_COLOR.
     static const uint8_t DEFAULT_TRANSPARENT_IDX = 0;
 
     ArchivItem_Palette();
@@ -45,7 +46,8 @@ public:
     ~ArchivItem_Palette() override;
     RTTR_CLONEABLE(ArchivItem_Palette)
 
-    /// Load the palette from the file and set the transparent index to the index of TRANSPARENT_COLOR or DEFAULT_TRANSPARENT_IDX
+    /// Load the palette from the file and set the transparent index to the index of TRANSPARENT_COLOR or
+    /// DEFAULT_TRANSPARENT_IDX
     int load(std::istream& file, bool skip = true);
 
     /// schreibt die Farbwerte in eine Datei.
@@ -81,19 +83,25 @@ public:
     /// Disable transparency
     void removeTransparency() { setBackgroundColorIdx(DEFAULT_TRANSPARENT_IDX); }
     /// Disable transparency and set the background for images created with this palette
-    void setBackgroundColorIdx(uint8_t colorIdx) { transparentIdx = 0x100 + colorIdx; /* Conversion to uint8_t yields colorIdx*/ }
+    void setBackgroundColorIdx(uint8_t colorIdx)
+    {
+        transparentIdx = 0x100 + colorIdx; /* Conversion to uint8_t yields colorIdx*/
+    }
     /// Return the transparent index or the background color index if not transparent.
     uint8_t getTransparentIdx() const { return static_cast<uint8_t>(transparentIdx); }
     /// Return true if the given color is transparent (always false if hasTransparency is false)
     bool isTransparent(uint8_t colorIdx) const { return static_cast<uint16_t>(colorIdx) == transparentIdx; }
 
-    bool operator==(const ArchivItem_Palette& other) const { return colors == other.colors && transparentIdx == other.transparentIdx; }
+    bool operator==(const ArchivItem_Palette& other) const
+    {
+        return colors == other.colors && transparentIdx == other.transparentIdx;
+    }
     bool operator!=(const ArchivItem_Palette& other) const { return !(*this == other); }
 
 protected:
     std::array<ColorRGB, 256> colors; //-V730_NOINIT
-    /// Transparent color index. Might be > UINT8_MAX which means 'no transparency' and will result in false for any comparison with
-    /// another uint8_t (intended)
+    /// Transparent color index. Might be > UINT8_MAX which means 'no transparency' and will result in false for any
+    /// comparison with another uint8_t (intended)
     uint16_t transparentIdx;
 };
 } // namespace libsiedler2

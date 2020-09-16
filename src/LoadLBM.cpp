@@ -81,8 +81,8 @@ int libsiedler2::loader::LoadLBM(const boost::filesystem::path& filepath, Archiv
             uint16_t xOrig, yOrig, pageW, pageH;
             uint8_t numPlanes, pad, xAspect, yAspect;
 
-            lbm >> width >> height >> xOrig >> yOrig >> numPlanes >> mask >> compression >> pad >> transClr >> xAspect >> yAspect >> pageW
-              >> pageH;
+            lbm >> width >> height >> xOrig >> yOrig >> numPlanes >> mask >> compression >> pad >> transClr >> xAspect
+              >> yAspect >> pageW >> pageH;
 
             // Nur 256 Farben und nicht mehr!
             if(numPlanes != 8 || (mask != 0 && mask != 2))

@@ -40,7 +40,8 @@ public:
     std::string getName() const { return name_; }
 
 protected:
-    // TODO: protected because classes with virtual inheritance may want to set it instead of calling many ctors down the line
+    // TODO: protected because classes with virtual inheritance may want to set it instead of calling many ctors down
+    // the line
     BobType bobtype_; /// Type of the element
 private:
     std::string name_; /// Element name

@@ -38,7 +38,8 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBMP(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette)
+int libsiedler2::loader::WriteBMP(const boost::filesystem::path& filepath, const Archiv& items,
+                                  const ArchivItem_Palette* palette)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -63,8 +64,8 @@ int libsiedler2::loader::WriteBMP(const boost::filesystem::path& filepath, const
     bmih.clrimp = 0;
 
     bool isPaletted;
-    // Passed palette is only used for player bitmaps if the bitmap does not have one as our format supports unpaletted images and the
-    // bitmap palette (or not having one) takes preference
+    // Passed palette is only used for player bitmaps if the bitmap does not have one as our format supports unpaletted
+    // images and the bitmap palette (or not having one) takes preference
     if(bitmap->getPalette())
     {
         bmih.clrused = 256;
@@ -109,7 +110,8 @@ int libsiedler2::loader::WriteBMP(const boost::filesystem::path& filepath, const
         fs.write(colors[0], bmih.clrused * 4);
     }
 
-    std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4), isPaletted ? palette->getTransparentIdx() : 0);
+    std::vector<uint8_t> buffer(bmih.width * bmih.height * (isPaletted ? 1 : 4),
+                                isPaletted ? palette->getTransparentIdx() : 0);
     TextureFormat bufFmt = isPaletted ? TextureFormat::Paletted : TextureFormat::BGRA;
 
     if(bitmap->getBobType() == BobType::BitmapPlayer)

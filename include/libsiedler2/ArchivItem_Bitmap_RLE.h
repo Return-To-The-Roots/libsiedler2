@@ -50,7 +50,8 @@ public:
     ArchivItem_Bitmap_RLE() = default;
 
     ArchivItem_Bitmap_RLE(const ArchivItem_Bitmap_RLE& item)
-        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item), ArchivItem_Bitmap(item)
+        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_RLE(item),
+          ArchivItem_Bitmap(item)
     {}
     RTTR_CLONEABLE(ArchivItem_Bitmap_RLE)
 };

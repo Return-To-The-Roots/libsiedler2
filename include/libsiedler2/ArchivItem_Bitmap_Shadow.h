@@ -50,7 +50,8 @@ public:
     ArchivItem_Bitmap_Shadow() = default;
 
     ArchivItem_Bitmap_Shadow(const ArchivItem_Bitmap_Shadow& item)
-        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item), ArchivItem_Bitmap(item)
+        : ArchivItem_BitmapBase(item), baseArchivItem_Bitmap(item), baseArchivItem_Bitmap_Shadow(item),
+          ArchivItem_Bitmap(item)
     {}
     RTTR_CLONEABLE(ArchivItem_Bitmap_Shadow)
 };

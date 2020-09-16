@@ -178,7 +178,8 @@ int Load(const boost::filesystem::path& filepath, Archiv& items, const ArchivIte
             ret = loader::LoadTXT(filepath, items, true);
         else if(extension == "ini")
             ret = loader::LoadINI(filepath, items);
-        else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
+        else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi"
+                || extension == "xmi")
             ret = loader::LoadSND(filepath, items);
         else if(extension == "links")
             ret = loader::LoadTXT(filepath, items, false);
@@ -242,8 +243,8 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             Archiv tmpItems;
             if(int ec = Load(entry.filePath, tmpItems, curPal))
                 return ec;
-            if(entry.bobtype == BobType::BitmapPlayer || entry.bobtype == BobType::Bitmap || entry.bobtype == BobType::BitmapRLE
-               || entry.bobtype == BobType::BitmapShadow)
+            if(entry.bobtype == BobType::BitmapPlayer || entry.bobtype == BobType::Bitmap
+               || entry.bobtype == BobType::BitmapRLE || entry.bobtype == BobType::BitmapShadow)
             {
                 if(tmpItems.size() != 1)
                     return ErrorCode::UNSUPPORTED_FORMAT;
@@ -374,7 +375,8 @@ int Write(const boost::filesystem::path& filepath, const Archiv& items, const Ar
             ret = loader::WriteTXT(filepath, items, true);
         else if(extension == "ini")
             ret = loader::WriteINI(filepath, items);
-        else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi" || extension == "xmi")
+        else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi"
+                || extension == "xmi")
             ret = loader::WriteSND(filepath, items);
         else if(extension == "lbm")
             ret = loader::WriteLBM(filepath, items, palette);

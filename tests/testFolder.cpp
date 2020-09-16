@@ -55,7 +55,8 @@ struct FolderFixture
     {
         bfs::create_directories(lstPath);
         PixelBufferBGRA buffer(5, 3);
-        std::array<std::string, std::tuple_size<decltype(bmps)>::value> names = {"a", "1.player.nx5.ny7", "f", "3.rle.nx1.ny9"};
+        std::array<std::string, std::tuple_size<decltype(bmps)>::value> names = {"a", "1.player.nx5.ny7", "f",
+                                                                                 "3.rle.nx1.ny9"};
 
         for(unsigned i = 0; i < bmps.size(); i++)
         {
@@ -86,7 +87,8 @@ BOOST_AUTO_TEST_CASE(ReadFolderInfoReturnsCorrectFiles)
     for(unsigned i = 0; i < infoExpected.size(); i++)
     {
         BOOST_TEST_INFO("Item " << i);
-        BOOST_TEST(bfs::path(info[i].filePath).make_preferred() == bfs::path(infoExpected[i].filePath).make_preferred());
+        BOOST_TEST(bfs::path(info[i].filePath).make_preferred()
+                   == bfs::path(infoExpected[i].filePath).make_preferred());
         BOOST_TEST(info[i].name == infoExpected[i].name);
         BOOST_TEST(info[i].nr == infoExpected[i].nr);
         BOOST_TEST(info[i].bobtype == infoExpected[i].bobtype);

@@ -25,8 +25,11 @@ class Archiv;
 class ArchivItem_Palette;
 } // namespace libsiedler2
 
-boost::test_tools::predicate_result testLoad(int expectedResult, const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
+boost::test_tools::predicate_result testLoad(int expectedResult, const boost::filesystem::path& filepath,
+                                             libsiedler2::Archiv& items,
                                              const libsiedler2::ArchivItem_Palette* palette = nullptr);
-boost::test_tools::predicate_result testWrite(int expectedResult, const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
+boost::test_tools::predicate_result testWrite(int expectedResult, const boost::filesystem::path& filepath,
+                                              libsiedler2::Archiv& items,
                                               const libsiedler2::ArchivItem_Palette* palette = nullptr);
-boost::test_tools::predicate_result testFilesEqual(const boost::filesystem::path& fileToCheck, const boost::filesystem::path& expectedFile);
+boost::test_tools::predicate_result testFilesEqual(const boost::filesystem::path& fileToCheck,
+                                                   const boost::filesystem::path& expectedFile);

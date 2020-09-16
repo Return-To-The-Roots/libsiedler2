@@ -30,7 +30,8 @@ class PixelBufferRefBase
 public:
     using PixelType = T_PixelType;
 
-    PixelBufferRefBase(PixelType* buf, uint16_t width, uint16_t height) : pixels_(buf), width_(width), height_(height) {}
+    PixelBufferRefBase(PixelType* buf, uint16_t width, uint16_t height) : pixels_(buf), width_(width), height_(height)
+    {}
     uint16_t getWidth() const { return width_; }
     uint16_t getHeight() const { return height_; }
     uint32_t getSizeInBytes() const { return getNumPixels() * sizeof(PixelType); }

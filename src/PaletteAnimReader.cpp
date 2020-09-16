@@ -76,12 +76,14 @@ namespace libsiedler2 { namespace loader {
         if(!fs)
             return ErrorCode::FILE_NOT_ACCESSIBLE;
         fs << txtPalHeader << std::endl;
-        fs << "Transparency: " << unsigned(palette.hasTransparency()) << " Color: " << unsigned(palette.getTransparentIdx()) << std::endl;
+        fs << "Transparency: " << unsigned(palette.hasTransparency())
+           << " Color: " << unsigned(palette.getTransparentIdx()) << std::endl;
         for(unsigned i = 0; i < 256; i++)
         {
-            fs << std::setw(3) << std::setfill(' ') << i << "\t0x" << std::uppercase << std::hex << std::setfill('0') << std::setw(2)
-               << unsigned(palette.get(i).getRed()) << std::setw(2) << unsigned(palette.get(i).getGreen()) << std::setw(2)
-               << unsigned(palette.get(i).getBlue()) << std::dec << std::endl;
+            fs << std::setw(3) << std::setfill(' ') << i << "\t0x" << std::uppercase << std::hex << std::setfill('0')
+               << std::setw(2) << unsigned(palette.get(i).getRed()) << std::setw(2)
+               << unsigned(palette.get(i).getGreen()) << std::setw(2) << unsigned(palette.get(i).getBlue()) << std::dec
+               << std::endl;
         }
         return ErrorCode::NONE;
     }

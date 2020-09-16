@@ -24,35 +24,41 @@
 namespace bfs = boost::filesystem;
 
 template<typename T_Func>
-boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResult, const boost::filesystem::path& filepath,
-                                                  libsiedler2::Archiv& items, const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
+boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResult,
+                                                  const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
+                                                  const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
     int ec = func(filepath, items, palette);
     if(ec == expectedResult)
         return true;
     boost::test_tools::predicate_result result(false);
-    result.message() << libsiedler2::getErrorString(ec) << " != " << libsiedler2::getErrorString(expectedResult) << " for " << filepath;
+    result.message() << libsiedler2::getErrorString(ec) << " != " << libsiedler2::getErrorString(expectedResult)
+                     << " for " << filepath;
     return result;
 }
 
-boost::test_tools::predicate_result testLoad(int expectedResult, const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
+boost::test_tools::predicate_result testLoad(int expectedResult, const boost::filesystem::path& filepath,
+                                             libsiedler2::Archiv& items,
                                              const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
     return testLoadWrite(libsiedler2::Load, expectedResult, filepath, items, palette);
 }
 
-boost::test_tools::predicate_result testWrite(int expectedResult, const boost::filesystem::path& filepath, libsiedler2::Archiv& items,
+boost::test_tools::predicate_result testWrite(int expectedResult, const boost::filesystem::path& filepath,
+                                              libsiedler2::Archiv& items,
                                               const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
     return testLoadWrite(libsiedler2::Write, expectedResult, filepath, items, palette);
 }
 
-boost::test_tools::predicate_result testFilesEqual(const boost::filesystem::path& fileToCheck, const boost::filesystem::path& expectedFile)
+boost::test_tools::predicate_result testFilesEqual(const boost::filesystem::path& fileToCheck,
+                                                   const boost::filesystem::path& expectedFile)
 {
     if(bfs::file_size(fileToCheck) != bfs::file_size(expectedFile))
     {
         boost::test_tools::predicate_result result(false);
-        result.message() << fileToCheck << ": File size mismatch: " << bfs::file_size(fileToCheck) << "!=" << bfs::file_size(expectedFile);
+        result.message() << fileToCheck << ": File size mismatch: " << bfs::file_size(fileToCheck)
+                         << "!=" << bfs::file_size(expectedFile);
         return result;
     }
 
@@ -67,7 +73,8 @@ boost::test_tools::predicate_result testFilesEqual(const boost::filesystem::path
         if(*b1 != *b2)
         {
             boost::test_tools::predicate_result result(false);
-            result.message() << fileToCheck << ": Mismatch at pos " << pos << ": " << std::hex << unsigned(*b1) << " != " << unsigned(*b2);
+            result.message() << fileToCheck << ": Mismatch at pos " << pos << ": " << std::hex << unsigned(*b1)
+                             << " != " << unsigned(*b2);
             return result;
         }
     }

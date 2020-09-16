@@ -215,7 +215,8 @@ struct TestBitmaps
         bool isPaletted, containsPalette, supportsBoth;
         Info() = default;
         Info(std::string filename, bool isPaletted, bool containsPalette, bool supportsBoth = false)
-            : filename(std::move(filename)), isPaletted(isPaletted), containsPalette(containsPalette), supportsBoth(supportsBoth)
+            : filename(std::move(filename)), isPaletted(isPaletted), containsPalette(containsPalette),
+              supportsBoth(supportsBoth)
         {}
     };
     std::vector<Info> files;
@@ -270,7 +271,8 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
 {
     // Rules:
     // If the file contains a palette, it is stored in the bitmap and used.
-    // If the file does not contain a palette the passed palette is used, but only stored with the bitmap if it is paletted.
+    // If the file does not contain a palette the passed palette is used, but only stored with the bitmap if it is
+    // paletted.
     const TestBitmaps testFiles;
     ArchivItem_Palette emptyPal;
 
@@ -281,10 +283,12 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
         for(const TestBitmaps::Info& testFile : testFiles.files)
         {
             Archiv archiv;
-            if((curFmt == TextureFormat::Paletted && !testFile.containsPalette) || (testFile.isPaletted && !testFile.containsPalette))
+            if((curFmt == TextureFormat::Paletted && !testFile.containsPalette)
+               || (testFile.isPaletted && !testFile.containsPalette))
             {
                 // Paletted files need a palette. For conversion to paletted we also need one
-                BOOST_REQUIRE(testLoad(ErrorCode::PALETTE_MISSING, libsiedler2::test::inputPath / testFile.filename, archiv));
+                BOOST_REQUIRE(
+                  testLoad(ErrorCode::PALETTE_MISSING, libsiedler2::test::inputPath / testFile.filename, archiv));
             } else
             {
                 // Non paletted file or palette contained
@@ -321,7 +325,8 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
                 // If the file contains a palette, it has to be used, otherwise no palette
                 BOOST_REQUIRE(bmp->getPalette());
                 BOOST_REQUIRE(*usedPalette != *bmp->getPalette());
-                // If the empty palette is used, we will only find transparent and black pixels. Check that this did not happen
+                // If the empty palette is used, we will only find transparent and black pixels. Check that this did not
+                // happen
                 bool clrFound = false;
                 for(unsigned y = 0; y < bmp->getHeight(); y++)
                 {
@@ -337,7 +342,8 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
                 }
                 BOOST_REQUIRE(clrFound);
             } else
-                BOOST_REQUIRE_MESSAGE(!bmp->getPalette(), "Palette found for " << testFile.filename << " fmt=" << curFmt);
+                BOOST_REQUIRE_MESSAGE(!bmp->getPalette(),
+                                      "Palette found for " << testFile.filename << " fmt=" << curFmt);
         }
     }
 }
@@ -346,9 +352,9 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
 {
     // Rules:
     // If the file format contains a palette and the bitmap contains one, it is used instead of the passed palette.
-    // Otherwise the palette passed is used with the bitmaps palette as a fallback. It is an error not to pass a palette when conversion is
-    // required unless the bitmap contains one. If the file format supports paletted and unpaletted images then the paletted format is used,
-    // if(and only if) the bitmap is paletted or contains a palette.
+    // Otherwise the palette passed is used with the bitmaps palette as a fallback. It is an error not to pass a palette
+    // when conversion is required unless the bitmap contains one. If the file format supports paletted and unpaletted
+    // images then the paletted format is used, if(and only if) the bitmap is paletted or contains a palette.
     const TestBitmaps testFiles;
     ArchivItem_Palette emptyPal;
 
@@ -600,8 +606,10 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     // First create paletted bmp
     ArchivItem_Bitmap_Raw bmpPal;
     // Any NULL should make this fail
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, nullptr, w, h, TextureFormat::Paletted, palette), ErrorCode::INVALID_BUFFER);
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, TextureFormat::Paletted, nullptr), ErrorCode::PALETTE_MISSING);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, nullptr, w, h, TextureFormat::Paletted, palette),
+                        ErrorCode::INVALID_BUFFER);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, TextureFormat::Paletted, nullptr),
+                        ErrorCode::PALETTE_MISSING);
     // These create transparent bitmaps
     BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], 0, h, TextureFormat::Paletted, palette), 0);
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
@@ -644,9 +652,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintBitmap)
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42u);
     std::fill(outBuffer.begin(), outBuffer.end(), 42u);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, TextureFormat::Paletted, nullptr, xStart, yStart, xStartB,
+                                     yStartB, partW, partH),
+                        0);
     BOOST_REQUIRE_EQUAL(
-      bmpPal.print(&outBufferPal[0], w, h, TextureFormat::Paletted, nullptr, xStart, yStart, xStartB, yStartB, partW, partH), 0);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, TextureFormat::BGRA, nullptr, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+      bmpPal.print(&outBuffer[0], w, h, TextureFormat::BGRA, nullptr, xStart, yStart, xStartB, yStartB, partW, partH),
+      0);
     for(unsigned y = 0; y < h; y++)
     {
         for(unsigned x = 0; x < w; x++)
@@ -770,30 +781,37 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     // First create paletted bmp
     ArchivItem_Bitmap_Player bmpPal;
     // Any NULL should make this fail
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, nullptr, w, h, TextureFormat::Paletted, palette, playerClrStart), ErrorCode::INVALID_BUFFER);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, nullptr, w, h, TextureFormat::Paletted, palette, playerClrStart),
+                        ErrorCode::INVALID_BUFFER);
     BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, TextureFormat::Paletted, nullptr, playerClrStart),
                         ErrorCode::PALETTE_MISSING);
     // These create transparent bitmaps
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], 0, h, TextureFormat::Paletted, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], 0, h, TextureFormat::Paletted, palette, playerClrStart),
+                        0);
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, 0, TextureFormat::Paletted, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, 0, TextureFormat::Paletted, palette, playerClrStart),
+                        0);
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
     // These create empty bitmaps
-    BOOST_REQUIRE_EQUAL(bmpPal.create(0, bh, &inBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(0, bh, &inBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart),
+                        0);
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), 0u);
     BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), 0u);
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, 0, &inBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, 0, &inBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart),
+                        0);
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), 0u);
     BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), 0u);
     // Succeed
-    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.create(bw, bh, &inBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart),
+                        0);
     BOOST_REQUIRE_EQUAL(bmpPal.getWidth(), bw);
     BOOST_REQUIRE_EQUAL(bmpPal.getHeight(), bh);
     // Now write to paletted buffer
     // Fail on NULL
-    BOOST_REQUIRE_EQUAL(bmpPal.print(nullptr, w, h, TextureFormat::Paletted, nullptr, playerClrStart), ErrorCode::INVALID_BUFFER);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(nullptr, w, h, TextureFormat::Paletted, nullptr, playerClrStart),
+                        ErrorCode::INVALID_BUFFER);
     BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], 0, h, TextureFormat::Paletted, palette, playerClrStart), 0);
     BOOST_TEST_REQUIRE(outBufferPal == emptyBufferPal, boost::test_tools::per_element());
     ;
@@ -813,11 +831,12 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapNoPlayer)
     unsigned xStart = 2, xStartB = 3, partW = 4, yStart = 1, yStartB = 5, partH = 6;
     std::fill(outBufferPal.begin(), outBufferPal.end(), 42u);
     std::fill(outBuffer.begin(), outBuffer.end(), 42u);
-    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart, xStart, yStart, xStartB,
-                                     yStartB, partW, partH),
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBufferPal[0], w, h, TextureFormat::Paletted, palette, playerClrStart, xStart,
+                                     yStart, xStartB, yStartB, partW, partH),
                         0);
-    BOOST_REQUIRE_EQUAL(
-      bmpPal.print(&outBuffer[0], w, h, TextureFormat::BGRA, palette, playerClrStart, xStart, yStart, xStartB, yStartB, partW, partH), 0);
+    BOOST_REQUIRE_EQUAL(bmpPal.print(&outBuffer[0], w, h, TextureFormat::BGRA, palette, playerClrStart, xStart, yStart,
+                                     xStartB, yStartB, partW, partH),
+                        0);
     for(unsigned y = 0; y < h; y++)
     {
         for(unsigned x = 0; x < w; x++)
@@ -862,7 +881,8 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapPaletted)
     std::iota(inBuffer.begin(), inBuffer.begin() + 4, playerClrStart);
 
     ArchivItem_Bitmap_Player bmp;
-    BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(
+      bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
 
     // Try with original and another player color
     for(const uint8_t curPlrClr : {playerClrStart + 0u, 210u})
@@ -921,7 +941,8 @@ BOOST_AUTO_TEST_CASE(CreatePrintPlayerBitmapARGB)
         inBuffer.set(i, palette->get(i + playerClrStart));
 
     ArchivItem_Bitmap_Player bmp;
-    BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(
+      bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
 
     // Try with original and another player color
     for(const uint8_t curPlrClr : {playerClrStart + 0u, 210u})
@@ -987,10 +1008,12 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
     const auto seed = std ::random_device{}();
     std::mt19937 mt(seed);
     std::uniform_int_distribution<> distr(0, 255);
-    std::generate(inBuffer.begin(), inBuffer.end(), [&]() { return ColorBGRA(this->palette->get(distr(mt)), distr(mt)); });
+    std::generate(inBuffer.begin(), inBuffer.end(),
+                  [&]() { return ColorBGRA(this->palette->get(distr(mt)), distr(mt)); });
 
     ArchivItem_Bitmap_Player bmp;
-    BOOST_REQUIRE_EQUAL(bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
+    BOOST_REQUIRE_EQUAL(
+      bmp.create(inBuffer.getWidth() + 2, inBuffer.getHeight() + 6, inBuffer, palette, playerClrStart), 0);
 
     PixelBufferBGRA outBuffer(inBuffer.getWidth() * 2, inBuffer.getHeight() * 2);
 
@@ -1006,9 +1029,12 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
     // Partial with auto full width (zero)
     testParams.emplace_back(PrintParams{dw(mt), dh(mt), dw2(mt), 0, dh2(mt), 0});
     // Corner cases
-    testParams.emplace_back(PrintParams{outBuffer.getWidth(), outBuffer.getHeight(), 0, bmp.getWidth(), 0, bmp.getHeight()});
-    testParams.emplace_back(PrintParams{dw(mt), dh(mt), bmp.getWidth() / 2u, bmp.getWidth(), bmp.getHeight() / 2u, bmp.getHeight()});
-    testParams.emplace_back(PrintParams{dw(mt), dh(mt), bmp.getWidth(), bmp.getWidth(), bmp.getHeight(), bmp.getHeight()});
+    testParams.emplace_back(
+      PrintParams{outBuffer.getWidth(), outBuffer.getHeight(), 0, bmp.getWidth(), 0, bmp.getHeight()});
+    testParams.emplace_back(
+      PrintParams{dw(mt), dh(mt), bmp.getWidth() / 2u, bmp.getWidth(), bmp.getHeight() / 2u, bmp.getHeight()});
+    testParams.emplace_back(
+      PrintParams{dw(mt), dh(mt), bmp.getWidth(), bmp.getWidth(), bmp.getHeight(), bmp.getHeight()});
     testParams.emplace_back(PrintParams{dw(mt), dh(mt), bmp.getWidth(), bmp.getWidth(), 0, 0});
     {
         // Inside
@@ -1021,7 +1047,8 @@ BOOST_AUTO_TEST_CASE(PrintPartOfPlayerBitmap)
         auto const outBufferIn = outBuffer;
 
         const uint8_t playerClrStart2 = 234;
-        BOOST_TEST_REQUIRE(bmp.print(outBuffer, palette, playerClrStart2, p.toX, p.toY, p.fromX, p.fromY, p.fromW, p.fromH) == 0);
+        BOOST_TEST_REQUIRE(
+          bmp.print(outBuffer, palette, playerClrStart2, p.toX, p.toY, p.fromX, p.fromY, p.fromW, p.fromH) == 0);
         // Zero width or height means full
         const auto fromW = p.fromW ? p.fromW : bmp.getWidth();
         const auto fromH = p.fromH ? p.fromH : bmp.getHeight();
@@ -1087,10 +1114,10 @@ BOOST_AUTO_TEST_CASE(GetVisibleArea)
                                    // left-bottom     bottom-middle     bottom-right
                                    Rect(0, h - 1, 1, 1), Rect(3, h - 1, 1, 1), Rect(w - 1, h - 1, 1, 1),
                                    // doublePixelRects;
-                                   Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(w - 3, 0, 3, 1),
-                                   Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(3, 2, 3, 1), Rect(3, 2, 1, 3), Rect(0, h - 3, 2, 1),
-                                   Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1), Rect(3, h - 3, 1, 3), Rect(w - 4, h - 3, 4, 3),
-                                   Rect(0, 0, w, h)};
+                                   Rect(0, 0, 2, 1), Rect(0, 0, 1, 2), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1),
+                                   Rect(w - 3, 0, 3, 1), Rect(2, 0, 1, 3), Rect(2, 0, 3, 1), Rect(3, 2, 3, 1),
+                                   Rect(3, 2, 1, 3), Rect(0, h - 3, 2, 1), Rect(0, h - 3, 1, 3), Rect(3, h - 3, 3, 1),
+                                   Rect(3, h - 3, 1, 3), Rect(w - 4, h - 3, 4, 3), Rect(0, 0, w, h)};
 
     for(const Rect& rect : testRects)
     {

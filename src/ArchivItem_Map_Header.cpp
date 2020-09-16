@@ -142,7 +142,8 @@ int libsiedler2::ArchivItem_Map_Header::write(std::ostream& file) const
     std::fill(name.begin() + tmpName.length(), name.end(), '\0');
     fs << name;
     // Actual map name length is only 20 bytes. The width and height is used for unlimited play only to display the size
-    // We use it if the name (including trailing zero) fit into this space, otherwise we overwrite the size with the map name
+    // We use it if the name (including trailing zero) fit into this space, otherwise we overwrite the size with the map
+    // name
     if(tmpName.length() < 20)
     {
         fs.setPositionRel(-4);

@@ -30,7 +30,9 @@ namespace libsiedler2 {
 
 ArchivItem_Raw::ArchivItem_Raw() : ArchivItem(BobType::Raw) {}
 
-ArchivItem_Raw::ArchivItem_Raw(std::vector<uint8_t> initialData) : ArchivItem(BobType::Raw), data(std::move(initialData)) {}
+ArchivItem_Raw::ArchivItem_Raw(std::vector<uint8_t> initialData)
+    : ArchivItem(BobType::Raw), data(std::move(initialData))
+{}
 
 /**
  *  lädt die Rawdaten aus einer Datei.

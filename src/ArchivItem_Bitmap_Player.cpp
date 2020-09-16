@@ -121,8 +121,9 @@ int ArchivItem_Bitmap_Player::load(std::istream& file, const ArchivItem_Palette*
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int ArchivItem_Bitmap_Player::load(uint16_t width, const std::vector<uint8_t>& image, const std::vector<uint16_t>& starts,
-                                   bool absoluteStarts, const ArchivItem_Palette* palette)
+int ArchivItem_Bitmap_Player::load(uint16_t width, const std::vector<uint8_t>& image,
+                                   const std::vector<uint16_t>& starts, bool absoluteStarts,
+                                   const ArchivItem_Palette* palette)
 {
     if(!palette)
         return ErrorCode::PALETTE_MISSING;
@@ -325,8 +326,9 @@ void ArchivItem_Bitmap_Player::clear()
  *  @param[in]     color         Grundfarbindex der benutzt werden soll
  *
  */
-int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
-                                     TextureFormat buffer_format, const ArchivItem_Palette* palette, uint8_t plClrStartIdx)
+int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint8_t* buffer, uint16_t buffer_width,
+                                     uint16_t buffer_height, TextureFormat buffer_format,
+                                     const ArchivItem_Palette* palette, uint8_t plClrStartIdx)
 {
     if(buffer_width > 0 && buffer_height > 0 && !buffer)
         return ErrorCode::INVALID_BUFFER;
@@ -398,8 +400,9 @@ int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, const uint
  *
  *  @return Null falls Bitmap in Puffer geschrieben worden ist, ungleich Null bei Fehler
  */
-int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height, TextureFormat buffer_format,
-                                    const ArchivItem_Palette* palette, uint8_t plClrStartIdx, uint16_t to_x, uint16_t to_y, uint16_t from_x,
+int ArchivItem_Bitmap_Player::print(uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
+                                    TextureFormat buffer_format, const ArchivItem_Palette* palette,
+                                    uint8_t plClrStartIdx, uint16_t to_x, uint16_t to_y, uint16_t from_x,
                                     uint16_t from_y, uint16_t from_w, uint16_t from_h, bool only_player) const
 {
     if(buffer_width == 0 || buffer_height == 0)
@@ -502,6 +505,8 @@ void ArchivItem_Bitmap_Player::getVisibleArea(int& vx, int& vy, unsigned& vw, un
             return !this->isPlayerColor(x, y) && palette->isTransparent(this->getPalettedPixel(x, y));
         });
     else
-        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) { return !this->isPlayerColor(x, y) && this->getPixelPtr(x, y)[3] == 0u; });
+        doGetVisibleArea(vx, vy, vw, vh, [this](auto x, auto y) {
+            return !this->isPlayerColor(x, y) && this->getPixelPtr(x, y)[3] == 0u;
+        });
 }
 } // namespace libsiedler2

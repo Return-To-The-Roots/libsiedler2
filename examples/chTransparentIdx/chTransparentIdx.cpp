@@ -43,9 +43,10 @@ int main(int argc, char* argv[])
                                   "unpack: chTransparentIdx <file.lst>\n"
                                   "Optionally pass a color palette file (bbm/act) to use instead of default one");
     desc.add_options()("help,h", "Show help")("file,f", bpo::value<std::vector<std::string>>()->multitoken(),
-                                              "File(s) to repack")("palette,p", bpo::value<std::string>(), "Palette to use")(
-      "from", bpo::value<uint8_t>()->default_value(254), "Original transparent color index")("to", bpo::value<uint8_t>()->default_value(0),
-                                                                                             "New transparent color index");
+                                              "File(s) to repack")("palette,p", bpo::value<std::string>(),
+                                                                   "Palette to use")(
+      "from", bpo::value<uint8_t>()->default_value(254),
+      "Original transparent color index")("to", bpo::value<uint8_t>()->default_value(0), "New transparent color index");
     bpo::positional_options_description positionalOptions;
     positionalOptions.add("file", -1);
 
@@ -80,7 +81,8 @@ int main(int argc, char* argv[])
         if(Load(pal5Path2, bbm) != 0)
         {
             bnw::cerr << "Fatal Error: " << std::endl;
-            bnw::cerr << "Neither " << pal5Path << " nor " << pal5Path2 << " was found or it cannot be opened" << std::endl;
+            bnw::cerr << "Neither " << pal5Path << " nor " << pal5Path2 << " was found or it cannot be opened"
+                      << std::endl;
             return 2;
         }
     }

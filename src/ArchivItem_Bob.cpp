@@ -55,7 +55,8 @@ static int readColorBlock(libendian::EndianIStreamAdapter<false, std::istream&>&
     return ErrorCode::NONE;
 }
 /// Read a chunk of image data (array with start indices into a color array and y-offset)
-static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& fs, std::vector<uint16_t>& starts, uint8_t& ny)
+static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& fs, std::vector<uint16_t>& starts,
+                         uint8_t& ny)
 {
     uint16_t id;
     uint8_t height;
@@ -204,7 +205,8 @@ ArchivItem_Bitmap_Player* ArchivItem_Bob::getBody(bool fat, ImgDir direction, un
     return dynamic_cast<ArchivItem_Bitmap_Player*>(get(bodyIdx));
 }
 
-ArchivItem_Bitmap_Player* ArchivItem_Bob::getOverlay(unsigned overlayIdx, bool fat, ImgDir direction, unsigned animationstep)
+ArchivItem_Bitmap_Player* ArchivItem_Bob::getOverlay(unsigned overlayIdx, bool fat, ImgDir direction,
+                                                     unsigned animationstep)
 {
     return dynamic_cast<ArchivItem_Bitmap_Player*>(get(getOverlayIdx(overlayIdx, fat, direction, animationstep)));
 }

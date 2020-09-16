@@ -125,7 +125,8 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
         item->setName("Item" + std::to_string(i));
         archiv.push(std::move(item));
     }
-    for(SoundType soundType : {SoundType::Wave, SoundType::Midi, SoundType::XMidi, SoundType::MP3, SoundType::OGG, SoundType::Other})
+    for(SoundType soundType :
+        {SoundType::Wave, SoundType::Midi, SoundType::XMidi, SoundType::MP3, SoundType::OGG, SoundType::Other})
     {
         auto item = libsiedler2::getAllocator().create(BobType::Sound, soundType);
         BOOST_REQUIRE(item);

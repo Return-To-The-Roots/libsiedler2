@@ -35,8 +35,8 @@
  *  liest eine Bitmapzeile
  */
 template<class T_FStream>
-static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, uint8_t bbp, std::vector<uint8_t>& buffer,
-                                    std::vector<uint8_t>& tmpBuffer)
+static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, uint8_t bbp,
+                                    std::vector<uint8_t>& buffer, std::vector<uint8_t>& tmpBuffer)
 {
     if(bbp == 1)
     {
@@ -67,7 +67,8 @@ static inline void LoadBMP_ReadLine(T_FStream& bmp, uint16_t y, uint32_t width, 
  *
  *  @todo RGB Bitmaps (Farben > 8Bit) ebenfalls einlesen.
  */
-int libsiedler2::loader::LoadBMP(const boost::filesystem::path& filepath, Archiv& image, const ArchivItem_Palette* palette /*= nullptr*/)
+int libsiedler2::loader::LoadBMP(const boost::filesystem::path& filepath, Archiv& image,
+                                 const ArchivItem_Palette* palette /*= nullptr*/)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(filepath, mmapStream))

@@ -107,7 +107,8 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return ec;
         if(i == 1 && header.hasExtraWord())
         {
-            // Work around for map file bug: There are 2 extra bytes inbetween the header which would actually belong to the first block
+            // Work around for map file bug: There are 2 extra bytes inbetween the header which would actually belong to
+            // the first block
             fs.setPositionRel(-2);
             std::vector<uint8_t>& data = layer->getData();
             // Replace last 2 bytes by 3rd last one
