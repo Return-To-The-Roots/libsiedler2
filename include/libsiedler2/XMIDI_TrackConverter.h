@@ -74,7 +74,6 @@ private:
 
     void CreateNewEvent(int time);
 
-private:
     const XMIDI_Track& track;
     MIDI_Event* events;
     uint32_t numEvents;

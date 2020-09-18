@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
     if(!libsiedler2::test::hasS2Data)
         return;
     // Both should work
-    for(const auto file : {"EDITRES.IDX", "EDITRES.DAT"})
+    for(const auto* const file : {"EDITRES.IDX", "EDITRES.DAT"})
     {
         const boost::filesystem::path inPath = libsiedler2::test::s2Path / "DATA" / file;
         libsiedler2::Archiv archiv;
