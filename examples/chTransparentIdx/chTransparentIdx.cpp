@@ -34,6 +34,7 @@ namespace bfs = boost::filesystem;
 namespace bpo = boost::program_options;
 namespace bnw = boost::nowide;
 
+// NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int argc, char* argv[])
 {
     bnw::args _(argc, argv);
