@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+# Required by the tests
+export USER="${USER:-TestUser}'"
+
 BUILD_TYPE="${1}"
 CMAKE_FLAGS="${2}"
 
