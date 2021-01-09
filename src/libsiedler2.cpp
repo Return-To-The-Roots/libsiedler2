@@ -238,7 +238,8 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             {
                 if(static_cast<unsigned>(entry.nr) < items.size() && items[entry.nr]->getBobType() == BobType::Palette)
                     curPal = static_cast<const ArchivItem_Palette*>(items[entry.nr]);
-            } else if(!items.empty() && items[items.size() - 1u]->getBobType() == BobType::Palette)
+            } else if(!items.empty() && items[items.size() - 1u]
+                      && items[items.size() - 1u]->getBobType() == BobType::Palette)
                 curPal = static_cast<const ArchivItem_Palette*>(items[items.size() - 1u]);
             Archiv tmpItems;
             if(int ec = Load(entry.filePath, tmpItems, curPal))
@@ -325,7 +326,8 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 newItem = tmpItems.release(0);
             }
         }
-        newItem->setName(entry.name);
+        if(newItem)
+            newItem->setName(entry.name);
         // had the filename a number? then set it to the corresponding item.
         if(entry.nr >= 0)
         {
