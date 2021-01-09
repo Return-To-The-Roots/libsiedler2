@@ -140,8 +140,8 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
     if(text_.empty())
         return ErrorCode::NONE;
 
-    std::string convText = getFileText(conversion);
-    if(!file.write(&convText[0], convText.size()))
+    const std::string convText = getFileText(conversion);
+    if(!file.write(convText.data(), convText.size()))
         return ErrorCode::UNEXPECTED_EOF;
 
     return ErrorCode::NONE;

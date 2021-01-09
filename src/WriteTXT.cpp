@@ -73,7 +73,8 @@ int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const
             if(item && !item->getText().empty())
             {
                 starts[i] = size;
-                size += static_cast<uint32_t>(item->getFileText(conversion).size());
+                // add necessary trailing NULL
+                size += static_cast<uint32_t>(item->getFileText(conversion).size() + 1);
             }
         }
 
@@ -88,6 +89,8 @@ int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const
             {
                 if(int ec = item->write(fs.getStream(), conversion))
                     return ec;
+                // add necessary trailing NULL
+                fs << '\0';
             }
         }
     }
