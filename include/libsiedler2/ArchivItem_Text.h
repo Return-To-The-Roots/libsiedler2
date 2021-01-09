@@ -31,19 +31,21 @@ public:
     ~ArchivItem_Text() override;
     RTTR_CLONEABLE(ArchivItem_Text)
 
-    /// liest den Text aus einer Datei.
-    int load(std::istream& file, bool conversion = true, uint32_t length = 0);
+    /// Load all text from the file
+    int load(std::istream& file, bool conversion = true);
 
-    /// schreibt den Text in eine Datei.
+    /// Write the text to the file
     int write(std::ostream& file, bool conversion = true) const;
 
-    // liefert den Text.
-    const std::string& getText() const;
-    // Get the text as it will be written to file
+    /// Return the text
+    const std::string& getText() const { return text_; }
+    /// Get the text as it will be written to file
     std::string getFileText(bool conversion) const;
 
-    // setzt den Text.
-    void setText(const std::string& text);
+    /// Set the text.
+    /// If convertFromOem is true, the text will be converted from OEM format including @@->\n replacement
+    /// Otherwise the text will only be canonicalized, i.e. \r and \r\n will be replaced by \n
+    void setText(const std::string& text, bool convertFromOem = false);
 
 private:
     std::string text_; /// Der Textspeicher.

@@ -18,25 +18,11 @@
 #include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
 #include "oem.h"
+#include <boost/algorithm/string/replace.hpp>
 #include <cassert>
 #include <iostream>
 #include <limits>
 #include <vector>
-
-/** @class libsiedler2::ArchivItem_Text
- *
- *  Klasse für Texte.
- */
-
-/** @var libsiedler2::ArchivItem_Text::text
- *
- *  Der Textspeicher.
- */
-
-/** @var libsiedler2::ArchivItem_Text::length
- *
- *  Die Länge des Textes.
- */
 
 libsiedler2::ArchivItem_Text::ArchivItem_Text() : ArchivItem(BobType::Text) {}
 
@@ -47,79 +33,29 @@ libsiedler2::ArchivItem_Text::~ArchivItem_Text() = default;
  *
  *  @param[in] file       Dateihandle aus denen der Text geladen werden sollen
  *  @param[in] conversion Soll ggf. OEM-Charset in ANSI umgewandelt werden?
- *  @param[in] length     Länge des Blocks (Wieviel Bytes sollen eingelesen werden?)
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
- *
- *  @todo Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
  */
-int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion, uint32_t length)
+int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    std::vector<char> text;
-    if(length)
-    {
-        text.resize(length);
-        if(!file.read(&text.front(), length))
-            return ErrorCode::UNEXPECTED_EOF;
-    } else
-    {
-        // Read all that is there
-        text.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-    }
-
+    // Read all that is there
+    std::string text{std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
     // Remove nullptr terminator if present
     if(!text.empty() && text.back() == '\0')
         text.pop_back();
 
     if(conversion)
     {
-        /// TODO: Hmm nur temporärer Fix! ist dieses doofe Escape-zeichen am Ende der Files
-        if(!text.empty() && text.back() == 26)
-            text.pop_back();
-    } else
-    {
-        // Replace all \r\n or \r by \n
-        size_t insertPos = 0;
-        for(size_t i = 0; i < text.size(); ++i, ++insertPos)
-        {
-            if(text[i] == '\r')
-            {
-                text[insertPos] = '\n';
-                if(i + 1u < text.size() && text[i + 1u] == '\n')
-                    ++i;
-            } else
-                text[insertPos] = text[i];
-        }
-        text.resize(insertPos);
+        // S2 sometimes uses the old end-of-file marker SUB, remove all following it if it is present
+        const auto posSub = text.find('\26');
+        if(posSub != std::string::npos)
+            text.resize(posSub);
     }
 
-    text_.assign(text.begin(), text.end());
-    if(text_.empty())
-        return ErrorCode::NONE;
-
-    if(conversion)
-    {
-        text_ = OemToAnsi(text_);
-
-        // Replace all @@ by \n
-        size_t insertPos = 0;
-        for(size_t i = 0; i + 1u < text_.size(); ++i, ++insertPos)
-        {
-            if(text_[i] == '@' && text_[i + 1u] == '@')
-            {
-                text_[insertPos] = '\n';
-                ++i;
-            } else
-                text_[insertPos] = text_[i];
-        }
-        text_[insertPos++] = text_.back(); // Trailing char
-        text_.resize(insertPos);
-    }
-
-    // Alles OK
+    setText(text, conversion);
     return ErrorCode::NONE;
 }
 
@@ -147,46 +83,24 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
     return ErrorCode::NONE;
 }
 
-/**
- *  liefert den Text.
- *
- *  @return liefert einen konstanten Zeiger auf das Textelement, nullptr bei leerem Text
- */
-const std::string& libsiedler2::ArchivItem_Text::getText() const
-{
-    return text_;
-}
-
 std::string libsiedler2::ArchivItem_Text::getFileText(bool conversion) const
 {
     if(!conversion)
         return text_;
 
-    assert(text_.size() < std::numeric_limits<uint32_t>::max());
-    const auto length = static_cast<uint32_t>(text_.size());
-    std::vector<char> textBuf;
-    textBuf.reserve(length);
+    const std::string convertedText = boost::replace_all_copy(text_, "\n", "@@");
+    assert(convertedText.find('\r') == std::string::npos);
 
-    for(char c : text_)
-    {
-        if(c == '\n')
-        {
-            textBuf.push_back('@');
-            textBuf.push_back('@');
-        } else if(c != '\r')
-            textBuf.push_back(c);
-    }
-
-    return AnsiToOem(std::string(textBuf.begin(), textBuf.end()));
+    return AnsiToOem(convertedText);
 }
 
-/**
- *  setzt den Text.
- *
- *  @param[in] text       Der Text der gesetzt werden soll, falls @p nullptr, wird
- *                        evtl vorhandener Text gelöscht
- */
-void libsiedler2::ArchivItem_Text::setText(const std::string& text)
+void libsiedler2::ArchivItem_Text::setText(const std::string& text, bool convertFromOem)
 {
-    this->text_ = text;
+    if(convertFromOem)
+    {
+        text_ = OemToAnsi(text);
+        boost::replace_all(text_, "@@", "\n");
+    } else
+        text_ = boost::replace_all_copy(text, "\r\n", "\n");
+    boost::replace_all(text_, "\r", "\n");
 }

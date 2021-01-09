@@ -20,7 +20,9 @@
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
+#include <cstdlib>
 
 namespace bfs = boost::filesystem;
 
@@ -30,26 +32,34 @@ static void createTxt(libsiedler2::Archiv& archiv, const bfs::path& outFile, uns
 {
     for(unsigned i = 0; i < numEntries; i++)
     {
-        // Add some empty entries
-        if(i % 4 == 0 && i > 0)
+        const auto what = numEntries > 0 ? rand() % 10 : 9; // Ignore randomness for single entries
+        if(what == 0)                                       // 1:10 empty entry
             archiv.push(nullptr);
-        libsiedler2::ArchivItem_Text txt;
-        std::stringstream ss;
-        ss << "Example data " << i << " with\r\n some \r\n line breaks and special chars";
-        std::string myText = ss.str();
-        // Add an umlaut
-        myText[myText.size() - 7] = '\xF6';
-        txt.setText(myText);
-        archiv.pushC(txt);
+        else
+        {
+            libsiedler2::ArchivItem_Text txt;
+            if(what <= 3) // 3:10 Duplicate empty
+                txt.setText("Duplicate entry");
+            else if(what != 4) // 1:10 empty string, 5:10 regular, unique string
+            {
+                std::stringstream ss;
+                ss << "Example data " << i << " with\r\n some \r\n line breaks and special chars";
+                std::string myText = ss.str();
+                // Add an umlaut
+                myText[myText.size() - 7] = '\xF6';
+                txt.setText(myText);
+            }
+            archiv.pushC(txt);
+        }
     }
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outFile, archiv), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outFile, archiv) == 0);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteENG)
 {
     const bfs::path outFilepath = libsiedler2::test::outputPath / "outText.ENG";
     libsiedler2::Archiv archiv, archivIn;
-    createTxt(archiv, outFilepath, 3);
+    createTxt(archiv, outFilepath, 11);
     BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
@@ -69,7 +79,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
 {
     const bfs::path outFilepath = libsiedler2::test::outputPath / "outText.GER";
     libsiedler2::Archiv archiv, archivIn;
-    createTxt(archiv, outFilepath, 6);
+    createTxt(archiv, outFilepath, 13);
     BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
@@ -114,6 +124,26 @@ BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
         {
             BOOST_REQUIRE(txt);
             BOOST_REQUIRE(!txt->getText().empty());
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(ReadOriginalFiles)
+{
+    if(!libsiedler2::test::hasS2Data)
+        return;
+    for(const auto& fileEntry : bfs::recursive_directory_iterator(libsiedler2::test::s2Path))
+    {
+        if(is_regular_file(fileEntry.status()) && fileEntry.path().extension() == ".ENG")
+        {
+            BOOST_TEST_CONTEXT("For " << fileEntry.path())
+            {
+                libsiedler2::Archiv archiv;
+                // Check only that they can be loaded and have at least 1 entry
+                BOOST_TEST_REQUIRE(libsiedler2::Load(fileEntry.path(), archiv) == 0);
+                BOOST_TEST_REQUIRE(archiv.size() > 0u);
+                BOOST_TEST(archiv[0]);
+            }
         }
     }
 }

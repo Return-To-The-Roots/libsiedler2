@@ -24,6 +24,7 @@
 #include "libsiedler2.h"
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
+#include <algorithm>
 #include <vector>
 
 /**
@@ -47,7 +48,7 @@ int libsiedler2::loader::LoadTXT(const boost::filesystem::path& filepath, Archiv
     const size_t fileSize = getIStreamSize(fs.getStream());
     assert(fileSize < std::numeric_limits<uint32_t>::max());
 
-    int16_t header;
+    uint16_t header;
     // Header einlesen
     if(fileSize < sizeof(header))
         header = 0;
@@ -57,7 +58,7 @@ int libsiedler2::loader::LoadTXT(const boost::filesystem::path& filepath, Archiv
     items.clear();
 
     // ist es eine TXT-File? (Header 0xE7FD)
-    if(header != (int16_t)0xFDE7)
+    if(header != 0xFDE7u)
     {
         // den Header zurückspringen
         if(fileSize >= sizeof(header))
@@ -72,66 +73,46 @@ int libsiedler2::loader::LoadTXT(const boost::filesystem::path& filepath, Archiv
     {
         // "archiviert"
         uint16_t count, unknown;
-        uint32_t size;
+        uint32_t dataSize;
 
-        constexpr size_t headerSize = sizeof(header) + sizeof(count) + sizeof(unknown) + sizeof(size);
+        constexpr size_t headerSize = sizeof(header) + sizeof(count) + sizeof(unknown) + sizeof(dataSize);
 
-        if(!(fs >> count >> unknown >> size))
+        if(!(fs >> count >> unknown >> dataSize))
             return ErrorCode::WRONG_HEADER;
 
-        if(size == 0)
-            size = static_cast<uint32_t>(fileSize - headerSize);
-        if(size < count * sizeof(uint32_t))
+        if(dataSize == 0)
+            dataSize = static_cast<uint32_t>(fileSize - headerSize);
+
+        const auto offsetsSize = count * sizeof(uint32_t);
+        if(dataSize < offsetsSize)
             return ErrorCode::WRONG_FORMAT;
 
-        std::vector<uint32_t> starts(count);
-        if(!(fs >> starts))
+        std::vector<uint32_t> offsets(count);
+        if(!(fs >> offsets))
             return ErrorCode::UNEXPECTED_EOF;
 
-        // Starts einlesen
-        uint16_t lastStart = 0;
-        for(uint16_t x = 0; x < count; ++x)
+        // Read all strings to memory
+        std::vector<char> stringData(dataSize - offsetsSize);
+        if(!(fs >> stringData))
+            return ErrorCode::UNEXPECTED_EOF;
+
+        for(const auto itemPos : offsets)
         {
-            if(starts[x] != 0)
-            {
-                // Contiguous values and offset must be after the starts
-                if(starts[x] < lastStart || starts[x] < count * sizeof(uint32_t))
-                    return ErrorCode::WRONG_FORMAT;
-                lastStart = starts[x];
-                starts[x] += headerSize;
-            }
-        }
-
-        // Add value for getting end position
-        starts.push_back(size + headerSize);
-
-        for(uint16_t x = 0; x < count; ++x)
-        {
-            uint32_t itemPos = starts[x];
-
-            if(itemPos != 0)
-            {
-                uint32_t itemSize = 0;
-                for(uint16_t j = x + 1; j <= count; ++j)
-                {
-                    if(starts[j])
-                    {
-                        itemSize = starts[j] - itemPos;
-                        break;
-                    }
-                }
-                // An Start springen
-                fs.setPosition(itemPos);
-
-                // einlesen
-                auto item = getAllocator().create<ArchivItem_Text>(BobType::Text);
-                int res = item->load(fs.getStream(), conversion, itemSize);
-                if(res)
-                    return res;
-
-                items.push(std::move(item));
-            } else
+            if(!itemPos)
                 items.push(nullptr);
+            else if(itemPos < offsetsSize)
+                return ErrorCode::WRONG_FORMAT;
+            else
+            {
+                const auto itStart = stringData.cbegin() + (itemPos - offsetsSize);
+                // All strings are NULL terminated.
+                const auto itEnd = std::find(itStart, stringData.cend(), '\0');
+                assert(itEnd != stringData.end());
+                // Load element
+                auto item = getAllocator().create<ArchivItem_Text>(BobType::Text);
+                item->setText(std::string(itStart, itEnd), conversion);
+                items.push(std::move(item));
+            }
         }
     }
 
