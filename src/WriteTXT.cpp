@@ -21,6 +21,9 @@
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <boost/nowide/fstream.hpp>
+#include <algorithm>
+#include <stdexcept>
+#include <utility>
 
 /**
  *  schreibt eine GER/ENG-File aus einem Archiv.
@@ -37,12 +40,11 @@ int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const
         return ErrorCode::INVALID_BUFFER;
 
     // All entries have to be texts or empty
-    for(size_t i = 0; i < items.size(); ++i)
-    {
-        const ArchivItem* item = items[i];
-        if(item && !dynamic_cast<const ArchivItem_Text*>(item))
-            return ErrorCode::WRONG_ARCHIV;
-    }
+    const auto isInvalidEntry = [](const auto& item) {
+        return item && !dynamic_cast<const ArchivItem_Text*>(item.get());
+    };
+    if(std::find_if(begin(items), end(items), isInvalidEntry) != end(items))
+        return ErrorCode::WRONG_ARCHIV;
 
     // Datei zum lesen öffnen
     libendian::EndianOStreamAdapter<false, boost::nowide::ofstream> fs(filepath, std::ios_base::binary);
@@ -58,40 +60,58 @@ int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const
     {
         // "archiviert"
         uint16_t header = 0xFDE7;
+        if(items.size() > std::numeric_limits<uint16_t>::max())
+            return ErrorCode::UNSUPPORTED_FORMAT;
         auto count = static_cast<uint16_t>(items.size());
         uint16_t unknown = 1;
 
         fs << header << count << unknown;
 
-        std::vector<uint32_t> starts(count);
+        std::vector<uint32_t> starts;
+        std::vector<std::pair<std::string, uint32_t>> storedValuesToOffset;
+        starts.reserve(count);
+        storedValuesToOffset.reserve(count);
 
-        uint32_t size = count * sizeof(uint32_t);
-        for(uint32_t i = 0; i < count; ++i)
+        size_t curOffset = count * sizeof(uint32_t);
+        for(const auto& itemPtr : items)
         {
-            const auto* item = static_cast<const ArchivItem_Text*>(items[i]);
-
-            if(item && !item->getText().empty())
+            if(!itemPtr)
+                starts.push_back(0);
+            else
             {
-                starts[i] = size;
-                // add necessary trailing NULL
-                size += static_cast<uint32_t>(item->getFileText(conversion).size() + 1);
+                const auto* item = static_cast<const ArchivItem_Text*>(itemPtr.get());
+                auto text = item->getFileText(conversion);
+                if(text.empty())
+                {
+                    // Only store NULL terminator (empty string)
+                    starts.push_back(curOffset);
+                    storedValuesToOffset.emplace_back(std::string{}, curOffset);
+                    curOffset += 1;
+                } else
+                {
+                    const auto itOldOffset = std::find_if(storedValuesToOffset.begin(), storedValuesToOffset.end(),
+                                                          [&text](const auto& entry) { return entry.first == text; });
+                    if(itOldOffset == storedValuesToOffset.end())
+                    {
+                        // New value
+                        starts.push_back(curOffset);
+                        storedValuesToOffset.emplace_back(std::move(text), curOffset);
+                        curOffset += storedValuesToOffset.back().first.size() + 1u; // Include NULL terminator
+                    } else
+                        starts.push_back(itOldOffset->second); // Reuse
+                }
             }
         }
-
+        if(curOffset > std::numeric_limits<uint32_t>::max())
+            return ErrorCode::UNSUPPORTED_FORMAT;
+        const uint32_t size = curOffset;
         fs << size << starts;
 
-        // Texte schreiben
-        for(uint32_t i = 0; i < count; ++i)
+        // Write texts
+        for(const auto& item : storedValuesToOffset)
         {
-            const auto* item = static_cast<const ArchivItem_Text*>(items[i]);
-
-            if(item)
-            {
-                if(int ec = item->write(fs.getStream(), conversion))
-                    return ec;
-                // add necessary trailing NULL
-                fs << '\0';
-            }
+            if(!fs.write(item.first.data(), item.first.size() + 1)) // Include NULL terminator
+                return ErrorCode::UNEXPECTED_EOF;
         }
     }
 
