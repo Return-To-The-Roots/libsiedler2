@@ -19,10 +19,10 @@
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Text.h"
 #include "libsiedler2/libsiedler2.h"
-#include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <cstdlib>
+#include <random>
 
 namespace bfs = boost::filesystem;
 
@@ -30,24 +30,26 @@ BOOST_AUTO_TEST_SUITE(TextFiles)
 
 static void createTxt(libsiedler2::Archiv& archiv, const bfs::path& outFile, unsigned numEntries)
 {
+    std::mt19937 rng{std::random_device{}()};
+    std::uniform_int_distribution<> getRand(numEntries > 1 ? 0 : 3, 3); // Ignore randomness for single entries
     for(unsigned i = 0; i < numEntries; i++)
     {
-        const auto what = numEntries > 0 ? rand() % 10 : 9; // Ignore randomness for single entries
+        const auto what = getRand(rng);
         if(what == 0)
-        { // 1:10 empty entry
+        {
             BOOST_TEST_MESSAGE("Adding empty entry " << i);
             archiv.push(nullptr);
         } else
         {
             libsiedler2::ArchivItem_Text txt;
-            if(what <= 3)
-            { // 3:10 Duplicate empty
+            if(what == 1)
+            {
                 BOOST_TEST_MESSAGE("Adding duplicate entry " << i);
                 txt.setText("Duplicate entry");
-            } else if(what == 4) // 1:10 empty string
+            } else if(what == 2)
                 BOOST_TEST_MESSAGE("Adding empty string " << i);
-            else
-            { // 5:10 regular, unique string
+            else // what == 3
+            {
                 BOOST_TEST_MESSAGE("Adding normal string " << i);
                 std::stringstream ss;
                 ss << "Example data " << i << " with\r\n some \r\n line breaks and special chars";
@@ -78,7 +80,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
         else
             BOOST_TEST(!txtIn);
         if(txtIn && txtOut)
-            BOOST_TEST(txtIn->getText() == boost::algorithm::replace_all_copy(txtOut->getText(), "\r\n", "\n"));
+            BOOST_TEST(txtIn->getText() == txtOut->getText());
     }
 }
 
@@ -98,7 +100,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
         else
             BOOST_TEST(!txtIn);
         if(txtIn && txtOut)
-            BOOST_TEST(txtIn->getText() == boost::algorithm::replace_all_copy(txtOut->getText(), "\r\n", "\n"));
+            BOOST_TEST(txtIn->getText() == txtOut->getText());
     }
 }
 
@@ -112,7 +114,18 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
     const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[0]);
     const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[0]);
     BOOST_TEST_REQUIRE((txtOut && txtIn));
-    BOOST_TEST(txtIn->getText() == boost::algorithm::replace_all_copy(txtOut->getText(), "\r\n", "\n"));
+    BOOST_TEST(txtIn->getText() == txtOut->getText());
+}
+
+BOOST_AUTO_TEST_CASE(ReadWriteSingleEmptyEntry)
+{
+    const bfs::path outFilepath = libsiedler2::test::outputPath / "outTextEmpty.ENG";
+    libsiedler2::Archiv archiv, archivIn;
+    archiv.push(nullptr);
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outFilepath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(archivIn.size() == 1u);
+    BOOST_TEST_REQUIRE((!archiv[0] && !archivIn[0]));
 }
 
 BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
