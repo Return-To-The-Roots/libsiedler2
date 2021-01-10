@@ -2,7 +2,6 @@ name: Release
 
 on:
   push:
-  pull_request:
   release:
     types: [published]
 
@@ -34,7 +33,8 @@ jobs:
         id: filenames
         run: |
           tag=${GITHUB_REF#refs/tags/}
-          tag=${tag#refs/heads/}
+          if [[ "$tag" =~ refs/ ]]; then tag="NoTag"; fi
+          echo "Using tag: $tag"
           echo "::set-output name=foldername::rttrUtils_$tag"
           echo "::set-output name=filename::rttrUtils-${{runner.os}}-${tag}.tar.gz"
 
