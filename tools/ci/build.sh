@@ -10,13 +10,12 @@ CMAKE_FLAGS="${2}"
 
 mkdir build && cd build
 
-if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-    GENERATOR="Visual Studio 15 2017 Win64"
+if [[ "$TRAVIS_OS_NAME" =~ windows ]]; then
+    GENERATOR="Visual Studio 16 2019"
     BUILD_FLAGS=""
 else
     GENERATOR="Unix Makefiles"
-    # Travis uses 2 cores
-    BUILD_FLAGS="-j2"
+    BUILD_FLAGS="-j3"
 fi
 
 cmake \
@@ -31,4 +30,6 @@ cmake --build . --target install --config "${BUILD_TYPE}" -- $BUILD_FLAGS
 
 # Execute tests
 export RTTR_DISABLE_ASSERT_BREAKPOINT=1
+export BOOST_TEST_LOG_LEVEL=message
+export BOOST_TEST_REPORT_LEVEL=detailed
 ctest --build-config "${BUILD_TYPE}" --output-on-failure -j2
