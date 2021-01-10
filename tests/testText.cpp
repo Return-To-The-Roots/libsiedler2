@@ -33,15 +33,22 @@ static void createTxt(libsiedler2::Archiv& archiv, const bfs::path& outFile, uns
     for(unsigned i = 0; i < numEntries; i++)
     {
         const auto what = numEntries > 0 ? rand() % 10 : 9; // Ignore randomness for single entries
-        if(what == 0)                                       // 1:10 empty entry
+        if(what == 0)
+        { // 1:10 empty entry
+            BOOST_TEST_MESSAGE("Adding empty entry " << i);
             archiv.push(nullptr);
-        else
+        } else
         {
             libsiedler2::ArchivItem_Text txt;
-            if(what <= 3) // 3:10 Duplicate empty
+            if(what <= 3)
+            { // 3:10 Duplicate empty
+                BOOST_TEST_MESSAGE("Adding duplicate entry " << i);
                 txt.setText("Duplicate entry");
-            else if(what != 4) // 1:10 empty string, 5:10 regular, unique string
-            {
+            } else if(what == 4) // 1:10 empty string
+                BOOST_TEST_MESSAGE("Adding empty string " << i);
+            else
+            { // 5:10 regular, unique string
+                BOOST_TEST_MESSAGE("Adding normal string " << i);
                 std::stringstream ss;
                 ss << "Example data " << i << " with\r\n some \r\n line breaks and special chars";
                 std::string myText = ss.str();

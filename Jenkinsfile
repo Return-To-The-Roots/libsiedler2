@@ -64,7 +64,7 @@ pipeline {
                             export LIBUTIL_DIR="\$(pwd)/libutil"
                             export LIBENDIAN_DIR="\$(pwd)/libendian"
                             export TRAVIS_OS_NAME=Unix
-                            tools/travis-ci/build.sh Debug ""
+                            tools/ci/build.sh Debug ""
                         """
                     }
                 }
