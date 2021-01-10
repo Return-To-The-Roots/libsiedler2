@@ -20,6 +20,7 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
     list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake")
     include(RttrCoverageCfg)
+    include(EnableCCache)
     # Use clang-format if available
     find_package(ClangFormat 10)
 else()
