@@ -1,0 +1,124 @@
+name: Unit tests
+
+on:
+  push:
+  pull_request:
+
+env:
+  BOOST_VERSION: 1.65.1
+
+jobs:
+  UnitTests:
+    strategy:
+      matrix:
+        include:
+          - { compiler: gcc-6,    os: ubuntu-16.04, buildType: Release }
+          - { compiler: gcc-6,    os: ubuntu-16.04, buildType: Debug, coverage: true }
+          - { compiler: clang  ,  os: macos-10.15,  buildType: Debug, boostVersion: 1.74.0 } # Multiple bugs with recent OSX until 1.74
+          # Latest GCC
+          - { compiler: gcc-10,   os: ubuntu-18.04, buildType: Debug }
+          - { compiler: gcc-10,   os: ubuntu-18.04, buildType: Release }
+          # Latest Clang 
+          - { compiler: clang-10, os: ubuntu-18.04, buildType: Debug }
+          - { compiler: clang-10, os: ubuntu-18.04, buildType: Release }
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - run: |
+          echo "DEPS_DIR=${{runner.temp}}/.cache" >> $GITHUB_ENV
+          echo "LIBUTIL_DIR=$GITHUB_WORKSPACE/external/libutil" >> $GITHUB_ENV
+          echo "LIBENDIAN_DIR=$GITHUB_WORKSPACE/external/libendian" >> $GITHUB_ENV
+      - run: echo "BOOST_VERSION=${{matrix.boostVersion}}" >> $GITHUB_ENV
+        if: matrix.boostVersion
+
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: Return-To-The-Roots/libutil
+          ref: master
+          path: external/libutil
+      - uses: actions/checkout@v2
+        with:
+          repository: Return-To-The-Roots/libendian
+          ref: master
+          path: external/libendian
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{env.DEPS_DIR}}
+          key: ${{matrix.os}}-${{env.BOOST_VERSION}}
+      - name: Cache CCache
+        uses: actions/cache@v2
+        with:
+          path: .ccache
+          key: ${{matrix.os}}-${{matrix.compiler}}-ccache
+      - name: Setup CCache
+        run: |
+          echo "CCACHE_BASEDIR=$PWD" >> $GITHUB_ENV
+          echo "CCACHE_DIR=$PWD/.ccache" >> $GITHUB_ENV
+          echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
+          echo "CCACHE_COMPRESSLEVEL=6" >> $GITHUB_ENV
+          echo "CCACHE_MAXSIZE=400M" >> $GITHUB_ENV
+
+      - name: Install Compiler
+        if: "startsWith(runner.os, 'ubuntu')"
+        run: |
+          pkgs=${{matrix.compiler}}
+          pkgs=${pkgs/gcc-/g++-}
+          sudo apt install $pkgs
+      - name: Setup compiler
+        run: |
+            CC=${{matrix.compiler}}
+            if [[ "$CC" =~ clang ]]; then
+              CXX=${CC/clang/clang++}
+            elif [[ "$CC" =~ gcc ]]; then
+              CXX=${CC/gcc/g++}
+            fi
+            ver=7 # default
+            if [[ "$CC" =~ gcc- ]]; then
+              ver="${CC##*gcc-}"
+            fi
+            GCOV=gcov-${ver}
+            echo "CC=$CC" >> $GITHUB_ENV
+            echo "CXX=$CXX" >> $GITHUB_ENV
+            echo "GCOV=$GCOV" >> $GITHUB_ENV
+
+      - name: Install system packages (Linux)
+        if: "startsWith(runner.os, 'ubuntu')"
+        run: sudo apt install cmake cmake-data ccache libminiupnpc-dev
+      - name: Install system packages (OSX)
+        if: startsWith(runner.os, 'macos')
+        run: brew install ccache cmake boost miniupnpc
+
+      - name: Install Boost
+        run: |
+          BOOST_ROOT="${DEPS_DIR}/boost${BOOST_VERSION}"
+          echo "BOOST_ROOT=${BOOST_ROOT}" >> $GITHUB_ENV
+          echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DBoost_NO_SYSTEM_PATHS=ON -DBoost_NO_BOOST_CMAKE=ON" >> $GITHUB_ENV
+          $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,system,program_options,thread,test,locale,iostreams,regex" shared
+
+      - name: Enable coverage collection
+        if: matrix.coverage
+        run: echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DRTTR_EXTERNAL_BUILD_TESTING=ON -DRTTR_ENABLE_COVERAGE=ON" >> $GITHUB_ENV
+      - name: Setup ruby for coverage collection
+        if: matrix.coverage
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Build
+        run: tools/travis-ci/build.sh "${{matrix.buildType}}" "${ADDITIONAL_CMAKE_FLAGS}"
+
+      - name: Upload coverage
+        if: matrix.coverage && success()
+        run: |
+            lcov --gcov-tool $GCOV --directory build --capture --output-file coverage.info --rc lcov_branch_coverage=1 > /dev/null
+            # Remove unrelated stuff
+            lcov --gcov-tool $GCOV --remove coverage.info '/usr/*' '*/examples/*' "${DEPS_DIR}/"'*' --output-file coverage.info > /dev/null
+            # Debug output
+            lcov --list coverage.info
+            # Coverage.io
+            bash <(curl -s https://codecov.io/bash) -f coverage.info
+            # Coveralls
+            coveralls-lcov coverage.info
