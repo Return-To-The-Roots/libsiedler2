@@ -53,8 +53,8 @@ int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const
     if(!fs)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
-    // Plain-Text ?
-    if(items.size() == 1)
+    // Plain-Text (1 existing entry)?
+    if(items.size() == 1 && items[0])
         return static_cast<const ArchivItem_Text*>(items[0])->write(fs.getStream(), conversion);
     else
     {
