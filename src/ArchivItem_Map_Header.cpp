@@ -275,7 +275,7 @@ void libsiedler2::ArchivItem_Map_Header::setAuthor(const std::string& author)
 void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const uint32_t player, const uint16_t x, const uint16_t y)
 {
     if(player >= playerHQx.size())
-        throw std::range_error("Only 7 players allowed!");
+        throw std::range_error("Only " + std::to_string(maxPlayers) + " players allowed!");
     playerHQx[player] = x;
     playerHQy[player] = y;
 }
@@ -287,10 +287,10 @@ void libsiedler2::ArchivItem_Map_Header::setPlayerHQ(const uint32_t player, cons
  * @param[out] x x-coordinate of the headquarter
  * @param[out] y y-coordinate of the headquarter
  */
-void libsiedler2::ArchivItem_Map_Header::getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y)
+void libsiedler2::ArchivItem_Map_Header::getPlayerHQ(const uint32_t player, uint16_t& x, uint16_t& y) const
 {
     if(player >= playerHQx.size())
-        throw std::range_error("Only 7 players allowed!");
+        throw std::range_error("Only " + std::to_string(maxPlayers) + " players allowed!");
     x = playerHQx[player];
     y = playerHQy[player];
 }

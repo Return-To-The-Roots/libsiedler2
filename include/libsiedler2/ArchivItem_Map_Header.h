@@ -28,6 +28,9 @@ namespace libsiedler2 {
 class ArchivItem_Map_Header : public ArchivItem
 {
 public:
+    /// Maximum number of players supported in the map header
+    static constexpr unsigned maxPlayers = 7; // S2 supports only 7 players
+
     ArchivItem_Map_Header();
     ~ArchivItem_Map_Header() override;
     RTTR_CLONEABLE(ArchivItem_Map_Header)
@@ -53,7 +56,7 @@ public:
     void setAuthor(const std::string& author);
 
     void setPlayerHQ(uint32_t player, uint16_t x, uint16_t y);
-    void getPlayerHQ(uint32_t player, uint16_t& x, uint16_t& y);
+    void getPlayerHQ(uint32_t player, uint16_t& x, uint16_t& y) const;
 
     bool hasExtraWord() const { return hasExtraWord_; }
 
@@ -63,9 +66,9 @@ private:
     uint8_t gfxset;
     uint8_t numPlayers;
     std::string author_;
-    std::array<uint16_t, 7> playerHQx, playerHQy; //-V730_NOINIT
+    std::array<uint16_t, maxPlayers> playerHQx, playerHQy; //-V730_NOINIT
     uint8_t isInvalid;
-    std::array<uint8_t, 7> playerFaces; //-V730_NOINIT
+    std::array<uint8_t, maxPlayers> playerFaces; //-V730_NOINIT
     /// 250 entries with: uint8 Type(0:Unused, 1:water, 2:land), uint16 x,y, uint32 size
     std::array<uint8_t, 250 * 9> areaInfos; //-V730_NOINIT
     bool hasExtraWord_;
