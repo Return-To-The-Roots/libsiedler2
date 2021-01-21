@@ -2,7 +2,7 @@
 
 ### Current Build Info
 
-- Travis CI: [![Travis CI Status](https://travis-ci.com/Return-To-The-Roots/libsiedler2.svg?branch=master)](https://travis-ci.com/Return-To-The-Roots/libsiedler2)
+- Github Actions: ![Unit tests](https://github.com/Return-To-The-Roots/libsiedler2/workflows/Unit%20tests/badge.svg)
 
 - Appveyor: [![Appveyor Status](https://ci.appveyor.com/api/projects/status/elq18eld1ulhgm3k/branch/master?svg=true)](https://ci.appveyor.com/project/Flow86/libsiedler2/branch/master)
 
@@ -40,7 +40,7 @@ The used format can be set with `setTextureFormat`.
 
 All bitmaps loaded **after** this call will be in the given format with conversion beeing used if required.   
 
-*Note:* While it is possible to convert Paletted -> ARGB in all cases the reverse is not always possible.
+*Note:* While it is possible to convert paletted -> ARGB in all cases the reverse is not always possible.
 So using a paletted format may result in failure while loading ARGB bitmaps.
 
 ### Palettes
@@ -68,4 +68,4 @@ For the usage the following applies:
              
 ### Additional information
 
-A detailed description of the file formats are here: https://www.siedler25.org/formate/ (in german)
+A detailed description of the file formats are here: https://www.siedler25.org/formate/ (in German)
