@@ -1,4 +1,4 @@
-find_package(Boost 1.64.0 REQUIRED COMPONENTS system program_options)
+find_package(Boost 1.69 REQUIRED COMPONENTS system program_options)
 
 file(GLOB _sources *.cpp *.h)
 add_executable(lstpacker ${_sources})

@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  BOOST_VERSION: 1.65.1
+  BOOST_VERSION: 1.69.0
 
 defaults:
   run:
@@ -21,7 +21,7 @@ jobs:
           - { compiler: clang ,   os: macos-10.15,  buildType: Debug, boostVersion: 1.74.0 } # Multiple bugs with recent OSX until 1.74
           # Latest GCC
           - { compiler: gcc-10,   os: ubuntu-18.04, buildType: Debug }
-          # Latest Clang 
+          # Latest Clang
           - { compiler: clang-10, os: ubuntu-18.04, buildType: Debug }
           # Windows
           - { compiler: msvc,     os: windows-2019, buildType: Debug }

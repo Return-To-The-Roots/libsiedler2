@@ -1,4 +1,4 @@
-find_package(Boost 1.64 REQUIRED COMPONENTS system program_options)
+find_package(Boost 1.69 REQUIRED COMPONENTS system program_options)
 
 add_executable(chTransparentIdx chTransparentIdx.cpp)
 
