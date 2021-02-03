@@ -97,11 +97,6 @@ jobs:
       - name: Enable coverage collection
         if: matrix.coverage
         run: echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DRTTR_ENABLE_COVERAGE=ON" >> $GITHUB_ENV
-      - name: Setup ruby for coverage collection
-        if: matrix.coverage
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.6
 
       - name: Build
         run: tools/ci/build.sh "${{matrix.buildType}}" "${ADDITIONAL_CMAKE_FLAGS}"
@@ -109,3 +104,9 @@ jobs:
       - name: Upload coverage
         if: matrix.coverage && success()
         run: $LIBUTIL_DIR/tools/ci/uploadCoverageData.sh '*/examples/*' "${DEPS_DIR}/"'*' '*/build/*'
+      - name: Upload coverage (Coveralls)
+        if: matrix.coverage && success()
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coverage.info
