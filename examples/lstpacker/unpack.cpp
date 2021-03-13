@@ -109,21 +109,36 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
                     break;
                     case SoundType::XMidi:
                     {
+                        newFilepath.replace_extension(".xmi");
+                        cout << "extracting " << newFilepath << ": ";
+
+                        auto wave = clone(dynamic_cast<const ArchivItem_Sound_XMidi&>(*item));
+                        {
+                            bnw::ofstream fwave(newFilepath, ios::binary);
+                            if(fwave && wave->write(fwave) == 0)
+                                cout << "done";
+                            else
+                                cout << "failed";
+                            cout << endl;
+                        }
+
                         newFilepath.replace_extension(".midi");
 
                         cout << "extracting " << newFilepath << ": ";
 
-                        auto wave = clone(dynamic_cast<const ArchivItem_Sound_XMidi&>(*item));
                         const MIDI_Track& midiTrack = wave->getMidiTrack(0);
                         ArchivItem_Sound_Midi soundArchiv;
                         soundArchiv.addTrack(midiTrack);
                         soundArchiv.setPPQ(wave->getPPQN());
-                        bnw::ofstream fwave(newFilepath, ios::binary);
-                        if(fwave && soundArchiv.write(fwave) == 0)
-                            cout << "done";
-                        else
-                            cout << "failed";
-                        cout << endl;
+                        {
+                            bnw::ofstream fwave(newFilepath, ios::binary);
+                            if(fwave && soundArchiv.write(fwave) == 0)
+                                cout << "done";
+                            else
+                                cout << "failed";
+                            cout << endl;
+                        }
+
                         break;
                     }
                     default: cerr << "Unsupported other sound ignored: " << newFileStem << endl; break;
