@@ -22,7 +22,7 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     include(RttrCoverageCfg)
     include(EnableCCache)
     # Use clang-format if available
-    find_package(ClangFormat 10)
+    find_package(ClangFormat 10 EXACT)
 else()
     set(isTopLevel FALSE)
 endif()
