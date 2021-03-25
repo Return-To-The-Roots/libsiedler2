@@ -6,7 +6,7 @@ on:
     types: [published]
 
 env:
-  BOOST_VERSION: 1.72.0
+  BOOST_VERSION: 1.75.0 # Use a recent one to benefit from bugfixes and performance improvements
 
 defaults:
   run:
@@ -27,8 +27,6 @@ jobs:
           echo "DEPS_DIR=${{runner.temp}}/.cache" >> $GITHUB_ENV
           echo "LIBUTIL_DIR=$GITHUB_WORKSPACE/external/libutil" >> $GITHUB_ENV
           echo "LIBENDIAN_DIR=$GITHUB_WORKSPACE/external/libendian" >> $GITHUB_ENV
-          echo "TRAVIS_OS_NAME=${{matrix.os}}" >> $GITHUB_ENV
-          echo "BOOST_ROOT=$BOOST_ROOT_1_72_0" >> $GITHUB_ENV # Windows only
       - name: Extract tag name
         id: filenames
         run: |
@@ -40,36 +38,29 @@ jobs:
 
       - name: Get upload URL
         if: github.event_name == 'release'
-        run: echo "::set-output name=upload_url::https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets{?name,label}"  
+        run: echo "::set-output name=upload_url::https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets{?name,label}"
         id: release
 
       - uses: actions/checkout@v2
       - uses: actions/checkout@v2
+        name: Checkout libutil
         with:
           repository: Return-To-The-Roots/libutil
           ref: master
           path: external/libutil
       - uses: actions/checkout@v2
+        name: Checkout libendian
         with:
           repository: Return-To-The-Roots/libendian
           ref: master
           path: external/libendian
+
       - name: Cache dependencies
-        if: "!startsWith(runner.os, 'Windows')"
         uses: actions/cache@v2
         with:
           path: ${{env.DEPS_DIR}}
           key: ${{matrix.os}}-${{env.BOOST_VERSION}}
-      - name: Cache CCache
-        if: "!startsWith(runner.os, 'Windows')"
-        uses: actions/cache@v2
-        with:
-          path: .ccache
-          key: ${{matrix.os}}-${{matrix.compiler}}-ccache
-      - name: Setup CCache
-        if: "!startsWith(runner.os, 'Windows')"
-        run: tools/ci/setupCCache.sh
-        
+
       - name: Install Compiler
         if: "startsWith(runner.os, 'Linux')"
         run: |
@@ -87,10 +78,20 @@ jobs:
         run: sudo apt install cmake cmake-data ccache libminiupnpc-dev
       - name: Install system packages (OSX)
         if: startsWith(runner.os, 'macOS')
-        run: brew install ccache cmake boost miniupnpc
+        run: brew install ccache cmake miniupnpc
+      - name: Install system packages (Windows)
+        if: startsWith(runner.os, 'Windows')
+        run: choco install wget
+
+      - name: Setup CCache
+        if: "!startsWith(runner.os, 'Windows')"
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.buildType}}-${{matrix.boostVersion}}
+          max-size: 200M
 
       - name: Install Boost
-        if: "!startsWith(runner.os, 'Windows')"
+        shell: bash
         run: |
           BOOST_ROOT="${DEPS_DIR}/boost${BOOST_VERSION}"
           echo "BOOST_ROOT=${BOOST_ROOT}" >> $GITHUB_ENV
