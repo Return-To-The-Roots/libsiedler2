@@ -18,7 +18,7 @@
 #pragma once
 
 #include "enumTypes.h"
-#include "s25util/dynamicUniqueCast.h"
+#include <boost/pointer_cast.hpp>
 #include <memory>
 
 namespace libsiedler2 {
@@ -35,7 +35,7 @@ public:
     template<class T>
     std::unique_ptr<T> create(BobType type, SoundType subtype = SoundType::None) const
     {
-        return libutil::dynamicUniqueCast<T>(create(type, subtype));
+        return boost::dynamic_pointer_cast<T>(create(type, subtype));
     }
 };
 
