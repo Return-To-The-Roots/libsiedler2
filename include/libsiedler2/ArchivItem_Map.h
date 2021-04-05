@@ -27,6 +27,7 @@ namespace libsiedler2 {
 class ArchivItem_Map_Header;
 
 /// Names for the different layers of the map. Entry 0 is the header, so Layer 0 = Entry 1
+/// See e.g. https://settlers2.net/documentation/world-map-file-format-wldswd
 enum class MapLayer
 {
     Altitude = 0,
@@ -43,6 +44,7 @@ enum class MapLayer
     Resources = 11,
     Shadows = 12,
     Lakes = 13,
+    // Those don't seem to be present in SWD/WLD files
     Reservations = 14,
     Owner = 15
 };
@@ -56,6 +58,8 @@ public:
         uint8_t id;
         uint16_t x, y;
     };
+    /// The number of map layers present in SWD files
+    static constexpr unsigned NUM_SWD_LAYERS = static_cast<unsigned>(MapLayer::Lakes) + 1u;
 
     ArchivItem_Map();
     ~ArchivItem_Map() override;

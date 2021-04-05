@@ -207,13 +207,11 @@ void ArchivItem_Map::init(std::unique_ptr<ArchivItem_Map_Header> header)
     header_ = nullptr;
     if(!header)
         return;
-    // Reservations and Owner layers are not required any may cause crashes in the original game
-    const auto numLayers = static_cast<unsigned>(MapLayer::Lakes) + 1u;
-    alloc(numLayers + 1u); // Include header
+    alloc(NUM_SWD_LAYERS + 1u); // Include header
     set(0, std::move(header));
     header_ = static_cast<ArchivItem_Map_Header*>(get(0));
     const size_t numNodes = header_->getWidth() * header_->getHeight();
-    for(unsigned i = 0; i < numLayers; ++i)
+    for(unsigned i = 0; i < NUM_SWD_LAYERS; ++i)
         set(i + 1, std::make_unique<libsiedler2::ArchivItem_Raw>(std::vector<uint8_t>(numNodes)));
 }
 
