@@ -61,16 +61,16 @@ public:
     bool hasExtraWord() const { return hasExtraWord_; }
 
 private:
-    uint16_t width;
-    uint16_t height;
-    uint8_t gfxset;
-    uint8_t numPlayers;
+    uint16_t width = 0;
+    uint16_t height = 0;
+    uint8_t gfxset = 0;
+    uint8_t numPlayers = 0;
     std::string author_;
-    std::array<uint16_t, maxPlayers> playerHQx, playerHQy; //-V730_NOINIT
-    uint8_t isInvalid;
-    std::array<uint8_t, maxPlayers> playerFaces; //-V730_NOINIT
+    std::array<uint16_t, maxPlayers> playerHQx{}, playerHQy{};
+    uint8_t isInvalid = 0;
+    std::array<uint8_t, maxPlayers> playerFaces{};
     /// 250 entries with: uint8 Type(0:Unused, 1:water, 2:land), uint16 x,y, uint32 size
-    std::array<uint8_t, 250 * 9> areaInfos; //-V730_NOINIT
-    bool hasExtraWord_;
+    std::array<uint8_t, 250 * 9> areaInfos{};
+    bool hasExtraWord_ = false;
 };
 } // namespace libsiedler2

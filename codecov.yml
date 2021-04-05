@@ -2,5 +2,10 @@ coverage:
     range: "65..95"
     ignore:
         - examples
-comment: false
-
+    status:
+      # Project coverage changes should not make PRs fail. Patch coverage is still checked
+      # Reasoning: Removing lines by moving stuff in functions can reduce the amount of covered lines but actually improve code
+      project:
+        default:
+          target: auto
+          informational: true

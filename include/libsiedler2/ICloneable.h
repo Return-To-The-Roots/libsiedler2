@@ -23,30 +23,32 @@
 
 namespace libsiedler2 {
 
-template<typename T, typename U, typename = void>
-struct is_static_castable : std::false_type
-{};
+namespace detail {
+    template<typename T, typename U, typename = void>
+    struct is_static_castable : std::false_type
+    {};
 
-template<typename T, typename U>
-struct is_static_castable<T, U, decltype(void(static_cast<U>(std::declval<T>())))> : std::true_type
-{};
+    template<typename T, typename U>
+    struct is_static_castable<T, U, decltype(void(static_cast<U>(std::declval<T>())))> : std::true_type
+    {};
 
-template<typename To, typename From>
-std::enable_if_t<is_static_castable<From*, To*>::value, To*> safePtrCast(From* from)
-{
-    return static_cast<To*>(from);
-}
+    template<typename To, typename From>
+    std::enable_if_t<is_static_castable<From*, To*>::value, To*> safePtrCast(From* from)
+    {
+        return static_cast<To*>(from);
+    }
 
-template<typename To, typename From>
-std::enable_if_t<!is_static_castable<From*, To*>::value, To*> safePtrCast(From* from)
-{
-    return dynamic_cast<To*>(from);
-}
+    template<typename To, typename From>
+    std::enable_if_t<!is_static_castable<From*, To*>::value, To*> safePtrCast(From* from)
+    {
+        return dynamic_cast<To*>(from);
+    }
+} // namespace detail
 
 template<class T, std::enable_if_t<!std::is_pointer<T>::value, int> = 0>
 auto clone(const T& obj)
 {
-    return std::unique_ptr<T>(safePtrCast<T>(obj.clone()));
+    return std::unique_ptr<T>(detail::safePtrCast<T>(obj.clone()));
 }
 template<class T>
 auto clone(const T* obj)

@@ -165,6 +165,11 @@ struct TestItem : libsiedler2::ArchivItem
     RTTR_CLONEABLE(TestItem)
 };
 
+static_assert(!std::is_copy_constructible<libsiedler2::ArchivItem>::value, "Should not be Copyable/Movable");
+static_assert(!std::is_move_constructible<libsiedler2::ArchivItem>::value, "Should not be Copyable/Movable");
+static_assert(!std::is_copy_assignable<libsiedler2::ArchivItem>::value, "Should not be Copyable/Movable");
+static_assert(!std::is_move_assignable<libsiedler2::ArchivItem>::value, "Should not be Copyable/Movable");
+
 int TestItem::numLiveItems = 0;
 
 BOOST_AUTO_TEST_CASE(AllocAndGet)
