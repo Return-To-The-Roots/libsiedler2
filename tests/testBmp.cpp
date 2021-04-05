@@ -45,10 +45,12 @@ struct Rect
     bool operator==(const Rect& rhs) const { return x == rhs.x && y == rhs.y && w == rhs.w && h == rhs.h; }
 };
 
+// LCOV_EXCL_START
 std::ostream& operator<<(std::ostream& os, const Rect& rect)
 {
     return os << "(" << rect.x << ", " << rect.y << ", " << rect.w << ", " << rect.h << ")";
 }
+// LCOV_EXCL_STOP
 
 auto randColor()
 {
@@ -59,10 +61,12 @@ auto randColor()
 } // namespace
 
 namespace libsiedler2 {
+// LCOV_EXCL_START
 static std::ostream& operator<<(std::ostream& os, libsiedler2::TextureFormat fmt)
 {
     return os << static_cast<unsigned>(fmt);
 }
+// LCOV_EXCL_STOP
 } // namespace libsiedler2
 
 using namespace libsiedler2;
@@ -240,7 +244,7 @@ static ArchivItem_BitmapBase* getFirstBitmap(Archiv& archiv)
         if(bmp)
             return bmp;
     }
-    return nullptr;
+    return nullptr; // LCOV_EXCL_LINE
 }
 
 BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)

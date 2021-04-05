@@ -24,6 +24,9 @@
 #include "libendian/EndianIStreamAdapter.h"
 #include "libendian/EndianOStreamAdapter.h"
 #include <iostream>
+#include <stdexcept>
+
+namespace {
 
 struct BlockHeader
 {                     //-V802
@@ -33,10 +36,18 @@ struct BlockHeader
     uint16_t multiplier; // Not sure, always 1
     uint32_t blockLength;
 };
+} // namespace
 
-libsiedler2::ArchivItem_Map::ArchivItem_Map() : ArchivItem(BobType::Map) {}
+namespace libsiedler2 {
 
-libsiedler2::ArchivItem_Map::~ArchivItem_Map() = default;
+ArchivItem_Map::ArchivItem_Map() : ArchivItem(BobType::Map), header_(nullptr) {}
+
+ArchivItem_Map::ArchivItem_Map(const ArchivItem_Map& other) : ArchivItem(other), Archiv(other)
+{
+    header_ = static_cast<ArchivItem_Map_Header*>(get(0));
+}
+
+ArchivItem_Map::~ArchivItem_Map() = default;
 
 /**
  *  lädt die Mapdaten aus einer Datei.
@@ -46,12 +57,13 @@ libsiedler2::ArchivItem_Map::~ArchivItem_Map() = default;
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
+int ArchivItem_Map::load(std::istream& file, bool onlyHeader)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
 
     clear();
+    header_ = nullptr;
 
     {
         auto header = getAllocator().create<ArchivItem_Map_Header>(BobType::MapHeader);
@@ -62,13 +74,14 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
             return ec;
 
         push(std::move(header));
+        header_ = static_cast<ArchivItem_Map_Header*>(get(0));
     }
 
     // nur der Header?
-    if(only_header)
+    if(onlyHeader)
         return ErrorCode::NONE;
 
-    const auto& header = static_cast<const ArchivItem_Map_Header&>(*get(0));
+    const ArchivItem_Map_Header& header = getHeader();
     const uint16_t w = header.getWidth();
     const uint16_t h = header.getHeight();
 
@@ -140,7 +153,7 @@ int libsiedler2::ArchivItem_Map::load(std::istream& file, bool only_header)
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
+int ArchivItem_Map::write(std::ostream& file) const
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -179,7 +192,7 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
             fs << bHeader.multiplier << bHeader.blockLength;
     }
 
-    for(auto it : extraInfo)
+    for(const ExtraAnimalInfo& it : extraInfo)
     {
         fs << it.id << it.x << it.y;
     }
@@ -187,3 +200,68 @@ int libsiedler2::ArchivItem_Map::write(std::ostream& file) const
 
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
+
+void ArchivItem_Map::init(std::unique_ptr<ArchivItem_Map_Header> header)
+{
+    clear();
+    header_ = nullptr;
+    if(!header)
+        return;
+    // Reservations and Owner layers are not required any may cause crashes in the original game
+    const auto numLayers = static_cast<unsigned>(MapLayer::Lakes) + 1u;
+    alloc(numLayers + 1u); // Include header
+    set(0, std::move(header));
+    header_ = static_cast<ArchivItem_Map_Header*>(get(0));
+    const size_t numNodes = header_->getWidth() * header_->getHeight();
+    for(unsigned i = 0; i < numLayers; ++i)
+        set(i + 1, std::make_unique<libsiedler2::ArchivItem_Raw>(std::vector<uint8_t>(numNodes)));
+}
+
+const libsiedler2::ArchivItem_Map_Header& ArchivItem_Map::getHeader() const
+{
+    assert(header_);
+    return *header_;
+}
+
+const std::vector<uint8_t>& ArchivItem_Map::getLayer(MapLayer type) const
+{
+    const auto* item = static_cast<const ArchivItem_Raw*>(get(static_cast<size_t>(type) + 1)); // 0 = header
+    if(!item)
+        throw std::range_error("Layer not found");
+    return item->getData(); //-V522
+}
+
+std::vector<uint8_t>& ArchivItem_Map::getLayer(MapLayer type)
+{
+    auto* item = static_cast<ArchivItem_Raw*>(get(static_cast<size_t>(type) + 1)); // 0 = header
+    if(!item)
+        throw std::range_error("Layer not found");
+    return item->getData(); //-V522
+}
+
+bool ArchivItem_Map::hasLayer(MapLayer type) const
+{
+    return get(static_cast<size_t>(type) + 1) != nullptr;
+}
+
+uint8_t ArchivItem_Map::getMapDataAt(MapLayer type, unsigned idx) const
+{
+    return getLayer(type)[idx];
+}
+
+uint8_t ArchivItem_Map::getMapDataAt(MapLayer type, unsigned short x, unsigned short y) const
+{
+    return getMapDataAt(type, y * header_->getWidth() + x);
+}
+
+void ArchivItem_Map::setMapDataAt(MapLayer type, unsigned idx, uint8_t value)
+{
+    getLayer(type)[idx] = value;
+}
+
+void ArchivItem_Map::setMapDataAt(MapLayer type, unsigned short x, unsigned short y, uint8_t value)
+{
+    setMapDataAt(type, y * header_->getWidth() + x, value);
+}
+
+} // namespace libsiedler2

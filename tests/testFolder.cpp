@@ -33,10 +33,12 @@ namespace bfs = boost::filesystem;
 using namespace libsiedler2;
 
 namespace libsiedler2 {
+// LCOV_EXCL_START
 static std::ostream& boost_test_print_type(std::ostream& os, BobType bt)
 {
     return os << static_cast<unsigned>(bt);
 }
+// LCOV_EXCL_STOP
 } // namespace libsiedler2
 
 static void save(const ArchivItem_Bitmap_Raw& bmp, const boost::filesystem::path& path)

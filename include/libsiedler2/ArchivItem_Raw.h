@@ -24,7 +24,7 @@
 
 namespace libsiedler2 {
 /// Klasse für Rawdaten.
-class ArchivItem_Raw : public ArchivItem
+class ArchivItem_Raw final : public ArchivItem
 {
 public:
     ArchivItem_Raw();

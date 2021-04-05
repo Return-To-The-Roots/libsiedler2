@@ -31,7 +31,6 @@ class ArchivItem : public ICloneable<ArchivItem> //-V690
 public:
     ArchivItem(BobType bobtype = BobType::None);
     virtual ~ArchivItem() override;
-    ArchivItem& operator=(const ArchivItem&) = delete;
     /// liefert den Bobtype des Items.
     BobType getBobType() const { return bobtype_; }
     /// Set the name if the item
@@ -40,6 +39,10 @@ public:
     std::string getName() const { return name_; }
 
 protected:
+    ArchivItem(const ArchivItem&) = default;
+    ArchivItem(ArchivItem&&) noexcept = default;
+    ArchivItem& operator=(const ArchivItem&) = default;
+    ArchivItem& operator=(ArchivItem&&) noexcept = default;
     // TODO: protected because classes with virtual inheritance may want to set it instead of calling many ctors down
     // the line
     BobType bobtype_; /// Type of the element

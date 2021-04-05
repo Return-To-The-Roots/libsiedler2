@@ -18,8 +18,10 @@ else
     BUILD_FLAGS="-j3"
 fi
 
+cmake --version
+
 cmake \
-    --generator="$GENERATOR" \
+    -G "$GENERATOR" \
     -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
     -DRTTR_ENABLE_WERROR=ON \
     -DCMAKE_INSTALL_PREFIX="$PWD/installed" \

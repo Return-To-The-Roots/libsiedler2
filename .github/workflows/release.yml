@@ -59,7 +59,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{env.DEPS_DIR}}
-          key: ${{matrix.os}}-${{env.BOOST_VERSION}}
+          key: ${{matrix.os}}-${{matrix.compiler}}-${{env.BOOST_VERSION}}
 
       - name: Install Compiler
         if: "startsWith(runner.os, 'Linux')"
@@ -82,6 +82,11 @@ jobs:
       - name: Install system packages (Windows)
         if: startsWith(runner.os, 'Windows')
         run: choco install wget
+      - name: Setup cmake
+        if: "!startsWith(runner.os, 'Windows')"
+        uses: jwlawson/actions-setup-cmake@v1.8
+        with:
+          cmake-version: '3.20'
 
       - name: Setup CCache
         if: "!startsWith(runner.os, 'Windows')"

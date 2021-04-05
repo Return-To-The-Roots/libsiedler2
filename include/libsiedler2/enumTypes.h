@@ -107,32 +107,32 @@ enum Resource
  * Enumeration for object types stored in SWD. In combination with the
  * object information it makes a real object (therefore the "info"-comments).
  */
-enum ObjectType
+enum ObjectInfo
 {
-    OT_Empty = 0x00,
-    OT_Stone_Begin = 0x01, // info: 0xCC / 0xCD
-    OT_Stone_End = 0x06,
-    OT_TreeOrPalm_Begin = 0x30, // info: 0xC4 / 0xC5
-    OT_TreeOrPalm_End = 0x37,
-    OT_Tree1_Begin = 0x70, // info: 0xC4
-    OT_Tree1_End = 0x77,
-    OT_Tree2_Begin = 0xB0, // info: 0xC4
-    OT_Tree2_End = 0xB7,
-    OT_Palm_Begin = 0xF0, // info: 0xC4
-    OT_Palm_End = 0xF7
+    OI_Empty = 0x00,
+    OI_Stone_Begin = 0x01, // info: 0xCC / 0xCD
+    OI_Stone_End = 0x06,
+    OI_TreeOrPalm_Begin = 0x30, // info: 0xC4 / 0xC5
+    OI_TreeOrPalm_End = 0x37,
+    OI_Tree1_Begin = 0x70, // info: 0xC4
+    OI_Tree1_End = 0x77,
+    OI_Tree2_Begin = 0xB0, // info: 0xC4
+    OI_Tree2_End = 0xB7,
+    OI_Palm_Begin = 0xF0, // info: 0xC4
+    OI_Palm_End = 0xF7
 };
 
 /**
  * Enumeration for object info stored in SWD.
  */
-enum ObjectInfo
+enum ObjectType
 {
-    OI_Empty = 0x00,
-    OI_Stone1 = 0xCC,
-    OI_Stone2 = 0xCD,
-    OI_TreeOrPalm = 0xC4,
-    OI_Palm = 0xC5,
-    OI_HeadquarterMask = 0x80 // used in combination with object
+    OT_Empty = 0x00,
+    OT_Stone1 = 0xCC,
+    OT_Stone2 = 0xCD,
+    OT_TreeOrPalm = 0xC4,
+    OT_Palm = 0xC5,
+    OT_HeadquarterMask = 0x80 // used in combination with object
                               // type 0x00-0x06 for player number
 };
 
