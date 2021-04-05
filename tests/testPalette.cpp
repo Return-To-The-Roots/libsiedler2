@@ -42,6 +42,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalette)
     BOOST_REQUIRE(testFilesEqual(palOutPath, palPath));
 }
 
+// LCOV_EXCL_START
 static void createBBM(const bfs::path& palPath, const bfs::path& palOutPath)
 {
     BOOST_REQUIRE(bfs::exists(palPath));
@@ -52,6 +53,7 @@ static void createBBM(const bfs::path& palPath, const bfs::path& palOutPath)
     pal->set(10, libsiedler2::ColorRGB(11, 22, 33));
     BOOST_REQUIRE_EQUAL(libsiedler2::Write(palOutPath, act), 0);
 }
+// LCOV_EXCL_STOP
 
 BOOST_AUTO_TEST_CASE(ReadWriteBBM)
 {

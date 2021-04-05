@@ -29,10 +29,12 @@
 namespace bfs = boost::filesystem;
 
 namespace libsiedler2 {
+// LCOV_EXCL_START
 static std::ostream& boost_test_print_type(std::ostream& os, SoundType st)
 {
     return os << static_cast<unsigned>(st);
 }
+// LCOV_EXCL_STOP
 } // namespace libsiedler2
 
 BOOST_AUTO_TEST_SUITE(Sounds)

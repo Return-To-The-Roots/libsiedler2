@@ -22,7 +22,9 @@
 #include <vector>
 
 using Value = std::pair<unsigned, std::string>;
+// LCOV_EXCL_START
 BOOST_TEST_DONT_PRINT_LOG_VALUE(Value)
+// LCOV_EXCL_STOP
 
 BOOST_AUTO_TEST_SUITE(LoadMapping)
 

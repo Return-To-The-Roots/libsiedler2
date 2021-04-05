@@ -31,10 +31,12 @@ boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResul
     int ec = func(filepath, items, palette);
     if(ec == expectedResult)
         return true;
+    // LCOV_EXCL_START
     boost::test_tools::predicate_result result(false);
     result.message() << libsiedler2::getErrorString(ec) << " != " << libsiedler2::getErrorString(expectedResult)
                      << " for " << filepath;
     return result;
+    // LCOV_EXCL_STOP
 }
 
 boost::test_tools::predicate_result testLoad(int expectedResult, const boost::filesystem::path& filepath,

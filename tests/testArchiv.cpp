@@ -25,10 +25,12 @@
 #include <stdexcept>
 
 namespace libsiedler2 {
+// LCOV_EXCL_START
 static std::ostream& boost_test_print_type(std::ostream& os, libsiedler2::BobType bt)
 {
     return os << static_cast<unsigned>(bt);
 }
+// LCOV_EXCL_STOP
 } // namespace libsiedler2
 
 BOOST_AUTO_TEST_SUITE(Archiv)
@@ -160,7 +162,9 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
 struct TestItem : libsiedler2::ArchivItem
 {
     static int numLiveItems;
-    TestItem() { numLiveItems++; }
+    int i;
+    TestItem(int i = 0) : i(i) { numLiveItems++; }
+    TestItem(const TestItem& o) : libsiedler2::ArchivItem(o), i(o.i) { numLiveItems++; }
     ~TestItem() override { numLiveItems--; }
     RTTR_CLONEABLE(TestItem)
 };
@@ -243,6 +247,34 @@ BOOST_AUTO_TEST_CASE(RangeBasedIteration)
     BOOST_TEST(static_cast<libsiedler2::ArchivItem_Raw&>(*items[0]).getData().size() == 1u);
     BOOST_TEST(static_cast<libsiedler2::ArchivItem_Raw&>(*items[2]).getData().size() == 42u);
     BOOST_TEST(static_cast<libsiedler2::ArchivItem_Raw&>(*items[3]).getData().size() == 1337u);
+}
+
+BOOST_AUTO_TEST_CASE(CopyArchive)
+{
+    {
+        libsiedler2::Archiv archiv;
+        archiv.alloc(3);
+        archiv.set(0, std::make_unique<TestItem>(42));
+        archiv.set(2, std::make_unique<TestItem>(1337));
+        libsiedler2::Archiv archiv2 = archiv;
+        BOOST_TEST_REQUIRE(archiv2.size() == archiv.size());
+        BOOST_TEST_REQUIRE(archiv2[0]);
+        BOOST_TEST_REQUIRE(!archiv2[1]);
+        BOOST_TEST_REQUIRE(archiv2[2]);
+        BOOST_TEST(dynamic_cast<TestItem&>(*archiv2[0]).i == 42);
+        BOOST_TEST(dynamic_cast<TestItem&>(*archiv2[2]).i == 1337);
+
+        // Move
+        libsiedler2::Archiv archiv3 = std::move(archiv2);
+        BOOST_TEST_REQUIRE(archiv3.size() == archiv.size());
+        BOOST_TEST_REQUIRE(archiv3[0]);
+        BOOST_TEST_REQUIRE(!archiv3[1]);
+        BOOST_TEST_REQUIRE(archiv3[2]);
+        BOOST_TEST(dynamic_cast<TestItem&>(*archiv3[0]).i == 42);
+        BOOST_TEST(dynamic_cast<TestItem&>(*archiv3[2]).i == 1337);
+    }
+    // No leaks
+    BOOST_TEST(TestItem::numLiveItems == 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
