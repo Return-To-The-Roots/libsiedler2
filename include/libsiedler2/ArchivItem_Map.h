@@ -96,6 +96,8 @@ public:
 
 protected:
     ArchivItem_Map(const ArchivItem_Map& other);
+
+public:
     ArchivItem_Map(ArchivItem_Map&&) = delete;
     ArchivItem_Map& operator=(const ArchivItem_Map& other) = delete;
     ArchivItem_Map& operator=(ArchivItem_Map&&) = delete;
