@@ -1,3 +1,7 @@
+# Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 name: Unit tests
 
 on:
@@ -12,6 +16,27 @@ defaults:
     shell: bash
 
 jobs:
+jobs:
+  StyleAndFormatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - name: Validation
+        run: tools/ci/staticValidation.sh "$GITHUB_WORKSPACE"
+      - name: Formatting
+        uses: DoozyX/clang-format-lint-action@v0.9
+        with:
+          source: "examples include src tests"
+          clangFormatVersion: 10
+      - name: Lint markdown files
+        uses: avto-dev/markdown-lint@v1.3.0
+        with:
+          args: .
+      - name: Check licensing
+        run:
+          pip install --user reuse
+          reuse lint
   UnitTests:
     strategy:
       matrix:

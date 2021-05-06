@@ -1,3 +1,9 @@
+<!--
+Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 # libsiedler2 - Library for reading and writing 'The Settlers II' file formats
 
 ### Current Build Info

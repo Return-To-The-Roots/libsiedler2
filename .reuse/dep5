@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Return to the Roots
+Upstream-Contact: Settlers Freaks <sf-team at siedler25.org>
+Source: https://www.rttr.info
+
+Files: tests/testFiles/*
+Copyright: 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+License: GPL-2.0-or-later

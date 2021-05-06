@@ -1,3 +1,7 @@
+// Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 dockerRegistry = "registry.mytrap.de/"
 dockerCredentials = "gitlab-Flow86"
 dockerImage = "rttr/cross-compiler/linux/linux-amd64-docker:master"
@@ -6,7 +10,7 @@ pipeline {
     agent {
         label "docker"
     }
-    
+
     options {
         buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '14', daysToKeepStr: '14', numToKeepStr: '180'))
         disableConcurrentBuilds()

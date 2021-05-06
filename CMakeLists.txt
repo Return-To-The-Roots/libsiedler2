@@ -1,3 +1,7 @@
+# Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 # Project meant to be used as part of a super project including libutil and libendian
 cmake_minimum_required(VERSION 3.9)
 if(POLICY CMP0074)
