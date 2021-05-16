@@ -9,6 +9,7 @@
 #include "libendian/EndianOStreamAdapter.h"
 #include <boost/nowide/fstream.hpp>
 #include <algorithm>
+#include <limits>
 #include <stdexcept>
 #include <utility>
 

@@ -12,6 +12,7 @@
 #include "prototypen.h"
 #include "libendian/EndianIStreamAdapter.h"
 #include <algorithm>
+#include <limits>
 #include <vector>
 
 /**

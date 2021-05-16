@@ -12,6 +12,7 @@
 #include "s25util/StringConversion.h"
 #include <boost/range/adaptor/indexed.hpp>
 #include <iostream>
+#include <limits>
 
 namespace {
 constexpr uint16_t COLOR_BLOCK_HEADER = 0x01F5;
