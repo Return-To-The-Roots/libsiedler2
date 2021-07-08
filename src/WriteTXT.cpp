@@ -32,7 +32,7 @@ int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const
         return item && !dynamic_cast<const ArchivItem_Text*>(item.get());
     };
     if(std::find_if(begin(items), end(items), isInvalidEntry) != end(items))
-        return ErrorCode::WRONG_ARCHIV;
+        return ErrorCode::WRONG_ARCHIVE;
 
     // Datei zum lesen öffnen
     libendian::EndianOStreamAdapter<false, boost::nowide::ofstream> fs(filepath, std::ios_base::binary);

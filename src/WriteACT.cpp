@@ -23,7 +23,7 @@ int libsiedler2::loader::WriteACT(const boost::filesystem::path& filepath, const
 
     const auto* palette = dynamic_cast<const ArchivItem_Palette*>(items[0]);
     if(!palette)
-        return ErrorCode::WRONG_ARCHIV;
+        return ErrorCode::WRONG_ARCHIVE;
 
     // Datei zum schreiben öffnen
     boost::nowide::ofstream fs(filepath, std::ios_base::binary);

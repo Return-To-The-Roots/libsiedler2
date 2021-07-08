@@ -33,7 +33,7 @@ int libsiedler2::loader::WriteBMP(const boost::filesystem::path& filepath, const
 
     const auto* bitmap = dynamic_cast<const ArchivItem_BitmapBase*>(items[0]);
     if(!bitmap)
-        return ErrorCode::WRONG_ARCHIV;
+        return ErrorCode::WRONG_ARCHIVE;
 
     const uint16_t width = bitmap->getWidth();
     const uint16_t height = bitmap->getHeight();

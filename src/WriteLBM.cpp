@@ -20,7 +20,7 @@ int libsiedler2::loader::WriteLBM(const boost::filesystem::path& filepath, const
 
     const auto* bmp = dynamic_cast<const baseArchivItem_Bitmap*>(items[0]);
     if(!bmp)
-        return ErrorCode::WRONG_ARCHIV;
+        return ErrorCode::WRONG_ARCHIVE;
     if(bmp->getPalette())
         palette = bmp->getPalette();
     if(!palette)
@@ -65,7 +65,7 @@ int libsiedler2::loader::WriteLBM(const boost::filesystem::path& filepath, const
     for(unsigned i = 1; i < items.size(); i++)
     {
         if(!items[i] || items[i]->getBobType() != BobType::PaletteAnim)
-            return ErrorCode::WRONG_ARCHIV;
+            return ErrorCode::WRONG_ARCHIVE;
         fs.write("CRNG", 4);
         fs << uint32_t(8);
         if(int ec = static_cast<const ArchivItem_PaletteAnimation*>(items[i])->write(fs.getStream()))

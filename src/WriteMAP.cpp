@@ -23,7 +23,7 @@ int libsiedler2::loader::WriteMAP(const boost::filesystem::path& filepath, const
 
     const auto* item = dynamic_cast<const ArchivItem_Map*>(items[0]);
     if(!item)
-        return ErrorCode::WRONG_ARCHIV;
+        return ErrorCode::WRONG_ARCHIVE;
 
     // Datei zum lesen öffnen
     boost::nowide::ofstream fs(filepath, std::ios_base::binary);

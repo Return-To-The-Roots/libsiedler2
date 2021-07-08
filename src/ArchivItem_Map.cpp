@@ -148,7 +148,7 @@ int ArchivItem_Map::write(std::ostream& file) const
     const auto* header = dynamic_cast<const ArchivItem_Map_Header*>(get(0));
 
     if(!header)
-        return ErrorCode::WRONG_ARCHIV;
+        return ErrorCode::WRONG_ARCHIVE;
     int ec = header->write(file);
     if(ec)
         return ec;

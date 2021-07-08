@@ -31,7 +31,7 @@ int libsiedler2::loader::WriteINI(const boost::filesystem::path& filepath, const
     {
         const auto* item = dynamic_cast<const ArchivItem_Ini*>(items.get(i));
         if(!item)
-            return ErrorCode::WRONG_ARCHIV;
+            return ErrorCode::WRONG_ARCHIVE;
         if(!first)
             fs << "\r\n";
         else

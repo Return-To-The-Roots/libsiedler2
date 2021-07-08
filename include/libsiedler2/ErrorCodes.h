@@ -17,7 +17,7 @@ struct ErrorCode
         FILE_NOT_ACCESSIBLE, /// File could not be opened
         WRONG_HEADER,        /// Header format did not match
         WRONG_FORMAT,        /// Format in the file did not match (e.g. from sub ids)
-        WRONG_ARCHIV,        /// Archiv content does not match file format
+        WRONG_ARCHIVE,       /// Archiv content does not match file format
         UNEXPECTED_EOF,      /// Encountered EOF/Read-/Write-Error while data was still to be read/written
         PALETTE_MISSING,     /// No palette given when loading/writing paletted image
         INVALID_BUFFER,      /// Buffer was invalid/ missing
