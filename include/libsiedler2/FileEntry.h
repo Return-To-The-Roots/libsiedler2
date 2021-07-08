@@ -13,7 +13,7 @@ namespace libsiedler2 {
 struct FileEntry
 {
     explicit FileEntry(boost::filesystem::path filePath) : filePath(std::move(filePath)) {}
-    FileEntry(boost::filesystem::path filePath, std::string name, int nr, BobType bobtype, unsigned nx, unsigned ny)
+    FileEntry(boost::filesystem::path filePath, std::string name, int nr, BobType bobtype, int nx, int ny)
         : filePath(std::move(filePath)), name(std::move(name)), nr(nr), bobtype(bobtype), nx(nx), ny(ny)
     {}
     /// Path to file and (remaining) name
@@ -23,7 +23,7 @@ struct FileEntry
     int nr = -1;
     BobType bobtype = BobType::Unset;
     /// Origin or delta (fonts)
-    unsigned nx = 0, ny = 0;
+    int nx = 0, ny = 0;
 };
 bool operator<(const FileEntry& left, const FileEntry& right);
 } // namespace libsiedler2

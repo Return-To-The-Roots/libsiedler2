@@ -122,7 +122,14 @@ int main(int argc, char* argv[])
             bfs::path outFilepath = (inputPath / ".").parent_path(); // Get real path to parent dir
             outFilepath += ".NEW." + outFileExt;
             bnw::cout << "Packing directory " << inputPath << " to " << outFilepath << std::endl;
-            pack(inputPath, outFilepath, palette);
+            try
+            {
+                pack(inputPath, outFilepath, palette);
+            } catch(const std::runtime_error& e)
+            {
+                bnw::cerr << "Failed to pack " << inputPath << ": " << e.what() << std::endl;
+                return 3;
+            }
         } else
         {
             bnw::cerr << "Unknown type. Not a file or folder: " << inputPath;

@@ -17,12 +17,15 @@
 #include "s25util/Tokenizer.h"
 #include "s25util/strAlgos.h"
 #include <boost/filesystem.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <algorithm>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 
 namespace bfs = boost::filesystem;
+using boost::bad_numeric_cast;
+using boost::numeric_cast;
 
 /** @mainpage libsiedler2
  *
@@ -208,8 +211,14 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         {
             auto font = getAllocator().create<ArchivItem_Font>(BobType::Font);
             font->isUnicode = s25util::toLower(entry.filePath.extension().string()) == ".fonx";
-            font->setDx(static_cast<uint8_t>(entry.nx));
-            font->setDy(static_cast<uint8_t>(entry.ny));
+            try
+            {
+                font->setDx(numeric_cast<uint8_t>(entry.nx));
+                font->setDy(numeric_cast<uint8_t>(entry.ny));
+            } catch(const bad_numeric_cast&)
+            {
+                return ErrorCode::CUSTOM + 1;
+            }
             int ec;
             if(bfs::is_directory(entry.filePath))
                 ec = LoadFolder(ReadFolderInfo(entry.filePath), *font, palette);
@@ -290,6 +299,14 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 auto* bmp = static_cast<ArchivItem_BitmapBase*>(newItem.get());
                 bmp->setNx(entry.nx);
                 bmp->setNy(entry.ny);
+                try
+                {
+                    bmp->setNx(numeric_cast<int16_t>(entry.nx));
+                    bmp->setNx(numeric_cast<int16_t>(entry.ny));
+                } catch(const bad_numeric_cast&)
+                {
+                    return ErrorCode::CUSTOM + 1;
+                }
                 if(curPal)
                     bmp->setPaletteCopy(*curPal);
             } else if(entry.bobtype == BobType::PaletteAnim)
@@ -451,9 +468,9 @@ std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath)
                 filepath.bobtype = BobType::Palette;
 
             else if(part.substr(0, 2) == "nx" || part.substr(0, 2) == "dx")
-                filepath.nx = s25util::fromStringClassic<unsigned>(part.substr(2));
+                filepath.nx = s25util::fromStringClassic<int>(part.substr(2));
             else if(part.substr(0, 2) == "ny" || part.substr(0, 2) == "dy")
-                filepath.ny = s25util::fromStringClassic<unsigned>(part.substr(2));
+                filepath.ny = s25util::fromStringClassic<int>(part.substr(2));
             else
                 filepath.name += (filepath.name.empty() ? "" : ".") + part;
         }
