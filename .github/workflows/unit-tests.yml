@@ -16,7 +16,6 @@ defaults:
     shell: bash
 
 jobs:
-jobs:
   StyleAndFormatting:
     runs-on: ubuntu-latest
     steps:
