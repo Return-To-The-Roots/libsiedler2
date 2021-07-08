@@ -126,8 +126,8 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
         }
     } catch(std::exception& e)
     {
-        // Mostly error on reading (e.g. unexpected end of file)
-        std::cerr << "Error while reading: " << e.what() << std::endl;
+        // Mostly error on writing (e.g. unexpected end of file)
+        std::cerr << "Error while writing: " << e.what() << std::endl;
         return ErrorCode::CUSTOM;
     }
     return ErrorCode::NONE;

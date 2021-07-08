@@ -62,7 +62,12 @@ int libsiedler2::loader::WriteLST(const boost::filesystem::path& filepath, const
 
         // Daten von Item schreiben
         if(int ec = WriteType(bobtype, fs.getStream(), *item, palette))
+        {
+            // If custom error store the index too
+            if(ec == ErrorCode::CUSTOM)
+                ec = ErrorCode::CUSTOM + std::min<uint32_t>(i, std::numeric_limits<int>::max() - ErrorCode::CUSTOM);
             return ec;
+        }
     }
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
