@@ -297,12 +297,10 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     newItem = std::move(convertedBmp);
                 }
                 auto* bmp = static_cast<ArchivItem_BitmapBase*>(newItem.get());
-                bmp->setNx(entry.nx);
-                bmp->setNy(entry.ny);
                 try
                 {
                     bmp->setNx(numeric_cast<int16_t>(entry.nx));
-                    bmp->setNx(numeric_cast<int16_t>(entry.ny));
+                    bmp->setNy(numeric_cast<int16_t>(entry.ny));
                 } catch(const bad_numeric_cast&)
                 {
                     return ErrorCode::CUSTOM + 1;

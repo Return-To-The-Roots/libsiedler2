@@ -96,26 +96,32 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
     Archiv archive;
     BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive, loadPal.palette) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 9u);
-    BOOST_TEST_REQUIRE(!archive[0]);
+    BOOST_TEST(!archive[0]);
     BOOST_TEST_REQUIRE(archive[1]);
     BOOST_TEST_REQUIRE(archive[1]->getBobType() == BobType::BitmapPlayer);
-    BOOST_TEST_REQUIRE(archive[1]->getName() == "");
-    BOOST_TEST_REQUIRE(!archive[2]);
+    BOOST_TEST(archive[1]->getName() == "");
+    const auto& bmp1 = static_cast<ArchivItem_BitmapBase&>(*archive[1]);
+    BOOST_TEST(bmp1.getNx() == 5);
+    BOOST_TEST(bmp1.getNy() == 7);
+    BOOST_TEST(!archive[2]);
     BOOST_TEST_REQUIRE(archive[3]);
     BOOST_TEST_REQUIRE(archive[3]->getBobType() == BobType::BitmapRLE);
-    BOOST_TEST_REQUIRE(archive[3]->getName() == "");
-    BOOST_TEST_REQUIRE(!archive[4]);
+    BOOST_TEST(archive[3]->getName() == "");
+    const auto& bmp3 = static_cast<ArchivItem_BitmapBase&>(*archive[3]);
+    BOOST_TEST(bmp3.getNx() == 1);
+    BOOST_TEST(bmp3.getNy() == 9);
+    BOOST_TEST(!archive[4]);
     BOOST_TEST_REQUIRE(archive[5]);
     BOOST_TEST_REQUIRE(archive[5]->getBobType() == BobType::Text);
-    BOOST_TEST_REQUIRE(static_cast<ArchivItem_Text&>(*archive[5]).getText() == "Hello World");
-    BOOST_TEST_REQUIRE(archive[5]->getName() == "cooltext");
-    BOOST_TEST_REQUIRE(!archive[6]);
+    BOOST_TEST(static_cast<ArchivItem_Text&>(*archive[5]).getText() == "Hello World");
+    BOOST_TEST(archive[5]->getName() == "cooltext");
+    BOOST_TEST(!archive[6]);
     BOOST_TEST_REQUIRE(archive[7]);
-    BOOST_TEST_REQUIRE(archive[7]->getBobType() == BobType::Bitmap);
-    BOOST_TEST_REQUIRE(archive[7]->getName() == "a");
+    BOOST_TEST(archive[7]->getBobType() == BobType::Bitmap);
+    BOOST_TEST(archive[7]->getName() == "a");
     BOOST_TEST_REQUIRE(archive[8]);
-    BOOST_TEST_REQUIRE(archive[8]->getBobType() == BobType::Bitmap);
-    BOOST_TEST_REQUIRE(archive[8]->getName() == "f");
+    BOOST_TEST(archive[8]->getBobType() == BobType::Bitmap);
+    BOOST_TEST(archive[8]->getName() == "f");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
