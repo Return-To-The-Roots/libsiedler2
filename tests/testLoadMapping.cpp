@@ -65,7 +65,7 @@ static auto makeExceptionCheck(std::string msgPart)
 
 BOOST_AUTO_TEST_CASE(DetectErrors)
 {
-    const auto doNothing = [](unsigned, const std::string&) {};
+    const auto doNothing = [](unsigned, const std::string&) noexcept {};
     std::stringstream s("1234\n");
     s.seekg(0);
     BOOST_CHECK_EXCEPTION(libsiedler2::loadMapping(s, doNothing), std::runtime_error,
