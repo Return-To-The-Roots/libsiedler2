@@ -21,7 +21,7 @@ struct LoadPalette
     {
         BOOST_TEST_REQUIRE(libsiedler2::Load(libsiedler2::test::inputPath / "pal5.act", paletteArchiv) == 0);
         palette = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(0));
-        BOOST_REQUIRE(palette);
+        BOOST_TEST_REQUIRE(palette);
         paletteArchiv.pushC(*palette);
         modPal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(paletteArchiv.get(1));
         BOOST_TEST_REQUIRE(modPal);

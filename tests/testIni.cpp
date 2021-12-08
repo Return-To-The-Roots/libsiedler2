@@ -16,9 +16,9 @@ BOOST_AUTO_TEST_CASE(ReadWriteIni)
     const boost::filesystem::path inPath = libsiedler2::test::inputPath / "test.ini";
     const boost::filesystem::path outPath = libsiedler2::test::outputPath / "outTest.ini";
     libsiedler2::Archiv act;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, act), 0);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, act), 0);
-    BOOST_REQUIRE(testFilesEqual(outPath, inPath));
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, act) == 0);
+    BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

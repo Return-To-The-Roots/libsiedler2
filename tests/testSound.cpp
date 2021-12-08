@@ -31,16 +31,16 @@ BOOST_AUTO_TEST_CASE(ReadWriteOgg)
     const bfs::path inPath = libsiedler2::test::inputPath / "test.ogg";
     const bfs::path outPath = libsiedler2::test::outputPath / "outTest.ogg";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE(testLoad(0, inPath, archiv));
+    BOOST_TEST_REQUIRE(testLoad(0, inPath, archiv));
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Other*>(archiv[0]);
-    BOOST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(snd->getLength(), 105243u);
-    BOOST_REQUIRE_EQUAL(std::string(reinterpret_cast<const char*>(&snd->getData()[0])), "OggS");
-    BOOST_REQUIRE_EQUAL(snd->getData()[49999], uint8_t(0xe6));
-    BOOST_REQUIRE_EQUAL(snd->getData().back(), uint8_t(0));
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
-    BOOST_REQUIRE(testFilesEqual(outPath, inPath));
+    BOOST_TEST_REQUIRE(snd->getLength() == 105243u);
+    BOOST_TEST_REQUIRE(std::string(reinterpret_cast<const char*>(&snd->getData()[0])) == "OggS");
+    BOOST_TEST_REQUIRE(snd->getData()[49999] == uint8_t(0xe6));
+    BOOST_TEST_REQUIRE(snd->getData().back() == uint8_t(0));
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
 BOOST_AUTO_TEST_CASE(ReadOrigSoundLst)
@@ -49,18 +49,19 @@ BOOST_AUTO_TEST_CASE(ReadOrigSoundLst)
         return;
     const bfs::path inPath = libsiedler2::test::s2Path / "DATA/SOUNDDAT/SOUND.LST";
     libsiedler2::Archiv archivLst;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archivLst), 0);
-    BOOST_REQUIRE_EQUAL(archivLst.size(), 200u);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archivLst) == 0);
+    BOOST_TEST_REQUIRE(archivLst.size() == 200u);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[0]);
-    BOOST_REQUIRE(snd);
-    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SoundType::XMidi);
-    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
-    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 39167u);
-    BOOST_REQUIRE(!archivLst[1]);
+    BOOST_TEST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd->getType() == libsiedler2::SoundType::XMidi);
+    BOOST_TEST_REQUIRE(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks() == 1u);
+    BOOST_TEST_REQUIRE(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength()
+                       == 39167u);
+    BOOST_TEST_REQUIRE(!archivLst[1]);
     snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[51]);
-    BOOST_REQUIRE(snd);
-    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SoundType::Wave);
-    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_Wave*>(snd)->getLength(), 9943u);
+    BOOST_TEST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd->getType() == libsiedler2::SoundType::Wave);
+    BOOST_TEST_REQUIRE(static_cast<libsiedler2::ArchivItem_Sound_Wave*>(snd)->getLength() == 9943u);
 }
 
 BOOST_AUTO_TEST_CASE(ReadOrigSng)
@@ -69,12 +70,12 @@ BOOST_AUTO_TEST_CASE(ReadOrigSng)
         return;
     const bfs::path inPath = libsiedler2::test::s2Path / "DATA/SOUNDDAT/SNG/SNG_0001.DAT";
     libsiedler2::Archiv archivSNG;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archivSNG), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archivSNG) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivSNG[0]);
-    BOOST_REQUIRE(snd);
-    BOOST_REQUIRE_EQUAL(snd->getType(), libsiedler2::SoundType::XMidi);
-    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks(), 1u);
-    BOOST_REQUIRE_EQUAL(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength(), 7069u);
+    BOOST_TEST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd->getType() == libsiedler2::SoundType::XMidi);
+    BOOST_TEST_REQUIRE(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getNumTracks() == 1u);
+    BOOST_TEST_REQUIRE(static_cast<libsiedler2::ArchivItem_Sound_XMidi*>(snd)->getMidiTrack(0).getMidLength() == 7069u);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
@@ -82,14 +83,14 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
     const bfs::path inPath = libsiedler2::test::inputPath / "testMono.wav";
     const bfs::path outPath = libsiedler2::test::outputPath / "outMono.wav";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
-    BOOST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(snd->getLength(), 135944u);
-    BOOST_REQUIRE_EQUAL(snd->getData().back(), uint8_t(0));
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
-    BOOST_REQUIRE(testFilesEqual(outPath, inPath));
+    BOOST_TEST_REQUIRE(snd->getLength() == 135944u);
+    BOOST_TEST_REQUIRE(snd->getData().back() == uint8_t(0));
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
@@ -97,14 +98,14 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
     const bfs::path inPath = libsiedler2::test::inputPath / "testStereo.wav";
     const bfs::path outPath = libsiedler2::test::outputPath / "testStereo.wav";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
-    BOOST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(snd->getLength(), 111414u);
-    BOOST_REQUIRE_EQUAL(snd->getData().back(), uint8_t(0));
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
-    BOOST_REQUIRE(testFilesEqual(outPath, inPath));
+    BOOST_TEST_REQUIRE(snd->getLength() == 111414u);
+    BOOST_TEST_REQUIRE(snd->getData().back() == uint8_t(0));
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteMid)
@@ -112,12 +113,12 @@ BOOST_AUTO_TEST_CASE(ReadWriteMid)
     const bfs::path inPath = libsiedler2::test::inputPath / "testMidi.mid";
     const bfs::path outPath = libsiedler2::test::outputPath / "outMidi.mid";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Midi*>(archiv[0]);
-    BOOST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd);
     // Hacky check
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
-    BOOST_REQUIRE(testFilesEqual(outPath, inPath));
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteXMid)
@@ -125,14 +126,14 @@ BOOST_AUTO_TEST_CASE(ReadWriteXMid)
     const bfs::path inPath = libsiedler2::test::inputPath / "testXMidi.xmi";
     const bfs::path outPath = libsiedler2::test::outputPath / "outXMidi.xmi";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[0]);
-    BOOST_REQUIRE(snd);
+    BOOST_TEST_REQUIRE(snd);
     // Hacky check
     for(unsigned i = 0; i < snd->getNumTracks(); i++)
         BOOST_REQUIRE_NO_THROW(snd->getMidiTrack(i));
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, archiv), 0);
-    BOOST_REQUIRE(testFilesEqual(outPath, inPath));
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
 BOOST_AUTO_TEST_CASE(Clone)
@@ -156,22 +157,20 @@ BOOST_AUTO_TEST_CASE(Clone)
     auto* snd6 = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[1]);
     auto* snd7 = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[2]);
     auto* snd8 = dynamic_cast<libsiedler2::ArchivItem_Sound_Other*>(archiv[3]);
-    BOOST_REQUIRE(snd5);
-    BOOST_REQUIRE(snd6);
-    BOOST_REQUIRE(snd7);
-    BOOST_REQUIRE(snd8);
+    BOOST_TEST_REQUIRE(snd5);
+    BOOST_TEST_REQUIRE(snd6);
+    BOOST_TEST_REQUIRE(snd7);
+    BOOST_TEST_REQUIRE(snd8);
 
-    BOOST_REQUIRE_EQUAL(snd5->getType(), snd1.getType());
-    BOOST_REQUIRE_EQUAL(snd6->getType(), snd2.getType());
-    BOOST_REQUIRE_EQUAL(snd7->getType(), snd3.getType());
-    BOOST_REQUIRE_EQUAL(snd8->getType(), snd4.getType());
+    BOOST_TEST_REQUIRE(snd5->getType() == snd1.getType());
+    BOOST_TEST_REQUIRE(snd6->getType() == snd2.getType());
+    BOOST_TEST_REQUIRE(snd7->getType() == snd3.getType());
+    BOOST_TEST_REQUIRE(snd8->getType() == snd4.getType());
 
-    BOOST_REQUIRE_EQUAL(snd5->getNumTracks(), 1u);
-    BOOST_REQUIRE_EQUAL(snd6->getNumTracks(), 1u);
-    BOOST_REQUIRE_EQUAL_COLLECTIONS(snd7->getData().begin(), snd7->getData().end(), snd3.getData().begin(),
-                                    snd3.getData().end());
-    BOOST_REQUIRE_EQUAL_COLLECTIONS(snd8->getData().begin(), snd8->getData().end(), snd4.getData().begin(),
-                                    snd4.getData().end());
+    BOOST_TEST_REQUIRE(snd5->getNumTracks() == 1u);
+    BOOST_TEST_REQUIRE(snd6->getNumTracks() == 1u);
+    BOOST_TEST_REQUIRE(snd7->getData() == snd3.getData(), boost::test_tools::per_element());
+    BOOST_TEST_REQUIRE(snd8->getData() == snd4.getData(), boost::test_tools::per_element());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

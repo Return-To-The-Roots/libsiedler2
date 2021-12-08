@@ -23,18 +23,18 @@ BOOST_AUTO_TEST_CASE(LoadDatIdxFile)
     {
         const boost::filesystem::path inPath = libsiedler2::test::s2Path / "DATA" / file;
         libsiedler2::Archiv archiv;
-        BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
-        BOOST_REQUIRE_EQUAL(archiv.size(), 57u);
-        BOOST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[0]));
-        BOOST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Palette*>(archiv[1]));
-        BOOST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[2]));
-        BOOST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[3]));
+        BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
+        BOOST_TEST_REQUIRE(archiv.size() == 57u);
+        BOOST_TEST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[0]));
+        BOOST_TEST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Palette*>(archiv[1]));
+        BOOST_TEST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[2]));
+        BOOST_TEST_REQUIRE(dynamic_cast<libsiedler2::ArchivItem_Font*>(archiv[3]));
         for(unsigned i = 4; i < archiv.size(); i++)
         {
             const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_BitmapBase*>(archiv[i]);
-            BOOST_REQUIRE(bmp);
-            BOOST_REQUIRE_GT(bmp->getWidth(), 0u);
-            BOOST_REQUIRE_GT(bmp->getHeight(), 0u);
+            BOOST_TEST_REQUIRE(bmp);
+            BOOST_TEST(bmp->getWidth() > 0u);
+            BOOST_TEST(bmp->getHeight() > 0u);
         }
     }
 }

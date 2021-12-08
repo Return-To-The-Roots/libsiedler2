@@ -19,18 +19,18 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
         return;
     const boost::filesystem::path inPath = libsiedler2::test::s2Path / "GFX/TEXTURES/TEX5.LBM";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPath, archiv, palette), 0);
-    BOOST_REQUIRE_EQUAL(archiv.size(), 17u);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
+    BOOST_TEST_REQUIRE(archiv.size() == 17u);
     const libsiedler2::ArchivItem_BitmapBase* bmp = dynamic_cast<libsiedler2::ArchivItem_BitmapBase*>(archiv[0]);
-    BOOST_REQUIRE(bmp);
-    BOOST_REQUIRE_EQUAL(bmp->getWidth(), 256u);
-    BOOST_REQUIRE_EQUAL(bmp->getHeight(), 256u);
-    BOOST_REQUIRE_EQUAL(bmp->getNx(), 0);
-    BOOST_REQUIRE_EQUAL(bmp->getNy(), 0);
+    BOOST_TEST_REQUIRE(bmp);
+    BOOST_TEST_REQUIRE(bmp->getWidth() == 256u);
+    BOOST_TEST_REQUIRE(bmp->getHeight() == 256u);
+    BOOST_TEST_REQUIRE(bmp->getNx() == 0);
+    BOOST_TEST_REQUIRE(bmp->getNy() == 0);
     // Hard coded expectation
-    BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(0, 0), 124u);
-    BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(123, 65), 77u);
-    BOOST_REQUIRE_EQUAL(bmp->getPixelClrIdx(255, 255), 240u);
+    BOOST_TEST_REQUIRE(bmp->getPixelClrIdx(0, 0) == 124u);
+    BOOST_TEST_REQUIRE(bmp->getPixelClrIdx(123, 65) == 77u);
+    BOOST_TEST_REQUIRE(bmp->getPixelClrIdx(255, 255) == 240u);
 }
 
 BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
@@ -39,17 +39,17 @@ BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
     const boost::filesystem::path outPath = libsiedler2::test::outputPath / "out.lbm";
     // Load a paletted bmp and write it in lbm format
     libsiedler2::Archiv arBmp;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inPathBmp, arBmp, palette), 0);
-    BOOST_REQUIRE_EQUAL(libsiedler2::Write(outPath, arBmp, palette), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inPathBmp, arBmp, palette) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, arBmp, palette) == 0);
     // Load lbm and check if bitmaps are equal
     libsiedler2::Archiv arLbm;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(outPath, arLbm, palette), 0);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(outPath, arLbm, palette) == 0);
     const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arBmp[0]);
     const auto* bmpLbm = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arLbm[0]);
-    BOOST_REQUIRE(bmp);
-    BOOST_REQUIRE(bmpLbm);
-    BOOST_REQUIRE_EQUAL(bmp->getWidth(), bmpLbm->getWidth());
-    BOOST_REQUIRE_EQUAL(bmp->getHeight(), bmpLbm->getHeight());
+    BOOST_TEST_REQUIRE(bmp);
+    BOOST_TEST_REQUIRE(bmpLbm);
+    BOOST_TEST_REQUIRE(bmp->getWidth() == bmpLbm->getWidth());
+    BOOST_TEST_REQUIRE(bmp->getHeight() == bmpLbm->getHeight());
     std::vector<libsiedler2::ColorRGB> bmpData(bmp->getPixelData().size()), bmpLbmData(bmp->getPixelData().size());
     std::transform(bmp->getPixelData().begin(), bmp->getPixelData().end(), bmpData.begin(),
                    [pal = *bmp->getPalette()](uint8_t i) { return pal[i]; });

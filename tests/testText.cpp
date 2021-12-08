@@ -112,25 +112,25 @@ BOOST_AUTO_TEST_CASE(ReadWriteSingleEmptyEntry)
     BOOST_TEST_REQUIRE(libsiedler2::Write(outFilepath, archiv) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archivIn.size() == 1u);
-    BOOST_TEST_REQUIRE((!archiv[0] && !archivIn[0]));
+    BOOST_TEST_REQUIRE(!archivIn[0]);
 }
 
 BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
 {
     const bfs::path inFilepath = libsiedler2::test::inputPath / "txtAsLst.lst";
     libsiedler2::Archiv archiv;
-    BOOST_REQUIRE_EQUAL(libsiedler2::Load(inFilepath, archiv), 0);
-    BOOST_REQUIRE_EQUAL(archiv.size(), 7u);
+    BOOST_TEST_REQUIRE(libsiedler2::Load(inFilepath, archiv) == 0);
+    BOOST_TEST_REQUIRE(archiv.size() == 7u);
     for(unsigned i = 0; i < archiv.size(); i++)
     {
         const auto* txt = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[i]);
         // Item 4 is empty
         if(i == 4)
-            BOOST_REQUIRE(!txt);
+            BOOST_TEST_REQUIRE(!txt);
         else
         {
-            BOOST_REQUIRE(txt);
-            BOOST_REQUIRE(!txt->getText().empty());
+            BOOST_TEST_REQUIRE(txt);
+            BOOST_TEST_REQUIRE(!txt->getText().empty());
         }
     }
 }
