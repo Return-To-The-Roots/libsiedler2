@@ -305,7 +305,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                 {
                     return ErrorCode::CUSTOM + 1;
                 }
-                if(curPal)
+                if(curPal && !bmp->getPalette())
                     bmp->setPaletteCopy(*curPal);
             } else if(entry.bobtype == BobType::PaletteAnim)
             {
