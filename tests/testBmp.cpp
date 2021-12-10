@@ -57,7 +57,7 @@ static std::ostream& operator<<(std::ostream& os, libsiedler2::TextureFormat fmt
 } // namespace libsiedler2
 
 // LCOV_EXCL_START
-BOOST_TEST_DONT_PRINT_LOG_VALUE(libsiedler2::ArchivItem_Palette);
+BOOST_TEST_DONT_PRINT_LOG_VALUE(libsiedler2::ArchivItem_Palette)
 // LCOV_EXCL_STOP
 
 using namespace libsiedler2;
@@ -273,74 +273,73 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnLoad)
 
     // Try all formats with all possible bmp types.
     for(TextureFormat curFmt : {TextureFormat::Original, TextureFormat::Paletted, TextureFormat::BGRA})
-        BOOST_TEST_CONTEXT("Format=" << curFmt)
+    {
+        BOOST_TEST_INFO_SCOPE("Format=" << curFmt);
+        FormatSetter fmtSetter(curFmt);
+        for(const TestBitmaps::Info& testFile : testFiles.files)
         {
-            FormatSetter fmtSetter(curFmt);
-            for(const TestBitmaps::Info& testFile : testFiles.files)
-                BOOST_TEST_CONTEXT("File=" << testFile.filename)
+            BOOST_TEST_INFO_SCOPE("File=" << testFile.filename);
+            Archiv archiv;
+            if((curFmt == TextureFormat::Paletted && !testFile.containsPalette)
+               || (testFile.isPaletted && !testFile.containsPalette))
+            {
+                // Paletted files need a palette. For conversion to paletted we also need one
+                BOOST_TEST_REQUIRE(
+                  testLoad(ErrorCode::PALETTE_MISSING, libsiedler2::test::inputPath / testFile.filename, archiv));
+            } else
+            {
+                // Non paletted file or palette contained
+                BOOST_TEST_REQUIRE(testLoad(0, libsiedler2::test::inputPath / testFile.filename, archiv));
+                const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
+                // For paletted bitmaps we must have a palette, the others must not have one
+                if(bmp->getFormat() == TextureFormat::Paletted || testFile.containsPalette)
+                    BOOST_TEST_REQUIRE(getFirstBitmap(archiv)->getPalette());
+                else
+                    BOOST_TEST_REQUIRE(!getFirstBitmap(archiv)->getPalette());
+            }
+            const ArchivItem_Palette* usedPalette;
+            // Use the empty pal to detect if it was used for conversion
+            if(testFile.containsPalette)
+                usedPalette = &emptyPal;
+            else
+                usedPalette = modPal; // Files are saved with palette, so use another one to detect difference
+            archiv.clear();
+            BOOST_TEST_REQUIRE(testLoad(0, libsiedler2::test::inputPath / testFile.filename, archiv, usedPalette));
+            const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
+            if(bmp->getFormat() == TextureFormat::Paletted)
+            {
+                // Paletted formats must have a palette
+                BOOST_TEST_REQUIRE(bmp->getPalette());
+                // If the file contains a palette, it has to be used, otherwise the default shall be used
+                if(testFile.containsPalette)
+                    BOOST_TEST_REQUIRE(*usedPalette != *bmp->getPalette());
+                else
+                    BOOST_TEST_REQUIRE(*usedPalette == *bmp->getPalette());
+            } else if(testFile.containsPalette)
+            {
+                // If the file contains a palette, it has to be used, otherwise no palette
+                BOOST_TEST_REQUIRE(bmp->getPalette());
+                BOOST_TEST_REQUIRE(*usedPalette != *bmp->getPalette());
+                // If the empty palette is used, we will only find transparent and black pixels. Check that this
+                // did not happen
+                bool clrFound = false;
+                for(unsigned y = 0; y < bmp->getHeight(); y++)
                 {
-                    Archiv archiv;
-                    if((curFmt == TextureFormat::Paletted && !testFile.containsPalette)
-                       || (testFile.isPaletted && !testFile.containsPalette))
+                    for(unsigned x = 0; x < bmp->getWidth(); x++)
                     {
-                        // Paletted files need a palette. For conversion to paletted we also need one
-                        BOOST_TEST_REQUIRE(testLoad(ErrorCode::PALETTE_MISSING,
-                                                    libsiedler2::test::inputPath / testFile.filename, archiv));
-                    } else
-                    {
-                        // Non paletted file or palette contained
-                        BOOST_TEST_REQUIRE(testLoad(0, libsiedler2::test::inputPath / testFile.filename, archiv));
-                        const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
-                        // For paletted bitmaps we must have a palette, the others must not have one
-                        if(bmp->getFormat() == TextureFormat::Paletted || testFile.containsPalette)
-                            BOOST_TEST_REQUIRE(getFirstBitmap(archiv)->getPalette());
-                        else
-                            BOOST_TEST_REQUIRE(!getFirstBitmap(archiv)->getPalette());
-                    }
-                    const ArchivItem_Palette* usedPalette;
-                    // Use the empty pal to detect if it was used for conversion
-                    if(testFile.containsPalette)
-                        usedPalette = &emptyPal;
-                    else
-                        usedPalette = modPal; // Files are saved with palette, so use another one to detect difference
-                    archiv.clear();
-                    BOOST_TEST_REQUIRE(
-                      testLoad(0, libsiedler2::test::inputPath / testFile.filename, archiv, usedPalette));
-                    const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
-                    if(bmp->getFormat() == TextureFormat::Paletted)
-                    {
-                        // Paletted formats must have a palette
-                        BOOST_TEST_REQUIRE(bmp->getPalette());
-                        // If the file contains a palette, it has to be used, otherwise the default shall be used
-                        if(testFile.containsPalette)
-                            BOOST_TEST_REQUIRE(*usedPalette != *bmp->getPalette());
-                        else
-                            BOOST_TEST_REQUIRE(*usedPalette == *bmp->getPalette());
-                    } else if(testFile.containsPalette)
-                    {
-                        // If the file contains a palette, it has to be used, otherwise no palette
-                        BOOST_TEST_REQUIRE(bmp->getPalette());
-                        BOOST_TEST_REQUIRE(*usedPalette != *bmp->getPalette());
-                        // If the empty palette is used, we will only find transparent and black pixels. Check that this
-                        // did not happen
-                        bool clrFound = false;
-                        for(unsigned y = 0; y < bmp->getHeight(); y++)
+                        ColorBGRA clr = bmp->getPixel(x, y);
+                        if(clr.getAlpha() != 0 && clr.getBlue() != 0)
                         {
-                            for(unsigned x = 0; x < bmp->getWidth(); x++)
-                            {
-                                ColorBGRA clr = bmp->getPixel(x, y);
-                                if(clr.getAlpha() != 0 && clr.getBlue() != 0)
-                                {
-                                    clrFound = true;
-                                    break;
-                                }
-                            }
+                            clrFound = true;
+                            break;
                         }
-                        BOOST_TEST_REQUIRE(clrFound);
-                    } else
-                        BOOST_TEST_REQUIRE(!bmp->getPalette());
+                    }
                 }
+                BOOST_TEST_REQUIRE(clrFound);
+            } else
+                BOOST_TEST_REQUIRE(!bmp->getPalette());
         }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)

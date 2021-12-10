@@ -20,8 +20,8 @@ boost::test_tools::predicate_result testLoadWrite(T_Func func, int expectedResul
         return true;
     // LCOV_EXCL_START
     boost::test_tools::predicate_result result(false);
-    result.message() << libsiedler2::getErrorString(ec) << " != " << libsiedler2::getErrorString(expectedResult)
-                     << " for " << filepath;
+    result.message() << ec << "(" << libsiedler2::getErrorString(ec) << ") != " << expectedResult << "("
+                     << libsiedler2::getErrorString(expectedResult) << ") for " << filepath;
     return result;
     // LCOV_EXCL_STOP
 }

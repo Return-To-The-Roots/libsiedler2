@@ -143,14 +143,12 @@ BOOST_AUTO_TEST_CASE(ReadOriginalFiles)
     {
         if(is_regular_file(fileEntry.status()) && fileEntry.path().extension() == ".ENG")
         {
-            BOOST_TEST_CONTEXT("For " << fileEntry.path())
-            {
-                libsiedler2::Archiv archiv;
-                // Check only that they can be loaded and have at least 1 entry
-                BOOST_TEST_REQUIRE(libsiedler2::Load(fileEntry.path(), archiv) == 0);
-                BOOST_TEST_REQUIRE(archiv.size() > 0u);
-                BOOST_TEST(archiv[0]);
-            }
+            BOOST_TEST_INFO_SCOPE("For " << fileEntry.path());
+            libsiedler2::Archiv archiv;
+            // Check only that they can be loaded and have at least 1 entry
+            BOOST_TEST_REQUIRE(libsiedler2::Load(fileEntry.path(), archiv) == 0);
+            BOOST_TEST_REQUIRE(archiv.size() > 0u);
+            BOOST_TEST(archiv[0]);
         }
     }
 }

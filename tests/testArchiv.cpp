@@ -20,6 +20,10 @@ static std::ostream& boost_test_print_type(std::ostream& os, libsiedler2::BobTyp
 // LCOV_EXCL_STOP
 } // namespace libsiedler2
 
+// LCOV_EXCL_START
+BOOST_TEST_DONT_PRINT_LOG_VALUE(std::unique_ptr<libsiedler2::ArchivItem>)
+// LCOV_EXCL_STOP
+
 BOOST_AUTO_TEST_SUITE(Archiv)
 
 BOOST_AUTO_TEST_CASE(Push)
@@ -132,19 +136,20 @@ BOOST_AUTO_TEST_CASE(CreateAllTypesAndCopy)
     BOOST_TEST_REQUIRE(archiv.size() == archiv3.size());
     // All should be equal
     for(unsigned i = 0; i < archiv.size(); i++)
-        BOOST_TEST_CONTEXT("Item" << i)
-        {
-            BOOST_TEST_REQUIRE(archiv[i]);
-            BOOST_TEST_REQUIRE(archiv2[i]);
-            BOOST_TEST_REQUIRE(archiv3[i]);
-            // Items should have been copied
-            BOOST_TEST(archiv[i] != archiv2[i]);
-            BOOST_TEST(archiv[i] != archiv3[i]);
-            BOOST_TEST(archiv[i]->getBobType() == archiv2[i]->getBobType());
-            BOOST_TEST(archiv[i]->getBobType() == archiv3[i]->getBobType());
-            BOOST_TEST(archiv[i]->getName() == archiv2[i]->getName());
-            BOOST_TEST(archiv[i]->getName() == archiv3[i]->getName());
-        }
+    {
+        BOOST_TEST_INFO_SCOPE("Item" << i);
+
+        BOOST_TEST_REQUIRE(archiv[i]);
+        BOOST_TEST_REQUIRE(archiv2[i]);
+        BOOST_TEST_REQUIRE(archiv3[i]);
+        // Items should have been copied
+        BOOST_TEST(archiv[i] != archiv2[i]);
+        BOOST_TEST(archiv[i] != archiv3[i]);
+        BOOST_TEST(archiv[i]->getBobType() == archiv2[i]->getBobType());
+        BOOST_TEST(archiv[i]->getBobType() == archiv3[i]->getBobType());
+        BOOST_TEST(archiv[i]->getName() == archiv2[i]->getName());
+        BOOST_TEST(archiv[i]->getName() == archiv3[i]->getName());
+    }
 }
 
 struct TestItem : libsiedler2::ArchivItem

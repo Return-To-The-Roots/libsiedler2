@@ -130,7 +130,6 @@ int libsiedler2::loader::WriteBMP(const boost::filesystem::path& filepath, const
             idx *= 4; // BGRA
             for(int x = 0; x < width; ++x, idx += 4)
             {
-                ColorRGB clr;
                 if(buffer[idx + 3] == 0x00)
                     fs << TRANSPARENT_COLOR.b << TRANSPARENT_COLOR.g << TRANSPARENT_COLOR.r;
                 else

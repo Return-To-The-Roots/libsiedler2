@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <s25util/boostTestHelpers.h>
 #include <boost/filesystem/path.hpp>
 
 #cmakedefine RTTR_LIBSIEDLER2_TEST_FILES_DIR "@RTTR_LIBSIEDLER2_TEST_FILES_DIR@"
