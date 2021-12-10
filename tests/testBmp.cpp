@@ -65,6 +65,51 @@ namespace bfs = boost::filesystem;
 
 BOOST_FIXTURE_TEST_SUITE(Bitmaps, LoadPalette)
 
+BOOST_AUTO_TEST_CASE(LoadBmpFileInDifferentBitDepts)
+{
+    PixelBufferBGRA bufferExpected(13, 5);
+    {
+        constexpr ColorRGB r(0xFF, 0, 0);
+        constexpr ColorRGB g(0, 0xFF, 0);
+        constexpr ColorRGB b(0, 0, 0xFF);
+        constexpr ColorRGB m(0x12, 0x34, 0x56);
+        // Double stair pattern of the 4 colors
+        for(int i = 0; i < 4; ++i)
+        {
+            for(int j = i; j <= i + 5; j += 5)
+            {
+                bufferExpected.set(j + 1, i, r);
+                bufferExpected.set(j + 2, i, b);
+                bufferExpected.set(j + 3, i, g);
+                bufferExpected.set(j + 4, i, m);
+            }
+        }
+        // 4 colors in row 1
+        bufferExpected.set(1, 1, b);
+        bufferExpected.set(1, 2, g);
+        bufferExpected.set(1, 3, m);
+        // red triangle upper right corner
+        bufferExpected.set(11, 0, r);
+        bufferExpected.set(12, 0, r);
+        bufferExpected.set(12, 1, r);
+        // blue row at bottom
+        for(int i = 0; i < bufferExpected.getWidth(); ++i)
+            bufferExpected.set(i, bufferExpected.getHeight() - 1, b);
+    }
+    for(const char* filename : {"raw4bpp.bmp", "raw8bpp.bmp", "raw24bpp.bmp", "raw32bpp.bmp"})
+    {
+        BOOST_TEST_INFO_SCOPE("File: " << filename);
+        const bfs::path bmpPath = libsiedler2::test::inputPath / filename;
+        Archiv bmpArchive;
+        BOOST_TEST_REQUIRE(testLoad(0, bmpPath, bmpArchive));
+        const auto* bmp = dynamic_cast<baseArchivItem_Bitmap*>(bmpArchive[0]);
+        BOOST_TEST_REQUIRE(bmp);
+        PixelBufferBGRA bufferIs(bufferExpected.getWidth(), bufferExpected.getHeight());
+        BOOST_TEST_REQUIRE(bmp->print(bufferIs) == 0);
+        BOOST_TEST(bufferIs == bufferExpected, boost::test_tools::per_element());
+    }
+}
+
 BOOST_AUTO_TEST_CASE(ReadWritePlayerBitmap)
 {
     const bfs::path bmpPath = libsiedler2::test::inputPath / "bmpPlayer.lst";
