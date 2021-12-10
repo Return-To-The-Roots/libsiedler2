@@ -15,10 +15,10 @@ struct ColorBGRA
 {
     std::array<uint8_t, 4> value = {};
 
-    ColorBGRA() = default;
+    constexpr ColorBGRA() = default;
     /// Create a ARGB color.
-    explicit ColorBGRA(uint8_t b, uint8_t g, uint8_t r, uint8_t a);
-    ColorBGRA(ColorRGB clrRGB, uint8_t a = 0xFF);
+    constexpr explicit ColorBGRA(uint8_t b, uint8_t g, uint8_t r, uint8_t a);
+    constexpr ColorBGRA(ColorRGB clrRGB, uint8_t a = 0xFF);
     /// Construct from a BGRA buffer (bytes in this order)
     explicit ColorBGRA(const void* bgraBuffer);
     /// Convert from a 4 byte value. Highest byte is alpha
@@ -53,8 +53,8 @@ inline bool operator!=(const ColorBGRA& lhs, const ColorBGRA& rhs)
     return !(lhs == rhs);
 }
 
-inline ColorBGRA::ColorBGRA(uint8_t b, uint8_t g, uint8_t r, uint8_t a) : value{b, g, r, a} {}
-inline ColorBGRA::ColorBGRA(ColorRGB clrRGB, uint8_t a) : ColorBGRA(clrRGB.b, clrRGB.g, clrRGB.r, a) {}
+inline constexpr ColorBGRA::ColorBGRA(uint8_t b, uint8_t g, uint8_t r, uint8_t a) : value{b, g, r, a} {}
+inline constexpr ColorBGRA::ColorBGRA(ColorRGB clrRGB, uint8_t a) : ColorBGRA(clrRGB.b, clrRGB.g, clrRGB.r, a) {}
 inline ColorBGRA::ColorBGRA(const void* bgraBuffer)
 {
     std::memcpy(value.data(), bgraBuffer, 4);

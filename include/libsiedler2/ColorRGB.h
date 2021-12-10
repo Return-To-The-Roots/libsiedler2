@@ -10,18 +10,18 @@ namespace libsiedler2 {
 struct ColorRGB
 {
     uint8_t r, g, b;
-    ColorRGB() : r(0), g(0), b(0) {}
-    ColorRGB(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
+    constexpr ColorRGB() : r(0), g(0), b(0) {}
+    constexpr ColorRGB(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
     static ColorRGB fromBGR(const uint8_t* ptr);
 
     void toBGR(uint8_t* ptr) const;
 
-    uint8_t getRed() const { return r; }
-    uint8_t getGreen() const { return g; }
-    uint8_t getBlue() const { return b; }
+    constexpr uint8_t getRed() const { return r; }
+    constexpr uint8_t getGreen() const { return g; }
+    constexpr uint8_t getBlue() const { return b; }
 
-    bool operator==(const ColorRGB& rhs) const { return (r == rhs.r) && (g == rhs.g) && (b == rhs.b); }
-    bool operator!=(const ColorRGB& rhs) const { return !(*this == rhs); }
+    constexpr bool operator==(const ColorRGB& rhs) const { return (r == rhs.r) && (g == rhs.g) && (b == rhs.b); }
+    constexpr bool operator!=(const ColorRGB& rhs) const { return !(*this == rhs); }
 };
 
 inline ColorRGB ColorRGB::fromBGR(const uint8_t* ptr)
