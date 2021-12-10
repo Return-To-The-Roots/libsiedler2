@@ -3,9 +3,11 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 version: 1.0.{build}
+
+shallow_clone: true
+
 branches:
-  only:
-  - master
+  only: [master]
   
 image: Visual Studio 2019
 
@@ -13,9 +15,7 @@ configuration:
   - Debug
   - Release
   
-platform:
-  - Win32
-  - x64
+platform: x64
     
 environment:
   global:
