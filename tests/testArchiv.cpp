@@ -8,6 +8,7 @@
 #include "libsiedler2/IAllocator.h"
 #include "libsiedler2/enumTypes.h"
 #include "libsiedler2/libsiedler2.h"
+#include <s25util/boostTestHelpers.h>
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
 
@@ -19,10 +20,6 @@ static std::ostream& boost_test_print_type(std::ostream& os, libsiedler2::BobTyp
 }
 // LCOV_EXCL_STOP
 } // namespace libsiedler2
-
-// LCOV_EXCL_START
-BOOST_TEST_DONT_PRINT_LOG_VALUE(std::unique_ptr<libsiedler2::ArchivItem>)
-// LCOV_EXCL_STOP
 
 BOOST_AUTO_TEST_SUITE(Archiv)
 
