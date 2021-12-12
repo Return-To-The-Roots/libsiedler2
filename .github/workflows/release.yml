@@ -9,6 +9,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: ${{format('release-{0}:{1}', github.repository, github.ref)}}
+  cancel-in-progress: true
+
 env:
   BOOST_VERSION: 1.75.0 # Use a recent one to benefit from bugfixes and performance improvements
 
