@@ -4,6 +4,7 @@
 
 #include "oem.h"
 #include <array>
+#include <cstdint>
 
 namespace libsiedler2 {
 
