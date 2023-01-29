@@ -10,10 +10,17 @@
 #include <string>
 
 namespace libsiedler2 {
+class ArchivItem_Text;
 
 /// Klasse für INI-Dateien (genauergesagt eine Sektion).
 class ArchivItem_Ini : public ArchivItem, public Archiv
 {
+    ArchivItem_Text* getItem(const std::string& name);
+    const ArchivItem_Text* getItem(const std::string& name, bool enforce_exists = false) const;
+
+    // Add a value
+    void addValue(const std::string& name, const std::string& value);
+
 public:
     ArchivItem_Ini();
 
@@ -27,15 +34,21 @@ public:
     /// schreibt die INI-Daten in eine Datei.
     int write(std::ostream& file) const;
 
-    /// liest einen Wert aus der Ini
+    /// Get a value by name, throw if it does not exist
     std::string getValue(const std::string& name) const;
+    int getIntValue(const std::string& name) const;
+    bool getBoolValue(const std::string& name) const;
 
-    int getValueI(const std::string& name) const;
+    /// Get a value by name, return default if it does not exist
+    std::string getValue(const std::string& name, const std::string& defaultVal) const;
+    std::string getValue(const std::string& name, const char* defaultVal) const
+    {
+        return getValue(name, std::string(defaultVal));
+    }
+    int getValue(const std::string& name, int defaultVal) const;
+    int getValue(const std::string& name, bool defaultVal) const;
 
-    /// fügt einen Eintrag hinzu.
-    void addValue(const std::string& name, const std::string& value);
-
-    /// schreibt einen Wert in die Ini
+    /// Set or change a value
     void setValue(const std::string& name, const std::string& value);
     void setValue(const std::string& name, int value);
 };
