@@ -9,14 +9,16 @@
 #include "libsiedler2.h"
 #include "s25util/StringConversion.h"
 
-/** @class libsiedler2::ArchivItem_Ini
+namespace libsiedler2 {
+
+/** @class ArchivItem_Ini
  *
  *  Klasse für INI-Dateien (genauer gesagt eine Sektion).
  */
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(BobType::Ini) {}
+ArchivItem_Ini::ArchivItem_Ini() : ArchivItem(BobType::Ini) {}
 
-libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(BobType::Ini)
+ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivItem(BobType::Ini)
 {
     setName(name);
 }
@@ -28,7 +30,7 @@ libsiedler2::ArchivItem_Ini::ArchivItem_Ini(const std::string& name) : ArchivIte
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Ini::load(std::istream& file)
+int ArchivItem_Ini::load(std::istream& file)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -67,10 +69,10 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
         std::string name = entry.substr(0, pos);
         std::string value = entry.substr(pos + 1);
 
-        if(name.empty() || value.empty())
+        if(name.empty())
             continue;
 
-        addValue(name, value);
+        setValue(name, value);
     }
 
     return ErrorCode::NONE;
@@ -83,7 +85,7 @@ int libsiedler2::ArchivItem_Ini::load(std::istream& file)
  *
  *  @return liefert Null bei Erfolg, ungleich Null bei Fehler
  */
-int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
+int ArchivItem_Ini::write(std::ostream& file) const
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
@@ -99,13 +101,7 @@ int libsiedler2::ArchivItem_Ini::write(std::ostream& file) const
     return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
 }
 
-/**
- *  fügt einen Eintrag hinzu.
- *
- *  @param[in] name   Variablenname
- *  @param[in] value  Wert
- */
-void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
+void ArchivItem_Ini::addValue(const std::string& name, const std::string& value)
 {
     auto item = getAllocator().create<ArchivItem_Text>(BobType::Text);
     item->setText(value); //-V522
@@ -114,38 +110,63 @@ void libsiedler2::ArchivItem_Ini::addValue(const std::string& name, const std::s
     push(std::move(item));
 }
 
-std::string libsiedler2::ArchivItem_Ini::getValue(const std::string& name) const
+ArchivItem_Text* ArchivItem_Ini::getItem(const std::string& name)
+{
+    return dynamic_cast<ArchivItem_Text*>(find(name));
+}
+const ArchivItem_Text* ArchivItem_Ini::getItem(const std::string& name, bool enforce_exists) const
 {
     const auto* item = dynamic_cast<const ArchivItem_Text*>(find(name));
-    if(item)
-    {
-        return item->getText();
-    }
-    return "";
+    if(!item && enforce_exists)
+        throw std::runtime_error("Missing INI key '" + name + "'");
+    return item;
 }
 
-int libsiedler2::ArchivItem_Ini::getValueI(const std::string& name) const
+std::string ArchivItem_Ini::getValue(const std::string& name) const
+{
+    return getItem(name, true)->getText();
+}
+
+int ArchivItem_Ini::getIntValue(const std::string& name) const
 {
     return s25util::fromStringClassic<int>(getValue(name));
 }
 
-void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, const std::string& value)
+bool ArchivItem_Ini::getBoolValue(const std::string& name) const
 {
-    auto* item = dynamic_cast<ArchivItem_Text*>(find(name));
-    if(item)
-    {
-        // setText überschreibt Namen, daher nochmals setzen
-        item->setText(value);
-        item->setName(name);
-    } else
-    {
-        // nicht gefunden, also hinzufügen
-        addValue(name, value);
-    }
+    return s25util::fromStringClassic<int>(getValue(name)) != 0;
 }
 
-void libsiedler2::ArchivItem_Ini::setValue(const std::string& name, int value)
+std::string ArchivItem_Ini::getValue(const std::string& name, const std::string& defaultVal) const
+{
+    const auto* item = getItem(name);
+    return item ? item->getText() : defaultVal;
+}
+
+int ArchivItem_Ini::getValue(const std::string& name, int defaultVal) const
+{
+    const auto* item = getItem(name);
+    return item ? s25util::fromStringClassic<int>(item->getText()) : defaultVal;
+}
+
+int ArchivItem_Ini::getValue(const std::string& name, bool defaultVal) const
+{
+    const auto* item = getItem(name);
+    return item ? (s25util::fromStringClassic<int>(item->getText()) != 0) : defaultVal;
+}
+
+void ArchivItem_Ini::setValue(const std::string& name, const std::string& value)
+{
+    auto* item = getItem(name);
+    if(item)
+        item->setText(value);
+    else // Not found so add
+        addValue(name, value);
+}
+
+void ArchivItem_Ini::setValue(const std::string& name, int value)
 {
     std::string temp = s25util::toStringClassic(value);
     setValue(name, temp);
 }
+} // namespace libsiedler2
