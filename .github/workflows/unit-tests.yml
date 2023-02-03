@@ -107,9 +107,9 @@ jobs:
         run: choco install wget
       - name: Setup cmake
         if: "!startsWith(runner.os, 'Windows')"
-        uses: jwlawson/actions-setup-cmake@v1.8
+        uses: jwlawson/actions-setup-cmake@v1.13
         with:
-          cmake-version: '3.9'
+          cmake-version: '3.9.x'
 
       - name: Setup CCache
         if: "!startsWith(runner.os, 'Windows')"
