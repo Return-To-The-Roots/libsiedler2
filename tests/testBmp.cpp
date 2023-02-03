@@ -448,8 +448,14 @@ BOOST_AUTO_TEST_CASE(PaletteUsageOnWrite)
                 // Non-paletted file is written as paletted because it now contains a palette
                 // If the format is paletted, then the reference is already paletted -> other branch
                 BOOST_TEST_REQUIRE(!testFilesEqual(outFilepath, outFilepathRef));
+                constexpr auto overwrite_existing =
+#if BOOST_VERSION >= 107400
+                  bfs::copy_options::overwrite_existing;
+#else
+                  bfs::copy_option::overwrite_if_exists;
+#endif
                 // Take the paletted as new reference
-                bfs::copy_file(outFilepath, outFilepathRef, bfs::copy_option::overwrite_if_exists);
+                bfs::copy_file(outFilepath, outFilepathRef, overwrite_existing);
             } else
                 BOOST_TEST_REQUIRE(testFilesEqual(outFilepath, outFilepathRef));
             // c) Passed palette is used unless file contains one (or may)
