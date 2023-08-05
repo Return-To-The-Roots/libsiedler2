@@ -4,8 +4,8 @@
 
 #pragma once
 
-namespace libsiedler2 { namespace traits {
+namespace libsiedler2::traits {
     /// Return the texture/buffer format of the given type as the value member
     template<class T_PixelBuffer>
     struct GetFormat;
-}} // namespace libsiedler2::traits
+} // namespace libsiedler2::traits

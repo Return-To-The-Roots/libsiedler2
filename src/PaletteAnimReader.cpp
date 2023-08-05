@@ -18,7 +18,7 @@
 
 namespace bnw = boost::nowide;
 
-namespace libsiedler2 { namespace loader {
+namespace libsiedler2::loader {
     static const std::string txtPalHeader = "Bitmap palette V1";
     static const std::string palAnimHeader = "Palette animations V1";
 
@@ -122,4 +122,4 @@ namespace libsiedler2 { namespace loader {
         }
         return ErrorCode::NONE;
     }
-}} // namespace libsiedler2::loader
+} // namespace libsiedler2::loader
