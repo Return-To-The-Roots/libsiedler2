@@ -34,26 +34,26 @@ struct Bar : virtual BarBase
 using TestedTypes = boost::mpl::list<Foo, Bar>;
 } // namespace
 
-static_assert(detail::is_static_castable<int, int>::value);
-static_assert(detail::is_static_castable<int, float>::value);
-static_assert(detail::is_static_castable<int*, const int*>::value);
-static_assert(!detail::is_static_castable<const int*, int*>::value);
+static_assert(detail::is_static_castable_v<int, int>);
+static_assert(detail::is_static_castable_v<int, float>);
+static_assert(detail::is_static_castable_v<int*, const int*>);
+static_assert(!detail::is_static_castable_v<const int*, int*>);
 
-static_assert(detail::is_static_castable<Foo*, Foo*>::value);
-static_assert(detail::is_static_castable<Foo*, const Foo*>::value);
-static_assert(!detail::is_static_castable<const Foo*, Foo*>::value);
-static_assert(detail::is_static_castable<Foo*, Base*>::value);
-static_assert(detail::is_static_castable<Foo*, const Base*>::value);
-static_assert(detail::is_static_castable<Base*, Foo*>::value);
-static_assert(!detail::is_static_castable<const Base*, Foo*>::value);
+static_assert(detail::is_static_castable_v<Foo*, Foo*>);
+static_assert(detail::is_static_castable_v<Foo*, const Foo*>);
+static_assert(!detail::is_static_castable_v<const Foo*, Foo*>);
+static_assert(detail::is_static_castable_v<Foo*, Base*>);
+static_assert(detail::is_static_castable_v<Foo*, const Base*>);
+static_assert(detail::is_static_castable_v<Base*, Foo*>);
+static_assert(!detail::is_static_castable_v<const Base*, Foo*>);
 
-static_assert(detail::is_static_castable<BarBase*, Base*>::value);
-static_assert(detail::is_static_castable<Base*, BarBase*>::value);
-static_assert(detail::is_static_castable<Bar*, BarBase*>::value);
-static_assert(detail::is_static_castable<Bar*, Base*>::value);
+static_assert(detail::is_static_castable_v<BarBase*, Base*>);
+static_assert(detail::is_static_castable_v<Base*, BarBase*>);
+static_assert(detail::is_static_castable_v<Bar*, BarBase*>);
+static_assert(detail::is_static_castable_v<Bar*, Base*>);
 // Virtual inheritance -> no base to derived cast
-static_assert(!detail::is_static_castable<Base*, Bar*>::value);
-static_assert(!detail::is_static_castable<BarBase*, Bar*>::value);
+static_assert(!detail::is_static_castable_v<Base*, Bar*>);
+static_assert(!detail::is_static_castable_v<BarBase*, Bar*>);
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(CloneWorks, T, TestedTypes)
 {
@@ -61,9 +61,9 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(CloneWorks, T, TestedTypes)
     auto f2 = clone(f);       // By unique_ptr
     auto f3 = clone(f.get()); // By raw ptr
     auto f4 = clone(*f);      // By reference
-    static_assert(std::is_same<decltype(f2), decltype(f)>::value, "Must be the same");
-    static_assert(std::is_same<decltype(f3), decltype(f)>::value, "Must be the same");
-    static_assert(std::is_same<decltype(f4), decltype(f)>::value, "Must be the same");
+    static_assert(std::is_same_v<decltype(f2), decltype(f)>, "Must be the same");
+    static_assert(std::is_same_v<decltype(f3), decltype(f)>, "Must be the same");
+    static_assert(std::is_same_v<decltype(f4), decltype(f)>, "Must be the same");
     BOOST_TEST((f && f2 && f3 && f4));
     BOOST_TEST(f->i == 42);
     BOOST_TEST(f2->i == 42);
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(CloneFromBasePtr)
     auto f = std::make_unique<Bar>(42, 1337);
     auto* basePtr = static_cast<BarBase*>(f.get());
     auto f2 = clone(basePtr);
-    static_assert(std::is_same<decltype(f2), std::unique_ptr<BarBase>>::value, "Must be the same");
+    static_assert(std::is_same_v<decltype(f2), std::unique_ptr<BarBase>>, "Must be the same");
     BOOST_TEST((f && f2 && basePtr));
     BOOST_TEST(f->i == 42);
     BOOST_TEST(f->j == 1337);
@@ -89,8 +89,8 @@ BOOST_AUTO_TEST_CASE(CloneNull)
     std::unique_ptr<Foo> f;
     auto f2 = clone(f);       // By unique_ptr
     auto f3 = clone(f.get()); // By raw ptr
-    static_assert(std::is_same<decltype(f2), decltype(f)>::value, "Must be the same");
-    static_assert(std::is_same<decltype(f3), decltype(f)>::value, "Must be the same");
+    static_assert(std::is_same_v<decltype(f2), decltype(f)>, "Must be the same");
+    static_assert(std::is_same_v<decltype(f3), decltype(f)>, "Must be the same");
     BOOST_TEST(!f2);
     BOOST_TEST(!f3);
 }
