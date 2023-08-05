@@ -19,7 +19,7 @@ platform: x64
     
 environment:
   global:
-    BOOST_DIR: 'C:\Libraries\boost_1_73_0'
+    BOOST_DIR: 'C:\Libraries\boost_1_77_0'
     RTTR_DISABLE_ASSERT_BREAKPOINT: 1
 
 install:
