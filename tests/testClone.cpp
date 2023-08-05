@@ -34,26 +34,26 @@ struct Bar : virtual BarBase
 using TestedTypes = boost::mpl::list<Foo, Bar>;
 } // namespace
 
-static_assert(detail::is_static_castable<int, int>::value, "!");
-static_assert(detail::is_static_castable<int, float>::value, "!");
-static_assert(detail::is_static_castable<int*, const int*>::value, "!");
-static_assert(!detail::is_static_castable<const int*, int*>::value, "!");
+static_assert(detail::is_static_castable<int, int>::value);
+static_assert(detail::is_static_castable<int, float>::value);
+static_assert(detail::is_static_castable<int*, const int*>::value);
+static_assert(!detail::is_static_castable<const int*, int*>::value);
 
-static_assert(detail::is_static_castable<Foo*, Foo*>::value, "!");
-static_assert(detail::is_static_castable<Foo*, const Foo*>::value, "!");
-static_assert(!detail::is_static_castable<const Foo*, Foo*>::value, "!");
-static_assert(detail::is_static_castable<Foo*, Base*>::value, "!");
-static_assert(detail::is_static_castable<Foo*, const Base*>::value, "!");
-static_assert(detail::is_static_castable<Base*, Foo*>::value, "!");
-static_assert(!detail::is_static_castable<const Base*, Foo*>::value, "!");
+static_assert(detail::is_static_castable<Foo*, Foo*>::value);
+static_assert(detail::is_static_castable<Foo*, const Foo*>::value);
+static_assert(!detail::is_static_castable<const Foo*, Foo*>::value);
+static_assert(detail::is_static_castable<Foo*, Base*>::value);
+static_assert(detail::is_static_castable<Foo*, const Base*>::value);
+static_assert(detail::is_static_castable<Base*, Foo*>::value);
+static_assert(!detail::is_static_castable<const Base*, Foo*>::value);
 
-static_assert(detail::is_static_castable<BarBase*, Base*>::value, "!");
-static_assert(detail::is_static_castable<Base*, BarBase*>::value, "!");
-static_assert(detail::is_static_castable<Bar*, BarBase*>::value, "!");
-static_assert(detail::is_static_castable<Bar*, Base*>::value, "!");
+static_assert(detail::is_static_castable<BarBase*, Base*>::value);
+static_assert(detail::is_static_castable<Base*, BarBase*>::value);
+static_assert(detail::is_static_castable<Bar*, BarBase*>::value);
+static_assert(detail::is_static_castable<Bar*, Base*>::value);
 // Virtual inheritance -> no base to derived cast
-static_assert(!detail::is_static_castable<Base*, Bar*>::value, "!");
-static_assert(!detail::is_static_castable<BarBase*, Bar*>::value, "!");
+static_assert(!detail::is_static_castable<Base*, Bar*>::value);
+static_assert(!detail::is_static_castable<BarBase*, Bar*>::value);
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(CloneWorks, T, TestedTypes)
 {
