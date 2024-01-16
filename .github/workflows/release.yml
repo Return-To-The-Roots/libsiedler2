@@ -49,14 +49,14 @@ jobs:
         run: echo "::set-output name=upload_url::https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets{?name,label}"
         id: release
 
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         name: Checkout libutil
         with:
           repository: Return-To-The-Roots/libutil
           ref: master
           path: external/libutil
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         name: Checkout libendian
         with:
           repository: Return-To-The-Roots/libendian
