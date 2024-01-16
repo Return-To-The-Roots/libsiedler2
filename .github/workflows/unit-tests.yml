@@ -23,7 +23,7 @@ jobs:
   StyleAndFormatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: git submodule update --init
       - name: Validation
         run: tools/ci/staticValidation.sh "$GITHUB_WORKSPACE"
@@ -44,13 +44,13 @@ jobs:
     strategy:
       matrix:
         include:
-          - { compiler: gcc-6,    os: ubuntu-18.04, buildType: Release }
-          - { compiler: gcc-6,    os: ubuntu-18.04, buildType: Debug, coverage: true }
-          - { compiler: clang,    os: macos-10.15,  buildType: Debug, boostVersion: 1.74.0 } # Multiple bugs with recent OSX until 1.74
+          - { compiler: gcc-7,    os: ubuntu-20.04, buildType: Release }
+          - { compiler: gcc-7,    os: ubuntu-20.04, buildType: Debug, coverage: true }
+          - { compiler: clang,    os: macos-13,     buildType: Debug, boostVersion: 1.74.0 } # Multiple bugs with recent OSX until 1.74
           # Latest GCC
-          - { compiler: gcc-10,   os: ubuntu-18.04, buildType: Debug }
+          - { compiler: gcc-13,   os: ubuntu-22.04, buildType: Debug }
           # Latest Clang
-          - { compiler: clang-10, os: ubuntu-18.04, buildType: Debug }
+          - { compiler: clang-12, os: ubuntu-22.04, buildType: Debug }
           # Windows
           - { compiler: msvc,     os: windows-2019, buildType: Debug }
 
@@ -64,14 +64,14 @@ jobs:
       - run: echo "BOOST_VERSION=${{matrix.boostVersion}}" >> $GITHUB_ENV
         if: matrix.boostVersion
 
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         name: Checkout libutil
         with:
           repository: Return-To-The-Roots/libutil
           ref: master
           path: external/libutil
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         name: Checkout libendian
         with:
           repository: Return-To-The-Roots/libendian
