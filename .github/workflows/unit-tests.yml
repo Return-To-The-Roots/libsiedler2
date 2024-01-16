@@ -48,9 +48,9 @@ jobs:
           - { compiler: gcc-7,    os: ubuntu-20.04, buildType: Debug, coverage: true }
           - { compiler: clang,    os: macos-13,     buildType: Debug, boostVersion: 1.74.0 } # Multiple bugs with recent OSX until 1.74
           # Latest GCC
-          - { compiler: gcc-13,   os: ubuntu-22.04, buildType: Debug }
+          - { compiler: gcc-13,   os: ubuntu-22.04, buildType: Debug, boostVersion: 1.73.0 }
           # Latest Clang
-          - { compiler: clang-12, os: ubuntu-22.04, buildType: Debug }
+          - { compiler: clang-12, os: ubuntu-22.04, buildType: Debug, boostVersion: 1.73.0 }
           # Windows
           - { compiler: msvc,     os: windows-2019, buildType: Debug }
 
