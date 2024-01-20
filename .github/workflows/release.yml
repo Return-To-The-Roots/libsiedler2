@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - { compiler: gcc-10,   os: ubuntu-18.04 }
+          - { compiler: gcc-10,   os: ubuntu-22.04 }
           - { compiler: msvc,     os: windows-2019 }
 
     runs-on: ${{matrix.os}}
@@ -49,14 +49,14 @@ jobs:
         run: echo "::set-output name=upload_url::https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets{?name,label}"
         id: release
 
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         name: Checkout libutil
         with:
           repository: Return-To-The-Roots/libutil
           ref: master
           path: external/libutil
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         name: Checkout libendian
         with:
           repository: Return-To-The-Roots/libendian
