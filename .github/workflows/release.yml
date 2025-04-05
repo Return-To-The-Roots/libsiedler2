@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BOOST_VERSION: 1.75.0 # Use a recent one to benefit from bugfixes and performance improvements
+  BOOST_VERSION: 1.87.0 # Use a recent one to benefit from bugfixes and performance improvements
 
 defaults:
   run:
@@ -25,8 +25,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - { compiler: gcc-10,   os: ubuntu-22.04 }
-          - { compiler: msvc,     os: windows-2019 }
+          - { compiler: gcc-13,   os: ubuntu-24.04 }
+          - { compiler: msvc,     os: windows-2022 }
 
     runs-on: ${{matrix.os}}
 
@@ -64,7 +64,7 @@ jobs:
           path: external/libendian
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{env.DEPS_DIR}}
           key: ${{matrix.os}}-${{matrix.compiler}}-${{env.BOOST_VERSION}}

@@ -48,13 +48,15 @@ jobs:
           - { compiler: gcc-7,    os: ubuntu-20.04, buildType: Debug, coverage: true }
           - { compiler: clang,    os: macos-13,     buildType: Debug, boostVersion: 1.74.0 } # Multiple bugs with recent OSX until 1.74
           # Latest GCC
-          - { compiler: gcc-13,   os: ubuntu-22.04, buildType: Debug, boostVersion: 1.73.0 }
+          - { compiler: gcc-13,   os: ubuntu-24.04, buildType: Debug, boostVersion: 1.87.0 }
           # Latest Clang
           - { compiler: clang-12, os: ubuntu-22.04, buildType: Debug, boostVersion: 1.73.0 }
           # Windows
-          - { compiler: msvc,     os: windows-2019, buildType: Debug }
+          - { compiler: msvc,     os: windows-2019, buildType: Debug,                        generator: 'Visual Studio 16 2019' }
+          - { compiler: msvc,     os: windows-2022, buildType: Debug, boostVersion: 1.87.0 }
 
     runs-on: ${{matrix.os}}
+    env: { GENERATOR: ${{matrix.generator}} }
 
     steps:
       - run: |
@@ -79,7 +81,7 @@ jobs:
           path: external/libendian
       - name: Cache dependencies
         if: "!startsWith(runner.os, 'Windows')"
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{env.DEPS_DIR}}
           key: ${{matrix.os}}-${{matrix.compiler}}-${{env.BOOST_VERSION}}
@@ -107,9 +109,9 @@ jobs:
         run: choco install wget
       - name: Setup cmake
         if: "!startsWith(runner.os, 'Windows')"
-        uses: jwlawson/actions-setup-cmake@v1.13
+        uses: jwlawson/actions-setup-cmake@v1
         with:
-          cmake-version: '3.9.x'
+          cmake-version: '3.20.x'
 
       - name: Setup CCache
         if: "!startsWith(runner.os, 'Windows')"

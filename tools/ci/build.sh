@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+# Copyright (C) 2005 - 2025 Settlers Freaks <sf-team at siedler25.org>
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -15,7 +15,7 @@ CMAKE_FLAGS="${2}"
 mkdir build && cd build
 
 if [[ "${TRAVIS_OS_NAME:-}" == "windows" ]] || [[ "${RUNNER_OS:-}" == "Windows" ]]; then
-    GENERATOR="Visual Studio 16 2019"
+    GENERATOR=${GENERATOR:-Visual Studio 17 2022}
     BUILD_FLAGS=""
 else
     GENERATOR="Unix Makefiles"
