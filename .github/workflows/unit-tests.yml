@@ -45,9 +45,9 @@ jobs:
           - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Debug,   boostVersion: 1.73.0, coverage: true }
           - { compiler: clang,    os: macos-13,     buildType: Debug,   boostVersion: 1.81.0 } # New libc++ only supported since 1.81
           # Latest GCC
-          - { compiler: gcc-13,   os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.87.0 }
+          - { compiler: gcc-14,   os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.87.0 }
           # Latest Clang
-          - { compiler: clang-12, os: ubuntu-22.04, buildType: Debug,   boostVersion: 1.73.0 }
+          - { compiler: clang-18, os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.81.0 }
           # Windows
           - { compiler: msvc,     os: windows-2019, buildType: Debug,   boostVersion: 1.69.0, generator: 'Visual Studio 16 2019' }
           - { compiler: msvc,     os: windows-2022, buildType: Debug,   boostVersion: 1.87.0 }
