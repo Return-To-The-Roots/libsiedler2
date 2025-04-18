@@ -1,4 +1,4 @@
-# Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+# Copyright (C) 2005 - 2025 Settlers Freaks <sf-team at siedler25.org>
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -11,9 +11,6 @@ on:
 concurrency:
   group: ${{format('tests-{0}:{1}', github.repository, github.ref)}}
   cancel-in-progress: true
-
-env:
-  BOOST_VERSION: 1.69.0
 
 defaults:
   run:
@@ -44,16 +41,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Release }
-          - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Debug, coverage: true }
-          - { compiler: clang,    os: macos-13,     buildType: Debug, boostVersion: 1.81.0 } # New libc++ only supported since 1.81
+          - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Release, boostVersion: 1.73.0 }
+          - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Debug,   boostVersion: 1.73.0, coverage: true }
+          - { compiler: clang,    os: macos-13,     buildType: Debug,   boostVersion: 1.81.0 } # New libc++ only supported since 1.81
           # Latest GCC
-          - { compiler: gcc-13,   os: ubuntu-24.04, buildType: Debug, boostVersion: 1.87.0 }
+          - { compiler: gcc-13,   os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.87.0 }
           # Latest Clang
-          - { compiler: clang-12, os: ubuntu-22.04, buildType: Debug, boostVersion: 1.73.0 }
+          - { compiler: clang-12, os: ubuntu-22.04, buildType: Debug,   boostVersion: 1.73.0 }
           # Windows
-          - { compiler: msvc,     os: windows-2019, buildType: Debug,                        generator: 'Visual Studio 16 2019' }
-          - { compiler: msvc,     os: windows-2022, buildType: Debug, boostVersion: 1.87.0 }
+          - { compiler: msvc,     os: windows-2019, buildType: Debug,   boostVersion: 1.69.0, generator: 'Visual Studio 16 2019' }
+          - { compiler: msvc,     os: windows-2022, buildType: Debug,   boostVersion: 1.87.0 }
 
     runs-on: ${{matrix.os}}
     env:
