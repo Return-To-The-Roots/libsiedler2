@@ -44,8 +44,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - { compiler: gcc-7,    os: ubuntu-20.04, buildType: Release }
-          - { compiler: gcc-7,    os: ubuntu-20.04, buildType: Debug, coverage: true }
+          - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Release }
+          - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Debug, coverage: true }
           - { compiler: clang,    os: macos-13,     buildType: Debug, boostVersion: 1.81.0 } # New libc++ only supported since 1.81
           # Latest GCC
           - { compiler: gcc-13,   os: ubuntu-24.04, buildType: Debug, boostVersion: 1.87.0 }
@@ -56,7 +56,8 @@ jobs:
           - { compiler: msvc,     os: windows-2022, buildType: Debug, boostVersion: 1.87.0 }
 
     runs-on: ${{matrix.os}}
-    env: { GENERATOR: ${{matrix.generator}} }
+    env:
+      GENERATOR: ${{matrix.generator}}
 
     steps:
       - run: |
