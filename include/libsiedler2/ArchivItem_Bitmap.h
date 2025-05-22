@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2025 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -55,7 +55,7 @@ inline int baseArchivItem_Bitmap::print(T_PixelBuffer& pixelBuffer, const Archiv
                                         uint16_t from_h) const
 {
     return print(pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(),
-                 traits::GetFormat<T_PixelBuffer>::value, dstPalette, to_x, to_y, from_x, from_y, from_w, from_h);
+                 traits::GetFormat_v<T_PixelBuffer>, dstPalette, to_x, to_y, from_x, from_y, from_w, from_h);
 }
 
 inline int baseArchivItem_Bitmap::create(const uint8_t* buffer, uint16_t buffer_width, uint16_t buffer_height,
@@ -75,7 +75,7 @@ inline int baseArchivItem_Bitmap::create(uint16_t width, uint16_t height, const 
                                          const ArchivItem_Palette* palette)
 {
     return create(width, height, pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(),
-                  traits::GetFormat<T_PixelBuffer>::value, palette);
+                  traits::GetFormat_v<T_PixelBuffer>, palette);
 }
 
 template<class T_PixelBuffer>

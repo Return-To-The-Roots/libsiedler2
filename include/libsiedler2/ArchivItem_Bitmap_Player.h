@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2025 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -89,8 +89,8 @@ inline int ArchivItem_Bitmap_Player::print(T_PixelBuffer& pixelBuffer, const Arc
                                            uint16_t from_y, uint16_t from_w, uint16_t from_h, bool only_player) const
 {
     return print(pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(),
-                 traits::GetFormat<T_PixelBuffer>::value, palette, plClrStartIdx, to_x, to_y, from_x, from_y, from_w,
-                 from_h, only_player);
+                 traits::GetFormat_v<T_PixelBuffer>, palette, plClrStartIdx, to_x, to_y, from_x, from_y, from_w, from_h,
+                 only_player);
 }
 
 inline int libsiedler2::ArchivItem_Bitmap_Player::create(const uint8_t* buffer, uint16_t buffer_width,
@@ -107,7 +107,7 @@ inline int ArchivItem_Bitmap_Player::create(uint16_t width, uint16_t height, con
                                             const ArchivItem_Palette* palette, uint8_t plClrStartIdx)
 {
     return create(width, height, pixelBuffer.getPixelPtr(), pixelBuffer.getWidth(), pixelBuffer.getHeight(),
-                  traits::GetFormat<T_PixelBuffer>::value, palette, plClrStartIdx);
+                  traits::GetFormat_v<T_PixelBuffer>, palette, plClrStartIdx);
 }
 
 template<class T_PixelBuffer>

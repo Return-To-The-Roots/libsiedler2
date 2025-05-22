@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2025 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -35,7 +35,7 @@ namespace detail {
     }
 } // namespace detail
 
-template<class T, std::enable_if_t<!std::is_pointer<T>::value, int> = 0>
+template<class T, std::enable_if_t<!std::is_pointer_v<T>, int> = 0>
 auto clone(const T& obj)
 {
     return std::unique_ptr<T>(detail::safePtrCast<T>(obj.clone()));

@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2025 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -44,8 +44,8 @@ struct FolderFixture
     {
         bfs::create_directories(lstPath);
         PixelBufferBGRA buffer(5, 3);
-        std::array<std::string, std::tuple_size<decltype(bmps)>::value> names = {"a", "1.player.nx5.ny7", "f",
-                                                                                 "3.rle.nx1.ny9"};
+        std::array<std::string, std::tuple_size_v<decltype(bmps)>> names = {"a", "1.player.nx5.ny7", "f",
+                                                                            "3.rle.nx1.ny9"};
 
         for(unsigned i = 0; i < bmps.size(); i++)
         {
