@@ -49,7 +49,6 @@ jobs:
           # Latest Clang
           - { compiler: clang-18, os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.81.0 }
           # Windows
-          - { compiler: msvc,     os: windows-2019, buildType: Debug,   boostVersion: 1.69.0, generator: 'Visual Studio 16 2019' }
           - { compiler: msvc,     os: windows-2022, buildType: Debug,   boostVersion: 1.87.0 }
 
     runs-on: ${{matrix.os}}
