@@ -29,7 +29,7 @@ static int read_palette(ArchivItem_BitmapBase& bitmap, T_FStream& bmpFs, const B
     if(numClrsUsed > 0)
     {
         std::array<ColorBGRA, 256> colors;
-        if(!bmpFs.read(reinterpret_cast<char*>(&colors[0]), numClrsUsed * 4))
+        if(!bmpFs.read(reinterpret_cast<char*>(colors.data()), numClrsUsed * 4))
             return ErrorCode::UNEXPECTED_EOF;
 
         auto pal = getAllocator().create<ArchivItem_Palette>(BobType::Palette);
@@ -203,7 +203,7 @@ int loader::LoadBMP(const boost::filesystem::path& filepath, Archiv& image,
         return ErrorCode::UNEXPECTED_EOF;
     }
 
-    if(int ec = bitmap->create(bmih.width, bmih.height, &buffer[0], bmih.width, bmih.height, format))
+    if(int ec = bitmap->create(bmih.width, bmih.height, buffer.data(), bmih.width, bmih.height, format))
         return ec;
     if(ArchivItem_BitmapBase::getWantedFormat(bitmap->getFormat()) != bitmap->getFormat())
     {

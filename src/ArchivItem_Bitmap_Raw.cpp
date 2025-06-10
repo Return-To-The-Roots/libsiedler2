@@ -69,7 +69,7 @@ int libsiedler2::baseArchivItem_Bitmap_Raw::load(std::istream& file, const Archi
     // Speicher anlegen
     if(length > 0)
     {
-        int ec = create(&data[0], width, height, TextureFormat::Paletted, palette);
+        int ec = create(data.data(), width, height, TextureFormat::Paletted, palette);
         if(ec)
             return ec;
         ec = convertFormat(outFormat);

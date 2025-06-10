@@ -117,7 +117,7 @@ int ArchivItem_Sound_XMidi::load(std::istream& file, uint32_t length)
                 return ErrorCode::WRONG_FORMAT;
             tracklist[track_nr].getTimbres().resize(numTimbres);
             if(numTimbres > 0)
-                fs.readRaw(&tracklist[track_nr].getTimbres()[0], numTimbres);
+                fs.readRaw(tracklist[track_nr].getTimbres().data(), numTimbres);
             fs >> chunkId;
         }
         if(!isChunk(chunkId, "EVNT"))
@@ -177,7 +177,7 @@ int ArchivItem_Sound_XMidi::write(std::ostream& file) const
             fs.write("TIMB", 4);
             fs << uint32_t(track.getTimbres().size() * 2 + 2);
             fsLE << uint16_t(track.getTimbres().size());
-            fs.writeRaw(&track.getTimbres()[0], track.getTimbres().size());
+            fs.writeRaw(track.getTimbres().data(), track.getTimbres().size());
         }
         fs.write("EVNT", 4);
         fs << uint32_t(track.getData().size());

@@ -28,10 +28,10 @@ public:
     uint16_t getHeight() const { return height_; }
     uint32_t getSizeInBytes() const { return static_cast<uint32_t>(getNumPixels() * sizeof(T_Pixel)); }
     uint32_t getNumPixels() const { return static_cast<uint32_t>(pixels_.size()); }
-    uint8_t* getPixelPtr() { return pixels_.empty() ? nullptr : reinterpret_cast<uint8_t*>(&pixels_[0]); }
+    uint8_t* getPixelPtr() { return pixels_.empty() ? nullptr : reinterpret_cast<uint8_t*>(pixels_.data()); }
     const uint8_t* getPixelPtr() const
     {
-        return pixels_.empty() ? nullptr : reinterpret_cast<const uint8_t*>(&pixels_[0]);
+        return pixels_.empty() ? nullptr : reinterpret_cast<const uint8_t*>(pixels_.data());
     }
     std::vector<T_Pixel>& getPixels() { return pixels_; }
     const std::vector<T_Pixel>& getPixels() const { return pixels_; }
