@@ -23,7 +23,7 @@ int MIDI_Track::read(std::istream& file, size_t length)
         return ErrorCode::NONE;
 
     mid_data.resize(length);
-    if(!file.read(reinterpret_cast<char*>(&mid_data[0]), length))
+    if(!file.read(reinterpret_cast<char*>(mid_data.data()), length))
         return ErrorCode::UNEXPECTED_EOF;
     return ErrorCode::NONE;
 }
@@ -37,7 +37,7 @@ const uint8_t* MIDI_Track::getMid() const
 {
     if(mid_data.empty())
         return nullptr;
-    return &mid_data[0];
+    return mid_data.data();
 }
 
 uint32_t MIDI_Track::getMidLength() const

@@ -53,8 +53,8 @@ inline bool operator!=(const ColorBGRA& lhs, const ColorBGRA& rhs)
     return !(lhs == rhs);
 }
 
-inline constexpr ColorBGRA::ColorBGRA(uint8_t b, uint8_t g, uint8_t r, uint8_t a) : value{b, g, r, a} {}
-inline constexpr ColorBGRA::ColorBGRA(ColorRGB clrRGB, uint8_t a) : ColorBGRA(clrRGB.b, clrRGB.g, clrRGB.r, a) {}
+constexpr ColorBGRA::ColorBGRA(uint8_t b, uint8_t g, uint8_t r, uint8_t a) : value{b, g, r, a} {}
+constexpr ColorBGRA::ColorBGRA(ColorRGB clrRGB, uint8_t a) : ColorBGRA(clrRGB.b, clrRGB.g, clrRGB.r, a) {}
 inline ColorBGRA::ColorBGRA(const void* bgraBuffer)
 {
     std::memcpy(value.data(), bgraBuffer, 4);
