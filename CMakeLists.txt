@@ -34,8 +34,18 @@ else()
 endif()
 
 
-include(RttrBoostCfg)
-find_package(Boost 1.69 REQUIRED COMPONENTS system filesystem iostreams)
+set(BoostPackages system filesystem iostreams)
+set(BOOST_SOURCE TRUE)
+foreach(BOOST_PACKAGE IN LISTS BoostPackages)
+    if(NOT TARGET Boost::${BOOST_PACKAGE})
+        set(BOOST_SOURCE FALSE)
+    endif()
+endforeach()
+
+if(NOT ${BOOST_SOURCE})
+    include(RttrBoostCfg)
+    find_package(Boost 1.69 REQUIRED COMPONENTS ${BoostPackages})
+endif()
 
 include(RttrTestingCfg)
 if(isTopLevel)
