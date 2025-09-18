@@ -35,7 +35,7 @@ endif()
 
 
 include(RttrBoostCfg)
-find_package(Boost 1.69 REQUIRED COMPONENTS system filesystem iostreams)
+find_package(Boost 1.69 REQUIRED COMPONENTS filesystem iostreams)
 
 include(RttrTestingCfg)
 if(isTopLevel)
