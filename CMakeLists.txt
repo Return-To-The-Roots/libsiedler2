@@ -21,9 +21,6 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     endif()
 
     list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake")
-    if(CMAKE_VERSION VERSION_LESS 3.14)
-        list(APPEND CMAKE_MODULE_PATH "${RTTR_LIBUTIL_DIR}/cmake/cmake_3.14")
-    endif()
 
     include(RttrCoverageCfg)
     include(EnableCCache)
