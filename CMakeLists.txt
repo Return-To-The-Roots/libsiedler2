@@ -1,9 +1,9 @@
-# Copyright (C) 2005 - 2025 Settlers Freaks <sf-team at siedler25.org>
+# Copyright (C) 2005 - 2026 Settlers Freaks <sf-team at siedler25.org>
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 # Project meant to be used as part of a super project including libutil and libendian
-cmake_minimum_required(VERSION 3.16..3.20)
+cmake_minimum_required(VERSION 3.16..3.31)
 
 project(libsiedler2)
 
@@ -32,7 +32,7 @@ endif()
 
 
 include(RttrBoostCfg)
-find_package(Boost 1.69 REQUIRED COMPONENTS filesystem iostreams)
+find_package(Boost 1.71 REQUIRED COMPONENTS filesystem iostreams)
 
 include(RttrTestingCfg)
 if(isTopLevel)
