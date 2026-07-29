@@ -34,7 +34,7 @@ public:
 
     uint32_t getNumOverlayImgs() const { return numOverlayImgs; }
     uint16_t getNumLinks() const { return static_cast<uint16_t>(links.size()); }
-    uint16_t getOverlayIdx(unsigned idx) const { return links[idx]; };
+    uint16_t getOverlayIdx(unsigned idx) const;
     uint16_t getOverlayIdx(unsigned overlayIdx, bool fat, ImgDir direction, unsigned animationstep) const
     {
         // Array [overlayIdx][animStep][fat][direction]: [35][8][2][6]

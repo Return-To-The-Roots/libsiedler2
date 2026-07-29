@@ -119,9 +119,6 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 
     // Number of overlay images (e.g. goods of carriers)
     fs >> numOverlayImgs;
-
-    alloc_inc(numOverlayImgs);
-
     std::vector<std::vector<uint16_t>> starts(numOverlayImgs);
     std::vector<uint8_t> ny(numOverlayImgs);
 
@@ -140,37 +137,39 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         return ErrorCode::UNEXPECTED_EOF;
 
     links.resize(numLinks);
-    std::vector<bool> loaded(numOverlayImgs, false);
+
+    alloc_inc(numLinks);
 
     for(uint32_t i = 0; i < numLinks; ++i)
     {
-        uint16_t unknown;
-        if(!(fs >> links[i] >> unknown))
+        uint16_t link;
+        int16_t ny_correction;
+        if(!(fs >> link >> ny_correction))
             return ErrorCode::UNEXPECTED_EOF;
-
-        if(links[i] >= numOverlayImgs)
+        if(link >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
-
-        if(loaded[links[i]])
-            continue;
 
         auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
         assert(image);
         image->setNx(X_OFFSET);
-        image->setNy(ny[links[i]]);
+        image->setNy(ny[link] - ny_correction);
 
-        int ec = image->load(SPRITE_WIDTH, raw[i % 6], starts[links[i]], true, palette);
+        int ec = image->load(SPRITE_WIDTH, raw[i % 6], starts[link], true, palette);
         if(ec)
             return ec;
 
-        set(NUM_BODY_IMAGES + links[i], std::move(image));
-        loaded[links[i]] = true;
+        set(getOverlayIdx(i), std::move(image));
+
+        // Adjust links so they point to actual indices in the archive as we moved them by NUM_BODY_IMAGES
+        links[i] = link + NUM_BODY_IMAGES;
     }
-    // Adjust links so they point to actual indices in the archive as we moved them by NUM_BODY_IMAGES
-    for(auto& link : links)
-        link += NUM_BODY_IMAGES;
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
+}
+
+uint16_t ArchivItem_Bob::getOverlayIdx(unsigned idx) const
+{ 
+    return NUM_BODY_IMAGES + idx; 
 }
 
 /**
