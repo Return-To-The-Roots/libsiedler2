@@ -1,8 +1,11 @@
-# Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+# Copyright (C) 2005 - 2026 Settlers Freaks <sf-team at siedler25.org>
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 name: Release
+
+permissions:
+  contents: write
 
 on:
   push:
@@ -25,8 +28,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - { compiler: gcc-13,   os: ubuntu-24.04 }
-          - { compiler: msvc,     os: windows-2022 }
+          - { compiler: gcc-14,   os: ubuntu-24.04 }
+          - { compiler: msvc,     os: windows-2025 }
 
     runs-on: ${{matrix.os}}
 
@@ -49,14 +52,14 @@ jobs:
         run: echo "::set-output name=upload_url::https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets{?name,label}"
         id: release
 
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         name: Checkout libutil
         with:
           repository: Return-To-The-Roots/libutil
           ref: master
           path: external/libutil
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         name: Checkout libendian
         with:
           repository: Return-To-The-Roots/libendian
@@ -64,7 +67,7 @@ jobs:
           path: external/libendian
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{env.DEPS_DIR}}
           key: ${{matrix.os}}-${{matrix.compiler}}-${{env.BOOST_VERSION}}
@@ -92,13 +95,13 @@ jobs:
         run: choco install wget
       - name: Setup cmake
         if: "!startsWith(runner.os, 'Windows')"
-        uses: jwlawson/actions-setup-cmake@v1.13
+        uses: jwlawson/actions-setup-cmake@0d6a7d60b009d01c9e7523be22153ff8f19460d3  # v2.2.0
         with:
           cmake-version: '3.20.x'
 
       - name: Setup CCache
         if: "!startsWith(runner.os, 'Windows')"
-        uses: hendrikmuhs/ccache-action@v1
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03  # v1.2.23
         with:
           key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.buildType}}-${{matrix.boostVersion}}
           max-size: 200M
@@ -124,11 +127,8 @@ jobs:
         run: ls build/${{steps.filenames.outputs.filename}} # Just check that uploading would work (asset_path exists)
       - name: Upload
         if: success() && github.event_name == 'release'
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: build/${{steps.filenames.outputs.filename}}
-          asset_name: ${{steps.filenames.outputs.filename}}
-          asset_content_type: application/tar.gz
+          working_directory: build
+          files: ${{steps.filenames.outputs.filename}}
+          fail_on_unmatched_files: true

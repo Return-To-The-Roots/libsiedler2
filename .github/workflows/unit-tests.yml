@@ -1,4 +1,4 @@
-# Copyright (C) 2005 - 2025 Settlers Freaks <sf-team at siedler25.org>
+# Copyright (C) 2005 - 2026 Settlers Freaks <sf-team at siedler25.org>
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -20,17 +20,17 @@ jobs:
   StyleAndFormatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - run: git submodule update --init
       - name: Validation
         run: tools/ci/staticValidation.sh "$GITHUB_WORKSPACE"
       - name: Formatting
-        uses: DoozyX/clang-format-lint-action@v0.9
+        uses: DoozyX/clang-format-lint-action@bcb4eb2cb0d707ee4f3e5cc3b456eb075f12cf73 # v0.20
         with:
           source: "examples include src tests"
           clangFormatVersion: 10
       - name: Lint markdown files
-        uses: avto-dev/markdown-lint@v1.5.0
+        uses: avto-dev/markdown-lint@04d43ee9191307b50935a753da3b775ab695eceb # v1.5.0
         with:
           args: .
       - name: Check licensing
@@ -43,11 +43,11 @@ jobs:
         include:
           - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Release, boostVersion: 1.73.0 }
           - { compiler: gcc-9,    os: ubuntu-22.04, buildType: Debug,   boostVersion: 1.73.0, coverage: true }
-          - { compiler: clang,    os: macos-13,     buildType: Debug,   boostVersion: 1.81.0 } # New libc++ only supported since 1.81
+          - { compiler: clang,    os: macos-26,     buildType: Debug,   boostVersion: 1.81.0 } # New libc++ only supported since 1.81
           # Latest GCC
           - { compiler: gcc-14,   os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.87.0 }
           # Latest Clang
-          - { compiler: clang-18, os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.81.0 }
+          - { compiler: clang-19, os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.81.0 }
           # Windows
           - { compiler: msvc,     os: windows-2022, buildType: Debug,   boostVersion: 1.87.0 }
 
@@ -63,14 +63,14 @@ jobs:
       - run: echo "BOOST_VERSION=${{matrix.boostVersion}}" >> $GITHUB_ENV
         if: matrix.boostVersion
 
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         name: Checkout libutil
         with:
           repository: Return-To-The-Roots/libutil
           ref: master
           path: external/libutil
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         name: Checkout libendian
         with:
           repository: Return-To-The-Roots/libendian
@@ -78,7 +78,7 @@ jobs:
           path: external/libendian
       - name: Cache dependencies
         if: "!startsWith(runner.os, 'Windows')"
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{env.DEPS_DIR}}
           key: ${{matrix.os}}-${{matrix.compiler}}-${{env.BOOST_VERSION}}
@@ -106,13 +106,13 @@ jobs:
         run: choco install wget
       - name: Setup cmake
         if: "!startsWith(runner.os, 'Windows')"
-        uses: jwlawson/actions-setup-cmake@v1
+        uses: jwlawson/actions-setup-cmake@0d6a7d60b009d01c9e7523be22153ff8f19460d3  # v2.2.0
         with:
           cmake-version: '3.20.x'
 
       - name: Setup CCache
         if: "!startsWith(runner.os, 'Windows')"
-        uses: hendrikmuhs/ccache-action@v1
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03  # v1.2.23
         with:
           key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.buildType}}-${{matrix.boostVersion}}
           max-size: 200M
@@ -139,7 +139,6 @@ jobs:
         run: $LIBUTIL_DIR/tools/ci/uploadCoverageData.sh '*/examples/*' "${DEPS_DIR}/"'*' '*/build/*'
       - name: Upload coverage (Coveralls)
         if: matrix.coverage && success()
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: coverage.info
