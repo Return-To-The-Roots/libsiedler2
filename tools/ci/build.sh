@@ -24,6 +24,7 @@ fi
 
 cmake --version
 
+# shellcheck disable=SC2086
 cmake \
     -G "$GENERATOR" \
     -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \

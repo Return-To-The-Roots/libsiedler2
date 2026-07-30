@@ -44,13 +44,8 @@ jobs:
           tag=${GITHUB_REF#refs/tags/}
           if [[ "$tag" =~ refs/ ]]; then tag="NoTag"; fi
           echo "Using tag: $tag"
-          echo "::set-output name=foldername::rttrUtils_$tag"
-          echo "::set-output name=filename::rttrUtils-${{runner.os}}-${tag}.tar.gz"
-
-      - name: Get upload URL
-        if: github.event_name == 'release'
-        run: echo "::set-output name=upload_url::https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets{?name,label}"
-        id: release
+          echo "foldername=rttrUtils_$tag" >> "$GITHUB_OUTPUT"
+          echo "filename=rttrUtils-${{runner.os}}-${tag}.tar.gz" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -103,7 +98,7 @@ jobs:
         if: "!startsWith(runner.os, 'Windows')"
         uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03  # v1.2.23
         with:
-          key: ${{matrix.os}}-${{matrix.compiler}}-${{matrix.buildType}}-${{matrix.boostVersion}}
+          key: ${{matrix.os}}-${{matrix.compiler}}
           max-size: 200M
 
       - name: Install Boost
