@@ -137,26 +137,35 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         return ErrorCode::UNEXPECTED_EOF;
 
     links.resize(numLinks);
+    
+    // Cache for the loaded overlay images.
+    // Overlays have a standard ny offset, but some animation steps use the same overlay image with
+    // a slightly different offset (+1 or -1 pixel). For these, we clone the already loaded overlay and
+    // adjust ny accordingly.
+    std::vector<std::unique_ptr<ArchivItem_Bitmap_Player>> loadedOverlayImgs(numOverlayImgs);
 
     alloc_inc(numLinks);
 
     for(uint32_t i = 0; i < numLinks; ++i)
     {
         uint16_t link;
-        int16_t ny_correction;
-        if(!(fs >> link >> ny_correction))
+        int16_t nyCorrection;
+        if(!(fs >> link >> nyCorrection))
             return ErrorCode::UNEXPECTED_EOF;
         if(link >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
 
-        auto image = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
-        assert(image);
-        image->setNx(X_OFFSET);
-        image->setNy(ny[link] - ny_correction);
-
-        int ec = image->load(SPRITE_WIDTH, raw[i % 6], starts[link], true, palette);
-        if(ec)
-            return ec;
+        auto& overlayImg = loadedOverlayImgs[link];
+        if (!overlayImg) {
+            overlayImg = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
+            assert(overlayImg);
+            overlayImg->setNx(X_OFFSET);
+            overlayImg->setNy(ny[link]);
+            if(int ec = overlayImg->load(SPRITE_WIDTH, raw[i % 6], starts[link], true, palette))
+                return ec;
+        }
+        auto image = libsiedler2::clone(overlayImg);
+        image->setNy(image->getNy() - nyCorrection);
 
         set(getOverlayIdx(i), std::move(image));
 
