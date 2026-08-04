@@ -114,7 +114,7 @@ jobs:
           fi
           BOOST_ROOT="${DEPS_DIR}/boost${BOOST_VERSION}"
           echo "BOOST_ROOT=${BOOST_ROOT}" >> $GITHUB_ENV
-          echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DBoost_NO_SYSTEM_PATHS=ON " >> $GITHUB_ENV
+          echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DRTTR_USE_STATIC_BOOST=ON -DBoost_NO_SYSTEM_PATHS=ON " >> $GITHUB_ENV
           VARIANT=release $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,system,program_options,thread,test,locale,iostreams,regex"
 
       - name: Build
