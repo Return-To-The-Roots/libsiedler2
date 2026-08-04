@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BOOST_VERSION: 1.87.0 # Use a recent one to benefit from bugfixes and performance improvements
+  BOOST_VERSION: 1.91.0 # Use a recent one to benefit from bugfixes and performance improvements
 
 defaults:
   run:
@@ -115,7 +115,7 @@ jobs:
           BOOST_ROOT="${DEPS_DIR}/boost${BOOST_VERSION}"
           echo "BOOST_ROOT=${BOOST_ROOT}" >> $GITHUB_ENV
           echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DRTTR_USE_STATIC_BOOST=ON -DBoost_NO_SYSTEM_PATHS=ON " >> $GITHUB_ENV
-          VARIANT=release $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,system,program_options,thread,test,locale,iostreams,regex"
+          VARIANT=release $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,program_options,thread,test,locale,iostreams,regex"
 
       - name: Build
         run: tools/ci/build.sh "Release" "${ADDITIONAL_CMAKE_FLAGS}"
