@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 # Project meant to be used as part of a super project including libutil and libendian
-cmake_minimum_required(VERSION 3.16..3.31)
+cmake_minimum_required(VERSION 3.16...3.31)
 
 project(libsiedler2)
 
