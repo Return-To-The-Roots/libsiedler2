@@ -20,7 +20,7 @@ jobs:
   StyleAndFormatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: git submodule update --init
       - name: Validation
         run: tools/ci/staticValidation.sh "$GITHUB_WORKSPACE"
@@ -63,14 +63,14 @@ jobs:
       - run: echo "BOOST_VERSION=${{matrix.boostVersion}}" >> $GITHUB_ENV
         if: matrix.boostVersion
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         name: Checkout libutil
         with:
           repository: Return-To-The-Roots/libutil
           ref: master
           path: external/libutil
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         name: Checkout libendian
         with:
           repository: Return-To-The-Roots/libendian
