@@ -29,7 +29,7 @@ jobs:
       matrix:
         include:
           - { compiler: gcc-14,   os: ubuntu-24.04 }
-          - { compiler: msvc,     os: windows-2025 }
+          - { compiler: msvc,     os: windows-2025, generator: 'Visual Studio 18 2026' }
 
     runs-on: ${{matrix.os}}
 
@@ -119,6 +119,8 @@ jobs:
 
       - name: Build
         run: tools/ci/build.sh "Release" "${ADDITIONAL_CMAKE_FLAGS}"
+        env:
+          GENERATOR: ${{matrix.generator}}
 
       - name: Package
         run: |

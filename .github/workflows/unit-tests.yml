@@ -49,7 +49,7 @@ jobs:
           # Latest Clang
           - { compiler: clang-19, os: ubuntu-24.04, buildType: Debug,   boostVersion: 1.81.0 }
           # Windows
-          - { compiler: msvc,     os: windows-2022, buildType: Debug,   boostVersion: 1.87.0 }
+          - { compiler: msvc,     os: windows-2022, buildType: Debug,   boostVersion: 1.87.0, generator: 'Visual Studio 17 2022' }
 
     runs-on: ${{matrix.os}}
     env:
@@ -133,6 +133,8 @@ jobs:
 
       - name: Build
         run: tools/ci/build.sh "${{matrix.buildType}}" "${ADDITIONAL_CMAKE_FLAGS}"
+        env:
+          GENERATOR: ${{matrix.generator}}
 
       - name: Upload coverage
         if: matrix.coverage && success()
