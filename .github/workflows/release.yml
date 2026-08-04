@@ -104,6 +104,9 @@ jobs:
       - name: Install Boost
         shell: bash
         run: |
+          if [[ $RUNNER_OS == "Windows" ]]; then
+            DEPS_DIR=$(cygpath -u "$DEPS_DIR")
+          fi
           BOOST_ROOT="${DEPS_DIR}/boost${BOOST_VERSION}"
           echo "BOOST_ROOT=${BOOST_ROOT}" >> $GITHUB_ENV
           echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DBoost_NO_SYSTEM_PATHS=ON -DBoost_NO_BOOST_CMAKE=ON" >> $GITHUB_ENV
