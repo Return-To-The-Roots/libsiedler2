@@ -31,7 +31,7 @@ before_build:
   - mkdir build
   - cd build
   - dir /a:d %BOOST_DIR%
-  - cmake -G "Visual Studio 16 2019" -A %platform% -DRTTR_ENABLE_WERROR=ON -DBOOST_ROOT="%BOOST_DIR%\lib64-msvc-14.2\cmake" ..
+  - cmake -G "Visual Studio 16 2019" -A %platform% -DRTTR_ENABLE_WERROR=ON -DBOOST_ROOT="%BOOST_DIR%\lib64-msvc-14.2\cmake" -DBoost_VERBOSE=ON ..
     
 build_script: cmake --build . --config %configuration% --parallel 4
 
