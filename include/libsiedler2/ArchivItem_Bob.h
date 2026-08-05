@@ -45,7 +45,7 @@ public:
 
     /// Gets the overlay image to be drawn above a body image.
     /// @param bobId         the id of a good or a job
-    /// @param fat           can be true and false for carriers, other jobs have only one body type
+    /// @param fat           fat or slim body type (usually only different for carriers)
     /// @param direction     the direction to get [0-5]
     /// @param animationstep the step to get [0-7]
     /// @return The overlay image and the y-offset relative to its ny
