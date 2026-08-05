@@ -48,7 +48,7 @@ public:
     /// @param fat           can be true and false for carriers, other jobs have only one body type
     /// @param direction     the direction to get [0-5]
     /// @param animationstep the step to get [0-7]
-    /// @return The overlay image and the y-offset. The total offset is overlay.first.getNx() + overlay.second
+    /// @return The overlay image and the y-offset relative to its ny
     std::pair< ArchivItem_Bitmap_Player*, int16_t> getOverlay(unsigned bobId, bool fat, ImgDir direction, unsigned animationstep);
 
     /// Write the [sprite -> overlay] array in mapping format (TAB separated entries with # comments)
