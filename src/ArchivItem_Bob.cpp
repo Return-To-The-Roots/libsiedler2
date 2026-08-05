@@ -132,6 +132,9 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
 
     // Number of overlay images (e.g. goods of carriers)
     fs >> numOverlayImgs;
+
+    alloc_inc(numOverlayImgs);
+
     std::vector<std::vector<uint16_t>> starts(numOverlayImgs);
     std::vector<uint8_t> ny(numOverlayImgs);
 
@@ -149,13 +152,9 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
     // For each sprite we read an overlay id and an ny-offset.
     // For a complete sprite image, draw the body [fat][direction][animStep] and then draw
     // the overlay at NUM_BODY_IMAGES + [bobId][animStep][fat][direction] at overlay.getNy() + nyOffset
-    spriteOverlayId.resize(numSprites);
+    spriteOverlayIdx.resize(numSprites);
     spriteOverlayNyOffset.resize(numSprites);
-    
-    // Load each overlay image just once, they are used for multiple sprites.
     std::vector<bool> loadedOverlayImg(numOverlayImgs, false);
- 
-    alloc_inc(numOverlayImgs);
 
     // Read the sprites.
     for(uint32_t i = 0; i < numSprites; ++i)
@@ -171,18 +170,21 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         if(overlayImgId >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
 
-        if (!loadedOverlayImg[overlayImgId]) {
-            auto overlayImg = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
-            assert(overlayImg);
-            overlayImg->setNx(X_OFFSET);
-            overlayImg->setNy(ny[overlayImgId]);
-            if(int ec = overlayImg->load(SPRITE_WIDTH, raw[i % 6], starts[overlayImgId], true, palette))
-                return ec;
-            set(getOverlayArchiveIdx(overlayImgId), std::move(overlayImg));
-        }
-
-        spriteOverlayId[i] = overlayImgId;
+        int16_t overlayIdx = getOverlayArchiveIdx(overlayImgId);
+        spriteOverlayIdx[i] = overlayIdx;
         spriteOverlayNyOffset[i] = nyOffset;
+
+        // Load each overlay image just once, they are used for multiple sprites.
+        if (get(overlayIdx) != nullptr)
+            continue;
+
+        auto overlayImg = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
+        assert(overlayImg);
+        overlayImg->setNx(X_OFFSET);
+        overlayImg->setNy(ny[overlayImgId]);
+        if(int ec = overlayImg->load(SPRITE_WIDTH, raw[i % 6], starts[overlayImgId], true, palette))
+            return ec;
+        set(overlayIdx, std::move(overlayImg));
     }
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
@@ -213,15 +215,14 @@ std::pair<ArchivItem_Bitmap_Player*, int16_t> ArchivItem_Bob::getOverlay(
 {
     // Array [bobId][animStep][fat][direction]: [][8][2][6]
     const unsigned spriteId = ((bobId * 8 + animationstep) * 2 + fat) * 6 + static_cast<unsigned>(direction);
-    auto* overlayImg = dynamic_cast<ArchivItem_Bitmap_Player*>(
-        get(getOverlayArchiveIdx(getOverlayId(spriteId))));
+    auto* overlayImg = dynamic_cast<ArchivItem_Bitmap_Player*>(get(getOverlayIdx(spriteId)));
     return std::make_pair(overlayImg, spriteOverlayNyOffset[spriteId]);
 }
 
 void ArchivItem_Bob::writeLinks(std::ostream& file) const
 {
     // spriteOverlayId[][8][2][6]
-    for(const auto it : spriteOverlayId | boost::adaptors::indexed())
+    for(const auto it : spriteOverlayIdx | boost::adaptors::indexed())
     {
         if(it.index() % NUM_LINKS_PER_OVERLAY == 0)
             file << "# Job ID " << it.index() / NUM_LINKS_PER_OVERLAY << "\n";

@@ -35,9 +35,11 @@ public:
     uint32_t getNumOverlayImgs() const { return numOverlayImgs; }
 
     /// Returns the number of complete sprites, consisting of body+overlay.
-    uint16_t getNumSprites() const { return static_cast<uint16_t>( spriteOverlayId.size()); }
+    uint16_t getNumSprites() const { return static_cast<uint16_t>( spriteOverlayIdx.size()); }
 
-    uint16_t getOverlayId(unsigned spriteId) const { return spriteOverlayId[spriteId]; }
+    /// Returns the index of the overlay for a given sprite id.
+    /// the sprite id is (bobId * 96 + animStep * 12 + fat * 6 + direction)
+    uint16_t getOverlayIdx(unsigned spriteId) const { return spriteOverlayIdx[spriteId]; }
     
     ArchivItem_Bitmap_Player* getBody(bool fat, ImgDir direction, unsigned animationstep);
 
@@ -57,7 +59,7 @@ protected:
     /// Number of actual overlay pictures (e.g. carried wares)
     uint16_t numOverlayImgs;      
     /// Array [bobId][animStep=8][fat=2][direction=6] mapping to an overlay picture
-    std::vector<uint16_t> spriteOverlayId;
+    std::vector<uint16_t> spriteOverlayIdx;
     /// Array [bobId][animStep=8][fat=2][direction=6] of sprite's overlay's ny offsets.
     std::vector<int16_t> spriteOverlayNyOffset; 
 };
