@@ -1,4 +1,4 @@
-# Copyright (C) 2005 - 2021 Settlers Freaks <sf-team at siedler25.org>
+# Copyright (C) 2005 - 2026 Settlers Freaks <sf-team at siedler25.org>
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -30,7 +30,8 @@ install:
 before_build:
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio 16 2019" -A %platform% -DRTTR_ENABLE_WERROR=ON -DBOOST_ROOT="%BOOST_DIR%" ..
+  - dir /a:d %BOOST_DIR%
+  - cmake -G "Visual Studio 16 2019" -A %platform% -DRTTR_ENABLE_WERROR=ON -DBOOST_ROOT="%BOOST_DIR%\lib64-msvc-14.2\cmake" ..
     
 build_script: cmake --build . --config %configuration% --parallel 4
 
