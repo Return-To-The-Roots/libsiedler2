@@ -136,9 +136,9 @@ jobs:
         env:
           GENERATOR: ${{matrix.generator}}
 
-      - name: Upload coverage
+      - name: Filter and upload coverage
         if: matrix.coverage && success()
-        run: $LIBUTIL_DIR/tools/ci/uploadCoverageData.sh '*/examples/*' "${DEPS_DIR}/"'*' '*/build/*'
+        run: $LIBUTIL_DIR/tools/ci/uploadCoverageData.sh '*/examples/*' "${DEPS_DIR}/"'*' '*/build/*' '*/external/*'
       - name: Upload coverage (Coveralls)
         if: matrix.coverage && success()
         uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
