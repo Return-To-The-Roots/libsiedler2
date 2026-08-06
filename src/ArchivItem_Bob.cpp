@@ -67,7 +67,7 @@ static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& 
  *  
  *  @return The archive index for the given overlay.
  */
-static inline uint16_t getOverlayArchiveIdx(unsigned overlayId)
+static inline unsigned getOverlayArchiveIdx(unsigned overlayId)
 {   
     // The first NUM_BODY_IMAGES indices store the body images. Overlays are shifted accordingly.
     return NUM_BODY_IMAGES + overlayId; 
@@ -154,15 +154,14 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
     // the overlay at NUM_BODY_IMAGES + [bobId][animStep][fat][direction] at overlay.getNy() + nyOffset
     spriteOverlayIdx.resize(numSprites);
     spriteOverlayNyOffset.resize(numSprites);
-    std::vector<bool> loadedOverlayImg(numOverlayImgs, false);
 
     // Read the sprites.
     for(uint32_t i = 0; i < numSprites; ++i)
     {
         // The overlay id that the sprite uses.
         uint16_t overlayImgId;
-        // The ny offset for this sprite. Overlays have a standard ny offset, but 
-        // some animation steps use a slightly different offset (+1 or -1 pixel).
+        // The ny offset for this sprite. Overlays have a standard ny offset, and 
+        // animation steps may use slightly different offsets.
         int16_t nyOffset;
 
         if(!(fs >> overlayImgId >> nyOffset))
@@ -170,12 +169,12 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         if(overlayImgId >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
 
-        int16_t overlayIdx = getOverlayArchiveIdx(overlayImgId);
+        const unsigned overlayIdx = getOverlayArchiveIdx(overlayImgId);
         spriteOverlayIdx[i] = overlayIdx;
         spriteOverlayNyOffset[i] = nyOffset;
 
         // Load each overlay image just once, they are used for multiple sprites.
-        if (get(overlayIdx) != nullptr)
+        if (get(overlayIdx))
             continue;
 
         auto overlayImg = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
