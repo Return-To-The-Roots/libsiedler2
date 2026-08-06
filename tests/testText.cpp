@@ -1,17 +1,48 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2026 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Text.h"
+#include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <cstdlib>
 #include <random>
+#include <sstream>
 
 namespace bfs = boost::filesystem;
+
+namespace {
+// LCOV_EXCL_START
+struct FailBuf : std::streambuf
+{
+    int numActions = 0;
+    int_type overflow(int_type) override
+    {
+        numActions++;
+        return traits_type::eof();
+    }
+    int_type underflow() override
+    {
+        numActions++;
+        return traits_type::eof();
+    }
+    std::streamsize xsputn(const char_type* /*s*/, std::streamsize /*count*/) override
+    {
+        numActions++;
+        return traits_type::eof();
+    }
+    std::streamsize xsgetn(char_type* /*s*/, std::streamsize /*count*/) override
+    {
+        numActions++;
+        return traits_type::eof();
+    }
+};
+// LCOV_EXCL_STOP
+} // namespace
 
 BOOST_AUTO_TEST_SUITE(TextFiles)
 
@@ -151,6 +182,70 @@ BOOST_AUTO_TEST_CASE(ReadOriginalFiles)
             BOOST_TEST(archiv[0]);
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(LoadRemovesNullTerminator)
+{
+    std::stringstream ss;
+    const char data[] = {'H', 'e', 'l', 'l', 'o', '\0'};
+    ss.write(data, sizeof(data));
+    libsiedler2::ArchivItem_Text txt;
+    BOOST_TEST(txt.load(ss, false) == 0);
+    BOOST_TEST(txt.getText() == "Hello");
+}
+
+BOOST_AUTO_TEST_CASE(LoadHonorsEndOfFileMarker)
+{
+    std::stringstream ss;
+    ss << "Before\x16" // ASCII "SUB"
+       << "After";
+    libsiedler2::ArchivItem_Text txt;
+    BOOST_TEST(txt.load(ss, true) == 0);
+    BOOST_TEST(txt.getText() == "Before");
+}
+
+BOOST_AUTO_TEST_CASE(ReadWriteErrors)
+{
+    libsiedler2::ArchivItem_Text txt;
+    std::stringstream badStream;
+    badStream.setstate(std::ios::badbit);
+    BOOST_TEST(txt.load(badStream) == libsiedler2::ErrorCode::FILE_NOT_ACCESSIBLE);
+    BOOST_TEST(txt.write(badStream) == libsiedler2::ErrorCode::FILE_NOT_ACCESSIBLE);
+
+    FailBuf buf;
+    std::ostream os(&buf);
+    txt.setText("test");
+    BOOST_TEST(txt.write(os) == libsiedler2::ErrorCode::UNEXPECTED_EOF);
+}
+
+BOOST_AUTO_TEST_CASE(WriteEmptyTextReturnsNone)
+{
+    libsiedler2::ArchivItem_Text txt;
+    txt.setText("");
+    FailBuf buf;
+    std::ostringstream os;
+    static_cast<std::ostream&>(os).rdbuf(&buf);
+    // An attempted write would fail, so this only succeeds if it really didn't even try to write anything
+    BOOST_TEST(txt.write(os) == 0);
+    BOOST_TEST(buf.numActions == 0);
+}
+
+BOOST_AUTO_TEST_CASE(GetFileTextWithAndWithoutConversion)
+{
+    libsiedler2::ArchivItem_Text txt;
+    txt.setText("line1\nline2", false);
+    BOOST_TEST(txt.getFileText(false) == "line1\nline2");
+    BOOST_TEST(txt.getFileText(true) == "line1@@line2");
+
+    txt.setText("hello@@world", true);
+    BOOST_TEST(txt.getText() == "hello\nworld");
+    txt.setText("hello@@world", false);
+    BOOST_TEST(txt.getText() == "hello@@world");
+
+    txt.setText("line1\r\nline2\r@@line3@@line4\rline5", true);
+    BOOST_TEST(txt.getText() == "line1\n\nline2\n\nline3\nline4\nline5");
+    txt.setText("line1\r\nline2\r@@line3@@line4\rline5", false);
+    BOOST_TEST(txt.getText() == "line1\nline2\n@@line3@@line4\nline5");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

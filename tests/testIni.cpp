@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2026 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -6,10 +6,12 @@
 #include "test/config.h"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem_Ini.h"
+#include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/nowide/fstream.hpp>
 #include <boost/test/unit_test.hpp>
+#include <sstream>
 #include <stdexcept>
 
 BOOST_AUTO_TEST_SUITE(IniFiles)
@@ -78,6 +80,44 @@ BOOST_AUTO_TEST_CASE(DefaultValues)
     BOOST_TEST(ini->getValue("bool", false));
     ini->setValue("bool", false);
     BOOST_TEST(!ini->getValue("bool", true));
+}
+
+BOOST_AUTO_TEST_CASE(LoadWriteErrors)
+{
+    libsiedler2::ArchivItem_Ini ini;
+
+    std::stringstream badStream;
+    badStream.setstate(std::ios::badbit);
+    BOOST_TEST(ini.load(badStream) == libsiedler2::ErrorCode::FILE_NOT_ACCESSIBLE);
+    BOOST_TEST(ini.write(badStream) == libsiedler2::ErrorCode::FILE_NOT_ACCESSIBLE);
+
+    std::stringstream ss;
+    ss.str("no brackets here\nkey=val\n");
+    BOOST_TEST(ini.load(ss) == libsiedler2::ErrorCode::WRONG_FORMAT);
+
+    ss.str("[]\n");
+    BOOST_TEST(ini.load(ss) == libsiedler2::ErrorCode::WRONG_HEADER);
+
+    ss.str("[Section]\nno_equals_sign\n");
+    BOOST_TEST(ini.load(ss) == libsiedler2::ErrorCode::WRONG_FORMAT);
+
+    ss.str("[Section]\n=skipped\nkey=val\n"); // Empty key is skipped, but the rest is still valid
+    BOOST_TEST(ini.load(ss) == 0);
+    BOOST_TEST(ini.size() == 1u);
+    BOOST_TEST(ini.getName() == "Section");
+    BOOST_TEST(ini.getValue("key") == "val");
+
+    ini.clear();
+    ss.clear();
+    ss.str(""); // Empty stream
+    BOOST_TEST(ini.load(ss) == 0);
+    BOOST_TEST(ini.empty());
+}
+
+BOOST_AUTO_TEST_CASE(ConstructorWithName)
+{
+    libsiedler2::ArchivItem_Ini ini("MySection");
+    BOOST_TEST(ini.getName() == "MySection");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

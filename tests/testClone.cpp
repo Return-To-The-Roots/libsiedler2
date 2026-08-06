@@ -8,8 +8,6 @@
 
 using namespace libsiedler2;
 
-namespace {
-
 struct Base : ICloneable<Base>
 {};
 
@@ -32,7 +30,6 @@ struct Bar : virtual BarBase
 };
 
 using TestedTypes = boost::mpl::list<Foo, Bar>;
-} // namespace
 
 static_assert(detail::is_static_castable_v<int, int>);
 static_assert(detail::is_static_castable_v<int, float>);
