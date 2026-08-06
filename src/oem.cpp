@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2026 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -20,16 +20,6 @@ static const std::array<uint8_t, 128> ansi2oem_tab = {
   /*00F0:*/ 0x64, 0xA4, 0x95, 0xA2, 0x93, 0x6F, 0x94, 0xF6, 0x6F, 0x97, 0xA3, 0x96, 0x81, 0x79, 0x00, 0x98,
 };
 
-/** @name AnsiToOem
- *
- *  Wandelt einen String vom ANSI ins OEM Format um.
- *
- *  @param[in]  from   konstanter Quellstring
- *  @param[out] to     Zielstring (ausreichend Speicher muss vorhanden sein)
- *  @param[in]  length Länge des Quellstrings, wenn 0 wird @p strlen(from) verwendet
- *
- *  @return            @p to wird zurückgeliefert
- */
 std::string AnsiToOem(const std::string& from)
 {
     std::string result(from.size(), '\0');
@@ -48,16 +38,6 @@ std::string AnsiToOem(const std::string& from)
     return result;
 }
 
-/** @name OemToAnsi
- *
- *  Wandelt einen String vom OEM ins ANSI Format um.
- *
- *  @param[in]  from   konstanter Quellstring
- *  @param[out] to     Zielstring (ausreichend Speicher muss vorhanden sein)
- *  @param[in]  length Länge des Quellstrings, wenn 0 wird @p strlen(from) verwendet
- *
- *  @return            @p to wird zurückgeliefert
- */
 std::string OemToAnsi(const std::string& from)
 {
     std::string result(from.size(), '\0');

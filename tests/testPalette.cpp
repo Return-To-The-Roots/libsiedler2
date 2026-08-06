@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2026 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -10,9 +10,12 @@
 #include "libsiedler2/ArchivItem_PaletteAnimation.h"
 #include "libsiedler2/ColorBGRA.h"
 #include "libsiedler2/ColorRGB.h"
+#include "libsiedler2/ErrorCodes.h"
 #include "libsiedler2/libsiedler2.h"
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
+#include <sstream>
+#include <vector>
 
 namespace bfs = boost::filesystem;
 
@@ -146,6 +149,32 @@ BOOST_AUTO_TEST_CASE(ReadWritePalAnim)
     BOOST_TEST_REQUIRE(anim2->rate == 42);
     BOOST_TEST_REQUIRE(anim2->firstClr == 3);
     BOOST_TEST_REQUIRE(anim2->lastClr == 6);
+}
+
+BOOST_AUTO_TEST_CASE(LoadWriteErrorPaths)
+{
+    libsiedler2::ArchivItem_Palette pal;
+
+    std::stringstream badStream;
+    badStream.setstate(std::ios::badbit);
+    BOOST_TEST(pal.load(badStream) == libsiedler2::ErrorCode::FILE_NOT_ACCESSIBLE);
+    BOOST_TEST(pal.write(badStream) == libsiedler2::ErrorCode::FILE_NOT_ACCESSIBLE);
+
+    std::stringstream wrongNumColors;
+    // Correct number but missing color data
+    wrongNumColors << char(256 & 0xFF) << char(256 >> 8); // Little endian
+    BOOST_TEST(pal.load(wrongNumColors, true) == libsiedler2::ErrorCode::UNEXPECTED_EOF);
+    wrongNumColors.clear();
+    // Too many colors
+    wrongNumColors << char(128 & 0xFF) << char(128 >> 8);
+    BOOST_TEST(pal.load(wrongNumColors, true) == libsiedler2::ErrorCode::WRONG_HEADER);
+}
+
+BOOST_AUTO_TEST_CASE(CopyToBGRAWithSmallBufferThrows)
+{
+    libsiedler2::ArchivItem_Palette pal;
+    std::vector<uint8_t> smallBuf(10);
+    BOOST_REQUIRE_THROW(pal.copyToBGRA(&smallBuf[0], smallBuf.size()), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
