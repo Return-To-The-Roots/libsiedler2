@@ -60,19 +60,6 @@ static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& 
     return ErrorCode::NONE;
 }
 
-/**
- *  At which index in this archive the overlay with the given id is stored.
- *
- *  @param[in] overlayId the id of an overlay, stored in spriteOverlayIdx
- *
- *  @return The archive index for the given overlay.
- */
-static inline unsigned getOverlayArchiveIdx(unsigned overlayId)
-{
-    // The first NUM_BODY_IMAGES indices store the body images. Overlays are shifted accordingly.
-    return NUM_BODY_IMAGES + overlayId;
-}
-
 ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BobType::Bob), numOverlayImgs(0) {}
 
 ArchivItem_Bob::~ArchivItem_Bob() = default;
@@ -169,7 +156,9 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         if(overlayImgId >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
 
-        const unsigned overlayArchiveIdx = getOverlayArchiveIdx(overlayImgId);
+        // The first NUM_BODY_IMAGES indices store the body images. Overlays are shifted accordingly.
+        const unsigned overlayArchiveIdx = NUM_BODY_IMAGES + overlayImgId;
+
         spriteOverlayIdx[i] = overlayArchiveIdx;
         spriteOverlayNyOffset[i] = nyOffset;
 
