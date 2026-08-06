@@ -35,12 +35,12 @@ public:
     uint32_t getNumOverlayImgs() const { return numOverlayImgs; }
 
     /// Returns the number of complete sprites, consisting of body+overlay.
-    uint16_t getNumSprites() const { return static_cast<uint16_t>( spriteOverlayIdx.size()); }
+    uint16_t getNumSprites() const { return static_cast<uint16_t>(spriteOverlayIdx.size()); }
 
     /// Returns the index of the overlay for a given sprite id.
     /// the sprite id is (bobId * 96 + animStep * 12 + fat * 6 + direction)
     uint16_t getOverlayIdx(unsigned spriteId) const { return spriteOverlayIdx[spriteId]; }
-    
+
     ArchivItem_Bitmap_Player* getBody(bool fat, ImgDir direction, unsigned animationstep);
 
     /// Gets the overlay image to be drawn above a body image.
@@ -49,7 +49,8 @@ public:
     /// @param direction     the direction to get [0-5]
     /// @param animationstep the step to get [0-7]
     /// @return The overlay image and the y-offset relative to its ny
-    std::pair< ArchivItem_Bitmap_Player*, int16_t> getOverlay(unsigned bobId, bool fat, ImgDir direction, unsigned animationstep);
+    std::pair<ArchivItem_Bitmap_Player*, int16_t> getOverlay(unsigned bobId, bool fat, ImgDir direction,
+                                                             unsigned animationstep);
 
     /// Write the [sprite -> overlay] array in mapping format (TAB separated entries with # comments)
     void writeLinks(std::ostream& file) const;
@@ -57,10 +58,10 @@ public:
 
 protected:
     /// Number of actual overlay pictures (e.g. carried wares)
-    uint16_t numOverlayImgs;      
+    uint16_t numOverlayImgs;
     /// Array [bobId][animStep=8][fat=2][direction=6] mapping to an overlay picture
     std::vector<uint16_t> spriteOverlayIdx;
     /// Array [bobId][animStep=8][fat=2][direction=6] of sprite's overlay's ny offsets.
-    std::vector<int16_t> spriteOverlayNyOffset; 
+    std::vector<int16_t> spriteOverlayNyOffset;
 };
 } // namespace libsiedler2

@@ -58,6 +58,11 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5).first == bob[bob.getOverlayIdx(21 * 96 + 5 * 12 + 3 + 1 * 6)]);
     BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7).first);
     BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7).first == bob[bob.getOverlayIdx(13 * 96 + 7 * 12 + 4 + 0 * 6)]);
+
+    // Test some known ny offsets
+    BOOST_TEST(bob.getOverlay(4, true, ImgDir::W, 1).second == 0);
+    BOOST_TEST(bob.getOverlay(15, true, ImgDir::W, 3).second == -1);
+    BOOST_TEST(bob.getOverlay(33, false, ImgDir::NW, 4).second == +1);
 }
 
 BOOST_AUTO_TEST_CASE(WriteReadLinks)

@@ -62,15 +62,15 @@ static int readImageData(libendian::EndianIStreamAdapter<false, std::istream&>& 
 
 /**
  *  At which index in this archive the overlay with the given id is stored.
- *  
- *  @param[in] overlayId the id of an overlay, stored in spriteOverlayId
- *  
+ *
+ *  @param[in] overlayId the id of an overlay, stored in spriteOverlayIdx
+ *
  *  @return The archive index for the given overlay.
  */
 static inline unsigned getOverlayArchiveIdx(unsigned overlayId)
-{   
+{
     // The first NUM_BODY_IMAGES indices store the body images. Overlays are shifted accordingly.
-    return NUM_BODY_IMAGES + overlayId; 
+    return NUM_BODY_IMAGES + overlayId;
 }
 
 ArchivItem_Bob::ArchivItem_Bob() : ArchivItem(BobType::Bob), numOverlayImgs(0) {}
@@ -160,7 +160,7 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
     {
         // The overlay id that the sprite uses.
         uint16_t overlayImgId;
-        // The ny offset for this sprite. Overlays have a standard ny offset, and 
+        // The ny offset for this sprite. Overlays have a standard ny offset, and
         // animation steps may use slightly different offsets.
         int16_t nyOffset;
 
@@ -169,12 +169,12 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         if(overlayImgId >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
 
-        const unsigned overlayIdx = getOverlayArchiveIdx(overlayImgId);
-        spriteOverlayIdx[i] = overlayIdx;
+        const unsigned overlayArchiveIdx = getOverlayArchiveIdx(overlayImgId);
+        spriteOverlayIdx[i] = overlayArchiveIdx;
         spriteOverlayNyOffset[i] = nyOffset;
 
         // Load each overlay image just once, they are used for multiple sprites.
-        if (get(overlayIdx))
+        if(get(overlayArchiveIdx))
             continue;
 
         auto overlayImg = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
@@ -183,7 +183,7 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         overlayImg->setNy(ny[overlayImgId]);
         if(int ec = overlayImg->load(SPRITE_WIDTH, raw[i % 6], starts[overlayImgId], true, palette))
             return ec;
-        set(overlayIdx, std::move(overlayImg));
+        set(overlayArchiveIdx, std::move(overlayImg));
     }
 
     return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
@@ -209,8 +209,8 @@ ArchivItem_Bitmap_Player* ArchivItem_Bob::getBody(bool fat, ImgDir direction, un
     return dynamic_cast<ArchivItem_Bitmap_Player*>(get(bodyIdx));
 }
 
-std::pair<ArchivItem_Bitmap_Player*, int16_t> ArchivItem_Bob::getOverlay(
-    unsigned bobId, bool fat, ImgDir direction, unsigned animationstep)
+std::pair<ArchivItem_Bitmap_Player*, int16_t> ArchivItem_Bob::getOverlay(unsigned bobId, bool fat, ImgDir direction,
+                                                                         unsigned animationstep)
 {
     // Array [bobId][animStep][fat][direction]: [][8][2][6]
     const unsigned spriteId = ((bobId * 8 + animationstep) * 2 + fat) * 6 + static_cast<unsigned>(direction);
