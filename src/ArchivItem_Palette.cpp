@@ -49,11 +49,12 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
     }
 
     static_assert(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot read it in whole");
-    fs.read(&colors[0].r, sizeof(colors));
+    if(!fs.read(&colors[0].r, sizeof(colors)))
+        return ErrorCode::UNEXPECTED_EOF;
 
     setDefaultTransparentIdx();
 
-    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
+    return ErrorCode::NONE;
 }
 
 /**
@@ -74,9 +75,8 @@ int libsiedler2::ArchivItem_Palette::write(std::ostream& file, bool skip) const
         fs << int16_t(256);
 
     static_assert(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot write it in whole");
-    fs.write(&colors[0].r, sizeof(colors));
 
-    return (!file) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
+    return fs.write(&colors[0].r, sizeof(colors)) ? ErrorCode::NONE : ErrorCode::UNEXPECTED_EOF;
 }
 
 /**
