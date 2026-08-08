@@ -145,7 +145,7 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
     // Read the sprites.
     for(uint32_t i = 0; i < numSprites; ++i)
     {
-        // The overlay id that the sprite uses.
+        // Index of the overlay for this sprite
         uint16_t overlayImgId;
         // The ny offset for this sprite. Overlays have a standard ny offset, and
         // animation steps may use slightly different offsets.
@@ -209,7 +209,7 @@ std::pair<ArchivItem_Bitmap_Player*, int16_t> ArchivItem_Bob::getOverlay(unsigne
 
 void ArchivItem_Bob::writeLinks(std::ostream& file) const
 {
-    // spriteOverlayId[][8][2][6]
+    // spriteOverlayIdx[][8][2][6]
     for(const auto it : spriteOverlayIdx | boost::adaptors::indexed())
     {
         if(it.index() % NUM_LINKS_PER_OVERLAY == 0)
