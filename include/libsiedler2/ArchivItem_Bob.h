@@ -38,7 +38,7 @@ public:
     uint16_t getNumSprites() const { return static_cast<uint16_t>(spriteOverlayIdx.size()); }
 
     /// Returns the index of the overlay for a given sprite idx.
-    uint16_t getOverlayIdx(unsigned spriteIdx) const { return spriteOverlayIdx[spriteId]; }
+    uint16_t getOverlayIdx(unsigned spriteIdx) const { return spriteOverlayIdx[spriteIdx]; }
 
     ArchivItem_Bitmap_Player* getBody(bool fat, ImgDir direction, unsigned animationstep);
 
