@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     BOOST_TEST_REQUIRE(dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]));
     libsiedler2::ArchivItem_Bob& bob = *static_cast<libsiedler2::ArchivItem_Bob*>(archiv[0]);
     BOOST_TEST(bob.getNumOverlayImgs() == 602u);
-    BOOST_TEST(bob.getNumLinks() == 3264u);
+    BOOST_TEST(bob.getNumSprites() == 3264u);
     BOOST_TEST(bob.size() == 698u);
     for(unsigned i = 0; i < bob.size(); i++)
     {
@@ -54,10 +54,15 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     BOOST_TEST(bob.getBody(false, ImgDir::NW, 3));
     BOOST_TEST(bob.getBody(false, ImgDir::NW, 3) == bob[0 * 48 + 4 * 8 + 3]);
     // Overlay links are an array: [overlay][animStep][fat][direction]: [][8][2][6]
-    BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5));
-    BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5) == bob[bob.getOverlayIdx(21 * 96 + 5 * 12 + 3 + 1 * 6)]);
-    BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7));
-    BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7) == bob[bob.getOverlayIdx(13 * 96 + 7 * 12 + 4 + 0 * 6)]);
+    BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5).first);
+    BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5).first == bob[bob.getOverlayIdx(21 * 96 + 5 * 12 + 3 + 1 * 6)]);
+    BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7).first);
+    BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7).first == bob[bob.getOverlayIdx(13 * 96 + 7 * 12 + 4 + 0 * 6)]);
+
+    // Test some known ny offsets
+    BOOST_TEST(bob.getOverlay(4, true, ImgDir::W, 1).second == 0);
+    BOOST_TEST(bob.getOverlay(15, true, ImgDir::W, 3).second == -1);
+    BOOST_TEST(bob.getOverlay(33, false, ImgDir::NW, 4).second == +1);
 }
 
 BOOST_AUTO_TEST_CASE(WriteReadLinks)
@@ -73,7 +78,7 @@ BOOST_AUTO_TEST_CASE(WriteReadLinks)
     bob->writeLinks(s);
     s.seekg(0);
     const auto links = libsiedler2::ArchivItem_Bob::readLinks(s);
-    for(unsigned i = 0; i < bob->getNumLinks(); i++)
+    for(unsigned i = 0; i < bob->getNumSprites(); i++)
     {
         const auto it = links.find(i);
         BOOST_TEST_REQUIRE((it != links.end()));

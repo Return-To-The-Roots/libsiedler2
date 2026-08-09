@@ -33,22 +33,34 @@ public:
     static int write(std::ostream& file, const ArchivItem_Palette* palette);
 
     uint32_t getNumOverlayImgs() const { return numOverlayImgs; }
-    uint16_t getNumLinks() const { return static_cast<uint16_t>(links.size()); }
-    uint16_t getOverlayIdx(unsigned idx) const { return links[idx]; };
-    uint16_t getOverlayIdx(unsigned overlayIdx, bool fat, ImgDir direction, unsigned animationstep) const
-    {
-        // Array [overlayIdx][animStep][fat][direction]: [35][8][2][6]
-        return getOverlayIdx(((overlayIdx * 8 + animationstep) * 2 + fat) * 6 + static_cast<unsigned>(direction));
-    }
-    ArchivItem_Bitmap_Player* getBody(bool fat, ImgDir direction, unsigned animationstep);
-    ArchivItem_Bitmap_Player* getOverlay(unsigned overlayIdx, bool fat, ImgDir direction, unsigned animationstep);
 
-    /// Write the links in mapping format (TAB separated entries with # comments)
+    /// Returns the number of complete sprites, consisting of body+overlay.
+    uint16_t getNumSprites() const { return static_cast<uint16_t>(spriteOverlayIdx.size()); }
+
+    /// Returns the index of the overlay for a given sprite idx.
+    uint16_t getOverlayIdx(unsigned spriteIdx) const { return spriteOverlayIdx[spriteIdx]; }
+
+    ArchivItem_Bitmap_Player* getBody(bool fat, ImgDir direction, unsigned animationstep);
+
+    /// Gets the overlay image to be drawn above a body image.
+    /// @param bobId         the id of a good or a job
+    /// @param fat           fat or slim body type (usually only different for carriers)
+    /// @param direction     the direction to get
+    /// @param animationstep the step to get [0-7]
+    /// @return The overlay image and the y-offset relative to its ny
+    std::pair<ArchivItem_Bitmap_Player*, int16_t> getOverlay(unsigned bobId, bool fat, ImgDir direction,
+                                                             unsigned animationstep);
+
+    /// Write the [sprite -> overlay] array in mapping format (TAB separated entries with # comments)
     void writeLinks(std::ostream& file) const;
     static std::map<uint16_t, uint16_t> readLinks(std::istream& file);
 
 protected:
-    uint16_t numOverlayImgs;     /// Number of actual overlay pictures (e.g. carried wares)
-    std::vector<uint16_t> links; /// Array [overlayId][animStep=8][fat=2][direction=6] mapping to an overlay picture
+    /// Number of actual overlay pictures (e.g. carried wares)
+    uint16_t numOverlayImgs;
+    /// Array [bobId][animStep=8][fat=2][direction=6] mapping to an overlay picture
+    std::vector<uint16_t> spriteOverlayIdx;
+    /// Array [bobId][animStep=8][fat=2][direction=6] of sprite's overlay's ny offsets.
+    std::vector<int16_t> spriteOverlayNyOffset;
 };
 } // namespace libsiedler2
