@@ -119,13 +119,19 @@ jobs:
 
       - name: Install Boost
         shell: bash
+        env:
+          VARIANT: ${{matrix.buildType}}
         run: |
           BOOST_ROOT="${DEPS_DIR}/boost${BOOST_VERSION}"
           echo "BOOST_ROOT=${BOOST_ROOT}" >> $GITHUB_ENV
           echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DBoost_NO_SYSTEM_PATHS=ON -DBoost_NO_BOOST_CMAKE=ON" >> $GITHUB_ENV
-          SHARED=""
-          if [[ "${{runner.os}}" == macOS ]]; then SHARED="shared"; fi # Seems to be required
-          $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,system,program_options,thread,test,locale,iostreams,regex" $SHARED
+          export VARIANT=$(echo "$VARIANT" | awk '{print tolower($0)}')
+          if [[ "${{runner.os}}" == Windows ]]; then
+            LINK="static"
+          else
+            LINK="shared"
+          fi
+          $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,system,program_options,thread,test,locale,iostreams,regex" $LINK
 
       - name: Enable coverage collection
         if: matrix.coverage
