@@ -21,10 +21,11 @@ BOOST_AUTO_TEST_CASE(ColorRGBCtor)
     BOOST_TEST(clrDef.getGreen() == 0u);
     BOOST_TEST(clrDef.getBlue() == 0u);
     // Check setting of elements
-    ColorRGB clr(1, 2, 3);
-    BOOST_TEST(clr.getRed() == 1u);
-    BOOST_TEST(clr.getGreen() == 2u);
-    BOOST_TEST(clr.getBlue() == 3u);
+    ColorRGB clr(0x13, 0x24, 0x36);
+    BOOST_TEST(clr.getRed() == 0x13u);
+    BOOST_TEST(clr.getGreen() == 0x24u);
+    BOOST_TEST(clr.getBlue() == 0x36u);
+    BOOST_TEST(clr.asValue() == 0x00132436);
 }
 
 BOOST_AUTO_TEST_CASE(ColorBGRACtor)
@@ -89,7 +90,7 @@ BOOST_AUTO_TEST_CASE(ColorRGBBuffer)
                                          checkClr2.getRed(), checkClr2.getGreen(), checkClr2.getBlue()};
     static_assert(sizeof(ColorRGB) == 3u, "Padding added to ColorRGB. Cannot read it as buffer");
     // Interpreting a buffer of RGBRGB values as ColorRGB should be possible
-    const auto* clrs = reinterpret_cast<const ColorRGB*>(&buf2[0]);
+    const auto* clrs = reinterpret_cast<const ColorRGB*>(buf2.data());
     BOOST_TEST(clrs[0] == checkClr);
     BOOST_TEST(clrs[1] == checkClr2);
 }
