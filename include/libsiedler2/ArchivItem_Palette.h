@@ -55,8 +55,7 @@ public:
     /// Return the (first) index with the given color or defaultVal if none found
     uint8_t lookupOrDef(const ColorRGB& clr, uint8_t defaultVal = 0) const;
 
-    /// Index-Operator von @p ArchivItem_Palette.
-    const ColorRGB& operator[](unsigned index) const;
+    const ColorRGB& operator[](unsigned index) const { return colors.at(index); }
 
     /// Copy palette to the buffer as BGRA. Ignores transparency
     void copyToBGRA(uint8_t* buffer, size_t bufSize) const;

@@ -69,7 +69,7 @@ inline ColorBGRA::ColorBGRA(uint32_t clr)
 
 inline uint32_t ColorBGRA::asValue() const
 {
-    return value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
+    return getBlue() | (getGreen() << 8) | (getRed() << 16) | (getAlpha() << 24);
 }
 
 inline ColorBGRA::operator ColorRGB() const
