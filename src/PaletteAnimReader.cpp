@@ -54,6 +54,7 @@ int LoadTxtPalette(const boost::filesystem::path& filepath, Archiv& items)
     {
         return fs.eof() ? ErrorCode::UNEXPECTED_EOF : ErrorCode::WRONG_FORMAT;
     }
+    items.set(0, std::move(pal));
     return ErrorCode::NONE;
 }
 
