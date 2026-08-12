@@ -4,6 +4,7 @@
 
 #include "loadMapping.h"
 #include "s25util/StringConversion.h"
+#include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/nowide/fstream.hpp>
 
@@ -17,6 +18,7 @@ void loadMapping(std::istream& stream, const std::function<void(unsigned idx, co
     while(std::getline(stream, line))
     {
         ++lineNr;
+        boost::algorithm::trim(line);
         if(line.empty() || line[0] == '#')
             continue;
         try

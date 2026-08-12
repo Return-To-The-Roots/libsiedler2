@@ -49,7 +49,7 @@ int libsiedler2::ArchivItem_Palette::load(std::istream& file, bool skip)
     }
 
     static_assert(sizeof(colors) == 256u * 3u, "Color array has alignment. Cannot read it in whole");
-    if(!fs.read(&colors[0].r, sizeof(colors)))
+    if(!fs.read(colors))
         return ErrorCode::UNEXPECTED_EOF;
 
     setDefaultTransparentIdx();
@@ -128,21 +128,6 @@ uint8_t libsiedler2::ArchivItem_Palette::lookupOrDef(const ColorRGB& clr, uint8_
     uint8_t result = defaultVal;
     lookup(clr, result);
     return result;
-}
-
-/**
- *  Index-Operator von @p ArchivItem_Palette.
- *
- *  @param[in] index Index des zu liefernden Eintrags
- *
- *  @return Bei Erfolg einen Pointer auf einen, ansonsten nullptr
- */
-const libsiedler2::ColorRGB& libsiedler2::ArchivItem_Palette::operator[](unsigned index) const
-{
-    if(index < 256)
-        return colors[index];
-    else
-        throw std::out_of_range("index");
 }
 
 /**
