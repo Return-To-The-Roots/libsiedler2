@@ -139,28 +139,24 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
     // For each sprite we read an overlay id and an ny-offset.
     // For a complete sprite image, draw the body [fat][direction][animStep] and then draw
     // the overlay at NUM_BODY_IMAGES + [bobId][animStep][fat][direction] at overlay.getNy() + nyOffset
-    spriteOverlayIdx.resize(numSprites);
-    spriteOverlayNyOffset.resize(numSprites);
+    spriteOverlayData.resize(numSprites);
 
     // Read the sprites.
     for(uint32_t i = 0; i < numSprites; ++i)
     {
         // Index of the overlay for this sprite
-        uint16_t overlayImgId;
+        OverlayIdx overlayIdx;
         // The ny offset for this sprite. Overlays have a standard ny offset, and
         // animation steps may use slightly different offsets.
         int16_t nyOffset;
 
-        if(!(fs >> overlayImgId >> nyOffset))
+        if(!(fs >> overlayIdx.value >> nyOffset))
             return ErrorCode::UNEXPECTED_EOF;
-        if(overlayImgId >= numOverlayImgs)
+        if(overlayIdx.value >= numOverlayImgs)
             return ErrorCode::WRONG_FORMAT;
 
-        // The first NUM_BODY_IMAGES indices store the body images. Overlays are shifted accordingly.
-        const unsigned overlayArchiveIdx = NUM_BODY_IMAGES + overlayImgId;
-
-        spriteOverlayIdx[i] = overlayArchiveIdx;
-        spriteOverlayNyOffset[i] = nyOffset;
+        spriteOverlayData[i] = OverlayData{overlayIdx, nyOffset};
+        const auto overlayArchiveIdx = getOverlayArchiveIndex(overlayIdx);
 
         // Load each overlay image just once, they are used for multiple sprites.
         if(get(overlayArchiveIdx))
@@ -169,8 +165,8 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         auto overlayImg = getAllocator().create<ArchivItem_Bitmap_Player>(BobType::BitmapPlayer);
         assert(overlayImg);
         overlayImg->setNx(X_OFFSET);
-        overlayImg->setNy(ny[overlayImgId]);
-        if(int ec = overlayImg->load(SPRITE_WIDTH, raw[i % 6], starts[overlayImgId], true, palette))
+        overlayImg->setNy(ny[overlayIdx.value]);
+        if(int ec = overlayImg->load(SPRITE_WIDTH, raw[i % 6], starts[overlayIdx.value], true, palette))
             return ec;
         set(overlayArchiveIdx, std::move(overlayImg));
     }
@@ -191,6 +187,12 @@ int ArchivItem_Bob::write(std::ostream&, const ArchivItem_Palette*)
     return ErrorCode::UNSUPPORTED_FORMAT;
 }
 
+unsigned ArchivItem_Bob::getOverlayArchiveIndex(OverlayIdx overlayIdx)
+{
+    // The first NUM_BODY_IMAGES indices store the body images. Overlays are shifted accordingly.
+    return overlayIdx.value + NUM_BODY_IMAGES;
+}
+
 ArchivItem_Bitmap_Player* ArchivItem_Bob::getBody(bool fat, ImgDir direction, unsigned animationstep)
 {
     // Array: [fat][direction][animStep]: [2][6][8]
@@ -203,28 +205,37 @@ std::pair<ArchivItem_Bitmap_Player*, int16_t> ArchivItem_Bob::getOverlay(unsigne
 {
     // Array [bobId][animStep][fat][direction]: [][8][2][6]
     const unsigned spriteId = ((bobId * 8 + animationstep) * 2 + fat) * 6 + static_cast<unsigned>(direction);
-    auto* overlayImg = dynamic_cast<ArchivItem_Bitmap_Player*>(get(getOverlayIdx(spriteId)));
-    return std::make_pair(overlayImg, spriteOverlayNyOffset[spriteId]);
+    const auto data = getOverlayData(spriteId);
+    auto* overlayImg = dynamic_cast<ArchivItem_Bitmap_Player*>(get(getOverlayArchiveIndex(data.idx)));
+    return std::make_pair(overlayImg, data.nyOffset);
 }
 
 void ArchivItem_Bob::writeLinks(std::ostream& file) const
 {
     // spriteOverlayIdx[][8][2][6]
-    for(const auto it : spriteOverlayIdx | boost::adaptors::indexed())
+    for(const auto it : spriteOverlayData | boost::adaptors::indexed())
     {
         if(it.index() % NUM_LINKS_PER_OVERLAY == 0)
             file << "# Job ID " << it.index() / NUM_LINKS_PER_OVERLAY << "\n";
-        file << s25util::toStringClassic(it.index()) << "\t" << s25util::toStringClassic(it.value()) << "\n";
+        file << s25util::toStringClassic(it.index()) << '\t' << s25util::toStringClassic(it.value().idx.value);
+        if(it.value().nyOffset != 0)
+            file << '\t' << s25util::toStringClassic(it.value().nyOffset);
+        file << '\n';
     }
 }
 
-std::map<uint16_t, uint16_t> ArchivItem_Bob::readLinks(std::istream& file)
+std::map<uint16_t, ArchivItem_Bob::OverlayData> ArchivItem_Bob::readLinks(std::istream& file)
 {
-    std::map<uint16_t, uint16_t> result;
+    std::map<uint16_t, OverlayData> result;
     loadMapping(file, [&result](unsigned idx, const std::string& value) {
         if(idx > std::numeric_limits<uint16_t>::max())
             throw std::range_error("Index " + std::to_string(idx) + " is to large");
-        result[idx] = s25util::fromStringClassic<uint16_t>(value);
+        const auto iDelimiter = value.find_first_of(" \t");
+        result[idx].idx.value = s25util::fromStringClassic<uint16_t>(value.substr(0, iDelimiter));
+        if(iDelimiter == std::string::npos)
+            result[idx].nyOffset = 0;
+        else
+            result[idx].nyOffset = s25util::fromStringClassic<int16_t>(value.substr(iDelimiter + 1));
     });
     return result;
 }

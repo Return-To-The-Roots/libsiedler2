@@ -22,6 +22,16 @@ namespace libsiedler2 {
 class ArchivItem_Bob : public ArchivItem, public Archiv
 {
 public:
+    struct OverlayIdx
+    {
+        uint16_t value;
+    };
+    struct OverlayData
+    {
+        OverlayIdx idx;   // Index of the overlay
+        int16_t nyOffset; // Extra y-offset of the overlay for this sprite
+    };
+
     ArchivItem_Bob();
     ~ArchivItem_Bob() override;
     RTTR_CLONEABLE(ArchivItem_Bob)
@@ -34,15 +44,17 @@ public:
 
     uint32_t getNumOverlayImgs() const { return numOverlayImgs; }
 
-    /// Returns the number of complete sprites, consisting of body+overlay.
-    uint16_t getNumSprites() const { return static_cast<uint16_t>(spriteOverlayIdx.size()); }
+    /// Return the number of complete sprites, consisting of body+overlay.
+    uint16_t getNumSprites() const { return static_cast<uint16_t>(spriteOverlayData.size()); }
 
-    /// Returns the index of the overlay for a given sprite idx.
-    uint16_t getOverlayIdx(unsigned spriteIdx) const { return spriteOverlayIdx[spriteIdx]; }
+    /// Return the overlay index/nyOffset pair of the overlay for a given sprite idx.
+    OverlayData getOverlayData(unsigned spriteIdx) const { return spriteOverlayData[spriteIdx]; }
+    /// Returns the index in the loaded archive for the overlay indx
+    unsigned getOverlayArchiveIndex(OverlayIdx overlayIdx);
 
     ArchivItem_Bitmap_Player* getBody(bool fat, ImgDir direction, unsigned animationstep);
 
-    /// Gets the overlay image to be drawn above a body image.
+    /// Get the overlay image to be drawn above a body image.
     /// @param bobId         the id of a good or a job
     /// @param fat           fat or slim body type (usually only different for carriers)
     /// @param direction     the direction to get
@@ -53,14 +65,12 @@ public:
 
     /// Write the [sprite -> overlay] array in mapping format (TAB separated entries with # comments)
     void writeLinks(std::ostream& file) const;
-    static std::map<uint16_t, uint16_t> readLinks(std::istream& file);
+    static std::map<uint16_t, OverlayData> readLinks(std::istream& file);
 
 protected:
     /// Number of actual overlay pictures (e.g. carried wares)
     uint16_t numOverlayImgs;
-    /// Array [bobId][animStep=8][fat=2][direction=6] mapping to an overlay picture
-    std::vector<uint16_t> spriteOverlayIdx;
-    /// Array [bobId][animStep=8][fat=2][direction=6] of sprite's overlay's ny offsets.
-    std::vector<int16_t> spriteOverlayNyOffset;
+    /// Array [bobId][animStep=8][fat=2][direction=6] mapping to overlay data
+    std::vector<OverlayData> spriteOverlayData;
 };
 } // namespace libsiedler2
