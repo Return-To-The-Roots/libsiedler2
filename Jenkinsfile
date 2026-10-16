@@ -61,6 +61,7 @@ pipeline {
                     withDockerContainer(
                         image: dockerRegistry+dockerImage,
                         args: " \
+                            --pull=always \
                             -v $HOME/.ccache:/.ccache \
                         ") {
                         sh """set -ex
