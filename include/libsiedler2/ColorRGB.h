@@ -1,4 +1,4 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2026 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -15,6 +15,8 @@ struct ColorRGB
     static ColorRGB fromBGR(const uint8_t* ptr);
 
     void toBGR(uint8_t* ptr) const;
+    /// Return color as 4-byte value, RED first, ALPHA is zero
+    uint32_t asValue() const;
 
     constexpr uint8_t getRed() const { return r; }
     constexpr uint8_t getGreen() const { return g; }
@@ -34,6 +36,11 @@ inline void ColorRGB::toBGR(uint8_t* ptr) const
     ptr[0] = b;
     ptr[1] = g;
     ptr[2] = r;
+}
+
+inline uint32_t ColorRGB::asValue() const
+{
+    return (r << 16) | (g << 8) | b;
 }
 
 // If this fails, then loading an array of RGB value (byte oriented: RGBRGB...) will fail
