@@ -55,12 +55,11 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
     BOOST_TEST(bob.getBody(false, ImgDir::NW, 3) == bob[0 * 48 + 4 * 8 + 3]);
     // Overlay links are an array: [overlay][animStep][fat][direction]: [][8][2][6]
     BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5).first);
-    using OverlayIdx = libsiedler2::ArchivItem_Bob::OverlayIdx;
     BOOST_TEST(bob.getOverlay(21, true, ImgDir::W, 5).first
-               == bob[bob.getOverlayArchiveIndex(OverlayIdx{21 * 96 + 5 * 12 + 3 + 1 * 6})]);
+               == bob[bob.getOverlayArchiveIndex(bob.getOverlayData(21 * 96 + 5 * 12 + 3 + 1 * 6).idx)]);
     BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7).first);
     BOOST_TEST(bob.getOverlay(13, false, ImgDir::NW, 7).first
-               == bob[bob.getOverlayArchiveIndex(OverlayIdx{13 * 96 + 7 * 12 + 4 + 0 * 6})]);
+               == bob[bob.getOverlayArchiveIndex(bob.getOverlayData(13 * 96 + 7 * 12 + 4 + 0 * 6).idx)]);
 
     // Test some known ny offsets
     BOOST_TEST(bob.getOverlay(4, true, ImgDir::W, 1).second == 0);
