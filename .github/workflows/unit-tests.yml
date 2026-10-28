@@ -21,9 +21,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - run: git submodule update --init
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        name: Checkout libutil
+        with:
+          repository: Return-To-The-Roots/libutil
+          ref: master
+          path: libutil
       - name: Validation
-        run: tools/ci/staticValidation.sh "$GITHUB_WORKSPACE"
+        run: libutil/tools/ci/staticValidation.sh "$GITHUB_WORKSPACE"
       - name: Formatting
         uses: DoozyX/clang-format-lint-action@bcb4eb2cb0d707ee4f3e5cc3b456eb075f12cf73 # v0.20
         with:
@@ -91,7 +96,7 @@ jobs:
           sudo apt install $pkgs
       - name: Setup compiler
         if: "!startsWith(runner.os, 'Windows')"
-        run: tools/ci/setupCompiler.sh
+        run: $LIBUTIL_DIR/tools/ci/setupCompiler.sh
         env:
           COMPILER: ${{matrix.compiler}}
 
@@ -125,6 +130,8 @@ jobs:
           echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DBoost_NO_SYSTEM_PATHS=ON -DBoost_NO_BOOST_CMAKE=ON" >> $GITHUB_ENV
           SHARED=""
           if [[ "${{runner.os}}" == macOS ]]; then SHARED="shared"; fi # Seems to be required
+          export VARIANT=${{matrix.buildType}}
+          export TOOLSET=${{matrix.compiler}}
           $LIBUTIL_DIR/tools/ci/installBoost.sh "${BOOST_VERSION}" "${BOOST_ROOT}" "filesystem,system,program_options,thread,test,locale,iostreams,regex" $SHARED
 
       - name: Enable coverage collection
@@ -132,7 +139,7 @@ jobs:
         run: echo "ADDITIONAL_CMAKE_FLAGS=${ADDITIONAL_CMAKE_FLAGS} -DRTTR_ENABLE_COVERAGE=ON" >> $GITHUB_ENV
 
       - name: Build
-        run: tools/ci/build.sh "${{matrix.buildType}}" "${ADDITIONAL_CMAKE_FLAGS}"
+        run: $LIBUTIL_DIR/tools/ci/build.sh "${{matrix.buildType}}" "${ADDITIONAL_CMAKE_FLAGS}"
         env:
           GENERATOR: ${{matrix.generator}}
 
