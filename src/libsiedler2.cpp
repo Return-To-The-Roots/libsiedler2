@@ -439,7 +439,7 @@ std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath)
             filepath.bobtype = BobType::None;
         else if(wf.back() == "midi" || wf.back() == "xmi" || wf.back() == "wav")
             filepath.bobtype = BobType::Sound;
-        if(filepath.bobtype != BobType::Unset)
+        if(filepath.bobtype != BobType::Unset || wf.back() == "lst")
             wf.pop_back();
 
         std::string sNr = wf.empty() ? "" : wf.front();
