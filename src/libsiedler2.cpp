@@ -433,6 +433,8 @@ std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath)
             filepath.bobtype = BobType::Bitmap;
         else if(wf.back() == "bbm" || wf.back() == "act")
             filepath.bobtype = BobType::Palette;
+        else if(wf.back() == "wld" || wf.back() == "swd")
+            filepath.bobtype = BobType::Map;
         else if(wf.back() == "txt" || wf.back() == "ger" || wf.back() == "eng" || wf.back() == "links")
             filepath.bobtype = BobType::Text;
         else if(wf.back() == "empty")
