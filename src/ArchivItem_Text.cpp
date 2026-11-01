@@ -27,20 +27,22 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion)
 {
     if(!file)
         return ErrorCode::FILE_NOT_ACCESSIBLE;
-
-    // Read all that is there
-    std::string text{std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
+    std::string text;
+    if(conversion)
+    {
+        // S2 sometimes uses the end-of-file marker SUB
+        // Stop reading when it is encountered.
+        char c;
+        while(file.get(c) && c != '\26')
+            text += c;
+    } else
+    {
+        // Read all that is there
+        text.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    }
     // Remove nullptr terminator if present
     if(!text.empty() && text.back() == '\0')
         text.pop_back();
-
-    if(conversion)
-    {
-        // S2 sometimes uses the old end-of-file marker SUB, remove all following it if it is present
-        const auto posSub = text.find('\26');
-        if(posSub != std::string::npos)
-            text.resize(posSub);
-    }
 
     setText(text, conversion);
     return ErrorCode::NONE;
@@ -65,6 +67,8 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
 
     const std::string convText = getFileText(conversion);
     if(!file.write(convText.data(), convText.size()))
+        return ErrorCode::UNEXPECTED_EOF;
+    if(conversion && !(file << '\26'))
         return ErrorCode::UNEXPECTED_EOF;
 
     return ErrorCode::NONE;
