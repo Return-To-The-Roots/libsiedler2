@@ -41,10 +41,10 @@ public:
     void set(uint16_t x, uint16_t y, PixelType clr) { set(calcIdx(x, y), clr); }
     void set(uint32_t idx, PixelType clr) { pixels_[idx] = clr; }
 
-    auto begin() { return pixels_.begin(); }
-    auto begin() const { return pixels_.begin(); }
-    auto end() { return pixels_.end(); }
-    auto end() const { return pixels_.end(); }
+    auto begin() noexcept { return pixels_.begin(); }
+    auto begin() const noexcept { return pixels_.begin(); }
+    auto end() noexcept { return pixels_.end(); }
+    auto end() const noexcept { return pixels_.end(); }
     void clear();
 
     uint32_t calcIdx(uint32_t x, uint32_t y) const
