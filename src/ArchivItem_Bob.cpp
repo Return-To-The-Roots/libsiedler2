@@ -235,7 +235,10 @@ std::map<uint16_t, ArchivItem_Bob::OverlayData> ArchivItem_Bob::readLinks(std::i
         if(iDelimiter == std::string::npos)
             result[idx].nyOffset = 0;
         else
-            result[idx].nyOffset = s25util::fromStringClassic<int16_t>(value.substr(iDelimiter + 1));
+        {
+            const auto txtStart = value.find_first_not_of(" \t",iDelimiter+1);
+            result[idx].nyOffset = s25util::fromStringClassic<int16_t>(value.substr(txtStart));
+        }
     });
     return result;
 }
