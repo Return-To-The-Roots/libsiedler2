@@ -1,10 +1,11 @@
-// Copyright (C) 2005 - 2021 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (C) 2005 - 2026 Settlers Freaks (sf-team at siedler25.org)
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "FileEntry.h"
 #include "s25util/strAlgos.h"
 #include <boost/range/combine.hpp>
+#include <string_view>
 
 bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
 {
@@ -28,7 +29,11 @@ bool libsiedler2::operator<(const FileEntry& left, const FileEntry& right)
             return false;
     }
     // Both negative or same
-    for(const auto it : boost::combine(left.name, right.name))
+    std::string_view left_name = left.name;
+    std::string_view right_name = right.name;
+    const auto minLen = std::min(left_name.size(), right_name.size());
+    // Compare common prefix
+    for(const auto it : boost::combine(left_name.substr(0, minLen), right_name.substr(0, minLen)))
     {
         auto const lhs = s25util::toLower(it.get<0>());
         auto const rhs = s25util::toLower(it.get<1>());
