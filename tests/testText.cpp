@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
 {
     const bfs::path outFilepath = libsiedler2::test::outputPath / "outText.GER";
     libsiedler2::Archiv archiv, archivIn;
-    createTxt(archiv, outFilepath, 13);
+    createTxt(archiv, outFilepath, 37);
     BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)

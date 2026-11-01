@@ -48,7 +48,7 @@ struct FolderFixture
 
     void writeFile(const bfs::path& name, const std::string& content = "")
     {
-        boost::nowide::ofstream f(lstPath / name);
+        boost::nowide::ofstream f(name.is_absolute() ? name : lstPath / name);
         f << content;
     }
 
@@ -475,14 +475,39 @@ BOOST_AUTO_TEST_CASE(LoadPaletteAnims)
     BOOST_TEST(anim2.firstClr == 4);
     BOOST_TEST(anim2.lastClr == 6);
 
+    // Round trip to LST
+    const auto newLstPath = lstPath / "bundle.lst";
+    BOOST_TEST_REQUIRE(Write(newLstPath, archive) == 0);
+    Archiv archive2;
+    BOOST_TEST_REQUIRE(Load(newLstPath, archive2) == 0);
+    BOOST_TEST_REQUIRE(archive2.size() == 3u);
+    for(int idx = 0; idx < 3; ++idx)
+    {
+        BOOST_TEST_INFO_SCOPE(idx);
+        if(idx == 1)
+        {
+            BOOST_TEST(!archive2[idx]);
+            continue;
+        }
+        BOOST_TEST(archive2[idx]->getBobType() == archive[idx]->getBobType());
+        const auto& anim2 = dynamic_cast<const ArchivItem_PaletteAnimation&>(*archive2[idx]);
+        const auto& anim1 = dynamic_cast<const ArchivItem_PaletteAnimation&>(*archive[idx]);
+        BOOST_TEST(anim2.rate == anim1.rate);
+        // S2 ignores the isActive/moveUp flags when loading from LST and uses true
+        BOOST_TEST(anim2.isActive);
+        BOOST_TEST(anim2.moveUp);
+        BOOST_TEST(anim2.firstClr == anim1.firstClr);
+        BOOST_TEST(anim2.lastClr == anim1.lastClr);
+    }
+
     writeBitmap("0.a.bmp");
     writeFile("3.paletteanims.txt",
               R"(Palette animations V1
         0   10  active  forwards    1   3
     )");
     // An animation index colliding with an already loaded item is an error
-    Archiv archive2;
-    BOOST_TEST(LoadFolder(ReadFolderInfo(lstPath), archive2) == ErrorCode::UNSUPPORTED_FORMAT);
+    Archiv archive3;
+    BOOST_TEST(LoadFolder(ReadFolderInfo(lstPath), archive3) == ErrorCode::UNSUPPORTED_FORMAT);
 }
 
 BOOST_AUTO_TEST_CASE(NonBitmapSourceReturnsError)
@@ -491,6 +516,77 @@ BOOST_AUTO_TEST_CASE(NonBitmapSourceReturnsError)
     writeFile("5.rle.txt", "Hello");
     Archiv archive;
     BOOST_TEST(LoadFolder(ReadFolderInfo(lstPath), archive) == ErrorCode::UNSUPPORTED_FORMAT);
+}
+
+BOOST_AUTO_TEST_CASE(CreateAndReadLst)
+{
+    using libsiedler2::test::inputPath;
+    // Use all possible input files we have
+    const std::vector<std::string> files = {
+      // no palette
+      // "logo.bmp",
+      // "raw32bpp.bmp",
+      "map.SWD",
+      "map.wld", // "pal.bbm" has 2 palettes
+      "pal.bmp",
+      "pal5.act",
+      "raw24bpp.bmp",
+      "raw4bpp.bmp",
+      "raw8bpp.bmp",
+      "rawWithPalClrs.bmp",
+      // can't write archive-likes to archive
+      //"test.ini",
+      //"testFonts.LST",
+      // "txtAsLst.lst",
+      // "test.lbm", writing not implemented
+      // "test.ogg" can't write format
+      "testMidi.mid",
+      "testMono.wav",
+      "testStereo.wav",
+      "testXMidi.xmi",
+      // extra
+      "extra.empty",
+      "extra.txt",
+      "extra.paletteanims.txt",
+    };
+    auto lstFolder = lstPath / "inputFolder";
+    bfs::create_directories(lstFolder);
+    for(unsigned i = 0; i < files.size(); ++i)
+    {
+        // Use indexed names to avoid name collisions
+        const auto outputFile = lstFolder / (std::to_string(i) + "." + files[i]);
+        if(files[i].find("paletteanims") != std::string::npos)
+            writeFile(outputFile, "Palette animations V1\n" + std::to_string(i) + " 10 active forwards 1 3");
+        else if(files[i].find("extra") != std::string::npos)
+            writeFile(outputFile, "Extra content");
+        else
+            bfs::copy_file(inputPath / files[i], outputFile);
+    }
+    Archiv paletteArchiv;
+    BOOST_TEST_REQUIRE(Load(inputPath / "pal5.act", paletteArchiv) == 0);
+    const auto* palette = dynamic_cast<ArchivItem_Palette*>(paletteArchiv.get(0));
+    BOOST_TEST_REQUIRE(palette);
+    Archiv archive;
+    const auto info = ReadFolderInfo(lstFolder);
+    BOOST_TEST_REQUIRE(LoadFolder(info, archive, palette) == 0);
+    BOOST_TEST_REQUIRE(archive.size() == files.size());
+
+    const auto newLstPath = lstPath / "bundle.lst";
+    BOOST_TEST_REQUIRE(Write(newLstPath, archive, palette) == 0);
+    Archiv archive2;
+    BOOST_TEST_REQUIRE(Load(newLstPath, archive2, palette) == 0);
+    BOOST_TEST_REQUIRE(archive2.size() == archive.size());
+    for(unsigned i = 0; i < archive.size(); ++i)
+    {
+        BOOST_TEST_INFO_SCOPE(i);
+        if(!archive[i])
+        {
+            BOOST_TEST(!archive2[i]);
+            continue;
+        }
+        BOOST_TEST_REQUIRE(archive2[i]);
+        BOOST_TEST(archive2[i]->getBobType() == archive[i]->getBobType());
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
