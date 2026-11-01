@@ -363,7 +363,11 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
 
 BOOST_AUTO_TEST_CASE(LinksFileCanBeReadAsMapping)
 {
-    writeFile("7.links", "# links\n1\t3\n7\t5\n");
+    writeFile("7.links", "# links\n"
+                         "1\t3\n"
+                         "6\t5\t-2\n"
+                         "7\t9\n"
+                         "17\t13 \t 3\n");
     Archiv archive;
     BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
     BOOST_TEST_REQUIRE(archive[7]);
@@ -372,9 +376,15 @@ BOOST_AUTO_TEST_CASE(LinksFileCanBeReadAsMapping)
     // .links files are read as-is (no conversion) and then parsed like a bob's link list
     std::stringstream ss(dynamic_cast<const ArchivItem_Text&>(*archive[7]).getText());
     const auto links = ArchivItem_Bob::readLinks(ss);
-    BOOST_TEST_REQUIRE(links.size() == 2u);
-    BOOST_TEST(links.at(1) == 3);
-    BOOST_TEST(links.at(7) == 5);
+    BOOST_TEST_REQUIRE(links.size() == 4u);
+    BOOST_TEST(links.at(1).idx.value == 3);
+    BOOST_TEST(links.at(1).nyOffset == 0);
+    BOOST_TEST(links.at(6).idx.value == 5);
+    BOOST_TEST(links.at(6).nyOffset == -2);
+    BOOST_TEST(links.at(7).idx.value == 9);
+    BOOST_TEST(links.at(7).nyOffset == 0);
+    BOOST_TEST(links.at(17).idx.value == 13);
+    BOOST_TEST(links.at(17).nyOffset == 3);
 }
 
 BOOST_AUTO_TEST_CASE(LoadTxtPalette)
