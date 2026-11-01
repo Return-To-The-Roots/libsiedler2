@@ -12,6 +12,7 @@
 #include "ArchivItem_Palette.h"
 #include "ArchivItem_PaletteAnimation.h"
 #include "ArchivItem_Sound.h"
+#include "ArchivItem_Text.h"
 #include "ErrorCodes.h"
 #include "prototypen.h"
 #include "libendian/EndianOStreamAdapter.h"
@@ -117,8 +118,15 @@ int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const Arc
             break;
             case BobType::PaletteAnim:
             {
-                const auto& nitem = dynamic_cast<const ArchivItem_PaletteAnimation&>(item);
-                if(int ec = nitem.write(lst)) //-V522
+                const auto& i = dynamic_cast<const ArchivItem_PaletteAnimation&>(item);
+                if(int ec = i.write(lst)) //-V522
+                    return ec;
+            }
+            break;
+            case BobType::Text:
+            {
+                const auto& i = dynamic_cast<const ArchivItem_Text&>(item);
+                if(int ec = i.write(lst))
                     return ec;
             }
             break;
