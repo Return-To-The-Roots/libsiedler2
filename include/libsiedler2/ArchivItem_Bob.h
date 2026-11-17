@@ -36,7 +36,7 @@ public:
     ~ArchivItem_Bob() override;
     RTTR_CLONEABLE(ArchivItem_Bob)
 
-    /// Load BOB data from file
+    /// load BOB data from file
     int load(std::istream& file, const ArchivItem_Palette* palette);
 
     /// Write BOB data to file. TODO: Implement

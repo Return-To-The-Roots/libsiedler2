@@ -120,7 +120,7 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
     // Number of overlay images (e.g. goods of carriers)
     fs >> numOverlayImgs;
 
-    alloc_inc(numOverlayImgs);
+    allocInc(numOverlayImgs);
 
     std::vector<std::vector<uint16_t>> starts(numOverlayImgs);
     std::vector<uint8_t> ny(numOverlayImgs);
@@ -158,7 +158,7 @@ int ArchivItem_Bob::load(std::istream& file, const ArchivItem_Palette* palette)
         spriteOverlayData[i] = OverlayData{overlayIdx, nyOffset};
         const auto overlayArchiveIdx = getOverlayArchiveIndex(overlayIdx);
 
-        // Load each overlay image just once, they are used for multiple sprites.
+        // load each overlay image just once, they are used for multiple sprites.
         if(get(overlayArchiveIdx))
             continue;
 

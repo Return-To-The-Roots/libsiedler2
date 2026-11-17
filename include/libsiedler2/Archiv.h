@@ -26,7 +26,7 @@ public:
     /// Creates a dataset with a given size. Deletes all current entries
     void alloc(size_t count);
     /// Increases the element count by the given amount
-    void alloc_inc(size_t increment);
+    void allocInc(size_t increment);
     /// Release all data and set size to 0
     void clear();
     /// Set the item at the given position

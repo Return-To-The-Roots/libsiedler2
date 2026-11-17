@@ -65,7 +65,7 @@ void Archiv::alloc(size_t count)
     data.resize(count);
 }
 
-void Archiv::alloc_inc(size_t increment)
+void Archiv::allocInc(size_t increment)
 {
     data.resize(size() + increment);
 }

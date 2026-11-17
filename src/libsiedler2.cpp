@@ -132,7 +132,7 @@ void setAllocator(IAllocator* newAllocator)
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int Load(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
+int load(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -223,7 +223,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             if(bfs::is_directory(entry.filePath))
                 ec = LoadFolder(ReadFolderInfo(entry.filePath), *font, palette);
             else
-                ec = Load(entry.filePath, *font, palette);
+                ec = load(entry.filePath, *font, palette);
             if(ec)
                 return ec;
 
@@ -239,7 +239,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                       && items[items.size() - 1u]->getBobType() == BobType::Palette)
                 curPal = static_cast<const ArchivItem_Palette*>(items[items.size() - 1u]);
             Archiv tmpItems;
-            if(int ec = Load(entry.filePath, tmpItems, curPal))
+            if(int ec = load(entry.filePath, tmpItems, curPal))
                 return ec;
             if(entry.bobtype == BobType::BitmapPlayer || entry.bobtype == BobType::Bitmap
                || entry.bobtype == BobType::BitmapRLE || entry.bobtype == BobType::BitmapShadow)
@@ -316,7 +316,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
                     if(items[i])
                         return ErrorCode::UNSUPPORTED_FORMAT;
                     if(i >= items.size())
-                        items.alloc_inc(i - items.size() + 1);
+                        items.allocInc(i - items.size() + 1);
                     items.set(i, tmpItems.release(i));
                 }
                 continue;
@@ -335,7 +335,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
         if(entry.nr >= 0)
         {
             if(static_cast<unsigned>(entry.nr) >= items.size())
-                items.alloc_inc(entry.nr - items.size() + 1);
+                items.allocInc(entry.nr - items.size() + 1);
             items.set(entry.nr, std::move(newItem));
         } else
             items.push(std::move(newItem));

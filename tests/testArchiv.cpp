@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(Set)
     BOOST_TEST_REQUIRE(rawItemOut->getData()[0] == 42u);
     // Invalid indices return NULL
     BOOST_TEST_REQUIRE(!archiv[1]);
-    archiv.alloc_inc(3);
+    archiv.allocInc(3);
     BOOST_TEST_REQUIRE(archiv.size() == 5u);
     BOOST_TEST_REQUIRE(archiv[0] == rawItemOut);
     // Throw out of range exception
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(AllocAndGet)
     BOOST_REQUIRE_THROW(archiv.set(3, nullptr), std::out_of_range);
     BOOST_TEST_REQUIRE(!archiv[3]);
     BOOST_TEST_REQUIRE(!archiv.get(3));
-    archiv.alloc_inc(2);
+    archiv.allocInc(2);
     BOOST_TEST_REQUIRE(archiv.size() == 5u);
     BOOST_TEST_REQUIRE(archiv[1]);
     BOOST_TEST_REQUIRE(archiv[2]);

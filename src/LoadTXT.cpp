@@ -96,7 +96,7 @@ int libsiedler2::loader::LoadTXT(const boost::filesystem::path& filepath, Archiv
                 // All strings are NULL terminated.
                 const auto itEnd = std::find(itStart, stringData.cend(), '\0');
                 assert(itEnd != stringData.end());
-                // Load element
+                // load element
                 auto item = getAllocator().create<ArchivItem_Text>(BobType::Text);
                 item->setText(std::string(itStart, itEnd), conversion);
                 items.push(std::move(item));

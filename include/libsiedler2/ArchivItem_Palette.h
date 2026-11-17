@@ -33,7 +33,7 @@ public:
     ~ArchivItem_Palette() override;
     RTTR_CLONEABLE(ArchivItem_Palette)
 
-    /// Load the palette from the file and set the transparent index to the index of TRANSPARENT_COLOR or
+    /// load the palette from the file and set the transparent index to the index of TRANSPARENT_COLOR or
     /// DEFAULT_TRANSPARENT_IDX
     int load(std::istream& file, bool skip = true);
 

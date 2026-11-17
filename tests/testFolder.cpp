@@ -117,16 +117,16 @@ BOOST_AUTO_TEST_CASE(FileEntryOperatorLess)
 BOOST_AUTO_TEST_CASE(InvalidNames)
 {
     Archiv archive;
-    BOOST_TEST(Load("", archive) == ErrorCode::INVALID_BUFFER);
+    BOOST_TEST(load("", archive) == ErrorCode::INVALID_BUFFER);
     BOOST_TEST(archive.empty());
     BOOST_TEST(Write("", archive) == ErrorCode::INVALID_BUFFER);
 
-    BOOST_TEST(Load("noext", archive) == ErrorCode::UNSUPPORTED_FORMAT);
+    BOOST_TEST(load("noext", archive) == ErrorCode::UNSUPPORTED_FORMAT);
     BOOST_TEST(archive.empty());
     BOOST_TEST(Write("noext", archive) == ErrorCode::UNSUPPORTED_FORMAT);
 
     // Unsupported extension
-    BOOST_TEST(Load("file.weird", archive) == ErrorCode::UNSUPPORTED_FORMAT);
+    BOOST_TEST(load("file.weird", archive) == ErrorCode::UNSUPPORTED_FORMAT);
     BOOST_TEST(archive.empty());
     BOOST_TEST(Write("file.weird", archive) == ErrorCode::UNSUPPORTED_FORMAT);
 }
@@ -479,7 +479,7 @@ BOOST_AUTO_TEST_CASE(LoadPaletteAnims)
     const auto newLstPath = lstPath / "bundle.lst";
     BOOST_TEST_REQUIRE(Write(newLstPath, archive) == 0);
     Archiv archive2;
-    BOOST_TEST_REQUIRE(Load(newLstPath, archive2) == 0);
+    BOOST_TEST_REQUIRE(load(newLstPath, archive2) == 0);
     BOOST_TEST_REQUIRE(archive2.size() == 3u);
     for(int idx = 0; idx < 3; ++idx)
     {
@@ -563,7 +563,7 @@ BOOST_AUTO_TEST_CASE(CreateAndReadLst)
             bfs::copy_file(inputPath / files[i], outputFile);
     }
     Archiv paletteArchiv;
-    BOOST_TEST_REQUIRE(Load(inputPath / "pal5.act", paletteArchiv) == 0);
+    BOOST_TEST_REQUIRE(load(inputPath / "pal5.act", paletteArchiv) == 0);
     const auto* palette = dynamic_cast<ArchivItem_Palette*>(paletteArchiv.get(0));
     BOOST_TEST_REQUIRE(palette);
     Archiv archive;
@@ -574,7 +574,7 @@ BOOST_AUTO_TEST_CASE(CreateAndReadLst)
     const auto newLstPath = lstPath / "bundle.lst";
     BOOST_TEST_REQUIRE(Write(newLstPath, archive, palette) == 0);
     Archiv archive2;
-    BOOST_TEST_REQUIRE(Load(newLstPath, archive2, palette) == 0);
+    BOOST_TEST_REQUIRE(load(newLstPath, archive2, palette) == 0);
     BOOST_TEST_REQUIRE(archive2.size() == archive.size());
     for(unsigned i = 0; i < archive.size(); ++i)
     {

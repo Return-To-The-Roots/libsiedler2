@@ -18,9 +18,9 @@ namespace libsiedler2 {
 // <space> us either a single space or tab
 // <value> is file format specific
 
-/// Load a mapping from stream. Call the callback for each item
+/// load a mapping from stream. Call the callback for each item
 void loadMapping(std::istream& stream, const std::function<void(unsigned idx, const std::string&)>& onItem);
-/// Load a mapping from file. Call the callback for each item
+/// load a mapping from file. Call the callback for each item
 void loadMapping(const boost::filesystem::path& filepath,
                  const std::function<void(unsigned idx, const std::string&)>& onItem);
 

@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE(DefaultTextureFormatAndPalette)
         for(const TestBitmaps::Info& testFile : testFiles.files)
         {
             Archiv archiv;
-            int ec = Load(libsiedler2::test::inputPath / testFile.filename, archiv, palette);
+            int ec = load(libsiedler2::test::inputPath / testFile.filename, archiv, palette);
             BOOST_TEST_REQUIRE(ec == 0, "Error " << getErrorString(ec) << " loading " << testFile.filename);
             const ArchivItem_BitmapBase* bmp = getFirstBitmap(archiv);
             BOOST_TEST_REQUIRE(bmp);

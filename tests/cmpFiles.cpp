@@ -30,7 +30,7 @@ boost::test_tools::predicate_result testLoad(int expectedResult, const boost::fi
                                              libsiedler2::Archiv& items,
                                              const libsiedler2::ArchivItem_Palette* palette /*= NULL*/)
 {
-    return testLoadWrite(libsiedler2::Load, expectedResult, filepath, items, palette);
+    return testLoadWrite(libsiedler2::load, expectedResult, filepath, items, palette);
 }
 
 boost::test_tools::predicate_result testWrite(int expectedResult, const boost::filesystem::path& filepath,

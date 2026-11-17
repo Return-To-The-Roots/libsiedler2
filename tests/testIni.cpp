@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteIni)
     const boost::filesystem::path inPath = libsiedler2::test::inputPath / "test.ini";
     const boost::filesystem::path outPath = libsiedler2::test::outputPath / "outTest.ini";
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, act) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, act) == 0);
     BOOST_TEST(testFilesEqual(outPath, inPath));
 
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteIni)
         f << "duplicate=2\n";
         f << "other=3\n";
     }
-    BOOST_TEST_REQUIRE(libsiedler2::Load(outPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(outPath, act) == 0);
     const auto* ini = dynamic_cast<const libsiedler2::ArchivItem_Ini*>(act.find("Section"));
     BOOST_TEST_REQUIRE(ini);
     BOOST_TEST(ini->getIntValue("duplicate") == 2);
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(DefaultValues)
     const boost::filesystem::path inPath = libsiedler2::test::inputPath / "test.ini";
     const boost::filesystem::path outPath = libsiedler2::test::outputPath / "outTest.ini";
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, act) == 0);
     auto* ini = dynamic_cast<libsiedler2::ArchivItem_Ini*>(act.find("Section0"));
     BOOST_TEST_REQUIRE(ini);
     BOOST_TEST(ini->getValue("NonExisting", "Default") == "Default");

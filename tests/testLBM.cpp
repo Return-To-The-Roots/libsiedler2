@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(LoadLbmFile)
         return;
     const boost::filesystem::path inPath = libsiedler2::test::s2Path / "GFX/TEXTURES/TEX5.LBM";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archiv, palette) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == 17u);
     const libsiedler2::ArchivItem_BitmapBase* bmp = dynamic_cast<libsiedler2::ArchivItem_BitmapBase*>(archiv[0]);
     BOOST_TEST_REQUIRE(bmp);
@@ -37,13 +37,13 @@ BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
 {
     const boost::filesystem::path inPathBmp = libsiedler2::test::inputPath / "pal.bmp";
     const boost::filesystem::path outPath = libsiedler2::test::outputPath / "out.lbm";
-    // Load a paletted bmp and write it in lbm format
+    // load a paletted bmp and write it in lbm format
     libsiedler2::Archiv arBmp;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPathBmp, arBmp, palette) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPathBmp, arBmp, palette) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, arBmp, palette) == 0);
-    // Load lbm and check if bitmaps are equal
+    // load lbm and check if bitmaps are equal
     libsiedler2::Archiv arLbm;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(outPath, arLbm, palette) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(outPath, arLbm, palette) == 0);
     const auto* bmp = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arBmp[0]);
     const auto* bmpLbm = dynamic_cast<const libsiedler2::ArchivItem_Bitmap*>(arLbm[0]);
     BOOST_TEST_REQUIRE(bmp);

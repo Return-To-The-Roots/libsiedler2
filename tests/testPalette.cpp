@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalette)
     const bfs::path palOutPath = libsiedler2::test::outputPath / "pal5.act";
     BOOST_TEST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(palPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(palPath, act) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::Write(palOutPath, act) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(palOutPath, palPath));
 }
@@ -37,7 +37,7 @@ static void createBBM(const bfs::path& palPath, const bfs::path& palOutPath)
 {
     BOOST_TEST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(palPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(palPath, act) == 0);
     auto* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     act.pushC(*pal);
     pal->set(10, libsiedler2::ColorRGB(11, 22, 33));
@@ -53,8 +53,8 @@ BOOST_AUTO_TEST_CASE(ReadWriteBBM)
     const bfs::path palOutPath = libsiedler2::test::outputPath / "palOut.bbm";
     BOOST_TEST_REQUIRE(bfs::exists(palPath));
     libsiedler2::Archiv act, act2;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(palPath, act) == 0);
-    BOOST_TEST_REQUIRE(libsiedler2::Load(libsiedler2::test::inputPath / "pal5.act", act2) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(palPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(libsiedler2::test::inputPath / "pal5.act", act2) == 0);
     auto* pal = dynamic_cast<libsiedler2::ArchivItem_Palette*>(act[0]);
     BOOST_TEST_REQUIRE(pal);
     BOOST_TEST_REQUIRE(pal->get(10) == libsiedler2::ColorRGB(11, 22, 33));
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalAnim)
 
     BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
     libsiedler2::Archiv archiv2;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(outPath, archiv2) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(outPath, archiv2) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == archiv2.size());
     BOOST_TEST_REQUIRE(!archiv2[1]);
     const libsiedler2::ArchivItem_PaletteAnimation* anim2 =

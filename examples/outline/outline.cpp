@@ -17,11 +17,11 @@ int main(int /*argc*/, char* /*argv*/[])
 {
     Archiv lst, bbm;
 
-    Load("GFX/PALETTE/PAL5.BBM", bbm);
+    load("GFX/PALETTE/PAL5.BBM", bbm);
 
     auto* palette = (ArchivItem_Palette*)bbm.get(0);
 
-    Load("DATA/RESOURCE.DAT", lst, palette);
+    load("DATA/RESOURCE.DAT", lst, palette);
 
     Archiv to;
     for(unsigned i = 0; i < 4; ++i)

@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     if(options.count("palette"))
     {
         const auto palPath = options["palette"].as<std::string>();
-        if(libsiedler2::Load(palPath, bbm) != 0)
+        if(libsiedler2::load(palPath, bbm) != 0)
         {
             bnw::cerr << "Error: Could not load given palette: " << palPath << std::endl;
             bnw::cerr << "Retrying with default ones" << std::endl;
@@ -75,9 +75,9 @@ int main(int argc, char* argv[])
     bfs::path pal5Path("GFX/PALETTE/PAL5.BBM");
     bfs::path pal5Path2("pal5.act");
 
-    if(bbm.empty() && (!bfs::exists(pal5Path) || Load(pal5Path, bbm) != 0))
+    if(bbm.empty() && (!bfs::exists(pal5Path) || load(pal5Path, bbm) != 0))
     {
-        if(Load(pal5Path2, bbm) != 0)
+        if(load(pal5Path2, bbm) != 0)
         {
             bnw::cerr << "Fatal Error: " << std::endl;
             bnw::cerr << "Neither " << pal5Path << " nor " << pal5Path2 << " was found or it cannot be opened"
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
             bnw::cout << "Unpacking file " << inputPath << " to " << outPath << std::endl;
 
             libsiedler2::Archiv lst;
-            if(Load(inputPath, lst, palette) != 0)
+            if(load(inputPath, lst, palette) != 0)
             {
                 bnw::cerr << "Fatal Error: " << std::endl;
                 bnw::cerr << inputPath << " was not found or cannot be opened" << std::endl;

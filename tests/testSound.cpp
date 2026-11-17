@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSoundLst)
         return;
     const bfs::path inPath = libsiedler2::test::s2Path / "DATA/SOUNDDAT/SOUND.LST";
     libsiedler2::Archiv archivLst;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archivLst) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archivLst) == 0);
     BOOST_TEST_REQUIRE(archivLst.size() == 200u);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivLst[0]);
     BOOST_TEST_REQUIRE(snd);
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(ReadOrigSng)
         return;
     const bfs::path inPath = libsiedler2::test::s2Path / "DATA/SOUNDDAT/SNG/SNG_0001.DAT";
     libsiedler2::Archiv archivSNG;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archivSNG) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archivSNG) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound*>(archivSNG[0]);
     BOOST_TEST_REQUIRE(snd);
     BOOST_TEST_REQUIRE(snd->getType() == libsiedler2::SoundType::XMidi);
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
     const bfs::path inPath = libsiedler2::test::inputPath / "testMono.wav";
     const bfs::path outPath = libsiedler2::test::outputPath / "outMono.wav";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_TEST_REQUIRE(snd);
     // Hacky check
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
     const bfs::path inPath = libsiedler2::test::inputPath / "testStereo.wav";
     const bfs::path outPath = libsiedler2::test::outputPath / "testStereo.wav";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(archiv[0]);
     BOOST_TEST_REQUIRE(snd);
     // Hacky check
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteMid)
     const bfs::path inPath = libsiedler2::test::inputPath / "testMidi.mid";
     const bfs::path outPath = libsiedler2::test::outputPath / "outMidi.mid";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Midi*>(archiv[0]);
     BOOST_TEST_REQUIRE(snd);
     // Hacky check
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteXMid)
     const bfs::path inPath = libsiedler2::test::inputPath / "testXMidi.xmi";
     const bfs::path outPath = libsiedler2::test::outputPath / "outXMidi.xmi";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archiv) == 0);
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_XMidi*>(archiv[0]);
     BOOST_TEST_REQUIRE(snd);
     // Hacky check

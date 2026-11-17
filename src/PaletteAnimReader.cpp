@@ -91,7 +91,7 @@ int LoadPaletteAnim(const boost::filesystem::path& filepath, Archiv& items)
             if(int ec = anim->loadFromTxt(ss))
                 throw FileError(ec);
             if(idx >= items.size())
-                items.alloc_inc(idx - items.size() + 1);
+                items.allocInc(idx - items.size() + 1);
             items.set(idx, std::move(anim));
         });
     } catch(const FileError& e)

@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
     const bfs::path outFilepath = libsiedler2::test::outputPath / "outText.ENG";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 11);
-    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
     {
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteGER)
     const bfs::path outFilepath = libsiedler2::test::outputPath / "outText.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 37);
-    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == archivIn.size());
     for(unsigned i = 0; i < archiv.size(); i++)
     {
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePlain)
     const bfs::path outFilepath = libsiedler2::test::outputPath / "outTextPlain.GER";
     libsiedler2::Archiv archiv, archivIn;
     createTxt(archiv, outFilepath, 1);
-    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archivIn.size() == 1u);
     const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[0]);
     const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[0]);
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteSingleEmptyEntry)
     libsiedler2::Archiv archiv, archivIn;
     archiv.push(nullptr);
     BOOST_TEST_REQUIRE(libsiedler2::Write(outFilepath, archiv) == 0);
-    BOOST_TEST_REQUIRE(libsiedler2::Load(outFilepath, archivIn) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archivIn.size() == 1u);
     BOOST_TEST_REQUIRE(!archivIn[0]);
 }
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(ReadTxtAsLst)
 {
     const bfs::path inFilepath = libsiedler2::test::inputPath / "txtAsLst.lst";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inFilepath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inFilepath, archiv) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == 7u);
     for(unsigned i = 0; i < archiv.size(); i++)
     {
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE(ReadOriginalFiles)
             BOOST_TEST_INFO_SCOPE("For " << fileEntry.path());
             libsiedler2::Archiv archiv;
             // Check only that they can be loaded and have at least 1 entry
-            BOOST_TEST_REQUIRE(libsiedler2::Load(fileEntry.path(), archiv) == 0);
+            BOOST_TEST_REQUIRE(libsiedler2::load(fileEntry.path(), archiv) == 0);
             BOOST_TEST_REQUIRE(archiv.size() > 0u);
             BOOST_TEST(archiv[0]);
         }

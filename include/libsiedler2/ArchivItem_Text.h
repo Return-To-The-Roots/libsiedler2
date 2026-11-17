@@ -18,7 +18,7 @@ public:
     ~ArchivItem_Text() override;
     RTTR_CLONEABLE(ArchivItem_Text)
 
-    /// Load all text from the file
+    /// load all text from the file
     int load(std::istream& file, bool conversion = true);
 
     /// Write the text to the file

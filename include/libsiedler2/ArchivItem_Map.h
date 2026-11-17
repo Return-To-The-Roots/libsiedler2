@@ -52,7 +52,7 @@ public:
     ~ArchivItem_Map() override;
     RTTR_CLONEABLE(ArchivItem_Map)
 
-    /// Load the map data. If onlyHeader is true, then only the map header will be loaded
+    /// load the map data. If onlyHeader is true, then only the map header will be loaded
     int load(std::istream& file, bool onlyHeader);
     /// Write the map to a file
     int write(std::ostream& file) const;

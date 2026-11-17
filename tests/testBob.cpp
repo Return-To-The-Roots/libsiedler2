@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(LoadBobFile)
         return;
     const boost::filesystem::path inPath = libsiedler2::test::s2Path / "DATA/BOBS/CARRIER.BOB";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archiv, palette) == 0);
     BOOST_TEST_REQUIRE(archiv.size() == 1u);
     BOOST_TEST_REQUIRE(dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]));
     libsiedler2::ArchivItem_Bob& bob = *static_cast<libsiedler2::ArchivItem_Bob*>(archiv[0]);
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(WriteReadLinks)
         return;
     const boost::filesystem::path inPath = libsiedler2::test::s2Path / "DATA/BOBS/CARRIER.BOB";
     libsiedler2::Archiv archiv;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(inPath, archiv, palette) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(inPath, archiv, palette) == 0);
     const auto* bob = dynamic_cast<const libsiedler2::ArchivItem_Bob*>(archiv[0]);
     BOOST_TEST_REQUIRE(bob);
     std::stringstream s;

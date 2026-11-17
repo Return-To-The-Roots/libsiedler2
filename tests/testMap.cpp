@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteSWD)
     const bfs::path mapOutPath = libsiedler2::test::outputPath / "outMap.SWD";
     BOOST_TEST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(mapPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(mapPath, act) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::Write(mapOutPath, act) == 0);
     BOOST_TEST(testFilesEqual(mapOutPath, mapPath));
 }
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWLD)
     const bfs::path mapOutPath = libsiedler2::test::outputPath / "outMap.wld";
     BOOST_TEST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(mapPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(mapPath, act) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::Write(mapOutPath, act) == 0);
     BOOST_TEST(testFilesEqual(mapOutPath, mapPath));
 }
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(ReadFaultyWLD)
     const bfs::path okMapPath = libsiedler2::test::inputPath / "map.wld";
     BOOST_TEST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(mapPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(mapPath, act) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::Write(mapOutPath, act) == 0);
     BOOST_TEST(testFilesEqual(mapOutPath, okMapPath));
 }
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(CreateAndModifyMap)
     BOOST_TEST_REQUIRE(map.write(tmpMap.getStream()) == 0);
     tmpMap.close();
     libsiedler2::Archiv act;
-    BOOST_TEST_REQUIRE(libsiedler2::Load(tmpMap.filePath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::load(tmpMap.filePath, act) == 0);
     const auto* newMap = dynamic_cast<const libsiedler2::ArchivItem_Map*>(act[0]);
     BOOST_TEST_REQUIRE(newMap);
     BOOST_TEST(newMap->getMapDataAt(MapLayer::Altitude, 10) == 5);
