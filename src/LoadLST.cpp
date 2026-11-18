@@ -18,7 +18,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadLST(const boost::filesystem::path& filepath, Archiv& items,
+int libsiedler2::loader::loadLST(const boost::filesystem::path& filepath, Archiv& items,
                                  const ArchivItem_Palette* palette)
 {
     MMStream mmapStream;
@@ -35,7 +35,7 @@ int libsiedler2::loader::LoadLST(const boost::filesystem::path& filepath, Archiv
 
     // ist es eine GER/ENG-File? (Header 0xE7FD)
     if(header == 0xFDE7)
-        return LoadTXT(filepath, items, true);
+        return loadTXT(filepath, items, true);
 
     // ist es eine LST-File? (Header 0x204E)
     if(header != 0x4E20)
@@ -72,7 +72,7 @@ int libsiedler2::loader::LoadLST(const boost::filesystem::path& filepath, Archiv
 
         // Daten von Item auswerten
         std::unique_ptr<ArchivItem> item;
-        if(int ec = LoadType(bobtype, lst.getStream(), item, palette))
+        if(int ec = loadType(bobtype, lst.getStream(), item, palette))
             return ec;
         items.push(std::move(item));
     }

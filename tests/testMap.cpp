@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteSWD)
     BOOST_TEST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
     BOOST_TEST_REQUIRE(libsiedler2::load(mapPath, act) == 0);
-    BOOST_TEST_REQUIRE(libsiedler2::Write(mapOutPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(mapOutPath, act) == 0);
     BOOST_TEST(testFilesEqual(mapOutPath, mapPath));
 }
 
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWLD)
     BOOST_TEST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
     BOOST_TEST_REQUIRE(libsiedler2::load(mapPath, act) == 0);
-    BOOST_TEST_REQUIRE(libsiedler2::Write(mapOutPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(mapOutPath, act) == 0);
     BOOST_TEST(testFilesEqual(mapOutPath, mapPath));
 }
 
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(ReadFaultyWLD)
     BOOST_TEST_REQUIRE(bfs::exists(mapPath));
     libsiedler2::Archiv act;
     BOOST_TEST_REQUIRE(libsiedler2::load(mapPath, act) == 0);
-    BOOST_TEST_REQUIRE(libsiedler2::Write(mapOutPath, act) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(mapOutPath, act) == 0);
     BOOST_TEST(testFilesEqual(mapOutPath, okMapPath));
 }
 

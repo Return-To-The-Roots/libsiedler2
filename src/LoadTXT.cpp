@@ -26,7 +26,7 @@
  *
  *  @bug Keine Erkennung ob Plain-Text oder "Irgendwas".
  */
-int libsiedler2::loader::LoadTXT(const boost::filesystem::path& filepath, Archiv& items, bool conversion)
+int libsiedler2::loader::loadTXT(const boost::filesystem::path& filepath, Archiv& items, bool conversion)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(filepath, mmapStream))

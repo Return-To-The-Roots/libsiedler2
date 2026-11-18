@@ -79,7 +79,7 @@ static void createTxt(libsiedler2::Archiv& archiv, const bfs::path& outFile, uns
             archiv.pushC(txt);
         }
     }
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outFile, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outFile, archiv) == 0);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteENG)
@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteSingleEmptyEntry)
     const bfs::path outFilepath = libsiedler2::test::outputPath / "outTextEmpty.ENG";
     libsiedler2::Archiv archiv, archivIn;
     archiv.push(nullptr);
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outFilepath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outFilepath, archiv) == 0);
     BOOST_TEST_REQUIRE(libsiedler2::load(outFilepath, archivIn) == 0);
     BOOST_TEST_REQUIRE(archivIn.size() == 1u);
     BOOST_TEST_REQUIRE(!archivIn[0]);

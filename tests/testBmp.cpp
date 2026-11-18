@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePlayerBitmap)
     BOOST_TEST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_TEST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, bmp, palette) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, bmp, palette) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRawBitmap)
     BOOST_TEST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_TEST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, bmp, palette) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, bmp, palette) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
     BOOST_TEST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_TEST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, bmp, palette) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, bmp, palette) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
     // Make maximum size by alternating between transparent and non-transparent pixels
     PixelBufferPaletted buffer(10, 13, palette->getTransparentIdx());
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteShadowBitmap)
     shadowBmp->create(buffer, palette);
     bmp.clear();
     bmp.push(std::move(shadowBmp));
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, bmp, palette) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, bmp, palette) == 0);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
     BOOST_TEST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_TEST_REQUIRE(testLoad(0, bmpPath, bmp, palette));
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, bmp, palette) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, bmp, palette) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
     // Make maximum size by alternating between transparent and non-transparent pixels
     PixelBufferPaletted buffer(10, 13, palette->getTransparentIdx());
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteRLEBitmap)
     shadowBmp->create(buffer, palette);
     bmp.clear();
     bmp.push(std::move(shadowBmp));
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, bmp, palette) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, bmp, palette) == 0);
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteBmp)
@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteBmp)
     BOOST_TEST_REQUIRE(bfs::exists(bmpPath));
     Archiv bmp;
     BOOST_TEST_REQUIRE(testLoad(0, bmpPath, bmp));
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, bmp) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, bmp) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(ReadWritePalettedBmp)
     BOOST_TEST_REQUIRE(bmp->getPalette());
     // We want to write as paletted again
     BOOST_TEST_REQUIRE(bmp->convertFormat(TextureFormat::Paletted) == 0);
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, archiv) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(bmpOutPath, bmpPath));
 }
 
@@ -228,7 +228,7 @@ BOOST_AUTO_TEST_CASE(CreatePalettedBmp)
     BOOST_TEST_REQUIRE(bmp.convertFormat(TextureFormat::Paletted) == 0);
     Archiv archiv;
     archiv.pushC(bmp);
-    BOOST_TEST_REQUIRE(Write(bmpOutPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(write(bmpOutPath, archiv) == 0);
 
     Archiv archivLoad;
     BOOST_TEST_REQUIRE(testLoad(0, bmpOutPath, archivLoad, palette));

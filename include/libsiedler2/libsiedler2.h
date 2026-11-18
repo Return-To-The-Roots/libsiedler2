@@ -28,10 +28,10 @@ void setAllocator(IAllocator* newAllocator);
 /// Lädt die Datei im Format ihrer Endung.
 int load(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 /// Schreibt die Datei im Format ihrer Endung.
-int Write(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
+int write(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette = nullptr);
 /// List all files in the folder and fills them into the vector
-std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath);
+std::vector<FileEntry> readFolderInfo(const boost::filesystem::path& folderPath);
 /// load all files from the folderInfos into the archiv. Sorts the infos first
-int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette = nullptr);
+int loadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
 } // namespace libsiedler2

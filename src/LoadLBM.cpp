@@ -26,7 +26,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadLBM(const boost::filesystem::path& filepath, Archiv& items)
+int libsiedler2::loader::loadLBM(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream mmapStream;
     if(int ec = openMemoryStream(filepath, mmapStream))

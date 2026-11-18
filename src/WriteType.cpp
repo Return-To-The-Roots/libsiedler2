@@ -28,7 +28,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item,
+int libsiedler2::loader::writeType(BobType bobtype, std::ostream& lst, const ArchivItem& item,
                                    const ArchivItem_Palette* palette)
 {
     if(!lst)

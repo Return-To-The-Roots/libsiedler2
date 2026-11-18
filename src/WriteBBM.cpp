@@ -17,7 +17,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBBM(const boost::filesystem::path& filepath, const Archiv& items)
+int libsiedler2::loader::writeBBM(const boost::filesystem::path& filepath, const Archiv& items)
 {
     std::array<char, 4> header = {'F', 'O', 'R', 'M'}, pbm = {'P', 'B', 'M', ' '}, cmap = {'C', 'M', 'A', 'P'};
 

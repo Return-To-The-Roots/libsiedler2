@@ -19,7 +19,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadACT(const boost::filesystem::path& filepath, Archiv& items)
+int libsiedler2::loader::loadACT(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream act;
     if(int ec = openMemoryStream(filepath, act))

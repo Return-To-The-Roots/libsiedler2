@@ -12,7 +12,7 @@
 #include "libendian/EndianOStreamAdapter.h"
 #include <boost/nowide/fstream.hpp>
 
-int libsiedler2::loader::WriteLBM(const boost::filesystem::path& filepath, const Archiv& items,
+int libsiedler2::loader::writeLBM(const boost::filesystem::path& filepath, const Archiv& items,
                                   const ArchivItem_Palette* palette)
 {
     if(filepath.empty())

@@ -147,44 +147,44 @@ int load(const boost::filesystem::path& filepath, Archiv& items, const ArchivIte
     {
         // Datei laden
         if(extension == "act")
-            ret = loader::LoadACT(filepath, items);
+            ret = loader::loadACT(filepath, items);
         else if(extension == "bbm")
-            ret = loader::LoadBBM(filepath, items);
+            ret = loader::loadBBM(filepath, items);
         else if(extension == "bmp")
-            ret = loader::LoadBMP(filepath, items, palette);
+            ret = loader::loadBMP(filepath, items, palette);
         else if(extension == "bob")
-            ret = loader::LoadBOB(filepath, items, palette);
+            ret = loader::loadBOB(filepath, items, palette);
         else if(extension == "dat" || extension == "idx")
         {
-            ret = loader::LoadDATIDX(filepath, items, palette);
+            ret = loader::loadDATIDX(filepath, items, palette);
             if(ret == ErrorCode::WRONG_HEADER && extension == "dat")
-                ret = loader::LoadSND(filepath, items);
+                ret = loader::loadSND(filepath, items);
         } else if(extension == "lbm")
-            ret = loader::LoadLBM(filepath, items);
+            ret = loader::loadLBM(filepath, items);
         else if(extension == "lst")
-            ret = loader::LoadLST(filepath, items, palette);
+            ret = loader::loadLST(filepath, items, palette);
         else if(extension == "swd" || extension == "wld")
-            ret = loader::LoadMAP(filepath, items);
+            ret = loader::loadMAP(filepath, items);
         else if(extension == "ger" || extension == "eng")
-            ret = loader::LoadTXT(filepath, items, true);
+            ret = loader::loadTXT(filepath, items, true);
         else if(extension == "ini")
-            ret = loader::LoadINI(filepath, items);
+            ret = loader::loadINI(filepath, items);
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi"
                 || extension == "xmi")
-            ret = loader::LoadSND(filepath, items);
+            ret = loader::loadSND(filepath, items);
         else if(extension == "links")
-            ret = loader::LoadTXT(filepath, items, false);
+            ret = loader::loadTXT(filepath, items, false);
         else if(extension == "txt")
         {
             const bfs::path filename = filepath.stem();
             const std::string ext2 =
               s25util::toLower(filename.has_extension() ? filename.extension().string().substr(1) : filename.string());
             if(ext2 == "paletteanims")
-                ret = loader::LoadPaletteAnim(filepath, items);
+                ret = loader::loadPaletteAnim(filepath, items);
             else if(ext2 == "palette")
-                ret = loader::LoadTxtPalette(filepath, items);
+                ret = loader::loadTxtPalette(filepath, items);
             else
-                ret = loader::LoadTXT(filepath, items, false);
+                ret = loader::loadTXT(filepath, items, false);
         } else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
@@ -197,7 +197,7 @@ int load(const boost::filesystem::path& filepath, Archiv& items, const ArchivIte
     return ret;
 }
 
-int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette)
+int loadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivItem_Palette* palette)
 {
     std::sort(folderInfos.begin(), folderInfos.end());
     libsiedler2::PixelBufferBGRA buffer(1000, 1000);
@@ -221,7 +221,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
             }
             int ec;
             if(bfs::is_directory(entry.filePath))
-                ec = LoadFolder(ReadFolderInfo(entry.filePath), *font, palette);
+                ec = loadFolder(readFolderInfo(entry.filePath), *font, palette);
             else
                 ec = load(entry.filePath, *font, palette);
             if(ec)
@@ -352,7 +352,7 @@ int LoadFolder(std::vector<FileEntry> folderInfos, Archiv& items, const ArchivIt
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int Write(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette)
+int write(const boost::filesystem::path& filepath, const Archiv& items, const ArchivItem_Palette* palette)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;
@@ -367,26 +367,26 @@ int Write(const boost::filesystem::path& filepath, const Archiv& items, const Ar
     {
         // Datei schreiben
         if(extension == "act")
-            ret = loader::WriteACT(filepath, items);
+            ret = loader::writeACT(filepath, items);
         else if(extension == "bbm")
-            ret = loader::WriteBBM(filepath, items);
+            ret = loader::writeBBM(filepath, items);
         else if(extension == "bmp")
-            ret = loader::WriteBMP(filepath, items, palette);
+            ret = loader::writeBMP(filepath, items, palette);
         else if(extension == "lst")
-            ret = loader::WriteLST(filepath, items, palette);
+            ret = loader::writeLST(filepath, items, palette);
         else if(extension == "swd" || extension == "wld")
-            ret = loader::WriteMAP(filepath, items);
+            ret = loader::writeMAP(filepath, items);
         else if(extension == "ger" || extension == "eng")
-            ret = loader::WriteTXT(filepath, items, true);
+            ret = loader::writeTXT(filepath, items, true);
         else if(extension == "ini")
-            ret = loader::WriteINI(filepath, items);
+            ret = loader::writeINI(filepath, items);
         else if(extension == "ogg" || extension == "wav" || extension == "mid" || extension == "midi"
                 || extension == "xmi")
-            ret = loader::WriteSND(filepath, items);
+            ret = loader::writeSND(filepath, items);
         else if(extension == "lbm")
-            ret = loader::WriteLBM(filepath, items, palette);
+            ret = loader::writeLBM(filepath, items, palette);
         else if(extension == "txt")
-            ret = loader::WritePaletteAnim(filepath, items);
+            ret = loader::writePaletteAnim(filepath, items);
         else
             std::cerr << "Unsupported extension: " << extension << std::endl;
     } catch(std::exception& error)
@@ -411,7 +411,7 @@ namespace {
     }
 } // namespace
 
-std::vector<FileEntry> ReadFolderInfo(const boost::filesystem::path& folderPath)
+std::vector<FileEntry> readFolderInfo(const boost::filesystem::path& folderPath)
 {
     std::vector<FileEntry> entries;
     for(const auto& it : bfs::directory_iterator(folderPath))

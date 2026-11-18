@@ -21,7 +21,7 @@ void pack(const boost::filesystem::path& directory, const boost::filesystem::pat
     Archiv lst;
 
     std::cout << "Reading directory: " << std::flush;
-    std::vector<FileEntry> files = ReadFolderInfo(directory);
+    std::vector<FileEntry> files = readFolderInfo(directory);
     std::cout << "done" << std::endl;
 
     // Not really required but for output below
@@ -39,7 +39,7 @@ void pack(const boost::filesystem::path& directory, const boost::filesystem::pat
     }
 
     std::cout << "Loading files " << std::flush;
-    if(int ec = LoadFolder(files, lst, palette))
+    if(int ec = loadFolder(files, lst, palette))
     {
         std::cout << "Error: " << getErrorString(ec) << std::endl;
         return;
@@ -47,7 +47,7 @@ void pack(const boost::filesystem::path& directory, const boost::filesystem::pat
         std::cout << "done" << std::endl;
 
     std::cout << "Writing data to " << outFilepath << ": ";
-    if(int ec = Write(outFilepath, lst, palette))
+    if(int ec = write(outFilepath, lst, palette))
         std::cout << "failed: " << getErrorString(ec) << std::endl;
     else
         std::cout << "done" << std::endl;

@@ -19,7 +19,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadINI(const boost::filesystem::path& filepath, Archiv& items)
+int libsiedler2::loader::loadINI(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream ini;
     if(int ec = openMemoryStream(filepath, ini))

@@ -22,7 +22,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteTXT(const boost::filesystem::path& filepath, const Archiv& items, bool conversion)
+int libsiedler2::loader::writeTXT(const boost::filesystem::path& filepath, const Archiv& items, bool conversion)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;

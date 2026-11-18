@@ -17,7 +17,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadSND(const boost::filesystem::path& filepath, Archiv& items)
+int libsiedler2::loader::loadSND(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream snd;
     if(int ec = openMemoryStream(filepath, snd))

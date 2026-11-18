@@ -78,7 +78,7 @@ int main(int /*argc*/, char* /*argv*/[])
     }
     std::array<char, 512> file;
     snprintf(file.data(), file.size(), "outline_fonts.lst");
-    Write(file.data(), to, palette);
+    write(file.data(), to, palette);
 
     getchar();
     return 0;

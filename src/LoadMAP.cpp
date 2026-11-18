@@ -18,7 +18,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadMAP(const boost::filesystem::path& filepath, Archiv& items, bool only_header)
+int libsiedler2::loader::loadMAP(const boost::filesystem::path& filepath, Archiv& items, bool only_header)
 {
     MMStream map;
     if(int ec = openMemoryStream(filepath, map))

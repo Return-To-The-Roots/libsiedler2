@@ -25,7 +25,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteBMP(const boost::filesystem::path& filepath, const Archiv& items,
+int libsiedler2::loader::writeBMP(const boost::filesystem::path& filepath, const Archiv& items,
                                   const ArchivItem_Palette* palette)
 {
     if(filepath.empty())

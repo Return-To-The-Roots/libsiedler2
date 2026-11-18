@@ -22,7 +22,7 @@ namespace libsiedler2::loader {
 static const std::string txtPalHeader = "Bitmap palette V1";
 static const std::string palAnimHeader = "Palette animations V1";
 
-int LoadTxtPalette(const boost::filesystem::path& filepath, Archiv& items)
+int loadTxtPalette(const boost::filesystem::path& filepath, Archiv& items)
 {
     s25util::ClassicImbuedStream<bnw::ifstream> fs(filepath);
     if(!fs)
@@ -58,7 +58,7 @@ int LoadTxtPalette(const boost::filesystem::path& filepath, Archiv& items)
     return ErrorCode::NONE;
 }
 
-int WriteTxtPalette(const boost::filesystem::path& filepath, const ArchivItem_Palette& palette)
+int writeTxtPalette(const boost::filesystem::path& filepath, const ArchivItem_Palette& palette)
 {
     s25util::ClassicImbuedStream<bnw::ofstream> fs(filepath);
     if(!fs)
@@ -75,7 +75,7 @@ int WriteTxtPalette(const boost::filesystem::path& filepath, const ArchivItem_Pa
     return ErrorCode::NONE;
 }
 
-int LoadPaletteAnim(const boost::filesystem::path& filepath, Archiv& items)
+int loadPaletteAnim(const boost::filesystem::path& filepath, Archiv& items)
 {
     s25util::ClassicImbuedStream<bnw::ifstream> fs(filepath);
     if(!fs)
@@ -104,7 +104,7 @@ int LoadPaletteAnim(const boost::filesystem::path& filepath, Archiv& items)
     return ErrorCode::NONE;
 }
 
-int WritePaletteAnim(const boost::filesystem::path& filepath, const Archiv& items)
+int writePaletteAnim(const boost::filesystem::path& filepath, const Archiv& items)
 {
     s25util::ClassicImbuedStream<bnw::ofstream> fs(filepath);
     if(!fs)

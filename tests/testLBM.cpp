@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(WriteReadLbmFile)
     // load a paletted bmp and write it in lbm format
     libsiedler2::Archiv arBmp;
     BOOST_TEST_REQUIRE(libsiedler2::load(inPathBmp, arBmp, palette) == 0);
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, arBmp, palette) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outPath, arBmp, palette) == 0);
     // load lbm and check if bitmaps are equal
     libsiedler2::Archiv arLbm;
     BOOST_TEST_REQUIRE(libsiedler2::load(outPath, arLbm, palette) == 0);

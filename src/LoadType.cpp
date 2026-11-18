@@ -30,7 +30,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item,
+int libsiedler2::loader::loadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item,
                                   const ArchivItem_Palette* palette)
 {
     if(!lst)

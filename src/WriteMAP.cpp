@@ -16,7 +16,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteMAP(const boost::filesystem::path& filepath, const Archiv& items)
+int libsiedler2::loader::writeMAP(const boost::filesystem::path& filepath, const Archiv& items)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;

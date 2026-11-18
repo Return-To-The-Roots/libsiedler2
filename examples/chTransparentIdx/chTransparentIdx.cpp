@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
             return 3;
         }
         palette->setTransparentIdx(options["to"].as<uint8_t>());
-        if(int ec = Write(outPath, lst, palette))
+        if(int ec = write(outPath, lst, palette))
         {
             bnw::cerr << "Fatal Error during writing: " << libsiedler2::getErrorString(ec) << std::endl;
             return 4;

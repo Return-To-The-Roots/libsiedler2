@@ -103,7 +103,7 @@ static std::vector<uint8_t> read_color_data(std::istream& bmpFs, const TextureFo
     return buffer;
 }
 
-int loader::LoadBMP(const boost::filesystem::path& filepath, Archiv& image,
+int loader::loadBMP(const boost::filesystem::path& filepath, Archiv& image,
                     const ArchivItem_Palette* palette /*= nullptr*/)
 {
     MMStream bmpFs;

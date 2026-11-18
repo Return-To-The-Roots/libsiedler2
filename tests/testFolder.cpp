@@ -59,7 +59,7 @@ struct FolderFixture
         BOOST_TEST_REQUIRE(bmp.create(buffer) == 0);
         Archiv archive;
         archive.pushC(bmp);
-        BOOST_TEST_REQUIRE(Write(lstPath / name, archive) == 0);
+        BOOST_TEST_REQUIRE(write(lstPath / name, archive) == 0);
     }
 };
 
@@ -119,16 +119,16 @@ BOOST_AUTO_TEST_CASE(InvalidNames)
     Archiv archive;
     BOOST_TEST(load("", archive) == ErrorCode::INVALID_BUFFER);
     BOOST_TEST(archive.empty());
-    BOOST_TEST(Write("", archive) == ErrorCode::INVALID_BUFFER);
+    BOOST_TEST(write("", archive) == ErrorCode::INVALID_BUFFER);
 
     BOOST_TEST(load("noext", archive) == ErrorCode::UNSUPPORTED_FORMAT);
     BOOST_TEST(archive.empty());
-    BOOST_TEST(Write("noext", archive) == ErrorCode::UNSUPPORTED_FORMAT);
+    BOOST_TEST(write("noext", archive) == ErrorCode::UNSUPPORTED_FORMAT);
 
     // Unsupported extension
     BOOST_TEST(load("file.weird", archive) == ErrorCode::UNSUPPORTED_FORMAT);
     BOOST_TEST(archive.empty());
-    BOOST_TEST(Write("file.weird", archive) == ErrorCode::UNSUPPORTED_FORMAT);
+    BOOST_TEST(write("file.weird", archive) == ErrorCode::UNSUPPORTED_FORMAT);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(ReadFolderInfoParsesUnicodePrefix)
     writeFile("U+2211.test.txt");
     writeFile("0xABCD.test.txt");
 
-    std::vector<FileEntry> entries = ReadFolderInfo(lstPath);
+    std::vector<FileEntry> entries = readFolderInfo(lstPath);
     BOOST_TEST_REQUIRE(entries.size() == 3u);
     std::sort(entries.begin(), entries.end());
     BOOST_TEST(entries[0].nr == 0x1234);
@@ -150,10 +150,10 @@ BOOST_AUTO_TEST_CASE(ReadFolderInfoParsesUnicodePrefix)
 
     // Invalid hex
     writeFile("0xZZ.bad.bmp");
-    BOOST_CHECK_THROW(ReadFolderInfo(lstPath), std::runtime_error);
+    BOOST_CHECK_THROW(readFolderInfo(lstPath), std::runtime_error);
     bfs::remove(lstPath / "0xZZ.bad.bmp");
     writeFile("u+GHI.txt");
-    BOOST_CHECK_THROW(ReadFolderInfo(lstPath), std::runtime_error);
+    BOOST_CHECK_THROW(readFolderInfo(lstPath), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(ReadFolderInfoReturnsCorrectFiles)
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(ReadFolderInfoReturnsCorrectFiles)
     for(const auto& e : infoExpected)
         writeFile(e.filePath.filename());
 
-    std::vector<FileEntry> entries = ReadFolderInfo(lstPath);
+    std::vector<FileEntry> entries = readFolderInfo(lstPath);
     BOOST_TEST_REQUIRE(entries.size() == infoExpected.size());
     std::sort(entries.begin(), entries.end());
     for(unsigned i = 0; i < infoExpected.size(); i++)
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(LoadPlayerBitmapFromFolder)
 
     // --- Case 1: Regular approach (requested player, source is a plain BMP) ---
     // A 2x2 BMP whose first two pixels match the palette's player colors
-    // LoadFolder must convert it and reconstruct the player layer.
+    // loadFolder must convert it and reconstruct the player layer.
     {
         PixelBufferBGRA buffer(2, 2);
         buffer.set(0, 0, ColorBGRA(loadPal.palette->get(128)));
@@ -218,10 +218,10 @@ BOOST_AUTO_TEST_CASE(LoadPlayerBitmapFromFolder)
         BOOST_TEST_REQUIRE(raw.create(buffer) == 0);
         Archiv rawArchiv;
         rawArchiv.pushC(raw);
-        BOOST_TEST_REQUIRE(Write(lstPath / "3.player.nx1.ny2.bmp", rawArchiv) == 0);
+        BOOST_TEST_REQUIRE(write(lstPath / "3.player.nx1.ny2.bmp", rawArchiv) == 0);
 
         Archiv archive;
-        BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive, loadPal.palette) == 0);
+        BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive, loadPal.palette) == 0);
         BOOST_TEST_REQUIRE(archive[3]);
         BOOST_TEST(archive[3]->getBobType() == BobType::BitmapPlayer);
         {
@@ -244,11 +244,11 @@ BOOST_AUTO_TEST_CASE(LoadPlayerBitmapFromFolder)
         Archiv lstArchiv;
         lstArchiv.pushC(playerLst);
         // Contrast the 2 similar cases: Player bitmap (-> taken as-is) and RLE (-> conversion)
-        BOOST_TEST_REQUIRE(Write(lstPath / "7.player.nx1.ny2.lst", lstArchiv, loadPal.palette) == 0);
-        BOOST_TEST_REQUIRE(Write(lstPath / "8.rle.nx2.ny3.lst", lstArchiv, loadPal.palette) == 0);
+        BOOST_TEST_REQUIRE(write(lstPath / "7.player.nx1.ny2.lst", lstArchiv, loadPal.palette) == 0);
+        BOOST_TEST_REQUIRE(write(lstPath / "8.rle.nx2.ny3.lst", lstArchiv, loadPal.palette) == 0);
 
         Archiv archiveLst;
-        BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archiveLst, loadPal.palette) == 0);
+        BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archiveLst, loadPal.palette) == 0);
         BOOST_TEST_REQUIRE(archiveLst[7]);
         BOOST_TEST(archiveLst[7]->getBobType() == BobType::BitmapPlayer);
         BOOST_TEST(archiveLst[7]->getName() == "");
@@ -265,7 +265,7 @@ BOOST_AUTO_TEST_CASE(LoadPlayerBitmapFromFolder)
     // --- Case 3: Requested player bitmap but no palette given -> PALETTE_MISSING ---
     {
         Archiv archivErr;
-        BOOST_TEST(LoadFolder(ReadFolderInfo(lstPath), archivErr, nullptr) == ErrorCode::PALETTE_MISSING);
+        BOOST_TEST(loadFolder(readFolderInfo(lstPath), archivErr, nullptr) == ErrorCode::PALETTE_MISSING);
     }
 }
 
@@ -274,7 +274,7 @@ BOOST_AUTO_TEST_CASE(LoadTextEntryWithNr)
     writeFile("5.hello.txt", "Hello");
 
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
+    BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 6u);
     for(int i = 0; i < 5; ++i)
         BOOST_TEST(!archive[i]);
@@ -288,7 +288,7 @@ BOOST_AUTO_TEST_CASE(EntryWithoutNrIsPushed)
     writeFile("world.txt", "World");
 
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
+    BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 2u);
     BOOST_TEST_REQUIRE(archive[0]);
     BOOST_TEST(archive[0]->getName() == "hello");
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE(UnsetEntriesAreIgnored)
     entries.push_back(e1);
 
     Archiv archive;
-    BOOST_TEST(LoadFolder(std::move(entries), archive) == 0);
+    BOOST_TEST(loadFolder(std::move(entries), archive) == 0);
     BOOST_TEST(archive.empty());
 }
 
@@ -314,9 +314,9 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
         // Empty folder -> empty archive
         Archiv archive;
         std::vector<FileEntry> empty;
-        BOOST_TEST(LoadFolder(empty, archive) == 0);
+        BOOST_TEST(loadFolder(empty, archive) == 0);
         BOOST_TEST(archive.empty());
-        BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
+        BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive) == 0);
         BOOST_TEST(archive.empty());
     }
 
@@ -329,7 +329,7 @@ BOOST_AUTO_TEST_CASE(LoadFolderCreatesCorrectItems)
 
     LoadPalette loadPal;
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive, loadPal.palette) == 0);
+    BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive, loadPal.palette) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 10u);
     BOOST_TEST(!archive[0]);
     BOOST_TEST_REQUIRE(archive[1]);
@@ -369,7 +369,7 @@ BOOST_AUTO_TEST_CASE(LinksFileCanBeReadAsMapping)
                          "7\t9\n"
                          "17\t13 \t 3\n");
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
+    BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive) == 0);
     BOOST_TEST_REQUIRE(archive[7]);
     BOOST_TEST(archive[7]->getBobType() == BobType::Text);
 
@@ -400,7 +400,7 @@ BOOST_AUTO_TEST_CASE(LoadTxtPalette)
     writeFile("2.palette.txt", content.str());
 
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
+    BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive) == 0);
     BOOST_TEST_REQUIRE(archive[2]);
     BOOST_TEST(archive[2]->getBobType() == BobType::Palette);
     const auto& pal = dynamic_cast<const ArchivItem_Palette&>(*archive[2]);
@@ -420,7 +420,7 @@ BOOST_AUTO_TEST_CASE(LoadFontDirectories)
     writeBitmap(bfs::path("2.dx7.dy9.fonx") / "U+E001.bmp");
 
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
+    BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 3u);
 
     const auto& font = dynamic_cast<const ArchivItem_Font&>(*archive[1]);
@@ -443,7 +443,7 @@ BOOST_AUTO_TEST_CASE(LoadFontDirectories)
     bfs::create_directory(lstPath);
     writeFile("3.fon", "not a font");
     Archiv archive2;
-    BOOST_TEST(LoadFolder(ReadFolderInfo(lstPath), archive2) == ErrorCode::UNSUPPORTED_FORMAT);
+    BOOST_TEST(loadFolder(readFolderInfo(lstPath), archive2) == ErrorCode::UNSUPPORTED_FORMAT);
     BOOST_TEST(archive2.empty());
 }
 
@@ -457,7 +457,7 @@ BOOST_AUTO_TEST_CASE(LoadPaletteAnims)
     )");
 
     Archiv archive;
-    BOOST_TEST_REQUIRE(LoadFolder(ReadFolderInfo(lstPath), archive) == 0);
+    BOOST_TEST_REQUIRE(loadFolder(readFolderInfo(lstPath), archive) == 0);
     BOOST_TEST_REQUIRE(archive.size() == 3u);
     BOOST_TEST(!archive[1]);
 
@@ -477,7 +477,7 @@ BOOST_AUTO_TEST_CASE(LoadPaletteAnims)
 
     // Round trip to LST
     const auto newLstPath = lstPath / "bundle.lst";
-    BOOST_TEST_REQUIRE(Write(newLstPath, archive) == 0);
+    BOOST_TEST_REQUIRE(write(newLstPath, archive) == 0);
     Archiv archive2;
     BOOST_TEST_REQUIRE(load(newLstPath, archive2) == 0);
     BOOST_TEST_REQUIRE(archive2.size() == 3u);
@@ -507,7 +507,7 @@ BOOST_AUTO_TEST_CASE(LoadPaletteAnims)
     )");
     // An animation index colliding with an already loaded item is an error
     Archiv archive3;
-    BOOST_TEST(LoadFolder(ReadFolderInfo(lstPath), archive3) == ErrorCode::UNSUPPORTED_FORMAT);
+    BOOST_TEST(loadFolder(readFolderInfo(lstPath), archive3) == ErrorCode::UNSUPPORTED_FORMAT);
 }
 
 BOOST_AUTO_TEST_CASE(NonBitmapSourceReturnsError)
@@ -515,7 +515,7 @@ BOOST_AUTO_TEST_CASE(NonBitmapSourceReturnsError)
     // "rle" keyword on a text file: the loaded text item is not a bitmap
     writeFile("5.rle.txt", "Hello");
     Archiv archive;
-    BOOST_TEST(LoadFolder(ReadFolderInfo(lstPath), archive) == ErrorCode::UNSUPPORTED_FORMAT);
+    BOOST_TEST(loadFolder(readFolderInfo(lstPath), archive) == ErrorCode::UNSUPPORTED_FORMAT);
 }
 
 BOOST_AUTO_TEST_CASE(CreateAndReadLst)
@@ -567,12 +567,12 @@ BOOST_AUTO_TEST_CASE(CreateAndReadLst)
     const auto* palette = dynamic_cast<ArchivItem_Palette*>(paletteArchiv.get(0));
     BOOST_TEST_REQUIRE(palette);
     Archiv archive;
-    const auto info = ReadFolderInfo(lstFolder);
-    BOOST_TEST_REQUIRE(LoadFolder(info, archive, palette) == 0);
+    const auto info = readFolderInfo(lstFolder);
+    BOOST_TEST_REQUIRE(loadFolder(info, archive, palette) == 0);
     BOOST_TEST_REQUIRE(archive.size() == files.size());
 
     const auto newLstPath = lstPath / "bundle.lst";
-    BOOST_TEST_REQUIRE(Write(newLstPath, archive, palette) == 0);
+    BOOST_TEST_REQUIRE(write(newLstPath, archive, palette) == 0);
     Archiv archive2;
     BOOST_TEST_REQUIRE(load(newLstPath, archive2, palette) == 0);
     BOOST_TEST_REQUIRE(archive2.size() == archive.size());

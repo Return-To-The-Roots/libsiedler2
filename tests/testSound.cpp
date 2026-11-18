@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteOgg)
     BOOST_TEST_REQUIRE(std::string(reinterpret_cast<const char*>(&snd->getData()[0])) == "OggS");
     BOOST_TEST_REQUIRE(snd->getData()[49999] == uint8_t(0xe6));
     BOOST_TEST_REQUIRE(snd->getData().back() == uint8_t(0));
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outPath, archiv) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavMono)
     // Hacky check
     BOOST_TEST_REQUIRE(snd->getLength() == 135944u);
     BOOST_TEST_REQUIRE(snd->getData().back() == uint8_t(0));
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outPath, archiv) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteWavStereo)
     // Hacky check
     BOOST_TEST_REQUIRE(snd->getLength() == 111414u);
     BOOST_TEST_REQUIRE(snd->getData().back() == uint8_t(0));
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outPath, archiv) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteMid)
     auto* snd = dynamic_cast<libsiedler2::ArchivItem_Sound_Midi*>(archiv[0]);
     BOOST_TEST_REQUIRE(snd);
     // Hacky check
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outPath, archiv) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(ReadWriteXMid)
     // Hacky check
     for(unsigned i = 0; i < snd->getNumTracks(); i++)
         BOOST_REQUIRE_NO_THROW(snd->getMidiTrack(i));
-    BOOST_TEST_REQUIRE(libsiedler2::Write(outPath, archiv) == 0);
+    BOOST_TEST_REQUIRE(libsiedler2::write(outPath, archiv) == 0);
     BOOST_TEST_REQUIRE(testFilesEqual(outPath, inPath));
 }
 

@@ -17,97 +17,97 @@ class Archiv;
 /// Die verschiedenen Lade-/Schreibfunktionen der Dateien
 namespace loader {
     /// lädt eine spezifizierten Bobtype aus einer Datei in ein ArchivItem.
-    int LoadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item,
+    int loadType(BobType bobtype, std::istream& lst, std::unique_ptr<ArchivItem>& item,
                  const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt eine spezifizierten Bobtype aus einem ArchivItem in eine Datei.
-    int WriteType(BobType bobtype, std::ostream& lst, const ArchivItem& item,
+    int writeType(BobType bobtype, std::ostream& lst, const ArchivItem& item,
                   const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine LST-File in ein Archiv.
-    int LoadLST(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette = nullptr);
+    int loadLST(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt ein Archiv eine LST-File.
-    int WriteLST(const boost::filesystem::path& filepath, const Archiv& items,
+    int writeLST(const boost::filesystem::path& filepath, const Archiv& items,
                  const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine BBM-File in ein Archiv.
-    int LoadBBM(const boost::filesystem::path& filepath, Archiv& items);
+    int loadBBM(const boost::filesystem::path& filepath, Archiv& items);
 
     /// schreibt ein Archiv in eine BBM-File.
-    int WriteBBM(const boost::filesystem::path& filepath, const Archiv& items);
+    int writeBBM(const boost::filesystem::path& filepath, const Archiv& items);
 
     /// lädt eine ACT-File in ein Archiv.
-    int LoadACT(const boost::filesystem::path& filepath, Archiv& items);
+    int loadACT(const boost::filesystem::path& filepath, Archiv& items);
 
     /// schreibt ein Archiv in eine ACT-File.
-    int WriteACT(const boost::filesystem::path& filepath, const Archiv& items);
+    int writeACT(const boost::filesystem::path& filepath, const Archiv& items);
 
     /// lädt eine DAT/IDX-File in ein Archiv.
-    int LoadDATIDX(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette = nullptr);
+    int loadDATIDX(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine BMP-File in ein Archiv.
-    int LoadBMP(const boost::filesystem::path& filepath, Archiv& image, const ArchivItem_Palette* palette = nullptr);
+    int loadBMP(const boost::filesystem::path& filepath, Archiv& image, const ArchivItem_Palette* palette = nullptr);
 
     /// schreibt ein Archiv in eine BMP-File.
-    int WriteBMP(const boost::filesystem::path& filepath, const Archiv& items,
+    int writeBMP(const boost::filesystem::path& filepath, const Archiv& items,
                  const ArchivItem_Palette* palette = nullptr);
 
     /// load a GER/ENG-File into the archive.
     /// If conversion is true then OEM conversion and @@-replacement is done, otherwise line endings are normalized to
     /// \n
-    int LoadTXT(const boost::filesystem::path& filepath, Archiv& items, bool conversion);
+    int loadTXT(const boost::filesystem::path& filepath, Archiv& items, bool conversion);
 
-#define LoadGER LoadTXT
-#define LoadENG LoadTXT
+#define loadGER loadTXT
+#define loadENG loadTXT
 
     /// write a GER/ENG-File from an archive
     /// If conversion is true then OEM conversion and @@-replacement is done
-    int WriteTXT(const boost::filesystem::path& filepath, const Archiv& items, bool conversion);
+    int writeTXT(const boost::filesystem::path& filepath, const Archiv& items, bool conversion);
 
-#define WriteGER WriteTXT
-#define WriteENG WriteTXT
+#define writeGER writeTXT
+#define writeENG writeTXT
 
     /// lädt eine LBM-File in ein Archiv.
-    int LoadLBM(const boost::filesystem::path& filepath, Archiv& items);
+    int loadLBM(const boost::filesystem::path& filepath, Archiv& items);
 
     /// schreibt ein Archiv in eine LBM-File.
-    int WriteLBM(const boost::filesystem::path& filepath, const Archiv& items,
+    int writeLBM(const boost::filesystem::path& filepath, const Archiv& items,
                  const ArchivItem_Palette* palette = nullptr);
 
     /// lädt eine SWD/WSD-File in ein Archiv.
-    int LoadMAP(const boost::filesystem::path& filepath, Archiv& items, bool only_header = false);
+    int loadMAP(const boost::filesystem::path& filepath, Archiv& items, bool only_header = false);
 
-#define LoadSWD LoadMAP
-#define LoadWSD LoadMAP
+#define loadSWD loadMAP
+#define loadWSD loadMAP
 
     /// schreibt ein Archiv in eine SWD/WSD-File.
-    int WriteMAP(const boost::filesystem::path& filepath, const Archiv& items);
+    int writeMAP(const boost::filesystem::path& filepath, const Archiv& items);
 
-#define WriteSWD WriteMAP
-#define WriteWSD WriteMAP
+#define writeSWD writeMAP
+#define writeWSD writeMAP
 
     /// lädt eine BOB-File in ein Archiv.
-    int LoadBOB(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette);
+    int loadBOB(const boost::filesystem::path& filepath, Archiv& items, const ArchivItem_Palette* palette);
 
-    int LoadSND(const boost::filesystem::path& filepath, Archiv& items);
+    int loadSND(const boost::filesystem::path& filepath, Archiv& items);
 
-#define LoadMID LoadSND
-#define LoadXMID LoadSND
-#define LoadWAV LoadSND
+#define loadMID loadSND
+#define loadXMID loadSND
+#define loadWAV loadSND
 
-    int WriteSND(const boost::filesystem::path& filepath, const Archiv& items);
+    int writeSND(const boost::filesystem::path& filepath, const Archiv& items);
 
-#define WriteWAV WriteSND
+#define writeWAV writeSND
 
     /// lädt eine INI-File in ein Archiv.
-    int LoadINI(const boost::filesystem::path& filepath, Archiv& items);
-    int WriteINI(const boost::filesystem::path& filepath, const Archiv& items);
+    int loadINI(const boost::filesystem::path& filepath, Archiv& items);
+    int writeINI(const boost::filesystem::path& filepath, const Archiv& items);
 
-    int LoadTxtPalette(const boost::filesystem::path& filepath, Archiv& items);
-    int WriteTxtPalette(const boost::filesystem::path& filepath, const ArchivItem_Palette& palette);
-    int LoadPaletteAnim(const boost::filesystem::path& filepath, Archiv& items);
-    int WritePaletteAnim(const boost::filesystem::path& filepath, const Archiv& items);
+    int loadTxtPalette(const boost::filesystem::path& filepath, Archiv& items);
+    int writeTxtPalette(const boost::filesystem::path& filepath, const ArchivItem_Palette& palette);
+    int loadPaletteAnim(const boost::filesystem::path& filepath, Archiv& items);
+    int writePaletteAnim(const boost::filesystem::path& filepath, const Archiv& items);
 
 } // namespace loader
 } // namespace libsiedler2

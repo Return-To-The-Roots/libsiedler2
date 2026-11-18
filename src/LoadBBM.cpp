@@ -22,7 +22,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadBBM(const boost::filesystem::path& filepath, Archiv& items)
+int libsiedler2::loader::loadBBM(const boost::filesystem::path& filepath, Archiv& items)
 {
     MMStream mmStream;
     if(int ec = openMemoryStream(filepath, mmStream))

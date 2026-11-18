@@ -8,7 +8,7 @@
 #include "prototypen.h"
 #include <boost/nowide/fstream.hpp>
 
-int libsiedler2::loader::WriteSND(const boost::filesystem::path& filepath, const Archiv& items)
+int libsiedler2::loader::writeSND(const boost::filesystem::path& filepath, const Archiv& items)
 {
     if(filepath.empty())
         return ErrorCode::INVALID_BUFFER;

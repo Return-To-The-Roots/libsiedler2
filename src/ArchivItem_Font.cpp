@@ -76,7 +76,7 @@ int libsiedler2::ArchivItem_Font::load(std::istream& file, const ArchivItem_Pale
 
         // Daten von Item auswerten
         std::unique_ptr<ArchivItem> item;
-        int ec = loader::LoadType(bobtype, file, item, palette);
+        int ec = loader::loadType(bobtype, file, item, palette);
         if(ec)
             return ec;
         std::stringstream name;
@@ -132,7 +132,7 @@ int libsiedler2::ArchivItem_Font::write(std::ostream& file, const ArchivItem_Pal
             continue;
 
         // Daten von Item auswerten
-        if(int ec = loader::WriteType(bobtype, file, *item, palette))
+        if(int ec = loader::writeType(bobtype, file, *item, palette))
             return ec;
     }
 

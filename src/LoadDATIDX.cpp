@@ -22,7 +22,7 @@ namespace bfs = boost::filesystem;
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::LoadDATIDX(const boost::filesystem::path& filepath, Archiv& items,
+int libsiedler2::loader::loadDATIDX(const boost::filesystem::path& filepath, Archiv& items,
                                     const ArchivItem_Palette* palette)
 {
     if(filepath.empty())
@@ -90,7 +90,7 @@ int libsiedler2::loader::LoadDATIDX(const boost::filesystem::path& filepath, Arc
 
         // Daten von Item auswerten
         std::unique_ptr<ArchivItem> item;
-        if(int ec = LoadType(bobtype, dat.getStream(), item, palette))
+        if(int ec = loadType(bobtype, dat.getStream(), item, palette))
             return ec;
 
         // Name setzen

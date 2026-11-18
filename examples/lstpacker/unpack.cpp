@@ -150,12 +150,12 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
 
                 cout << "extracting " << newFilepath << ": ";
 
-                if(Write(newFilepath, items) != 0)
+                if(write(newFilepath, items) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
                 if(paletteAsTxt)
-                    loader::WriteTxtPalette(newFilepath.replace_extension(".palette.txt"),
+                    loader::writeTxtPalette(newFilepath.replace_extension(".palette.txt"),
                                             static_cast<const libsiedler2::ArchivItem_Palette&>(*item));
             }
             break;
@@ -211,12 +211,12 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
 
                 cout << "extracting " << newFilepath << ": ";
 
-                if(Write(newFilepath, items, palette) != 0)
+                if(write(newFilepath, items, palette) != 0)
                     cout << "failed" << endl;
                 else
                     cout << "done" << endl;
                 if(bitmap.getPalette() && (paletteAsTxt || (*bitmap.getPalette() != *palette)))
-                    loader::WriteTxtPalette((directory / newFileStem).replace_extension(".palette.txt"),
+                    loader::writeTxtPalette((directory / newFileStem).replace_extension(".palette.txt"),
                                             *bitmap.getPalette());
             }
             break;
@@ -231,7 +231,7 @@ void unpack(const bfs::path& directory, const libsiedler2::Archiv& lst, const li
 
         cout << "extracting " << newfile << ": ";
 
-        if(Write(newfile, lst) != 0)
+        if(write(newfile, lst) != 0)
             cout << "failed" << endl;
         else
             cout << "done" << endl;

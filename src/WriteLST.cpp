@@ -19,7 +19,7 @@
  *
  *  @return Null bei Erfolg, ein Wert ungleich Null bei Fehler
  */
-int libsiedler2::loader::WriteLST(const boost::filesystem::path& filepath, const Archiv& items,
+int libsiedler2::loader::writeLST(const boost::filesystem::path& filepath, const Archiv& items,
                                   const ArchivItem_Palette* palette)
 {
     if(filepath.empty())
@@ -61,7 +61,7 @@ int libsiedler2::loader::WriteLST(const boost::filesystem::path& filepath, const
         fs << (int16_t)bobtype;
 
         // Daten von Item schreiben
-        if(int ec = WriteType(bobtype, fs.getStream(), *item, palette))
+        if(int ec = writeType(bobtype, fs.getStream(), *item, palette))
         {
             // If custom error store the index too
             if(ec == ErrorCode::CUSTOM)
