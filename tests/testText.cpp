@@ -100,6 +100,23 @@ BOOST_AUTO_TEST_CASE(ReadWriteENG)
         if(txtIn && txtOut)
             BOOST_TEST(txtIn->getText() == txtOut->getText());
     }
+
+    // Modified real ENG files
+    for(const auto& filename : {"HELP.ENG", "CREDIT02.ENG"})
+    {
+        BOOST_TEST_INFO_SCOPE("For " << filename);
+
+        BOOST_TEST_REQUIRE(libsiedler2::load(libsiedler2::test::inputPath / filename, archivIn) == 0);
+        BOOST_TEST_REQUIRE(archivIn.size() == 1u);
+        BOOST_TEST_REQUIRE(libsiedler2::write(outFilepath, archivIn) == 0);
+        BOOST_TEST_REQUIRE(libsiedler2::load(outFilepath, archiv) == 0);
+        BOOST_TEST_REQUIRE(archiv.size() == 1u);
+        const auto* txtIn = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archivIn[0]);
+        BOOST_TEST_REQUIRE(txtIn);
+        const auto* txtOut = dynamic_cast<const libsiedler2::ArchivItem_Text*>(archiv[0]);
+        BOOST_TEST_REQUIRE(txtOut);
+        BOOST_TEST(txtIn->getText() == txtOut->getText());
+    }
 }
 
 BOOST_AUTO_TEST_CASE(ReadWriteGER)

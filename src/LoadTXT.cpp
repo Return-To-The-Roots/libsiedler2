@@ -103,6 +103,5 @@ int libsiedler2::loader::loadTXT(const boost::filesystem::path& filepath, Archiv
             }
         }
     }
-
-    return (!fs) ? ErrorCode::UNEXPECTED_EOF : ErrorCode::NONE;
+    return ErrorCode::NONE;
 }

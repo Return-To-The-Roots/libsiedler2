@@ -40,6 +40,8 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion)
         // Read all that is there
         text.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     }
+    if(!file && !file.eof()) // We read to EOF so that is the only allowed error code
+        return ErrorCode::UNEXPECTED_EOF;
     // Remove nullptr terminator if present
     if(!text.empty() && text.back() == '\0')
         text.pop_back();
