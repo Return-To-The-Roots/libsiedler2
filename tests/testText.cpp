@@ -197,7 +197,7 @@ BOOST_AUTO_TEST_CASE(LoadRemovesNullTerminator)
 BOOST_AUTO_TEST_CASE(LoadHonorsEndOfFileMarker)
 {
     std::stringstream ss;
-    ss << "Before\x16" // ASCII "SUB"
+    ss << "Before\x1A" // ASCII "SUB"
        << "After";
     libsiedler2::ArchivItem_Text txt;
     BOOST_TEST(txt.load(ss, true) == 0);

@@ -33,7 +33,7 @@ int libsiedler2::ArchivItem_Text::load(std::istream& file, bool conversion)
         // S2 sometimes uses the end-of-file marker SUB
         // Stop reading when it is encountered.
         char c;
-        while(file.get(c) && c != '\26')
+        while(file.get(c) && c != '\x1A')
             text += c;
     } else
     {
@@ -68,7 +68,7 @@ int libsiedler2::ArchivItem_Text::write(std::ostream& file, bool conversion) con
     const std::string convText = getFileText(conversion);
     if(!file.write(convText.data(), convText.size()))
         return ErrorCode::UNEXPECTED_EOF;
-    if(conversion && !(file << '\26'))
+    if(conversion && !(file << '\x1A'))
         return ErrorCode::UNEXPECTED_EOF;
 
     return ErrorCode::NONE;
